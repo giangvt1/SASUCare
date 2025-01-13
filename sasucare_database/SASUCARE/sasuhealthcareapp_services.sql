@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.21, for Win64 (x86_64)
 --
--- Host: localhost    Database: sasucare
+-- Host: localhost    Database: sasuhealthcareapp
 -- ------------------------------------------------------
 -- Server version	8.0.21
 
@@ -16,29 +16,35 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `rolefeatures`
+-- Table structure for table `services`
 --
 
-DROP TABLE IF EXISTS `rolefeatures`;
+DROP TABLE IF EXISTS `services`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `rolefeatures` (
-  `rid` int NOT NULL,
-  `fid` int NOT NULL,
-  PRIMARY KEY (`rid`,`fid`),
-  KEY `fid` (`fid`),
-  CONSTRAINT `rolefeatures_ibfk_1` FOREIGN KEY (`rid`) REFERENCES `roles` (`rid`),
-  CONSTRAINT `rolefeatures_ibfk_2` FOREIGN KEY (`fid`) REFERENCES `features` (`fid`)
+CREATE TABLE `services` (
+  `service_id` int NOT NULL AUTO_INCREMENT,
+  `service_name` varchar(100) NOT NULL,
+  `description` text,
+  `price` decimal(10,2) NOT NULL,
+  `type` enum('Consultation','Medical Examination') NOT NULL,
+  `package_id` int NOT NULL,
+  `department_id` int DEFAULT NULL,
+  PRIMARY KEY (`service_id`),
+  KEY `package_id` (`package_id`),
+  KEY `department_id` (`department_id`),
+  CONSTRAINT `services_ibfk_1` FOREIGN KEY (`package_id`) REFERENCES `servicepackages` (`package_id`),
+  CONSTRAINT `services_ibfk_2` FOREIGN KEY (`department_id`) REFERENCES `departments` (`department_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `rolefeatures`
+-- Dumping data for table `services`
 --
 
-LOCK TABLES `rolefeatures` WRITE;
-/*!40000 ALTER TABLE `rolefeatures` DISABLE KEYS */;
-/*!40000 ALTER TABLE `rolefeatures` ENABLE KEYS */;
+LOCK TABLES `services` WRITE;
+/*!40000 ALTER TABLE `services` DISABLE KEYS */;
+/*!40000 ALTER TABLE `services` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -50,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-01-10 23:43:30
+-- Dump completed on 2025-01-13 16:56:54

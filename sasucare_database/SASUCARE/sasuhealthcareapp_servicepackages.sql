@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.21, for Win64 (x86_64)
 --
--- Host: localhost    Database: sasucare
+-- Host: localhost    Database: sasuhealthcareapp
 -- ------------------------------------------------------
 -- Server version	8.0.21
 
@@ -16,27 +16,30 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `features`
+-- Table structure for table `servicepackages`
 --
 
-DROP TABLE IF EXISTS `features`;
+DROP TABLE IF EXISTS `servicepackages`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `features` (
-  `fid` int NOT NULL AUTO_INCREMENT,
-  `fname` varchar(50) NOT NULL,
-  `url` varchar(100) NOT NULL,
-  PRIMARY KEY (`fid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `servicepackages` (
+  `package_id` int NOT NULL AUTO_INCREMENT,
+  `package_name` varchar(50) NOT NULL,
+  `description` text,
+  `price` decimal(10,2) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`package_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `features`
+-- Dumping data for table `servicepackages`
 --
 
-LOCK TABLES `features` WRITE;
-/*!40000 ALTER TABLE `features` DISABLE KEYS */;
-/*!40000 ALTER TABLE `features` ENABLE KEYS */;
+LOCK TABLES `servicepackages` WRITE;
+/*!40000 ALTER TABLE `servicepackages` DISABLE KEYS */;
+INSERT INTO `servicepackages` VALUES (1,'Basic','Basic package providing standard services',100.00,'2025-01-13 04:57:22'),(2,'Advance','Advanced package providing premium services',200.00,'2025-01-13 04:57:22');
+/*!40000 ALTER TABLE `servicepackages` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -48,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-01-10 23:43:30
+-- Dump completed on 2025-01-13 16:56:54

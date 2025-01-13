@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.21, for Win64 (x86_64)
 --
--- Host: localhost    Database: sasucare
+-- Host: localhost    Database: sasuhealthcareapp
 -- ------------------------------------------------------
 -- Server version	8.0.21
 
@@ -23,18 +23,19 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
-  `uid` int NOT NULL AUTO_INCREMENT,
-  `eid` int DEFAULT NULL,
-  `username` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `password` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `active` bit(1) NOT NULL DEFAULT b'1',
-  `email` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
-  `google_id` varchar(255) DEFAULT NULL,
-  `provider` enum('local','google') NOT NULL DEFAULT 'local',
-  PRIMARY KEY (`uid`),
+  `user_id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL,
+  `full_name` varchar(100) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `phone_number` varchar(15) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `role_id` int NOT NULL,
+  PRIMARY KEY (`user_id`),
   UNIQUE KEY `username` (`username`),
-  UNIQUE KEY `google_id` (`google_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  UNIQUE KEY `email` (`email`),
+  KEY `role_id` (`role_id`),
+  CONSTRAINT `users_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles` (`rid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +44,6 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,NULL,'admin','Password_admin',_binary '','admin@sasucare.com',NULL,'local'),(2,NULL,'doctor1','Password_doctor1',_binary '','doctor1@sasucare.com',NULL,'local'),(3,NULL,'doctor2','Password_doctor2',_binary '','doctor2@sasucare.com',NULL,'local'),(4,NULL,'expert1','Password_expert1',_binary '','expert1@sasucare.com',NULL,'local'),(5,NULL,'expert2','Password_expert2',_binary '','expert2@sasucare.com',NULL,'local'),(6,NULL,'staff1','Password_staff1',_binary '','staff1@sasucare.com',NULL,'local'),(7,NULL,'staff2','Password_staff2',_binary '','staff2@sasucare.com',NULL,'local'),(8,NULL,'customer1','Password_customer1',_binary '','customer1@sasucare.com',NULL,'local'),(9,NULL,'customer2','Password_customer2',_binary '','customer2@sasucare.com',NULL,'local');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -56,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-01-10 23:43:30
+-- Dump completed on 2025-01-13 16:56:54
