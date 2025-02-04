@@ -221,8 +221,10 @@ $(window).load(function() {
             }, a.prototype.off = function(a, b) {
                 var c, d, e;
                 if (null != (null != (d = this.bindings) ? d[a] : void 0)) {
-                    if (null == b)
-                        return delete this.bindings[a];
+                    if (null == b) {
+                      return delete this.bindings[a];
+                    }
+
                     for (c = 0, e = []; c < this.bindings[a].length; )
                         this.bindings[a][c].handler === b ? e.push(this.bindings[a].splice(c, 1)) : e.push(c++);
                     return e
