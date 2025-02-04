@@ -348,9 +348,20 @@ public class CustomerDBContext extends DBContext<Customer> {
 //        System.out.println("Password validation successful.");
 //        return true;
 //    }
-    private String hashPassword(String password) {
+    private static final MessageDigest MESSAGE_DIGEST;
+
+    static {
         try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            MESSAGE_DIGEST = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("SHA-256 algorithm not available", e);
+        }
+    }
+
+    private String hashPassword(String password) {
+        synchronized (MESSAGE_DIGEST) {
+            MESSAGE_DIGEST.reset();
+            byte[] hashedBytes = MESSAGE_DIGEST.digest(password.getBytes(StandardCharsets.UTF_8));
             byte[] hashedBytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
             StringBuilder sb = new StringBuilder();
             for (byte b : hashedBytes) {
