@@ -348,7 +348,6 @@ public class CustomerDBContext extends DBContext<Customer> {
 //        System.out.println("Password validation successful.");
 //        return true;
 //    }
-main
     private static final MessageDigest MESSAGE_DIGEST;
 
     static {
@@ -363,11 +362,6 @@ main
         synchronized (MESSAGE_DIGEST) {
             MESSAGE_DIGEST.reset();
             byte[] hashedBytes = MESSAGE_DIGEST.digest(password.getBytes(StandardCharsets.UTF_8));
-
-    private String hashPassword(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-Login,Register
             byte[] hashedBytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
             StringBuilder sb = new StringBuilder();
             for (byte b : hashedBytes) {

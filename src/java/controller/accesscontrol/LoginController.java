@@ -4,9 +4,7 @@
  */
 package controller.accesscontrol;
 
-main
 import controller.accesscontrol.GoogleLogin;
-Login,Register
 import dao.CustomerDBContext;
 import dao.GoogleDBContext;
 import jakarta.servlet.ServletException;

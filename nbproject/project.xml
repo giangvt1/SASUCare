@@ -5,7 +5,6 @@
         <data xmlns="http://www.netbeans.org/ns/web-project/3">
             <name>SWP391_GR6</name>
             <minimum-ant-version>1.6.5</minimum-ant-version>
-main
             <web-module-libraries>
                 <library dirs="200">
                     <file>${file.reference.mssql-jdbc-12.6.1.jre11.jar}</file>
@@ -52,8 +51,6 @@ main
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>
-            <web-module-libraries/>
-Login,Register
             <web-module-additional-libraries/>
             <source-roots>
                 <root id="src.dir"/>
