@@ -1,0 +1,38 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 27 thg 1, 2025, 19:32:54
+    Author     : TRUNG
+*/
+table{
+    border: 2px solid black;
+    width: 90%; /* Đặt chiều rộng bảng là 90% chiều rộng của viewport */
+    margin: 0 auto; /* Căn giữa bảng */
+}
+.pre-next-Btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px; /* Khoảng cách giữa các nút */
+    margin-top: 20px; /* Khoảng cách từ bảng đến các nút */
+}
+.pre-next-Btn a{
+    width: 100px; /* Cải thiện chiều rộng */
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff; /* Thêm màu nền cho nút */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+}
+
+.disabled {
+    pointer-events: none;
+    cursor: not-allowed !important;
+    background-color: #ccc !important;
+}

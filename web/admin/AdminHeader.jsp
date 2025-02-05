@@ -12,8 +12,8 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <header class="header">
-            <a href="../admin/Dashboard.jsp" class="logo">
+        <header class="header" style="position: fixed">
+            <a href="Dashboard.jsp" class="logo">
                 Director
             </a>
             <!-- Header Navbar: style can be found in header.less -->
@@ -201,6 +201,7 @@
                                 <li class="divider"></li>
 
                                 <li>
+                                    <a href="GetDoctorProfile?id=1">
                                     <a href="../system/profile">
                                         <i class="fa fa-user fa-fw pull-right"></i>
                                         Profile
@@ -214,7 +215,7 @@
                                 <li class="divider"></li>
 
                                 <li>
-                                    <a href="../system/logout"><i class="fa fa-ban fa-fw pull-right"></i> Logout</a>
+                                    <a href="#"><i class="fa fa-ban fa-fw pull-right"></i> Logout</a>
                                 </li>
                             </ul>
                         </li>
@@ -222,5 +223,14 @@
                 </div>
             </nav>
         </header>
+        <!-- jQuery 2.0.2 -->
+        <script src="../js/jquery.min.js" type="text/javascript"></script>
+        <!-- Bootstrap -->
+        <script src="../js/bootstrap.min.js" type="text/javascript"></script>
+        <!-- Director App -->
+        <script src="../js/Director/app.js" type="text/javascript"></script>
+
+        <!-- Director dashboard demo (This is only for demo purposes) -->
+        <script src="../js/Director/dashboard.js" type="text/javascript"></script>
     </body>
 </html>

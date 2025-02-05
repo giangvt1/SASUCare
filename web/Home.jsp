@@ -27,9 +27,13 @@
             href="../lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css"
             rel="stylesheet"
             />
-        <link href="css/style.css" rel="stylesheet" type="text/css"/>
-        <link href="css/login_style.css" rel="stylesheet" type="text/css"/>
-        <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+
+        <!-- Customized Bootstrap Stylesheet -->
+        <link href="css/bootstrap.min.css" rel="stylesheet" />
+
+        <!-- Template Stylesheet -->
+        <link href="css/style.css" rel="stylesheet" />
+        <link href="css/login_style.css" rel="stylesheet" />
     </head>
     <body>
         <jsp:include page="Header.jsp"></jsp:include>
@@ -44,7 +48,7 @@
                             class="d-inline-block text-primary text-uppercase border-bottom border-5"
                             style="border-color: rgba(256, 256, 256, 0.3) !important"
                             >
-                            Welcome To SASUCare
+                            Welcome To Medinova
                         </h5>
                         <h1 class="display-1 text-white mb-md-4">
                             Best Healthcare Solution In Your City

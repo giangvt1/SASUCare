@@ -3,9 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/New%20folder/SWP391_GROUP6/src/java/controller/accesscontrol/GoogleLogin.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/New%20folder/SWP391_GROUP6/web/admin/Dashboard.jsp</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/New%20folder/SWP391_GROUP6/src/java/controller/customermanagement/ProfileController.java</file>
+            <file>file:/C:/Users/TRUNG/Downloads/Project-G6/src/java/controller/doctor/DeleteCustomerVisitHistory.java</file>
+            <file>file:/C:/Users/TRUNG/Downloads/Project-G6/web/doctor/ManageMedical.jsp</file>
+            <file>file:/C:/Users/TRUNG/Downloads/Project-G6/src/java/controller/doctor/UpdateCustomerVisitHistory.java</file>
+            <file>file:/C:/Users/TRUNG/Downloads/Project-G6/src/java/controller/doctor/DeleteCustomerMedicalHistory.java</file>
+            <file>file:/C:/Users/TRUNG/Downloads/Project-G6/web/doctor/CustomerMedicalDetail.jsp</file>
+            <file>file:/C:/Users/TRUNG/Downloads/Project-G6/web/doctor/UpdateCustomerVisitHistory.jsp</file>
+            <file>file:/C:/Users/TRUNG/Downloads/Project-G6/web/doctor/CreateCustomerVisitHistory.jsp</file>
         </group>
         <group name="PRJ301">
             <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_4/web/profile.jsp</file>
