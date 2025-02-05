@@ -13,28 +13,15 @@
     </head>
     <body>
         <aside class="left-side sidebar-offcanvas">
-            <!-- Sidebar -->
-            <section class="sidebar">
-                <!-- User panel -->
-                <div class="user-panel">
-                    <div class="pull-left image">
-                        <img src="../img/meoomdau.jpg" class="img-circle" alt="User Image" />
-                    </div>
-                    <div class="pull-left info">
-                        <p>Hello, 
-                            <% 
-                                model.system.User account = (model.system.User) session.getAttribute("account");
-                                if (account != null) {
-                                    out.print(account.getDisplayname());
-                                } else {
-                                    out.print("Guest");
-                                }
-                            %>
-                        </p>
-                        <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
-                    </div>
-
-                </div>
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+          <!-- Sidebar user panel -->
+          <div class="user-panel">
+            <div class="pull-left image">
+              <img src="img/26115.jpg" class="img-circle" alt="User Image" />
+            </div>
+            <div class="pull-left info">
+              <p>Hello, Jane</p>
 
               <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
@@ -80,31 +67,14 @@
               </a>
             </li>
 
-                <!-- Sidebar menu -->
-                <ul class="sidebar-menu">
-                    <li class="active">
-                        <a href="../admin/Dashboard.jsp">
-                            <i class="fa fa-dashboard"></i> <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="../hr/create">
-                            <i class="fa fa-user-plus"></i> <span>Create Account</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="../hr/accountlist">
-                            <i class="fa fa-globe"></i> <span>Account List</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="../hr/calendarmanage">
-                            <i class="fa fa-table"></i> <span>Doctor Calendar</span>
-                        </a>
-                    </li>
-                </ul>
-            </section>
-            <!-- /.sidebar -->
-        </aside>
+            <li>
+              <a href="simple.html">
+                <i class="fa fa-glass"></i> <span>Simple tables</span>
+              </a>
+            </li>
+          </ul>
+        </section>
+        <!-- /.sidebar -->
+      </aside>
     </body>
 </html>
