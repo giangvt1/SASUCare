@@ -186,7 +186,7 @@
                                 <li class="dropdown-header text-center">Account</li>
 
                                 <li>
-                                    <a href="#">
+                                    <a href="../hr/edit">
                                         <i class="fa fa-clock-o fa-fw pull-right"></i>
                                         <span class="badge badge-success pull-right">10</span> Updates</a>
                                     <a href="#">
@@ -201,7 +201,7 @@
                                 <li class="divider"></li>
 
                                 <li>
-                                    <a href="#">
+                                    <a href="../system/profile">
                                         <i class="fa fa-user fa-fw pull-right"></i>
                                         Profile
                                     </a>

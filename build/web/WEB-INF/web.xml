@@ -10,7 +10,7 @@
     </servlet>
     <servlet>
         <servlet-name>UserLoginController</servlet-name>
-        <servlet-class>controller.systemaccesscontrol.StaffLoginController</servlet-class>
+        <servlet-class>controller.systemaccesscontrol.UserLoginController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>UserAccountCreateController</servlet-name>
@@ -40,6 +40,18 @@
     <servlet>
         <servlet-name>NewPassword</servlet-name>
         <servlet-class>googleservices.NewPassword</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ProfileUpdateController</servlet-name>
+        <servlet-class>controller.HRController.ProfileUpdateController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CalendarDoctorManageController</servlet-name>
+        <servlet-class>controller.HRController.CalendarDoctorManageController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditUserController</servlet-name>
+        <servlet-class>controller.HRController.EditUserController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
@@ -80,5 +92,17 @@
     <servlet-mapping>
         <servlet-name>NewPassword</servlet-name>
         <url-pattern>/NewPassword</url-pattern>
+       </servlet-mapping>
+      <servlet-mapping>
+        <servlet-name>ProfileUpdateController</servlet-name>
+        <url-pattern>/system/profile</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CalendarDoctorManageController</servlet-name>
+        <url-pattern>/hr/calendarmanage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditUserController</servlet-name>
+        <url-pattern>/hr/edit</url-pattern>
     </servlet-mapping>
 </web-app>
