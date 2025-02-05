@@ -24,6 +24,14 @@
         <servlet-name>StaffAccountListController</servlet-name>
         <servlet-class>controller.HRController.StaffAccountListController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AppointmentCalendarServlet</servlet-name>
+        <servlet-class>controller.appointment.AppointmentCalendarServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ForgetPasswordController</servlet-name>
+        <url-pattern>/forgetpassword</url-pattern>
+    </servlet-mapping>
     <display-name>SWP391 Web Application</display-name>
     <servlet>
         <servlet-name>LoginController</servlet-name>
@@ -36,6 +44,14 @@
     <servlet>
         <servlet-name>RegisterController</servlet-name>
         <servlet-class>controller.accesscontrol.RegisterController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AppointmentDoctorListController</servlet-name>
+        <servlet-class>controller.appointment.AppointmentDoctorListController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AppointmentConfirmServlet</servlet-name>
+        <servlet-class>controller.appointment.AppointmentConfirmServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
@@ -58,19 +74,15 @@
         <url-pattern>/profile</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>UserLoginController</servlet-name>
-        <url-pattern>/system/login</url-pattern>
+        <servlet-name>AppointmentDoctorListController</servlet-name>
+        <url-pattern>/appointment/doctor</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>UserAccountCreateController</servlet-name>
-        <url-pattern>/hr/create</url-pattern>
+        <servlet-name>AppointmentConfirmServlet</servlet-name>
+        <url-pattern>/appointment/confirm</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>UserLogoutController</servlet-name>
-        <url-pattern>/system/logout</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>StaffAccountListController</servlet-name>
-        <url-pattern>/hr/accountlist</url-pattern>
+        <servlet-name>AppointmentCalendarServlet</servlet-name>
+        <url-pattern>/appointment</url-pattern>
     </servlet-mapping>
 </web-app>

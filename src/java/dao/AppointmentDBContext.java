@@ -12,17 +12,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class AppointmentDBContext extends DBContext<Appointment> {
+
     private static final Logger LOGGER = Logger.getLogger(AppointmentDBContext.class.getName());
 
     @Override
     public void insert(Appointment model) {
-        String sql = "INSERT INTO Appointment (customer_id, doctor_id, date, time_slot_id, status) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Appointment (customer_id, doctor_id, DocSchedule_id, status) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stm.setInt(1, model.getCustomer().getId());
             stm.setInt(2, model.getDoctor().getId());
-            stm.setDate(3, model.getDoctorSchedule().getScheduleDate());
-            stm.setInt(4, model.getDoctorSchedule().getId()); // Store the TimeSlot ID
-            stm.setString(5, model.getStatus());
+            stm.setInt(3, model.getDoctorSchedule().getId()); // Using DocSchedule_id
+            stm.setString(4, model.getStatus());
 
             int affectedRows = stm.executeUpdate();
             if (affectedRows > 0) {
@@ -31,8 +31,6 @@ public class AppointmentDBContext extends DBContext<Appointment> {
                     model.setId(generatedKeys.getInt(1));
                     System.out.println("Appointment booked successfully with ID: " + model.getId());
                 }
-            } else {
-                System.out.println("Appointment booking failed.");
             }
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Error inserting appointment: {0}", ex.getMessage());
@@ -82,8 +80,7 @@ public class AppointmentDBContext extends DBContext<Appointment> {
     public ArrayList<Appointment> list() {
         ArrayList<Appointment> appointments = new ArrayList<>();
         String sql = "SELECT * FROM Appointment";
-        try (PreparedStatement stm = connection.prepareStatement(sql);
-             ResultSet rs = stm.executeQuery()) {
+        try (PreparedStatement stm = connection.prepareStatement(sql); ResultSet rs = stm.executeQuery()) {
 
             while (rs.next()) {
                 Appointment appointment = new Appointment();

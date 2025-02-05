@@ -185,11 +185,11 @@ public class CustomerDBContext extends DBContext<Customer> {
         return customers;
     }
 
-    public Customer get(String google_id) {
+    public Customer get(String id) {
         Customer customer = null;
-        String sql = "SELECT * FROM [Customer] WHERE google_id = ?";
+        String sql = "SELECT * FROM [Customer] WHERE id = ?";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            stm.setString(1, google_id);
+            stm.setString(1, id);
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
                 customer = new Customer();
@@ -203,9 +203,9 @@ public class CustomerDBContext extends DBContext<Customer> {
                 customer.setPhone_number(rs.getString("phone_number"));
 
                 // Nếu GoogleAccount tồn tại
-                if (google_id != null) {
+                if (id != null) {
                     GoogleAccount googleAccount = new GoogleAccount();
-                    googleAccount.setId(google_id); // Gán giá trị `google_id`
+                    googleAccount.setId(id); // Gán giá trị `google_id`
                     customer.setGoogle_id(googleAccount);
                 }
             }

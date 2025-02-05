@@ -10,17 +10,11 @@ public class Doctor {
     private boolean gender; // true = Male, false = Female
     private String address;
     private String specialty; // Department name
-    private ArrayList<Shift> shifts;
+    private ArrayList<DoctorSchedule> doctorSchedules;
 
-    public Doctor() {}
-
-    public Doctor(int id, String name, String specialty) {
-        this.id = id;
-        this.name = name;
-        this.specialty = specialty;
-        this.shifts = new ArrayList<>();
+    public Doctor() {
     }
-
+    
     public Doctor(int id, String name, String email, String phoneNumber, boolean gender, String address, String specialty) {
         this.id = id;
         this.name = name;
@@ -28,7 +22,17 @@ public class Doctor {
         this.phoneNumber = phoneNumber;
         this.gender = gender;
         this.address = address;
+        this.specialty = specialty;    }
+
+    public Doctor(int id, String name, String email, String phoneNumber, boolean gender, String address, String specialty, ArrayList<DoctorSchedule> doctorSchedules) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.gender = gender;
+        this.address = address;
         this.specialty = specialty;
+        this.doctorSchedules = doctorSchedules;
     }
 
     public int getId() {
@@ -75,14 +79,6 @@ public class Doctor {
         return address;
     }
 
-    public ArrayList<Shift> getShifts() {
-        return shifts;
-    }
-
-    public void setShifts(ArrayList<Shift> shifts) {
-        this.shifts = shifts;
-    }
-
     public void setAddress(String address) {
         this.address = address;
     }
@@ -94,6 +90,16 @@ public class Doctor {
     public void setSpecialty(String specialty) {
         this.specialty = specialty;
     }
+
+    public ArrayList<DoctorSchedule> getDoctorSchedules() {
+        return doctorSchedules;
+    }
+
+    public void setDoctorSchedules(ArrayList<DoctorSchedule> doctorSchedules) {
+        this.doctorSchedules = doctorSchedules;
+    }
+
+    
 
     @Override
     public String toString() {

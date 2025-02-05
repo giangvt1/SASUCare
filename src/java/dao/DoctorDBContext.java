@@ -1,25 +1,25 @@
 package dao;
 
 import dal.DBContext;
-import model.Doctor;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Doctor;
+import model.DoctorSchedule;
 import model.Shift;
 
 public class DoctorDBContext extends DBContext<Doctor> {
 
     private static final Logger LOGGER = Logger.getLogger(DoctorDBContext.class.getName());
-    
+
     public Doctor getDoctorById(int doctorId) {
-        String sql = "SELECT d.id, s.fullname, dep.name AS specialty " +
-                     "FROM Doctor d " +
-                     "JOIN Staff s ON d.id = s.id " +
-                     "JOIN Doctor_Department dd ON d.id = dd.doctor_id " +
-                     "JOIN Department dep ON dd.department_id = dep.id " +
-                     "WHERE d.id = ?";
+        String sql = "SELECT d.id, s.fullname, dep.name AS specialty "
+                + "FROM Doctor d "
+                + "JOIN Staff s ON d.id = s.id "
+                + "JOIN Doctor_Department dd ON d.id = dd.doctor_id "
+                + "JOIN Department dep ON dd.department_id = dep.id "
+                + "WHERE d.id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, doctorId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -36,49 +36,93 @@ public class DoctorDBContext extends DBContext<Doctor> {
         }
         return null;
     }
-    
-     public HashMap<Doctor, ArrayList<Shift>> getAvailableDoctors(String date) {
-        HashMap<Doctor, ArrayList<Shift>> doctorMap = new HashMap<>();
-        String sql = "SELECT d.id, s.fullname, dep.name AS specialty, sh.id AS shift_id, sh.time_start, sh.time_end " +
-                     "FROM Doctor d " +
-                     "JOIN Staff s ON d.id = s.id " +
-                     "JOIN Doctor_Department dd ON d.id = dd.doctor_id " +
-                     "JOIN Department dep ON dd.department_id = dep.id " +
-                     "JOIN Doctor_Schedule ds ON d.id = ds.doctor_id " +
-                     "JOIN Shift sh ON ds.shift_id = sh.id " +
-                     "WHERE ds.schedule_date = ? AND ds.available = 1 " +
-                     "ORDER BY d.id, sh.time_start";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, date);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    int doctorId = rs.getInt("id");
-                    Doctor doctor = doctorMap.keySet().stream()
-                            .filter(d -> d.getId() == doctorId)
-                            .findFirst()
-                            .orElse(null);
-                    
-                    if (doctor == null) {
-                        doctor = new Doctor(
-                                doctorId,
-                                rs.getString("fullname"),
-                                rs.getString("specialty")
-                        );
-                        doctorMap.put(doctor, new ArrayList<>());
-                    }
-                    
-                    Shift shift = new Shift(
-                            rs.getInt("shift_id"),
-                            rs.getTime("time_start"),
-                            rs.getTime("time_end")
-                    );
-                    doctorMap.get(doctor).add(shift);
-                }
+
+    @Override
+    public ArrayList<Doctor> list() {
+        ArrayList<Doctor> doctors = new ArrayList<>();
+        String sql = """
+                SELECT d.id AS doctor_id, s.fullname, s.email, s.phone_number, s.gender, s.address, dep.name AS specialty
+                FROM Doctor d
+                JOIN Staff s ON d.id = s.id
+                JOIN Doctor_Department dd ON d.id = dd.doctor_id
+                JOIN Department dep ON dd.department_id = dep.id
+                """;
+        try (PreparedStatement stmt = connection.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Doctor doctor = new Doctor();
+                doctor.setId(rs.getInt("doctor_id"));
+                doctor.setName(rs.getString("fullname"));
+                doctor.setEmail(rs.getString("email"));
+                doctor.setPhoneNumber(rs.getString("phone_number"));
+                doctor.setGender(rs.getBoolean("gender"));
+                doctor.setAddress(rs.getString("address"));
+                doctor.setSpecialty(rs.getString("specialty"));
+
+                doctors.add(doctor);
             }
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error fetching doctors and schedules", e);
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error retrieving doctor list: {0}", ex.getMessage());
         }
-        return doctorMap;
+        return doctors;
+    }
+
+    @Override
+    public Doctor get(String id) {
+        Doctor doctor = null;
+        String sql = """
+                SELECT d.id AS doctor_id, s.fullname, s.email, s.phone_number, s.gender, s.address, dep.name AS specialty
+                FROM Doctor d
+                JOIN Staff s ON d.id = s.id
+                JOIN Doctor_Department dd ON d.id = dd.doctor_id
+                JOIN Department dep ON dd.department_id = dep.id
+                WHERE d.id = ?
+                """;
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, Integer.parseInt(id));
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                doctor = new Doctor();
+                doctor.setId(rs.getInt("doctor_id"));
+                doctor.setName(rs.getString("fullname"));
+                doctor.setEmail(rs.getString("email"));
+                doctor.setPhoneNumber(rs.getString("phone_number"));
+                doctor.setGender(rs.getBoolean("gender"));
+                doctor.setAddress(rs.getString("address"));
+                doctor.setSpecialty(rs.getString("specialty"));
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error retrieving doctor: {0}", ex.getMessage());
+        }
+        return doctor;
+    }
+
+    public ArrayList<DoctorSchedule> getDoctorSchedules(int doctorId, Date date) {
+        ArrayList<DoctorSchedule> schedules = new ArrayList<>();
+        String sql = """
+                SELECT ds.id AS schedule_id, ds.schedule_date, s.id AS shift_id, s.time_start, s.time_end, available
+                                FROM Doctor_Schedule ds
+                                JOIN Shift s ON ds.shift_id = s.id
+                WHERE ds.doctor_id = ? AND ds.schedule_date = ?
+                """;
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, doctorId);
+            stmt.setDate(2, date);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Shift shift = new Shift(rs.getInt("shift_id"), rs.getTime("time_start"), rs.getTime("time_end"));
+                DoctorSchedule schedule = new DoctorSchedule(
+                        rs.getInt("schedule_id"),
+                        getDoctorById(doctorId),
+                        rs.getDate("schedule_date"),
+                        shift,
+                        rs.getBoolean("available")
+                );
+                schedules.add(schedule);
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error retrieving doctor schedules: {0}", ex.getMessage());
+        }
+        return schedules;
     }
 
     // Get list of doctors with detailed information from Staff table
@@ -142,13 +186,4 @@ public class DoctorDBContext extends DBContext<Doctor> {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    @Override
-    public ArrayList<Doctor> list() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Doctor get(String id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 }

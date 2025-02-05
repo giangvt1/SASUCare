@@ -60,7 +60,6 @@ public class Appointment {
                 "id=" + id +
                 ", customer=" + customer.getFullname() +
                 ", doctor=" + doctor.getId() +
-                ", DoctorSchedule=" + doctorSchedule.getTimeStart() + " - " + doctorSchedule.getTimeEnd() +
                 ", status='" + status + '\'' +
                 '}';
     }
