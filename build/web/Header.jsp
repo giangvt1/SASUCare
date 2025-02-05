@@ -70,7 +70,7 @@
         <div class="container-fluid sticky-top bg-white shadow-sm nav-pad">
             <div class="container">
                 <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0">
-                    <a href="Home.jsp" class="navbar-brand">
+                    <a href="/SWP391_GR6/Home.jsp" class="navbar-brand">
                         <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-clinic-medical me-2"></i>Medinova</h1>
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">

@@ -7,10 +7,6 @@
         <title>Book Your Appointment</title>
         <link rel="stylesheet" href="styles.css">
     </head>
-<<<<<<< Updated upstream
-    <body>
-        <jsp:include page="../Header.jsp"></jsp:include>
-=======
 
     <style>
         /* Modal background */
@@ -86,16 +82,11 @@
     <body>
         <jsp:include page="../Header.jsp"></jsp:include>
 
->>>>>>> Stashed changes
             <h2>Book Your Appointment</h2>
 
             <!-- Search Bar -->
             <form action="appointment/doctor" method="get">
-<<<<<<< Updated upstream
-                <input type="date" name="date" value="${selectedDate}" required>
-=======
                 <input type="hidden" name="date" value="${selectedDate}" required>
->>>>>>> Stashed changes
             <input type="text" name="search" placeholder="Search by name or specialist">
             <button type="submit">Search</button>
         </form>
@@ -113,24 +104,11 @@
             <tbody>
                 <c:forEach var="entry" items="${doctorMap}">
                     <c:set var="doctor" value="${entry.key}" />
-<<<<<<< Updated upstream
-                    <c:set var="shifts" value="${entry.value}" />
-=======
                     <c:set var="schedules" value="${entry.value}" />
->>>>>>> Stashed changes
                     <tr>
                         <td>${doctor.name}</td>
                         <td>${doctor.specialty}</td>
                         <td>
-<<<<<<< Updated upstream
-                            <c:forEach var="shift" items="${shifts}">
-                                <input type="radio" name="selectedShift_${doctor.id}" value="${shift.id}" 
-                                       data-doctor-name="${doctor.name}" 
-                                       data-specialty="${doctor.specialty}" 
-                                       data-shift-time="${shift.timeStart} - ${shift.timeEnd}"
-                                       onchange="enableBookButton(${doctor.id})">
-                                ${shift.timeStart} - ${shift.timeEnd}
-=======
                             <c:forEach var="schedule" items="${schedules}">
                                 <input type="radio" name="selectedSchedule_${doctor.id}" value="${schedule.id}"
                                        data-doctor-name="${doctor.name}" 
@@ -147,7 +125,6 @@
                                 ${schedule.shift.timeStart} - ${schedule.shift.timeEnd}
                                 <input type="hidden" id="scheduleId_${doctor.id}" value="${schedule.id}">
                                 <input type="hidden" id="available" value="${schedule.available}">
->>>>>>> Stashed changes
                             </c:forEach>
                         </td>
                         <td>
@@ -170,47 +147,6 @@
                 <button id="confirmBooking">Confirm Booking</button>
             </div>
         </div>
-<<<<<<< Updated upstream
-        <%--<jsp:include page="../Footer.jsp"></jsp:include>--%>
-            <script>
-                function enableBookButton(doctorId) {
-                    let bookButton = document.getElementById("bookBtn_" + doctorId);
-                    bookButton.disabled = false;
-                    bookButton.classList.remove("disabled-btn");
-                    bookButton.classList.add("active-btn");
-                }
-
-                function openBookingModal(doctorId) {
-                    console.log("Opening modal for doctor:", doctorId); // Debugging log
-
-                    let selectedShift = document.querySelector("input[name='selectedShift_" + doctorId + "']:checked");
-
-                    if (!selectedShift) {
-                        alert("Please select a time slot before booking.");
-                        return; // Exit if no shift is selected
-                    }
-
-                    console.log("Selected shift:", selectedShift.value); // Debugging log
-
-                    document.getElementById("modalDoctorName").innerText = selectedShift.getAttribute("data-doctor-name");
-                    document.getElementById("modalSpecialty").innerText = selectedShift.getAttribute("data-specialty");
-                    document.getElementById("modalShiftTime").innerText = selectedShift.getAttribute("data-shift-time");
-
-                    document.getElementById("confirmBooking").onclick = function () {
-                        let shiftId = selectedShift.value;
-                        console.log("Redirecting to confirm booking:", shiftId);
-                        window.location.href = "../appointment/confirm?doctor="+ doctorId +"&shift="+ shiftId;
-                    };
-
-                    document.getElementById("bookingModal").style.display = "block";
-                }
-
-
-
-                function closeModal() {
-                    document.getElementById("bookingModal").style.display = "none";
-                }
-=======
 
         <script>
             function disableBookButton(doctorId) {
@@ -250,7 +186,6 @@
             function closeModal() {
                 document.getElementById("bookingModal").style.display = "none";
             }
->>>>>>> Stashed changes
         </script>
     </body>
 </html>
