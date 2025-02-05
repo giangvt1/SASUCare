@@ -1,6 +1,6 @@
 <%-- 
-    Document   : Operation
-    Created on : Feb 5, 2025, 11:28:59 AM
+    Document   : capcuu
+    Created on : Feb 5, 2025, 11:25:59 AM
     Author     : admin
 --%>
 
@@ -14,12 +14,12 @@
     <body>
         <jsp:include page="Header.jsp"></jsp:include>
         <div class="heading">
-        <h1>Phẫu thuật</h1>
+        <h1>Cấp cứu</h1>
     </div>
     <div class="card">
-        <img src="https://tudienbenhhoc.com/wp-content/uploads/2020/11/sau-phau-thuat-2.jpg" alt="Phẫu thuật">
-        <p>Chúng tôi cung cấp các dịch vụ phẫu thuật an toàn và hiệu quả. Tìm hiểu về quy trình phẫu thuật và đội ngũ bác sĩ của chúng tôi.</p>
-        <a class="button" href="#">Đặt lịch hẹn</a>
+        <img src="https://bvphuongchi.com/upload/elfinder/hinh%20cap%20cuu.jpg" alt="Cấp cứu">
+        <p>Chúng tôi cung cấp dịch vụ cấp cứu 24/7 với đội ngũ bác sĩ chuyên nghiệp và trang thiết bị hiện đại. Đừng ngần ngại liên hệ với chúng tôi khi cần hỗ trợ khẩn cấp.</p>
+        <a class="button" href="tel:02439743556">Gọi ngay</a>
     </div>
         
         <jsp:include page="Footer.jsp"></jsp:include>

@@ -1,6 +1,6 @@
 <%-- 
-    Document   : Operation
-    Created on : Feb 5, 2025, 11:28:59 AM
+    Document   : Medicine
+    Created on : Feb 5, 2025, 11:34:03 AM
     Author     : admin
 --%>
 
@@ -14,13 +14,14 @@
     <body>
         <jsp:include page="Header.jsp"></jsp:include>
         <div class="heading">
-        <h1>Phẫu thuật</h1>
+        <h1>Dược phẩm</h1>
     </div>
     <div class="card">
-        <img src="https://tudienbenhhoc.com/wp-content/uploads/2020/11/sau-phau-thuat-2.jpg" alt="Phẫu thuật">
-        <p>Chúng tôi cung cấp các dịch vụ phẫu thuật an toàn và hiệu quả. Tìm hiểu về quy trình phẫu thuật và đội ngũ bác sĩ của chúng tôi.</p>
-        <a class="button" href="#">Đặt lịch hẹn</a>
+        <img src="medicine.jpg" alt="Dược phẩm">
+        <p>Khám phá các loại thuốc và hướng dẫn sử dụng tại trung tâm dược phẩm của chúng tôi. Liên hệ với dược sĩ để được tư vấn.</p>
+        <a class="button" href="#">Tìm thuốc</a>
     </div>
+        
         
         <jsp:include page="Footer.jsp"></jsp:include>
         <!-- JavaScript Libraries -->

@@ -17,7 +17,7 @@
         <h1>Phẫu thuật</h1>
     </div>
     <div class="card">
-        <img src="https://tudienbenhhoc.com/wp-content/uploads/2020/11/sau-phau-thuat-2.jpg" alt="Phẫu thuật">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfoJG-YcxK0fCtClNFSB01EzBxe1TjjaLrxw&s" alt="Phẫu thuật">
         <p>Chúng tôi cung cấp các dịch vụ phẫu thuật an toàn và hiệu quả. Tìm hiểu về quy trình phẫu thuật và đội ngũ bác sĩ của chúng tôi.</p>
         <a class="button" href="#">Đặt lịch hẹn</a>
     </div>

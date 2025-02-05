@@ -139,14 +139,14 @@
             <img src="https://datafiles.nghean.gov.vn/nan-ubnd/2882/quantritintuc20242/m2638436058638817220.jpg" alt="Tim mạch">
             <div class="card-content">
                 <h3>Tim mạch</h3>
-                <a class="more" href="#">More →</a>
+                <a class="more" href="khoatimmach.jsp">More →</a>
             </div>
         </div>
         <div class="card">
             <img src="https://cdn.benhvienthucuc.vn/wp-content/uploads/2021/06/kinh-nghiem-tim-dia-chi-kham-chuyen-khoa-co-xuong-khop-o-dau-tot-1.jpg" alt="Xương Khớp">
             <div class="card-content">
                 <h3>Xương Khớp</h3>
-                <a class="more" href="#">More →</a>
+                <a class="more" href="khoaxuongkhop.jsp">More →</a>
             </div>
         </div>
         <div class="card">

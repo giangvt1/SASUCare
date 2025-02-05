@@ -1,6 +1,6 @@
 <%-- 
-    Document   : Operation
-    Created on : Feb 5, 2025, 11:28:59 AM
+    Document   : BloodTesting
+    Created on : Feb 5, 2025, 11:35:00 AM
     Author     : admin
 --%>
 
@@ -13,15 +13,15 @@
     </head>
     <body>
         <jsp:include page="Header.jsp"></jsp:include>
-        <div class="heading">
-        <h1>Phẫu thuật</h1>
+        
+         <div class="heading">
+        <h1>Xét nghiệm máu</h1>
     </div>
     <div class="card">
-        <img src="https://tudienbenhhoc.com/wp-content/uploads/2020/11/sau-phau-thuat-2.jpg" alt="Phẫu thuật">
-        <p>Chúng tôi cung cấp các dịch vụ phẫu thuật an toàn và hiệu quả. Tìm hiểu về quy trình phẫu thuật và đội ngũ bác sĩ của chúng tôi.</p>
-        <a class="button" href="#">Đặt lịch hẹn</a>
+        <img src="blood_testing.jpg" alt="Xét nghiệm máu">
+        <p>Chúng tôi cung cấp dịch vụ xét nghiệm máu với kết quả nhanh chóng và chính xác. Tìm hiểu thêm về quy trình xét nghiệm.</p>
+        <a class="button" href="#">Xem kết quả</a>
     </div>
-        
         <jsp:include page="Footer.jsp"></jsp:include>
         <!-- JavaScript Libraries -->
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -32,6 +32,5 @@
         <script src="lib/tempusdominus/js/moment.min.js"></script>
         <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
         <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-         
     </body>
 </html>
