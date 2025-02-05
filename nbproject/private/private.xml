@@ -11,5 +11,23 @@
             <file>file:/C:/Users/TRUNG/Downloads/Project-G6/web/doctor/UpdateCustomerVisitHistory.jsp</file>
             <file>file:/C:/Users/TRUNG/Downloads/Project-G6/web/doctor/CreateCustomerVisitHistory.jsp</file>
         </group>
+        <group name="PRJ301">
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_4/web/profile.jsp</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_4/web/EnterOtp.jsp</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_4/src/java/googleservices/NewPassword.java</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_4/src/java/controller/accesscontrol/LoginController.java</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_4/src/java/googleservices/ForgotPassword.java</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_4/web/Home.jsp</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_4/src/java/dao/GoogleDBContext.java</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_4/src/java/Constant/Iconstant.java</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_4/web/WEB-INF/web.xml</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_4/web/accesscontrol/Login.jsp</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_4/src/java/dao/CustomerDBContext.java</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_4/web/Header.jsp</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_4/src/java/controller/accesscontrol/RegisterController.java</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_4/src/java/googleservices/ValidateOtp.java</file>
+        </group>
+        <group name="PRJ301"/>
+        <group/>
     </open-files>
 </project-private>

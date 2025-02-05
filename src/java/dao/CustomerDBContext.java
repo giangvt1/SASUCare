@@ -85,7 +85,7 @@ public class CustomerDBContext extends DBContext<Customer> {
             stm.setDate(5, new Date(now.getTime()));
             stm.setString(6, model.getAddress());
             stm.setString(7, model.getPhone_number());
-            stm.setString(8, model.getFullname());
+            stm.setString(9, model.getFullname());
 
             // Kiểm tra GoogleAccount và thêm ID nếu có
             if (model.getGoogle_id() != null) {
@@ -310,45 +310,45 @@ public class CustomerDBContext extends DBContext<Customer> {
             LOGGER.log(Level.SEVERE, "Error updating password: {0}", ex.getMessage());
         }
     }
+    
+    public boolean checkPassword(String gmail, String password, String confirmPassword) {
+        // Mẫu kiểm tra độ mạnh của mật khẩu
+        String passwordPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>])[A-Za-z\\d!@#$%^&*(),.?\":{}|<>]{6,}$";
 
-//    public boolean checkPassword(Customer customer, String password, String confirmPassword) {
-//        // Mẫu kiểm tra độ mạnh của mật khẩu
-//        String passwordPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>])[A-Za-z\\d!@#$%^&*(),.?\":{}|<>]{6,}$";
-//
-//        // Kiểm tra mật khẩu mới và xác nhận mật khẩu phải giống nhau
-//        if (!password.equals(confirmPassword)) {
-//            System.out.println("Passwords do not match.");
-//            return false;
-//        }
-//
-//        // Kiểm tra độ mạnh của mật khẩu
-//        if (!password.matches(passwordPattern)) {
-//            System.out.println("Password does not meet the strength requirements.");
-//            return false;
-//        }
-//
-//        // Kiểm tra mật khẩu mới không trùng với mật khẩu cũ
-//        String sql = "SELECT [password] FROM customers WHERE username = ?";
-//        try (PreparedStatement stm = connection.prepareStatement(sql)) {
-//            stm.setString(1, customer.getUsername());
-//            ResultSet rs = stm.executeQuery();
-//            if (rs.next()) {
-//                String oldPassword = rs.getString("password");
-//
-//                // So sánh mật khẩu đã mã hóa (nếu sử dụng BCrypt hoặc các thuật toán khác)
-//                if (BCrypt.checkpw(password, oldPassword)) {
-//                    System.out.println("New password cannot be the same as the old password.");
-//                    return false;
-//                }
-//            }
-//        } catch (SQLException ex) {
-//            LOGGER.log(Level.SEVERE, "Error fetching old password: {0}", ex.getMessage());
-//            return false; // Trong trường hợp lỗi, trả về false để không làm ảnh hưởng tới logic.
-//        }
-//
-//        System.out.println("Password validation successful.");
-//        return true;
-//    }
+        // Kiểm tra mật khẩu mới và xác nhận mật khẩu phải giống nhau
+        if (!password.equals(confirmPassword)) {
+            System.out.println("Passwords do not match.");
+            return false;
+        }
+
+        // Kiểm tra độ mạnh của mật khẩu
+        if (!password.matches(passwordPattern)) {
+            System.out.println("Password does not meet the strength requirements.");
+            return false;
+        }
+
+        // Kiểm tra mật khẩu mới không trùng với mật khẩu cũ
+        String sql = "SELECT [password] FROM Customer WHERE gmail = ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setString(1, gmail);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                String oldPassword = rs.getString("password");
+                String hashPassword = hashPassword(password);
+                // So sánh mật khẩu đã mã hóa (nếu sử dụng BCrypt hoặc các thuật toán khác)
+                if (hashPassword.equals(oldPassword)) {
+                    System.out.println("New password cannot be the same as the old password.");
+                    return false;
+                }
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error fetching old password: {0}", ex.getMessage());
+            return false; // Trong trường hợp lỗi, trả về false để không làm ảnh hưởng tới logic.
+        }
+
+        System.out.println("Password validation successful.");
+        return true;
+    }
     private String hashPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -631,4 +631,23 @@ public class CustomerDBContext extends DBContext<Customer> {
         ArrayList<VisitHistory> c = d.getVisitHistoriesByCustomerIdPaginated(1, 1);
 //        System.out.println(c.get(0));
     }
+    
+    public void updatePassword(String gmail, String newPassword) {
+    String sql = "UPDATE [Customer] SET password = ? WHERE gmail = ?";
+    try (PreparedStatement stm = connection.prepareStatement(sql)) {
+        // Mã hóa mật khẩu mới trước khi lưu
+        String hashedPassword = hashPassword(newPassword);
+        stm.setString(1, hashedPassword);
+        stm.setString(2, gmail);
+
+        int rowsAffected = stm.executeUpdate();
+        if (rowsAffected > 0) {
+            System.out.println("Password updated successfully.");
+        } else {
+            System.out.println("Password update failed. No matching user found.");
+        }
+    } catch (SQLException ex) {
+        LOGGER.log(Level.SEVERE, "Error updating password: {0}", ex.getMessage());
+    }
+}
 }
