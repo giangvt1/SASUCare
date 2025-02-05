@@ -38,6 +38,7 @@ public class LoginController extends HttpServlet {
         GoogleAccount account = gg.getUserInfo(accessToken);
         
         if (!customerDAO.isCustomerExisted(account.getEmail())) {
+            System.out.println("11111111111");
         // Nếu tài khoản chưa tồn tại, tạo user mới
             Customer customer = new Customer();
             
@@ -54,6 +55,7 @@ public class LoginController extends HttpServlet {
             response.sendRedirect("Home.jsp");
             
         } else {
+            System.out.println("222222222222");
             Customer customer = customerDAO.get(account.getId());
             
             HttpSession session = request.getSession(false);

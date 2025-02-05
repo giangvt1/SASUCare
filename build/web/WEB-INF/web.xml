@@ -38,6 +38,10 @@
         <servlet-class>controller.accesscontrol.RegisterController</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>NewPassword</servlet-name>
+        <servlet-class>googleservices.NewPassword</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>ProfileUpdateController</servlet-name>
         <servlet-class>controller.HRController.ProfileUpdateController</servlet-class>
     </servlet>
@@ -86,6 +90,10 @@
         <url-pattern>/hr/accountlist</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>NewPassword</servlet-name>
+        <url-pattern>/NewPassword</url-pattern>
+       </servlet-mapping>
+      <servlet-mapping>
         <servlet-name>ProfileUpdateController</servlet-name>
         <url-pattern>/system/profile</url-pattern>
     </servlet-mapping>
