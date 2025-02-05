@@ -7,7 +7,7 @@
     top: 0;
     left: 0;
 }
-.login {
+.login,.register-form {
     width: 30vw;
     position: fixed;
     top: 50%;
@@ -16,7 +16,7 @@
     z-index: 99;
     display: none;
 }
-.login a {
+.login a ,.register-form a{
     text-decoration: none;
 }
 

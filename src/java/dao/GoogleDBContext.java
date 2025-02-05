@@ -5,15 +5,22 @@
 package dao;
 
 import dal.DBContext;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Properties;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import model.GoogleAccount;
 
 /**
@@ -166,5 +173,42 @@ public class GoogleDBContext extends DBContext<GoogleAccount>{
         return account;
     }
     
-    
+    public int sendOtp(String gmail) {
+            // sending otp
+            Random rand = new Random();
+            int otpvalue = 100000 + rand.nextInt(900000);
+
+            String to = gmail;// change accordingly
+            // Get the session object
+            Properties props = new Properties();
+            props.put("mail.smtp.host", "smtp.gmail.com");
+            props.put("mail.smtp.socketFactory.port", "465");
+            props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.port", "465");
+            Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication("hailnhe181075@fpt.edu.vn", "mjpxokkwmtgkxqro");// Put your email
+                                                                                                                                                                                            // id and
+                                                                                                                                                                                            // password here
+                    }
+            });
+            // compose message
+            try {
+                    MimeMessage message = new MimeMessage(session);
+                    message.setFrom(new InternetAddress(gmail));// change accordingly
+                    message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+                    message.setSubject("Hello");
+                    message.setText("your OTP is: " + otpvalue);
+                    // send message
+                    Transport.send(message);
+                    System.out.println("message sent successfully");
+            }
+
+            catch (MessagingException e) {
+                    throw new RuntimeException(e);
+            }
+        
+        return otpvalue;
+    }
 }

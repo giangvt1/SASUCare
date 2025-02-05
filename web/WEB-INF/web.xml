@@ -1,29 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
     <servlet>
-        <servlet-name>PasswordController</servlet-name>
-        <servlet-class>controller.accesscontrol.PasswordController</servlet-class>
+        <servlet-name>ForgetPasswordController</servlet-name>
+        <servlet-class>controller.accesscontrol.ForgetPasswordController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ProfileController</servlet-name>
-        <servlet-class>controller.customermanagement.ProfileController</servlet-class>
+        <servlet-class>controller.usermanagement.ProfileController</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>SearchCustomer</servlet-name>
+        <servlet-class>controller.doctor.SearchCustomer</servlet-class>
+        </servlet>
+        <servlet>
         <servlet-name>UserLoginController</servlet-name>
         <servlet-class>controller.systemaccesscontrol.UserLoginController</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>UserAccountCreateController</servlet-name>
-        <servlet-class>controller.HRController.UserAccountCreateController</servlet-class>
+        <servlet-name>ShowCustomerMedicalDetail</servlet-name>
+        <servlet-class>controller.doctor.ShowCustomerMedicalDetail</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>UserLogoutController</servlet-name>
-        <servlet-class>controller.systemaccesscontrol.UserLogoutController</servlet-class>
+        <servlet-name>SendApplication</servlet-name>
+        <servlet-class>controller.doctor.SendApplication</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>StaffAccountListController</servlet-name>
-        <servlet-class>controller.HRController.StaffAccountListController</servlet-class>
+        <servlet-name>CreateMedicalHistory</servlet-name>
+        <servlet-class>controller.doctor.CreateCustomerMedicalHistory</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UpdateMedicalHistory</servlet-name>
+        <servlet-class>controller.doctor.UpdateCustomerMedicalHistory</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteMedicalHistory</servlet-name>
+        <servlet-class>controller.doctor.DeleteCustomerMedicalHistory</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CreateCustomerVisitHistory</servlet-name>
+        <servlet-class>controller.doctor.CreateCustomerVisitHistory</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateCustomerVisitHistory</servlet-name>
+        <servlet-class>controller.doctor.UpdateCustomerVisitHistory</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteCustomerVisitHistory</servlet-name>
+        <servlet-class>controller.doctor.DeleteCustomerVisitHistory</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetDoctorProfile</servlet-name>
+        <servlet-class>controller.doctor.GetDoctorProfile</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateDoctorProfile</servlet-name>
+        <servlet-class>controller.doctor.UpdateDoctorProfile</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ForgetPasswordController</servlet-name>
+        <url-pattern>/forgetpassword</url-pattern>
+    </servlet-mapping>
     <display-name>SWP391 Web Application</display-name>
     <servlet>
         <servlet-name>LoginController</servlet-name>
@@ -38,6 +74,10 @@
         <servlet-class>controller.accesscontrol.RegisterController</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>NewPassword</servlet-name>
+        <servlet-class>googleservices.NewPassword</servlet-class>
+      </servlet>
+      <servlet>
         <servlet-name>ProfileUpdateController</servlet-name>
         <servlet-class>controller.HRController.ProfileUpdateController</servlet-class>
     </servlet>
@@ -62,30 +102,58 @@
         <url-pattern>/register</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>PasswordController</servlet-name>
-        <url-pattern>/changepass</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>ProfileController</servlet-name>
         <url-pattern>/profile</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>UserLoginController</servlet-name>
-        <url-pattern>/system/login</url-pattern>
+        <servlet-name>SearchCustomer</servlet-name>
+        <url-pattern>/doctor/SearchCustomer</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>UserAccountCreateController</servlet-name>
-        <url-pattern>/hr/create</url-pattern>
+        <servlet-name>ShowCustomerMedicalDetail</servlet-name>
+        <url-pattern>/doctor/ShowCustomerMedicalDetail</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>UserLogoutController</servlet-name>
-        <url-pattern>/system/logout</url-pattern>
+        <servlet-name>SendApplication</servlet-name>
+        <url-pattern>/doctor/SendApplication</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>StaffAccountListController</servlet-name>
-        <url-pattern>/hr/accountlist</url-pattern>
+        <servlet-name>CreateMedicalHistory</servlet-name>
+        <url-pattern>/doctor/CreateCustomerMedicalHistory</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>UpdateMedicalHistory</servlet-name>
+        <url-pattern>/doctor/UpdateCustomerMedicalHistory</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteMedicalHistory</servlet-name>
+        <url-pattern>/doctor/DeleteCustomerMedicalHistory</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CreateCustomerVisitHistory</servlet-name>
+        <url-pattern>/doctor/CreateCustomerVisitHistory</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateCustomerVisitHistory</servlet-name>
+        <url-pattern>/doctor/UpdateCustomerVisitHistory</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteCustomerVisitHistory</servlet-name>
+        <url-pattern>/doctor/DeleteCustomerVisitHistory</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetDoctorProfile</servlet-name>
+        <url-pattern>/doctor/GetDoctorProfile</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateDoctorProfile</servlet-name>
+        <url-pattern>/doctor/UpdateDoctorProfile</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>NewPassword</servlet-name>
+        <url-pattern>/NewPassword</url-pattern>
+    </servlet-mapping>
+      <servlet-mapping>
         <servlet-name>ProfileUpdateController</servlet-name>
         <url-pattern>/system/profile</url-pattern>
     </servlet-mapping>

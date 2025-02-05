@@ -16,7 +16,7 @@
                     <h3 class="text-center mt-4">Register</h3>
                     <span class="d-flex justify-content-center">
                         Already have an account? 
-                        <a href="#!" class="change-login">Sign In</a>
+                        <a href="login.jsp" class="change-login">Sign In</a>
                     </span>
                     <table class="mt-4 mb-4">
                         <tbody>
@@ -27,13 +27,13 @@
                                 <td><input class="input" type="text" name="username" id="username" placeholder="Enter username" required /></td>
                             </tr>
                             <tr>
-                                <td class="pt-4"><b>Password</b></td>
+                                <td class="pt-3"><b>Password</b></td>
                             </tr>
                             <tr>
                                 <td><input class="input" type="password" name="password" id="password" placeholder="Enter password" required /></td>
                             </tr>
                             <tr>
-                                <td class="pt-4"><b>Confirm password</b></td>
+                                <td class="pt-3"><b>Confirm password</b></td>
                             </tr>
                             <tr>
                                 <td><input class="input" type="password" name="confirm-password" id="confirm-password" placeholder="Confirm password" required /></td>
@@ -41,7 +41,7 @@
 
                             <!-- New field for Gmail -->
                             <tr>
-                                <td class="pt-4"><b>Gmail</b></td>
+                                <td class="pt-3"><b>Gmail</b></td>
                             </tr>
                             <tr>
                                 <td><input class="input" type="email" name="email" id="email" placeholder="Enter your Gmail" required /></td>
@@ -49,7 +49,7 @@
 
                             <!-- New field for Full Name -->
                             <tr>
-                                <td class="pt-4"><b>Full Name</b></td>
+                                <td class="pt-3"><b>Full Name</b></td>
                             </tr>
                             <tr>
                                 <td><input class="input" type="text" name="full-name" id="full-name" placeholder="Enter full name" required /></td>
@@ -57,14 +57,14 @@
 
                             <!-- New field for Phone Number -->
                             <tr>
-                                <td class="pt-4"><b>Phone Number</b></td>
+                                <td class="pt-3"><b>Phone Number</b></td>
                             </tr>
                             <tr>
                                 <td><input class="input" type="text" name="phone-number" id="phone-number" placeholder="Enter phone number" required /></td>
                             </tr>
 
                             <tr>
-                                <td><button class="button mt-4" type="submit">Register</button></td>
+                                <td><button class="button mt-3" type="submit">Register</button></td>
                             </tr>
                         </tbody>
                     </table>

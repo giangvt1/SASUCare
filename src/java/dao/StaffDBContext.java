@@ -38,6 +38,26 @@ public class StaffDBContext extends DBContext<Staff> {
         }
     }
 
+    @Override
+    public void update(Staff model) {
+        String sql = """
+                UPDATE [dbo].[Staff]
+                SET [gender] = ?
+                   ,[email] = ?
+                   ,[phone_number] = ?
+                   ,[fullname] = ?
+                   ,[dob] = ?
+                   ,[address] = ?
+                WHERE [id] = ?""";
+
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setBoolean(1, model.isGender());
+            stm.setString(2, model.getEmail());
+            stm.setString(3, model.getPhonenumber());
+            stm.setNString(4, model.getFullname());
+            stm.setDate(5, model.getDob());
+            stm.setString(6, model.getAddress());
+            stm.setInt(7, model.getId());
     public Staff getByUsername(String username) {
         String sql = "SELECT * FROM [Staff] WHERE staff_username = ?";
         try (
