@@ -13,7 +13,6 @@
         <title>Edit User</title>
         <link href="../css/admin/bootstrap.min.css" rel="stylesheet" type="text/css"/>
         <link href="../css/admin/styleAdmin.css" rel="stylesheet" type="text/css"/>
-        <link href="../css/admin/font-awesome.min.css" rel="stylesheet" type="text/css"/>
         <style>
             .main-content {
                 margin-top: 50px;

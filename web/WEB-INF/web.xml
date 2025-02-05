@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
     <servlet>
-        <servlet-name>ForgetPasswordController</servlet-name>
-        <servlet-class>controller.accesscontrol.ForgetPasswordController</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>PasswordController</servlet-name>
         <servlet-class>controller.accesscontrol.PasswordController</servlet-class>
     </servlet>
@@ -14,7 +10,7 @@
     </servlet>
     <servlet>
         <servlet-name>UserLoginController</servlet-name>
-        <servlet-class>controller.systemaccesscontrol.StaffLoginController</servlet-class>
+        <servlet-class>controller.systemaccesscontrol.UserLoginController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>UserAccountCreateController</servlet-name>
@@ -28,10 +24,6 @@
         <servlet-name>StaffAccountListController</servlet-name>
         <servlet-class>controller.HRController.StaffAccountListController</servlet-class>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>ForgetPasswordController</servlet-name>
-        <url-pattern>/forgetpassword</url-pattern>
-    </servlet-mapping>
     <display-name>SWP391 Web Application</display-name>
     <servlet>
         <servlet-name>LoginController</servlet-name>
@@ -44,6 +36,18 @@
     <servlet>
         <servlet-name>RegisterController</servlet-name>
         <servlet-class>controller.accesscontrol.RegisterController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ProfileUpdateController</servlet-name>
+        <servlet-class>controller.HRController.ProfileUpdateController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CalendarDoctorManageController</servlet-name>
+        <servlet-class>controller.HRController.CalendarDoctorManageController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditUserController</servlet-name>
+        <servlet-class>controller.HRController.EditUserController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
@@ -80,5 +84,17 @@
     <servlet-mapping>
         <servlet-name>StaffAccountListController</servlet-name>
         <url-pattern>/hr/accountlist</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProfileUpdateController</servlet-name>
+        <url-pattern>/system/profile</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CalendarDoctorManageController</servlet-name>
+        <url-pattern>/hr/calendarmanage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditUserController</servlet-name>
+        <url-pattern>/hr/edit</url-pattern>
     </servlet-mapping>
 </web-app>

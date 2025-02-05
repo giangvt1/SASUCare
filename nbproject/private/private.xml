@@ -3,20 +3,6 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group name="PRJ301"/>
-        <group>
-<<<<<<< Updated upstream
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/code(HAI)/SWP391_GROUP6/src/java/model/system/Role.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/code(HAI)/SWP391_GROUP6/src/java/Constant/Iconstant.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/code(HAI)/SWP391_GROUP6/src/java/controller/systemaccesscontrol/BaseRBACController.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/code(HAI)/SWP391_GROUP6/src/java/controller/accesscontrol/GoogleLogin.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/code(HAI)/SWP391_GROUP6/src/java/controller/systemaccesscontrol/StaffLoginController.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/code(HAI)/SWP391_GROUP6/src/java/model/system/Feature.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/code(HAI)/SWP391_GROUP6/src/java/model/system/Staff.java</file>
-=======
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/New%20folder/SWP391_GROUP6/web/admin/AdminProfile.jsp</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/New%20folder/SWP391_GROUP6/web/admin/AdminHeader.jsp</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/New%20folder/SWP391_GROUP6/web/hr/EditUser.jsp</file>
->>>>>>> Stashed changes
-        </group>
+        <group/>
     </open-files>
 </project-private>
