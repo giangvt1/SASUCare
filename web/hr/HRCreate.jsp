@@ -1,20 +1,15 @@
-<%-- 
-    Document   : HRCreate
-    Created on : Jan 21, 2025, 4:13:58 AM
-    Author     : acer
---%>
-
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
         <title>Create User Account</title>
-                <link href="../css/admin/bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <!-- font Awesome -->
-        <link href="../css/admin/font-awesome.min.css" rel="stylesheet" type="text/css" />
-        <link href="../css/admin/styleAdmin.css" rel="stylesheet" type="text/css" />
+        <link href="../css/admin/styleAdmin.css" rel="stylesheet" type="text/css"/>
+        <link href="../css/admin/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <link href="../css/admin/font-awesome.min.css" rel="stylesheet" type="text/css"/>
         <style>
             table {
                 width: 50%;
@@ -46,15 +41,38 @@
             button:hover {
                 background-color: #45a049;
             }
+            .alert {
+                padding: 10px;
+                margin: 15px;
+                border-radius: 5px;
+                text-align: center;
+            }
+            .alert-success {
+                background-color: #4CAF50;
+                color: white;
+            }
+            .alert-danger {
+                background-color: #f44336;
+                color: white;
+            }
         </style>
-
     </head>
-    <body class="skin-black">
-        <a href="../admin/AdminHeader.jsp"></a>
+    <body>
         <jsp:include page="../admin/AdminHeader.jsp"></jsp:include>
         <jsp:include page="../admin/AdminLeftSideBar.jsp"></jsp:include>
-        <h2 style="text-align: center;">Create New Account</h2>
-        <form action="/hr/create" method="POST">
+
+
+            <h2 style="text-align: center;">Create New Account</h2>
+
+            <!-- Hiển thị thông báo thành công hoặc lỗi -->
+        <c:if test="${not empty successMessage}">
+            <div class="alert alert-success">${successMessage}</div>
+        </c:if>
+        <c:if test="${not empty errorMessage}">
+            <div class="alert alert-danger">${errorMessage}</div>
+        </c:if>
+
+        <form action="../hr/create" method="POST">
             <table>
                 <tr>
                     <th><label for="username">Username</label></th>
@@ -65,36 +83,21 @@
                     <td><input type="password" name="password" id="password" required /></td>
                 </tr>
                 <tr>
-                    <th><label for="fullname">Full Name</label></th>
-                    <td><input type="text" name="fullname" id="fullname" required /></td>
+                    <th><label for="displayname">Full Name</label></th>
+                    <td><input type="text" name="displayname" id="displayname" required /></td>
                 </tr>
                 <tr>
-                    <th><label for="gender">Gender</label></th>
-                    <td>
-                        <input type="radio" name="gender" value="true" id="gender-male" /> Male
-                        <input type="radio" name="gender" value="false" id="gender-female" /> Female
-                    </td>
-                </tr>
-                <tr>
-                    <th><label for="email">Email</label></th>
-                    <td><input type="email" name="email" id="email" required /></td>
+                    <th><label for="gmail">Email</label></th>
+                    <td><input type="email" name="gmail" id="gmail" required /></td>
                 </tr>
                 <tr>
                     <th><label for="phone">Phone Number</label></th>
                     <td><input type="tel" name="phone" id="phone" required /></td>
                 </tr>
                 <tr>
-                    <th><label for="dob">Date of Birth</label></th>
-                    <td><input type="date" name="dob" id="dob" required /></td>
-                </tr>
-                <tr>
-                    <th><label for="address">Address</label></th>
-                    <td><input type="text" name="address" id="address" required /></td>
-                </tr>
-                <tr>
-                    <th><label for="role">Role</label></th>
+                    <th><label for="roles">Role</label></th>
                     <td>
-                        <select name="role" id="role" required>
+                        <select name="roles" id="roles" multiple required>
                             <c:forEach var="r" items="${role}">
                                 <option value="${r.id}">${r.name}</option>
                             </c:forEach>
@@ -107,16 +110,11 @@
                 <button type="submit">Create Account</button>
             </div>
         </form>
+
         <!-- jQuery 2.0.2 -->
         <script src="../js/jquery.min.js" type="text/javascript"></script>
         <!-- Bootstrap -->
         <script src="../js/bootstrap.min.js" type="text/javascript"></script>
-                <!-- Director App -->
-        <script src="../js/Director/app.js" type="text/javascript"></script>
-
-        <!-- Director dashboard demo (This is only for demo purposes) -->
-        <script src="../js/Director/dashboard.js" type="text/javascript"></script>
+        <script src="../js/main.js" type="text/javascript"></script>
     </body>
-    
 </html>
-

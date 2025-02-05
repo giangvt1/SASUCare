@@ -1,6 +1,7 @@
 package controller.systemaccesscontrol;
 
 import dao.StaffDBContext;
+import dao.UserDBContext;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -16,7 +17,7 @@ import model.system.*;
  *
  * @author acer giangvt
  */
-public class StaffLoginController extends HttpServlet {
+public class UserLoginController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -30,12 +31,12 @@ public class StaffLoginController extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        StaffDBContext db = new StaffDBContext();
-        Staff account = db.get(username, password);
+        UserDBContext db = new UserDBContext();
+        User account = db.login(username, password);
         if (account != null) {
             request.getSession().setAttribute("account", account);
             ArrayList<Role> roles = db.getRoles(username);
-            account.setRole(roles);
+            account.setRoles(roles);
             ArrayList<Feature> features = new ArrayList<>();
             for (Role role : roles) {
                 features.addAll(role.getFeatures());
