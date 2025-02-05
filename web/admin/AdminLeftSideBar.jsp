@@ -16,14 +16,22 @@
                 <!-- User panel -->
                 <div class="user-panel">
                     <div class="pull-left image">
-                        <img src="img/26115.jpg" class="img-circle" alt="User Image" />
+                        <img src="../img/meoomdau.jpg" class="img-circle" alt="User Image" />
                     </div>
                     <div class="pull-left info">
                         <p>Hello, 
-                            @@
+                            <% 
+                                model.system.User account = (model.system.User) session.getAttribute("account");
+                                if (account != null) {
+                                    out.print(account.getDisplayname());
+                                } else {
+                                    out.print("Guest");
+                                }
+                            %>
                         </p>
                         <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
                     </div>
+
                 </div>
 
 
@@ -52,13 +60,13 @@
                         </a>
                     </li>
                     <li>
-                        <a href="BasicElements.jsp">
-                            <i class="fa fa-globe"></i> <span>Basic Elements</span>
+                        <a href="../hr/accountlist">
+                            <i class="fa fa-globe"></i> <span>Account List</span>
                         </a>
                     </li>
                     <li>
-                        <a href="SimpleTables.jsp">
-                            <i class="fa fa-table"></i> <span>Simple Tables</span>
+                        <a href="../hr/calendarmanage">
+                            <i class="fa fa-table"></i> <span>Doctor Calendar</span>
                         </a>
                     </li>
                 </ul>
