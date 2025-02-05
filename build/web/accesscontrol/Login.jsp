@@ -61,7 +61,7 @@
             </tr>
             <tr>
                 <td class="text-end pt-2">
-                    <a href="#!">Forgot Password</a>
+                    <a href="./forgotPassword">Forgot Password</a>
                 </td>
             </tr>
             <tr>
@@ -73,11 +73,11 @@
                 <td class="text-center pt-3">
                     <a href="https://accounts.google.com/o/oauth2/auth?scope=email profile openid
 
-&redirect_uri=
+&redirect_uri=http://localhost:8084/SWP391_GR6/login
 
 &response_type=code
 
-&client_id=
+&client_id=403042817174-it7fun1hum2v7en2cqgaaf8vhrrfa523.apps.googleusercontent.com
 
 &approval_prompt=force" class="btn btn-light w-100 d-flex align-items-center justify-content-center border">
                         <img
