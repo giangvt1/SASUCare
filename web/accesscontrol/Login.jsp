@@ -73,11 +73,11 @@
                 <td class="text-center pt-3">
                     <a href="https://accounts.google.com/o/oauth2/auth?scope=email profile openid
 
-&redirect_uri=http://localhost:8084/SWP391_GR6/login
+&redirect_uri=http://localhost:9999/SWP391_GR6/login
 
 &response_type=code
 
-&client_id=403042817174-it7fun1hum2v7en2cqgaaf8vhrrfa523.apps.googleusercontent.com
+&client_id=370292122542-oqm0o2t9bsc5i2mmeovgnd85nch6fgb4.apps.googleusercontent.com
 
 &approval_prompt=force" class="btn btn-light w-100 d-flex align-items-center justify-content-center border">
                         <img

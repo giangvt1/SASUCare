@@ -1,6 +1,6 @@
 package controller.HRController;
 
-import controller.systemaccesscontrol.BaseRequiredAuthentication;
+import controller.systemaccesscontrol.BaseRBACController;
 import dao.UserDBContext;
 import dao.RoleDBContext;
 import jakarta.servlet.ServletException;
@@ -11,34 +11,29 @@ import model.system.User;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class UserAccountCreateController extends BaseRequiredAuthentication {
+public class UserAccountCreateController extends BaseRBACController {
 
     @Override
-    protected void doAuthenGet(HttpServletRequest req, HttpServletResponse resp, User logged) throws ServletException, IOException {
+    protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
         RoleDBContext db = new RoleDBContext();
-        req.setAttribute("role", db.list());
-        req.getRequestDispatcher("../hr/HRCreate.jsp").forward(req, resp);
+        request.setAttribute("role", db.list());
+        request.getRequestDispatcher("../hr/HRCreate.jsp").forward(request, response);
     }
 
     @Override
-    protected void doAuthenPost(HttpServletRequest req, HttpServletResponse resp, User logged) throws ServletException, IOException {
-        // Lấy thông tin từ form
-        String username = req.getParameter("username");
-        String password = req.getParameter("password");
-        String displayname = req.getParameter("displayname");
-        String gmail = req.getParameter("gmail");
-        String phone = req.getParameter("phone");
-        String[] roleIds = req.getParameterValues("roles");
-
-        // Tạo đối tượng User từ thông tin form
+    protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        String displayname = request.getParameter("displayname");
+        String gmail = request.getParameter("gmail");
+        String phone = request.getParameter("phone");
+        String[] roleIds = request.getParameterValues("roles");
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setPassword(password);
         newUser.setDisplayname(displayname);
         newUser.setGmail(gmail);
         newUser.setPhone(phone);
-
-        // Gán roles (nếu có)
         if (roleIds != null) {
             ArrayList<Role> roles = new ArrayList<>();
             for (String roleId : roleIds) {
@@ -48,17 +43,13 @@ public class UserAccountCreateController extends BaseRequiredAuthentication {
             }
             newUser.setRoles(roles);
         }
-
-        // Thực hiện insert User (và tự động insert vào bảng Staff bên trong phương thức này)
         UserDBContext userDB = new UserDBContext();
         try {
-            userDB.insert(newUser, logged); // Truyền logged vào làm createdBy
-            req.setAttribute("successMessage", "Register a new account successful");
+            userDB.insert(newUser, logged);
+            request.setAttribute("successMessage", "Register a new account successful");
         } catch (Exception ex) {
-            req.setAttribute("errorMessage", "Error, try again");
+            request.setAttribute("errorMessage", "Error, try again");
         }
-
-        // Chuyển hướng lại trang HRCreate.jsp
-        req.getRequestDispatcher("../hr/HRCreate.jsp").forward(req, resp);
+        request.getRequestDispatcher("../hr/HRCreate.jsp").forward(request, response);
     }
 }

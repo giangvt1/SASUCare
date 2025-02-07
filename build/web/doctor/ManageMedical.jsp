@@ -16,7 +16,7 @@
         <link href="../css/admin/styleAdmin.css" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="../css/doctor/manage_medical_style.css"/>
     </head>
-    <body class="skin-black"">
+    <body class="skin-black">
         <jsp:include page="../admin/AdminHeader.jsp"></jsp:include>
         <jsp:include page="DoctorLeftSideBar.jsp"></jsp:include>
             <div class="right-side">

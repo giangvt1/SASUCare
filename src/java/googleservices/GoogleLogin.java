@@ -30,7 +30,7 @@ public class GoogleLogin {
 
                         .add("client_secret", Iconstant.GOOGLE_CLIENT_SECRET)
 
-                        .add("redirect_uri", "http://localhost:8084/SWP391_GR6/login")
+                        .add("redirect_uri", "http://localhost:9999/SWP391_GR6/login")
 
                         .add("code", code)
 

@@ -16,7 +16,7 @@ public class StaffDBContext extends DBContext<Staff> {
     public void insert(Staff staff) {
         String sql = "INSERT INTO [Staff] (staff_username, fullname, gender, address, dob, createby, createat) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (
-             PreparedStatement stm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement stm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stm.setString(1, staff.getStaffusername().getUsername()); // staffusername được gán ở đây
             stm.setString(2, staff.getFullname());
@@ -38,30 +38,10 @@ public class StaffDBContext extends DBContext<Staff> {
         }
     }
 
-    @Override
-    public void update(Staff model) {
-        String sql = """
-                UPDATE [dbo].[Staff]
-                SET [gender] = ?
-                   ,[email] = ?
-                   ,[phone_number] = ?
-                   ,[fullname] = ?
-                   ,[dob] = ?
-                   ,[address] = ?
-                WHERE [id] = ?""";
-
-        try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            stm.setBoolean(1, model.isGender());
-            stm.setString(2, model.getEmail());
-            stm.setString(3, model.getPhonenumber());
-            stm.setNString(4, model.getFullname());
-            stm.setDate(5, model.getDob());
-            stm.setString(6, model.getAddress());
-            stm.setInt(7, model.getId());
     public Staff getByUsername(String username) {
         String sql = "SELECT * FROM [Staff] WHERE staff_username = ?";
         try (
-             PreparedStatement stm = connection.prepareStatement(sql)) {
+                PreparedStatement stm = connection.prepareStatement(sql)) {
 
             stm.setString(1, username);
             try (ResultSet rs = stm.executeQuery()) {
@@ -104,7 +84,7 @@ public class StaffDBContext extends DBContext<Staff> {
     public void update(Staff staff) {
         String sql = "UPDATE [Staff] SET fullname = ?, gender = ?, address = ?, dob = ?, updateby = ?, updateat = ? WHERE staff_username = ?";
         try (
-             PreparedStatement stm = connection.prepareStatement(sql)) {
+                PreparedStatement stm = connection.prepareStatement(sql)) {
 
             stm.setString(1, staff.getFullname());
             stm.setBoolean(2, staff.isGender());

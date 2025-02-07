@@ -9,7 +9,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Login</title>
         <link rel="stylesheet" href="../css/admin/loginAdminStyle.css" />
         <link rel="stylesheet" href="../css/bootstrap.min.css" />
     </head>
@@ -18,9 +18,18 @@
             <div class="admin-login-container d-flex">
                 <div class="left-side"><img src="../img/adminLogin1.png" alt="login" /></div>
                 <div class="right-side">
-                    <form class="form-admin-login">
+                    <%
+                        String errorMessage = (String) request.getAttribute("errorMessage");
+                        if (errorMessage != null) {
+                    %>
+                    <div class="alert alert-danger" role="alert">
+                        <%= errorMessage %>
+                    </div>
+                    <%
+                        }
+                    %>
+                    <form action="<%= request.getContextPath() %>/system/login" method="POST" class="form-admin-login"> 
                         <h1>Login to Dashboard</h1>
-
                         <table class="mt-4 mb-4">
                             <tbody>
                                 <tr>
@@ -28,13 +37,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <input
-                                            class="input"
-                                            type="text"
-                                            name="username"
-                                            placeholder="Enter username"
-                                            required
-                                            />
+                                        <input class="input" type="text" name="username" placeholder="Enter username" required />
                                     </td>
                                 </tr>
                                 <tr>
@@ -42,13 +45,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <input
-                                            class="input"
-                                            type="password"
-                                            name="password"
-                                            placeholder="Enter password"
-                                            required
-                                            />
+                                        <input class="input" type="password" name="password" placeholder="Enter password" required />
                                     </td>
                                 </tr>
                                 <tr>

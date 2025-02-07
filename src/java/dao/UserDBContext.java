@@ -9,8 +9,11 @@ import dal.DBContext;
 import java.util.ArrayList;
 import model.system.User;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.system.Feature;
 import model.system.Role;
 
 /**
@@ -170,14 +173,18 @@ public class UserDBContext extends DBContext<User> {
     }
 
     public void insert(User model, User createdBy) {
+        // SQL cho các bảng
         String sql_insert_user = "INSERT INTO [User](username, password, displayname, gmail, phone) VALUES (?,?,?,?,?)";
         String sql_insert_user_role = "INSERT INTO [UserRole](username, role_id) VALUES (?,?)";
         String sql_insert_staff = "INSERT INTO [Staff](staff_username, createby, createat) VALUES (?,?,?)";
+        // Sửa lại SQL cho Doctor: chỉ có 1 tham số (staff_id)
+        String sql_insert_doctor = "INSERT INTO [Doctor](staff_id) VALUES (?)";
 
-        // Mã hóa mật khẩu
-        String hashedPassword = hashPassword(model.getPassword());
+        // Mã hóa mật khẩu sử dụng BCrypt với cost = 12
+        String hashedPassword = BCrypt.hashpw(model.getPassword(), BCrypt.gensalt(12));
 
-        try (PreparedStatement stmUser = connection.prepareStatement(sql_insert_user); PreparedStatement stmUserRole = connection.prepareStatement(sql_insert_user_role); PreparedStatement stmStaff = connection.prepareStatement(sql_insert_staff)) {
+        try (PreparedStatement stmUser = connection.prepareStatement(sql_insert_user); PreparedStatement stmUserRole = connection.prepareStatement(sql_insert_user_role); // Dùng RETURN_GENERATED_KEYS để lấy id của Staff
+                 PreparedStatement stmStaff = connection.prepareStatement(sql_insert_staff, Statement.RETURN_GENERATED_KEYS); PreparedStatement stmDoctor = connection.prepareStatement(sql_insert_doctor)) {
 
             connection.setAutoCommit(false);
 
@@ -189,34 +196,63 @@ public class UserDBContext extends DBContext<User> {
             stmUser.setString(5, model.getPhone());
             stmUser.executeUpdate();
 
-            // Insert vào bảng UserRole
-            for (Role role : model.getRoles()) {
-                stmUserRole.setString(1, model.getUsername());
-                stmUserRole.setInt(2, role.getId());
-                stmUserRole.executeUpdate();
+            // Insert vào bảng UserRole (nếu có role)
+            if (model.getRoles() != null) {
+                for (Role role : model.getRoles()) {
+                    stmUserRole.setString(1, model.getUsername());
+                    stmUserRole.setInt(2, role.getId());
+                    stmUserRole.executeUpdate();
+                }
             }
 
-            // Insert vào bảng Staff với staff_username là username vừa tạo
+            // Tạo timestamp hiện tại dùng chung
             Timestamp createAt = new Timestamp(System.currentTimeMillis());
+
+            // Insert vào bảng Staff (staff_username, createby, createat)
             stmStaff.setString(1, model.getUsername());
-            stmStaff.setString(2, createdBy.getUsername()); // Sử dụng đối tượng logged được truyền vào
+            stmStaff.setString(2, createdBy.getUsername());
             stmStaff.setTimestamp(3, createAt);
             stmStaff.executeUpdate();
 
-            connection.commit();
+            // Lấy Staff id được sinh tự động
+            int generatedStaffId = -1;
+            try (ResultSet rs = stmStaff.getGeneratedKeys()) {
+                if (rs.next()) {
+                    generatedStaffId = rs.getInt(1);
+                }
+            }
+
+            // Kiểm tra nếu user có role Doctor (role_id = 5)
+            boolean isDoctor = false;
+            if (model.getRoles() != null) {
+                for (Role role : model.getRoles()) {
+                    if (role.getId() == 5) {
+                        isDoctor = true;
+                        break;
+                    }
+                }
+            }
+
+            if (isDoctor && generatedStaffId != -1) {
+                // Insert vào bảng Doctor chỉ với staff_id
+                stmDoctor.setInt(1, generatedStaffId);
+                stmDoctor.executeUpdate();
+            }
+
+            connection.commit();  // Commit nếu mọi thứ thành công
         } catch (SQLException ex) {
             Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
             try {
                 connection.rollback();
             } catch (SQLException e) {
-                Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, e);
+                Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, "Rollback failed", e);
             }
-            throw new RuntimeException(ex);
+            throw new RuntimeException("Error inserting user: " + ex.getMessage(), ex);
         } finally {
             try {
                 connection.setAutoCommit(true);
             } catch (SQLException ex) {
-                Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, "Failed to reset auto-commit", ex);
             }
         }
     }
@@ -272,9 +308,11 @@ public class UserDBContext extends DBContext<User> {
     public ArrayList<Role> getRoles(String username) {
         ArrayList<Role> roles = new ArrayList<>();
         String sql = """
-        SELECT r.id, r.name 
+        SELECT r.id, r.name, f.id as feature_id, f.name as feature_name, f.url 
         FROM UserRole ur 
         JOIN Role r ON ur.role_id = r.id 
+        LEFT JOIN RoleFeature rf ON r.id = rf.role_id
+        LEFT JOIN Feature f ON rf.feature_id = f.id
         WHERE ur.username = ?
     """;
 
@@ -282,16 +320,42 @@ public class UserDBContext extends DBContext<User> {
             stm.setString(1, username);
             ResultSet rs = stm.executeQuery();
 
-            while (rs.next()) {
-                Role role = new Role();
-                role.setId(rs.getInt("id"));
-                role.setName(rs.getString("name"));
-                roles.add(role);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, "Lỗi khi lấy danh sách roles!", ex);
-        }
+            Map<Integer, Role> roleMap = new HashMap<>();
 
+            while (rs.next()) {
+                int roleId = rs.getInt("id");
+
+                // Get or create role
+                Role role = roleMap.computeIfAbsent(roleId, k -> {
+                    Role newRole = new Role();
+                    newRole.setId(roleId);
+                    try {
+                        newRole.setName(rs.getString("name"));
+                    } catch (SQLException ex) {
+                        Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    newRole.setFeatures(new ArrayList<>());
+                    return newRole;
+                });
+
+                // Add feature if exists
+                int featureId = rs.getInt("feature_id");
+                if (!rs.wasNull()) {
+                    Feature feature = new Feature();
+                    feature.setId(featureId);
+                    feature.setName(rs.getString("feature_name"));
+                    feature.setUrl(rs.getString("url"));
+                    role.getFeatures().add(feature);
+                }
+            }
+
+            roles.addAll(roleMap.values());
+
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDBContext.class.getName())
+                    .log(Level.SEVERE, "Error getting roles and features", ex);
+        }
         return roles;
     }
+
 }

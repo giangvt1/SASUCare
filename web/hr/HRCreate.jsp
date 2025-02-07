@@ -83,7 +83,7 @@
                     <td><input type="password" name="password" id="password" required /></td>
                 </tr>
                 <tr>
-                    <th><label for="displayname">Full Name</label></th>
+                    <th><label for="displayname">Display Name</label></th>
                     <td><input type="text" name="displayname" id="displayname" required /></td>
                 </tr>
                 <tr>

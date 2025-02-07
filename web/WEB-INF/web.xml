@@ -5,16 +5,28 @@
         <servlet-class>controller.accesscontrol.ForgetPasswordController</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>UserAccountCreateController</servlet-name>
+        <servlet-class>controller.HRController.UserAccountCreateController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>StaffAccountListController</servlet-name>
+        <servlet-class>controller.HRController.StaffAccountListController</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>ProfileController</servlet-name>
         <servlet-class>controller.usermanagement.ProfileController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>SearchCustomer</servlet-name>
         <servlet-class>controller.doctor.SearchCustomer</servlet-class>
-        </servlet>
-        <servlet>
+    </servlet>
+    <servlet>
         <servlet-name>UserLoginController</servlet-name>
         <servlet-class>controller.systemaccesscontrol.UserLoginController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UserLogoutController</servlet-name>
+        <servlet-class>controller.systemaccesscontrol.UserLogoutController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ShowCustomerMedicalDetail</servlet-name>
@@ -27,6 +39,18 @@
     <servlet>
         <servlet-name>CreateMedicalHistory</servlet-name>
         <servlet-class>controller.doctor.CreateCustomerMedicalHistory</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AppointmentCalendarServlet</servlet-name>
+        <servlet-class>controller.appointment.AppointmentCalendarServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AppointmentDoctorListController</servlet-name>
+        <servlet-class>controller.appointment.AppointmentDoctorListController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AppointmentConfirmServlet</servlet-name>
+        <servlet-class>controller.appointment.AppointmentConfirmServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>UpdateMedicalHistory</servlet-name>
@@ -76,8 +100,8 @@
     <servlet>
         <servlet-name>NewPassword</servlet-name>
         <servlet-class>googleservices.NewPassword</servlet-class>
-      </servlet>
-      <servlet>
+    </servlet>
+    <servlet>
         <servlet-name>ProfileUpdateController</servlet-name>
         <servlet-class>controller.HRController.ProfileUpdateController</servlet-class>
     </servlet>
@@ -92,6 +116,14 @@
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserLoginController</servlet-name>
+        <url-pattern>/system/login</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserLogoutController</servlet-name>
+        <url-pattern>/system/logout</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>LogoutController</servlet-name>
@@ -153,7 +185,7 @@
         <servlet-name>NewPassword</servlet-name>
         <url-pattern>/NewPassword</url-pattern>
     </servlet-mapping>
-      <servlet-mapping>
+    <servlet-mapping>
         <servlet-name>ProfileUpdateController</servlet-name>
         <url-pattern>/system/profile</url-pattern>
     </servlet-mapping>
@@ -164,5 +196,25 @@
     <servlet-mapping>
         <servlet-name>EditUserController</servlet-name>
         <url-pattern>/hr/edit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserAccountCreateController</servlet-name>
+        <url-pattern>/hr/create</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>StaffAccountListController</servlet-name>
+        <url-pattern>/hr/accountlist</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AppointmentDoctorListController</servlet-name>
+        <url-pattern>/appointment/doctor</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AppointmentConfirmServlet</servlet-name>
+        <url-pattern>/appointment/confirm</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AppointmentCalendarServlet</servlet-name>
+        <url-pattern>/appointment</url-pattern>
     </servlet-mapping>
 </web-app>

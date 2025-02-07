@@ -1,13 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model.system;
+
 import java.sql.*;
-/**
- *
- * @author acer
- */
+
 public class Staff {
     private int id;
     private User staff_username;
@@ -19,41 +13,14 @@ public class Staff {
     private Timestamp createat;
     private User updateby;
     private Timestamp updateat;
+    private boolean isDoctor; // Trường mới, xác định nhân viên có phải là bác sĩ hay không
 
-    public User getStaffusername() {
-        return staff_username;
+    // Constructor mặc định
+    public Staff() {
     }
 
-    public void setStaffusername(User staffusername) {
-        this.staff_username = staffusername;
-    }
-
-
-    public Timestamp getCreateat() {
-        return createat;
-    }
-
-    public void setCreateat(Timestamp createat) {
-        this.createat = createat;
-    }
-
-    public User getCreateby() {
-        return createby;
-    }
-
-    public void setCreateby(User createby) {
-        this.createby = createby;
-    }
-
-    public User getUpdateby() {
-        return updateby;
-    }
-
-    public void setUpdateby(User updateby) {
-        this.updateby = updateby;
-    }
-
-    public Staff(int id, User staffusername, boolean gender, String fullname, Date dob, String address, User createby, Timestamp createat, User updateby, Timestamp updateat) {
+    // Constructor đầy đủ có bao gồm isDoctor
+    public Staff(int id, User staffusername, boolean gender, String fullname, Date dob, String address, User createby, Timestamp createat, User updateby, Timestamp updateat, boolean isDoctor) {
         this.id = id;
         this.staff_username = staffusername;
         this.gender = gender;
@@ -64,28 +31,24 @@ public class Staff {
         this.createat = createat;
         this.updateby = updateby;
         this.updateat = updateat;
+        this.isDoctor = isDoctor;
     }
 
-
-    public Timestamp getUpdateat() {
-        return updateat;
-    }
-
-    public void setUpdateat(Timestamp updateat) {
-        this.updateat = updateat;
-    }
-    
-    // Other getter and setter methods...
-
-    public Staff() {
-    }
-
+    // Getters and setters
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public User getStaffusername() {
+        return staff_username;
+    }
+
+    public void setStaffusername(User staffusername) {
+        this.staff_username = staffusername;
     }
 
     public boolean isGender() {
@@ -118,5 +81,45 @@ public class Staff {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public User getCreateby() {
+        return createby;
+    }
+
+    public void setCreateby(User createby) {
+        this.createby = createby;
+    }
+
+    public Timestamp getCreateat() {
+        return createat;
+    }
+
+    public void setCreateat(Timestamp createat) {
+        this.createat = createat;
+    }
+
+    public User getUpdateby() {
+        return updateby;
+    }
+
+    public void setUpdateby(User updateby) {
+        this.updateby = updateby;
+    }
+
+    public Timestamp getUpdateat() {
+        return updateat;
+    }
+
+    public void setUpdateat(Timestamp updateat) {
+        this.updateat = updateat;
+    }
+
+    public boolean isDoctor() {
+        return isDoctor;
+    }
+
+    public void setDoctor(boolean isDoctor) {
+        this.isDoctor = isDoctor;
     }
 }
