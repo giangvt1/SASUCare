@@ -22,13 +22,17 @@
             <div class="right-side">
                 <h3 class="text-center">Send Application</h3>
                 <form action="SendApplication" method="POST" class="mt-4">
+                    <input type="text" hidden id="did" name="did" value="16"required><br><br>
                     <div class="form-group">
-                        <label for="did">Doctor ID</label>
-                        <input type="number" class="form-control" id="did" name="did" placeholder="Enter Department ID" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
+                        <label for="name">Loại đơn</label>
+                        <select class="form-contsrol" id="name" name="name" required>
+                            <option value="">-- Chọn loại đơn --</option>
+                            <option value="tang luong">Đơn xin tăng lương</option>
+                            <option value="doi lich">Đơn xin đổi lịch làm</option>
+                            <option value="xin nghi">Đơn xin nghỉ</option>
+                            <option value="chuyen cong tac">Đơn xin chuyển đơn vị công tác</option>
+                            <option value="khac">Các loại đơn khác</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="reason">Reason</label>

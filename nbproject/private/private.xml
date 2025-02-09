@@ -20,16 +20,19 @@
         </group>
         <group name="PRJ301"/>
         <group>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/dao/DoctorDBContext.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/controller/HRController/StaffAccountListController.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/model/system/Staff.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/dao/UserDBContext.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/controller/HRController/UserAccountCreateController.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/model/DoctorSchedule.java</file>
+            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/src/java/controller/doctor/CreateCustomerVisitHistory.java</file>
+            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/web/doctor/Dashboard.jsp</file>
+            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/src/java/dao/CustomerDBContext.java</file>
+            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/src/java/controller/doctor/SearchCustomer.java</file>
         </group>
         <group>
-            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/src/java/controller/doctor/CreateCustomerVisitHistory.java</file>
-            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/src/java/dao/CustomerDBContext.java</file>
+            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/web/doctor/ViewApplication.jsp</file>
+            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/web/doctor/SendApplication.jsp</file>
+            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/web/doctor/ManageMedical.jsp</file>
+            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/web/css/doctor/manage_medical_style.css</file>
+            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/web/doctor/CustomerMedicalDetail.jsp</file>
+            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/web/css/doctor/doctor_style.css</file>
+            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/src/java/controller/doctor/ViewApplication.java</file>
         </group>
     </open-files>
 </project-private>
