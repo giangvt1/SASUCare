@@ -39,7 +39,7 @@
                         </a>
                     </li>
                     <li class="manage-application">
-                        <a href="../doctor/SendApplication.jsp">
+                        <a href="../doctor/ManageApplication.jsp">
                             <i class="fa fa-file"></i> <span>Manage Application</span>
                         </a>
                     </li>

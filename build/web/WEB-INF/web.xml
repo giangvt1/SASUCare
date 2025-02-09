@@ -80,6 +80,10 @@
         <servlet-name>UpdateDoctorProfile</servlet-name>
         <servlet-class>controller.doctor.UpdateDoctorProfile</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ViewApplication</servlet-name>
+        <servlet-class>controller.doctor.ViewApplication</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
         <url-pattern>/forgetpassword</url-pattern>
@@ -216,5 +220,9 @@
     <servlet-mapping>
         <servlet-name>AppointmentCalendarServlet</servlet-name>
         <url-pattern>/appointment</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewApplication</servlet-name>
+        <url-pattern>/doctor/ViewApplication</url-pattern>
     </servlet-mapping>
 </web-app>
