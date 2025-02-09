@@ -59,19 +59,17 @@ public class SearchCustomer extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Lấy dữ liệu từ form
-        String customerName = request.getParameter("customerName");
+        String customerName = request.getParameter("customerName").trim();
         String customerDateStr = request.getParameter("customerDate");
         String customerGenderStr = request.getParameter("customerGender");
-        String pageStr = request.getParameter("page"); // Lấy tham số page từ request
+        String pageStr = request.getParameter("page");
 
-        // Chuyển đổi dữ liệu (nếu cần)
         Date customerDate = null;
         if (customerDateStr != null && !customerDateStr.isEmpty()) {
             try {
                 customerDate = java.sql.Date.valueOf(customerDateStr);
             } catch (IllegalArgumentException e) {
-                customerDate = null; // Xử lý lỗi nếu ngày không hợp lệ
+                customerDate = null; 
             }
         }
 
@@ -80,26 +78,22 @@ public class SearchCustomer extends HttpServlet {
             customerGender = customerGenderStr.equalsIgnoreCase("male") ? true : false;
         }
 
-        // Xử lý tham số page, mặc định là 1 nếu không có hoặc không hợp lệ
         int page = 1;
         if (pageStr != null && !pageStr.isEmpty()) {
             try {
                 page = Integer.parseInt(pageStr);
             } catch (NumberFormatException e) {
-                page = 1; // Giữ mặc định là 1 nếu không hợp lệ
+                page = 1;
             }
         }
 
-        // Gọi DAO để lấy danh sách khách hàng phù hợp
         CustomerDBContext customerDB = new CustomerDBContext();
         ArrayList<Customer> resultLists = customerDB.searchCustomerInMedical(customerName, (java.sql.Date) customerDate, customerGender, page);
 
-        // Kiểm tra có dữ liệu cho trang tiếp theo không
         int nextPageSize = customerDB.searchCustomerInMedical(customerName, (java.sql.Date) customerDate, customerGender, page + 1).size();
         boolean hasNextPage = nextPageSize > 0;
-        // Gửi danh sách khách hàng đến JSP
         request.setAttribute("customers", resultLists);
-        request.setAttribute("currentPage", page); // Gửi thông tin trang hiện tại đến JSP để hiển thị
+        request.setAttribute("currentPage", page); 
         request.setAttribute("hasNextPage", hasNextPage);
         request.getRequestDispatcher("ManageMedical.jsp").forward(request, response);
     }

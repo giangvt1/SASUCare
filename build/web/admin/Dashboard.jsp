@@ -42,7 +42,7 @@
             }
         </style>
     </head>
-    <body class="skin-black">
+    <body class="skin-black" style="height: 1000px">
         <jsp:include page="AdminHeader.jsp"></jsp:include>
         <jsp:include page="AdminLeftSideBar.jsp"></jsp:include>
 

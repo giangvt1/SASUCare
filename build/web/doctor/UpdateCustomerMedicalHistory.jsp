@@ -13,7 +13,7 @@
     </head>
     <body>
         <h2>Update Medical History</h2>
-        <form action="UpdateMedicalHistory" method="post">
+        <form action="UpdateCustomerMedicalHistory" method="post">
             <input type="text" hidden id="cid" name="cid" value="${cid}" required><br><br>
             <input type="text" hidden id="id" name="id" value="${id}" required><br><br>
             <label for="name">Name:</label>

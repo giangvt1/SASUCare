@@ -5,10 +5,11 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Admin Sidebar</title>
+        <title>Doctor Sidebar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     </head>
     <body>
-        <aside class="left-side sidebar-offcanvas" style="position: fixed">
+        <aside class="left-side sidebar-offcanvas">
             <!-- Sidebar -->
             <section class="sidebar">
                 <!-- User panel -->
@@ -51,14 +52,5 @@
             </section>
             <!-- /.sidebar -->
         </aside>
-        <!-- jQuery 2.0.2 -->
-        <script src="../js/jquery.min.js" type="text/javascript"></script>
-        <!-- Bootstrap -->
-        <script src="../js/bootstrap.min.js" type="text/javascript"></script>
-        <!-- Director App -->
-        <script src="../js/Director/app.js" type="text/javascript"></script>
-
-        <!-- Director dashboard demo (This is only for demo purposes) -->
-        <script src="../js/Director/dashboard.js" type="text/javascript"></script>
     </body>
 </html>
