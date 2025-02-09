@@ -20,20 +20,16 @@
         </group>
         <group name="PRJ301"/>
         <group>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/controller/HRController/StaffAccountListController.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/model/Doctor.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/model/Customer.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/model/system/Staff.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/dao/UserDBContext.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/controller/HRController/UserAccountCreateController.java</file>
-        </group>
-        <group>
             <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/dao/DoctorDBContext.java</file>
             <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/controller/HRController/StaffAccountListController.java</file>
             <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/model/system/Staff.java</file>
             <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/dao/UserDBContext.java</file>
             <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/controller/HRController/UserAccountCreateController.java</file>
             <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/model/DoctorSchedule.java</file>
+        </group>
+        <group>
+            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/src/java/controller/doctor/CreateCustomerVisitHistory.java</file>
+            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/src/java/dao/CustomerDBContext.java</file>
         </group>
     </open-files>
 </project-private>
