@@ -17,6 +17,40 @@ import java.util.logging.Logger;
 public class DoctorDBContext extends DBContext<Doctor> {
 
     private static final Logger LOGGER = Logger.getLogger(DoctorDBContext.class.getName());
+    
+    public List<Application> getApplicationsByDoctorID(int did, int page) {
+        List<Application> applications = new ArrayList<>();
+        int pageSize = 10;
+        int offset = (page - 1) * pageSize;
+
+        String sql = "SELECT id, name, date, doctor_id, reason, status, reply " +
+                     "FROM Application WHERE doctor_id = ? " +
+                     "ORDER BY date DESC " +
+                     "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setInt(1, did);
+            stm.setInt(2, offset);
+            stm.setInt(3, pageSize);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                Application app = new Application(
+                    rs.getInt("id"),
+                    rs.getInt("doctor_id"),
+                    rs.getString("name"),
+                    rs.getString("reason"),
+                    rs.getDate("date")
+                );
+                app.setStatus(rs.getString("status"));
+                app.setReply(rs.getString("reply"));
+                applications.add(app);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return applications;
+    }
 
     public Doctor getDoctorById(int doctorId) {
         String sql = """
