@@ -16,24 +16,29 @@ public class AppointmentDBContext extends DBContext<Appointment> {
     private static final Logger LOGGER = Logger.getLogger(AppointmentDBContext.class.getName());
 
     @Override
-    public void insert(Appointment model) {
+    public void insert(Appointment appointment) {
         String sql = "INSERT INTO Appointment (customer_id, doctor_id, DocSchedule_id, status) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement stm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stm.setInt(1, model.getCustomer().getId());
-            stm.setInt(2, model.getDoctor().getId());
-            stm.setInt(3, model.getDoctorSchedule().getId()); // Using DocSchedule_id
-            stm.setString(4, model.getStatus());
 
-            int affectedRows = stm.executeUpdate();
+        try (PreparedStatement stm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stm.setInt(1, appointment.getCustomer().getId());
+            stm.setInt(2, appointment.getDoctor().getId());
+            stm.setInt(3, appointment.getDoctorSchedule().getId());
+            stm.setString(4, appointment.getStatus());
+
+            int affectedRows = stm.executeUpdate(); 
+
             if (affectedRows > 0) {
                 ResultSet generatedKeys = stm.getGeneratedKeys();
                 if (generatedKeys.next()) {
-                    model.setId(generatedKeys.getInt(1));
-                    System.out.println("Appointment booked successfully with ID: " + model.getId());
+                    appointment.setId(generatedKeys.getInt(1)); 
+                    System.out.println("Appointment inserted with ID: " + appointment.getId());
                 }
+            } else {
+                System.out.println("Failed to insert appointment.");
             }
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Error inserting appointment: {0}", ex.getMessage());
+            ex.printStackTrace(); 
         }
     }
 

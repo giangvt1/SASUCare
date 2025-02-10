@@ -13,7 +13,7 @@ import java.sql.*;
 public class Application {
 
     private int id, Did;
-    private String name, reason, status, reply;
+    private String name, reason;
     private Date date;
 
     public Application() {
@@ -66,21 +66,6 @@ public class Application {
     public void setDate(Date date) {
         this.date = date;
     }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getReply() {
-        return reply;
-    }
-
-    public void setReply(String reply) {
-        this.reply = reply;
-    }
-
+    
+    
 }
