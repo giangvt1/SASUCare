@@ -129,34 +129,87 @@
     </div>
     <div class="grid">
         <div class="card">
+<<<<<<< Updated upstream
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvWLUFmU1UcUxxpMBtfKhfEIS89U5eR2GSPw&s" alt="Cấp cứu">
             <div class="card-content">
                 <h3>Cấp cứu</h3>
+=======
+            <img src="https://png.pngtree.com/png-vector/20240430/ourmid/pngtree-medical-check-up-schedule-vector-png-image_12344159.png" alt="Cấp cứu">
+            <div class="card-content">
+                <h3>Đặt Khám Tại Cơ Sở</h3>
+>>>>>>> Stashed changes
                 <a class="more" href="khoacapcuu.jsp">More →</a>
             </div>
         </div>
         <div class="card">
+<<<<<<< Updated upstream
             <img src="https://datafiles.nghean.gov.vn/nan-ubnd/2882/quantritintuc20242/m2638436058638817220.jpg" alt="Tim mạch">
             <div class="card-content">
                 <h3>Tim mạch</h3>
+=======
+            <img src="https://cdn.pixabay.com/photo/2021/01/27/06/48/medical-5953866_960_720.png" alt="Tim mạch">
+            <div class="card-content">
+                <h3>Đặt Khám Bác Sĩ</h3>
+>>>>>>> Stashed changes
                 <a class="more" href="khoatimmach.jsp">More →</a>
             </div>
         </div>
         <div class="card">
+<<<<<<< Updated upstream
             <img src="https://cdn.benhvienthucuc.vn/wp-content/uploads/2021/06/kinh-nghiem-tim-dia-chi-kham-chuyen-khoa-co-xuong-khop-o-dau-tot-1.jpg" alt="Xương Khớp">
             <div class="card-content">
                 <h3>Xương Khớp</h3>
+=======
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTr9WUs4R_V4y9Oi-a6xL1SL4q8WjXY6S23DjgOLsT-fcd8lQkcIdqMohza1ZXR9zUEDuA&usqp=CAU" alt="Xương Khớp">
+            <div class="card-content">
+                <h3>Call Video Với Bác Sĩ</h3>
+>>>>>>> Stashed changes
                 <a class="more" href="khoaxuongkhop.jsp">More →</a>
             </div>
         </div>
         <div class="card">
+<<<<<<< Updated upstream
             <img src="https://cms-prod.s3-sgn09.fptcloud.com/cau_tao_chuc_nang_cua_he_ho_hap_va_mot_so_benh_thuong_gap_2_15facfc931.jfif" alt="Hô Hấp">
             <div class="card-content">
                 <h3>Hô Hấp</h3>
+=======
+            <img src="https://png.pngtree.com/png-vector/20230222/ourmid/pngtree-blood-test-line-icon-png-image_6613520.png" alt="Hô Hấp">
+            <div class="card-content">
+                <h3>Đặt lịch xét nghiệm</h3>
+                <a class="more" href="TestPackage">More →</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://media.istockphoto.com/id/1211178700/vi/vec-to/medical-shield-line-icon-b%E1%BA%A3o-v%E1%BB%87-s%E1%BB%A9c-kh%E1%BB%8Fe-ph%E1%BA%B3ng-ch%C3%A9o-vect%C6%A1-y-t%E1%BA%BF.jpg?s=170667a&w=0&k=20&c=23k39Blz-vn47AWsf1vydP1CNJYaRkHGYJ5UJgF9ygo=" alt="Tiêu hóa">
+            <div class="card-content">
+                <h3>Gói Khám Sức Khỏe</h3>
+                <a class="more" href="SearchPackageServlet">More →</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://cdn-icons-png.flaticon.com/512/2907/2907474.png" alt="Hô Hấp">
+            <div class="card-content">
+                <h3>Đặt lịch tiêm chủng</h3>
+                <a class="more" href="VaccinePackage">More →</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://w7.pngwing.com/pngs/24/963/png-transparent-doctor-icon-screenshot-physician-health-professional-health-care-doctor-of-medicine-stethoscope-miscellaneous-rectangle-logo-thumbnail.png" alt="Khoa Nhi">
+            <div class="card-content">
+                <h3>Khám Ngoài giờ</h3>
+                <a class="more" href="khoanhi.jsp">More →</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://png.pngtree.com/png-vector/20201226/ourmid/pngtree-care-icon-png-image_2647740.jpg" alt="Thần kinh">
+            <div class="card-content">
+                <h3>Y tế tại nhà</h3>
+>>>>>>> Stashed changes
                 <a class="more" href="#">More →</a>
             </div>
         </div>
         <div class="card">
+<<<<<<< Updated upstream
             <img src="https://www.vinmec.com/static/uploads/20190524_042142_717615_NBI_tieu_hoa_max_1800x1800_jpg_f8625d797f.jpg" alt="Tiêu hóa">
             <div class="card-content">
                 <h3>Tiêu hóa</h3>
@@ -240,6 +293,15 @@
                 <a class="more" href="#">More →</a>
             </div>
         </div>
+=======
+            <img src="https://static.thenounproject.com/png/1168142-200.png" alt="Răng Hàm Mặt">
+            <div class="card-content">
+                <h3>Thanh Toán Viện Phí</h3>
+                <a class="more" href="#">More →</a>
+            </div>
+        </div>
+        
+>>>>>>> Stashed changes
     </div>
 </div>
 
