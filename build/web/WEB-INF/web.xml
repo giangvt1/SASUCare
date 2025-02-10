@@ -14,7 +14,7 @@
     </servlet>
     <servlet>
         <servlet-name>ProfileController</servlet-name>
-        <servlet-class>controller.usermanagement.ProfileController</servlet-class>
+        <servlet-class>controller.customermanagement.ProfileController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>SearchCustomer</servlet-name>

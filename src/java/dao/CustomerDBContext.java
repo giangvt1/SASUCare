@@ -362,7 +362,7 @@ public Customer getCustomerById(int id) {
 
     @Override
     public void update(Customer model) {
-    String sql = "UPDATE [Customer] SET username = ?, password = ?, gmail = ?, gender = ?, dob = ?, address = ?, phone_number = ?, google_id = ? WHERE id = ?";
+    String sql = "UPDATE [Customer] SET username = ?, password = ?, gmail = ?, gender = ?, dob = ?, address = ?, phone_number = ?, google_id = ?, fullname = ? WHERE gmail = ?";
     try (PreparedStatement stm = connection.prepareStatement(sql)) {
         stm.setString(1, model.getUsername());
         stm.setString(2, model.getPassword());
@@ -378,9 +378,11 @@ public Customer getCustomerById(int id) {
         } else {
             stm.setNull(8, java.sql.Types.VARCHAR);
         }
+        
+        stm.setString(9, model.getFullname());
 
         // Cập nhật dựa trên ID
-        stm.setInt(9, model.getId());
+        stm.setString(10, model.getGmail());
 
         int rowsAffected = stm.executeUpdate();
         if (rowsAffected > 0) {
@@ -457,6 +459,7 @@ public Customer getCustomerById(int id) {
                 customer.setDob(rs.getDate("dob")); // Chuyển đổi từ SQL Date sang Java Date
                 customer.setAddress(rs.getString("address"));
                 customer.setPhone_number(rs.getString("phone_number"));
+                customer.setFullname(rs.getString("fullname"));
 
                 // Nếu GoogleAccount tồn tại
                 if (google_id != null) {
