@@ -20,13 +20,11 @@ public class CustomerDBContext extends DBContext<Customer> {
     private static final Logger LOGGER = Logger.getLogger(CustomerDBContext.class.getName());
     public ArrayList<Customer> searchCustomerInMedical(String name, Date dob, Boolean gender, int page) {
         ArrayList<Customer> customers = new ArrayList<>();
-        int totalRecords = 0;
-        String sql = "SELECT * FROM [Customer] WHERE 1=1";
+        String sql = "SELECT id,gender,dob,address,phone_number,fullname,google_id FROM [Customer] WHERE 1=1";
 
-        // Sử dụng StringBuilder để thêm điều kiện động
         StringBuilder sqlBuilder = new StringBuilder(sql);
         if (name != null && !name.isEmpty()) {
-            sqlBuilder.append(" AND fullname LIKE ?");
+            sqlBuilder.append(" AND fullname COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?");
         }
         if (dob != null) {
             sqlBuilder.append(" AND dob = ?");
@@ -35,10 +33,8 @@ public class CustomerDBContext extends DBContext<Customer> {
             sqlBuilder.append(" AND gender = ?");
         }
 
-        // Thêm phân trang
         sqlBuilder.append(" ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
 
-        // Nếu không có tham số tìm kiếm, trả về danh sách rỗng
         if ((name == null || name.isEmpty()) && dob == null && gender == null) {
             return customers;
         }
@@ -53,21 +49,18 @@ public class CustomerDBContext extends DBContext<Customer> {
                 stm.setDate(paramIndex++, new java.sql.Date(dob.getTime()));
             }
             if (gender != null) {
-                stm.setBoolean(paramIndex++, gender);
+                stm.setBoolean(paramIndex++, Boolean.TRUE.equals(gender));
+
             }
 
-            // Tính toán OFFSET và FETCH
-            int offset = (page - 1) * 10; // Trang bắt đầu từ 1
+            int offset = (page - 1) * 10;
             stm.setInt(paramIndex++, offset);
-            stm.setInt(paramIndex++, 10); // Mỗi trang 10 đối tượng
+            stm.setInt(paramIndex++, 10); 
 
             try (ResultSet rs = stm.executeQuery()) {
                 while (rs.next()) {
                     Customer customer = new Customer();
                     customer.setId(rs.getInt("id"));
-                    customer.setUsername(rs.getString("username"));
-                    customer.setPassword(rs.getString("password"));
-                    customer.setGmail(rs.getString("gmail"));
                     customer.setGender(rs.getBoolean("gender"));
                     customer.setDob(rs.getDate("dob"));
                     customer.setAddress(rs.getString("address"));
@@ -369,7 +362,7 @@ public Customer getCustomerById(int id) {
 
     @Override
     public void update(Customer model) {
-    String sql = "UPDATE [Customer] SET username = ?, password = ?, gmail = ?, gender = ?, dob = ?, address = ?, phone_number = ?, google_id = ? WHERE id = ?";
+    String sql = "UPDATE [Customer] SET username = ?, password = ?, gmail = ?, gender = ?, dob = ?, address = ?, phone_number = ?, google_id = ?, fullname = ? WHERE gmail = ?";
     try (PreparedStatement stm = connection.prepareStatement(sql)) {
         stm.setString(1, model.getUsername());
         stm.setString(2, model.getPassword());
@@ -385,9 +378,11 @@ public Customer getCustomerById(int id) {
         } else {
             stm.setNull(8, java.sql.Types.VARCHAR);
         }
+        
+        stm.setString(9, model.getFullname());
 
         // Cập nhật dựa trên ID
-        stm.setInt(9, model.getId());
+        stm.setString(10, model.getGmail());
 
         int rowsAffected = stm.executeUpdate();
         if (rowsAffected > 0) {
@@ -464,6 +459,7 @@ public Customer getCustomerById(int id) {
                 customer.setDob(rs.getDate("dob")); // Chuyển đổi từ SQL Date sang Java Date
                 customer.setAddress(rs.getString("address"));
                 customer.setPhone_number(rs.getString("phone_number"));
+                customer.setFullname(rs.getString("fullname"));
 
                 // Nếu GoogleAccount tồn tại
                 if (google_id != null) {
@@ -489,11 +485,10 @@ public Customer getCustomerById(int id) {
         try {
             stm = connection.prepareStatement(sql);
             stm.setString(1, username);
-            stm.setString(2, password);
+            stm.setString(2, hashPassword(password));
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
                 customer = new Customer();
-                customer.setId(rs.getInt("id"));
                 customer.setFullname(rs.getString("fullname"));
                 customer.setUsername(rs.getString("username"));
                 customer.setPassword(rs.getString("password")); // Lấy password
@@ -645,4 +640,9 @@ public Customer getCustomerById(int id) {
         LOGGER.log(Level.SEVERE, "Error updating password: {0}", ex.getMessage());
     }
 }
+    public static void main(String[] args) {
+        CustomerDBContext d = new CustomerDBContext();
+        
+        System.out.println(d.searchCustomerInMedical("g", null, null, 1).get(0).getFullname());
+    }
 }

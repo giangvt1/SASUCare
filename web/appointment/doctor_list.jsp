@@ -1,7 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-
 <!DOCTYPE html>
 <html>
     <head>
@@ -86,25 +84,10 @@
 
             <h2>Book Your Appointment</h2>
 
-
-            <!-- Search Bar and Filter Section -->
-            <form action="../appointment/doctor" method="get">
-                <!-- Hidden input for the selected date -->
+            <!-- Search Bar -->
+            <form action="appointment/doctor" method="get">
                 <input type="hidden" name="date" value="${selectedDate}" required>
-
-            <!-- Search by doctor name -->
-            <input type="text" name="name" placeholder="Search by name or specialty" value="${param.name}">
-
-            <!-- Department filter dropdown (multiple selection allowed) -->
-            <select name="specialties" multiple>
-                <c:forEach var="specialty" items="${departments}">
-                    <option value="${specialty.id}" 
-                            <c:if test="${fn:contains(param.specialties, specialty.id)}">selected</c:if>>
-                        ${specialty.name}
-                    </option>
-                </c:forEach>
-            </select>
-
+            <input type="text" name="search" placeholder="Search by name or specialist">
             <button type="submit">Search</button>
         </form>
 
@@ -113,7 +96,7 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Specialties</th>
+                    <th>Specialist</th>
                     <th>Time Slot</th>
                     <th>Book</th>
                 </tr>
@@ -123,25 +106,25 @@
                     <c:set var="doctor" value="${entry.key}" />
                     <c:set var="schedules" value="${entry.value}" />
                     <tr>
-                        <td>${doctor.name}</td> <!-- Ensure 'doctor' object is correctly referenced -->
-                        <td>
-                            <ul>
-                                <c:forEach var="specialty" items="${doctor.specialties}">
-                                    <li>${specialty}</li>
-                                    </c:forEach>
-                            </ul>
-                        </td>
+                        <td>${doctor.name}</td>
+                        <td>${doctor.specialty}</td>
                         <td>
                             <c:forEach var="schedule" items="${schedules}">
-                                <label>
-                                    <input type="radio" name="selectedSchedule_${doctor.id}" value="${schedule.id}"
-                                           data-doctor-name="${doctor.name}" 
-                                           data-specialties="<c:forEach var='sp' items='${doctor.specialties}' varStatus='status'>${sp}${!status.last ? ', ' : ''}</c:forEach>" 
-                                           data-shift-time="${schedule.shift.timeStart} - ${schedule.shift.timeEnd}"
-                                           <c:if test="${!schedule.available}">disabled</c:if>
-                                           onchange="updateBookButton(${doctor.id})">
-                                    ${schedule.shift.timeStart} - ${schedule.shift.timeEnd}
-                                </label><br>
+                                <input type="radio" name="selectedSchedule_${doctor.id}" value="${schedule.id}"
+                                       data-doctor-name="${doctor.name}" 
+                                       data-specialty="${doctor.specialty}" 
+                                       data-shift-time="${schedule.shift.timeStart} - ${schedule.shift.timeEnd}"
+                                       <c:choose>
+                                           <c:when test="${schedule.available}">
+                                               onchange="enableBookButton(${doctor.id})"
+                                           </c:when>
+                                           <c:otherwise>
+                                               onchange="disableBookButton(${doctor.id})"
+                                           </c:otherwise>
+                                       </c:choose>>
+                                ${schedule.shift.timeStart} - ${schedule.shift.timeEnd}
+                                <input type="hidden" id="scheduleId_${doctor.id}" value="${schedule.id}">
+                                <input type="hidden" id="available" value="${schedule.available}">
                             </c:forEach>
                         </td>
                         <td>
@@ -149,7 +132,6 @@
                         </td>
                     </tr>
                 </c:forEach>
-
             </tbody>
         </table>
 
@@ -159,7 +141,7 @@
                 <span class="close" onclick="closeModal()">&times;</span>
                 <h3>Your Booking Details</h3>
                 <p><strong>Doctor Name:</strong> <span id="modalDoctorName"></span></p>
-                <p><strong>Specialties:</strong> <span id="modalSpecialties"></span></p>
+                <p><strong>Specialist:</strong> <span id="modalSpecialty"></span></p>
                 <p><strong>Time Slot:</strong> <span id="modalShiftTime"></span></p>
                 <button onclick="closeModal()">Close</button>
                 <button id="confirmBooking">Confirm Booking</button>
@@ -167,10 +149,18 @@
         </div>
 
         <script>
-            function updateBookButton(doctorId) {
-                let selectedSchedule = document.querySelector("input[name='selectedSchedule_" + doctorId + "']:checked");
+            function disableBookButton(doctorId) {
                 let bookButton = document.getElementById("bookBtn_" + doctorId);
-                bookButton.disabled = !selectedSchedule;
+                bookButton.disabled = true;
+                bookButton.classList.remove("active-btn");
+                bookButton.classList.add("disabled-btn");
+            }
+            
+            function enableBookButton(doctorId) {
+                let bookButton = document.getElementById("bookBtn_" + doctorId);
+                bookButton.disabled = false;
+                bookButton.classList.remove("disabled-btn");
+                bookButton.classList.add("active-btn");
             }
 
             function openBookingModal(doctorId) {
@@ -182,7 +172,7 @@
                 }
 
                 document.getElementById("modalDoctorName").innerText = selectedSchedule.getAttribute("data-doctor-name");
-                document.getElementById("modalSpecialties").innerText = selectedSchedule.getAttribute("data-specialties");
+                document.getElementById("modalSpecialty").innerText = selectedSchedule.getAttribute("data-specialty");
                 document.getElementById("modalShiftTime").innerText = selectedSchedule.getAttribute("data-shift-time");
 
                 let scheduleId = selectedSchedule.value;

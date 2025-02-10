@@ -129,69 +129,117 @@
     </div>
     <div class="grid">
         <div class="card">
-            <img src="https://png.pngtree.com/png-vector/20240430/ourmid/pngtree-medical-check-up-schedule-vector-png-image_12344159.png" alt="Cấp cứu">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvWLUFmU1UcUxxpMBtfKhfEIS89U5eR2GSPw&s" alt="Cấp cứu">
             <div class="card-content">
-                <h3>Đặt Khám Tại Cơ Sở</h3>
+                <h3>Cấp cứu</h3>
                 <a class="more" href="khoacapcuu.jsp">More →</a>
             </div>
         </div>
         <div class="card">
-            <img src="https://cdn.pixabay.com/photo/2021/01/27/06/48/medical-5953866_960_720.png" alt="Tim mạch">
+            <img src="https://datafiles.nghean.gov.vn/nan-ubnd/2882/quantritintuc20242/m2638436058638817220.jpg" alt="Tim mạch">
             <div class="card-content">
-                <h3>Đặt Khám Bác Sĩ</h3>
+                <h3>Tim mạch</h3>
                 <a class="more" href="khoatimmach.jsp">More →</a>
             </div>
         </div>
         <div class="card">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTr9WUs4R_V4y9Oi-a6xL1SL4q8WjXY6S23DjgOLsT-fcd8lQkcIdqMohza1ZXR9zUEDuA&usqp=CAU" alt="Xương Khớp">
+            <img src="https://cdn.benhvienthucuc.vn/wp-content/uploads/2021/06/kinh-nghiem-tim-dia-chi-kham-chuyen-khoa-co-xuong-khop-o-dau-tot-1.jpg" alt="Xương Khớp">
             <div class="card-content">
-                <h3>Call Video Với Bác Sĩ</h3>
+                <h3>Xương Khớp</h3>
                 <a class="more" href="khoaxuongkhop.jsp">More →</a>
             </div>
         </div>
         <div class="card">
-            <img src="https://png.pngtree.com/png-vector/20230222/ourmid/pngtree-blood-test-line-icon-png-image_6613520.png" alt="Hô Hấp">
+            <img src="https://cms-prod.s3-sgn09.fptcloud.com/cau_tao_chuc_nang_cua_he_ho_hap_va_mot_so_benh_thuong_gap_2_15facfc931.jfif" alt="Hô Hấp">
             <div class="card-content">
-                <h3>Đặt lịch xét nghiệm</h3>
-                <a class="more" href="TestPackage">More →</a>
-            </div>
-        </div>
-        <div class="card">
-            <img src="https://media.istockphoto.com/id/1211178700/vi/vec-to/medical-shield-line-icon-b%E1%BA%A3o-v%E1%BB%87-s%E1%BB%A9c-kh%E1%BB%8Fe-ph%E1%BA%B3ng-ch%C3%A9o-vect%C6%A1-y-t%E1%BA%BF.jpg?s=170667a&w=0&k=20&c=23k39Blz-vn47AWsf1vydP1CNJYaRkHGYJ5UJgF9ygo=" alt="Tiêu hóa">
-            <div class="card-content">
-                <h3>Gói Khám Sức Khỏe</h3>
-                <a class="more" href="SearchPackageServlet">More →</a>
-            </div>
-        </div>
-        <div class="card">
-            <img src="https://cdn-icons-png.flaticon.com/512/2907/2907474.png" alt="Hô Hấp">
-            <div class="card-content">
-                <h3>Đặt lịch tiêm chủng</h3>
-                <a class="more" href="VaccinePackage">More →</a>
-            </div>
-        </div>
-        <div class="card">
-            <img src="https://w7.pngwing.com/pngs/24/963/png-transparent-doctor-icon-screenshot-physician-health-professional-health-care-doctor-of-medicine-stethoscope-miscellaneous-rectangle-logo-thumbnail.png" alt="Khoa Nhi">
-            <div class="card-content">
-                <h3>Khám Ngoài giờ</h3>
-                <a class="more" href="khoanhi.jsp">More →</a>
-            </div>
-        </div>
-        <div class="card">
-            <img src="https://png.pngtree.com/png-vector/20201226/ourmid/pngtree-care-icon-png-image_2647740.jpg" alt="Thần kinh">
-            <div class="card-content">
-                <h3>Y tế tại nhà</h3>
+                <h3>Hô Hấp</h3>
                 <a class="more" href="#">More →</a>
             </div>
         </div>
         <div class="card">
-            <img src="https://static.thenounproject.com/png/1168142-200.png" alt="Răng Hàm Mặt">
+            <img src="https://www.vinmec.com/static/uploads/20190524_042142_717615_NBI_tieu_hoa_max_1800x1800_jpg_f8625d797f.jpg" alt="Tiêu hóa">
             <div class="card-content">
-                <h3>Thanh Toán Viện Phí</h3>
+                <h3>Tiêu hóa</h3>
                 <a class="more" href="#">More →</a>
             </div>
         </div>
-        
+        <div class="card">
+            <img src="https://benhvien22-12.com/wp-content/uploads/2021/08/khoa-nhi.jpg" alt="Khoa Nhi">
+            <div class="card-content">
+                <h3>Khoa Nhi</h3>
+                <a class="more" href="#">More →</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://phongkhamdinhcu.vn/wp-content/uploads/khoa-noi-than-kinh.jpg" alt="Thần kinh">
+            <div class="card-content">
+                <h3>Thần kinh</h3>
+                <a class="more" href="#">More →</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://nhakhoakim.com/wp-content/uploads/2022/03/rang-ham-mat-tieng-anh-la-gi-1.png" alt="Răng Hàm Mặt">
+            <div class="card-content">
+                <h3>Răng Hàm Mặt</h3>
+                <a class="more" href="#">More →</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://benhviendongnai.com.vn/wp-content/uploads/2023/09/poster-2-scaled.jpg" alt="Mắt">
+            <div class="card-content">
+                <h3>Mắt</h3>
+                <a class="more" href="#">More →</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://thanhnien.mediacdn.vn/Uploaded/linhnt-qc/2022_01_10/mh-1-4707.jpg" alt="Thẩm Mỹ">
+            <div class="card-content">
+                <h3>Thẩm Mỹ</h3>
+                <a class="more" href="#">More →</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://bizweb.dktcdn.net/thumb/1024x1024/100/413/259/files/cong-nghe-te-bao-goc-2.jpg?v=1673515663024" alt="Viện nghiên cứu tế bào gốc và công nghệ Gen">
+            <div class="card-content">
+                <h3>Viện nghiên cứu tế bào gốc và công nghệ Gen</h3>
+                <a class="more" href="#">More →</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://suckhoedoisong.qltns.mediacdn.vn/324455921873985536/2021/10/12/photo-1634049650013-1634049663521446262357.png" alt="Trung tâm Vacxin">
+            <div class="card-content">
+                <h3>Trung tâm Vacxin</h3>
+                <a class="more" href="#">More →</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://lienhiepkhktnghean.org.vn/uploads/thong-tin-khoa-hoc/2024_04/image-20240416104018-1.jpeg" alt="Trung tâm Y học cổ truyền">
+            <div class="card-content">
+                <h3>Trung tâm Y học cổ truyền </h3>
+                <a class="more" href="#">More →</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://acc.vn/wp-content/uploads/2021/06/59-cac-phuong-phap-vat-ly-tri-lieu.jpg" alt="Vật lí trị liệu">
+            <div class="card-content">
+                <h3>Vật lí trị liệu</h3>
+                <a class="more" href="#">More →</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://hoanhap.vn/files/images/article16548.jpg" alt="Khoa tâm lý">
+            <div class="card-content">
+                <h3>Khoa tâm lý </h3>
+                <a class="more" href="#">More →</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://ykhoahopnhan.vn/wp-content/uploads/2019/05/ent-1.jpg" alt="Tai mũi họng">
+            <div class="card-content">
+                <h3>Tai mũi họng</h3>
+                <a class="more" href="#">More →</a>
+            </div>
+        </div>
     </div>
 </div>
 

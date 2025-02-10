@@ -1,47 +1,89 @@
 package model;
 
 import java.sql.Date;
+import java.sql.Time;
 
 public class DoctorSchedule {
     private int id;
     private Doctor doctor;
     private Date scheduleDate;
     private Shift shift;
-    private boolean available;
-
-    public DoctorSchedule() {}
 
     public DoctorSchedule(int id, Doctor doctor, Date scheduleDate, Shift shift, boolean available) {
         this.id = id;
         this.doctor = doctor;
         this.scheduleDate = scheduleDate;
         this.shift = shift;
-        this.available = available; // Chuyển đổi từ int sang boolean
+        this.available = available;
+    }
+    
+    public DoctorSchedule(int id, Doctor doctor, Date scheduleDate, Shift shift) {
+        this.id = id;
+        this.doctor = doctor;
+        this.scheduleDate = scheduleDate;
+        this.shift = shift;
     }
 
-    // Getter và Setter
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public Shift getShift() {
+        return shift;
+    }
 
-    public Doctor getDoctor() { return doctor; }
-    public void setDoctor(Doctor doctor) { this.doctor = doctor; }
+    public void setShift(Shift shift) {
+        this.shift = shift;
+    }
+    private boolean available; // true = available, false = booked
 
-    public Date getScheduleDate() { return scheduleDate; }
-    public void setScheduleDate(Date scheduleDate) { this.scheduleDate = scheduleDate; }
+    public DoctorSchedule() {
+    }
 
-    public Shift getShift() { return shift; }
-    public void setShift(Shift shift) { this.shift = shift; }
+    public DoctorSchedule(int id, Doctor doctor, Date scheduleDate, boolean available) {
+        this.id = id;
+        this.doctor = doctor;
+        this.scheduleDate = scheduleDate;
+        this.available = available;
+    }
 
-    public boolean isAvailable() { return available; }
-    public void setAvailable(boolean available) { this.available = available; }
+    // Getters and Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
+    }
+
+    public Date getScheduleDate() {
+        return scheduleDate;
+    }
+
+    public void setScheduleDate(Date scheduleDate) {
+        this.scheduleDate = scheduleDate;
+    }
+
+
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
 
     @Override
     public String toString() {
         return "DoctorSchedule{" +
                 "id=" + id +
-                ", doctor=" + (doctor != null ? doctor.getStaff().getFullname() : "N/A") +
+                ", doctor=" + doctor.getName() +
                 ", scheduleDate=" + scheduleDate +
-                ", shift=" + shift +
                 ", available=" + available +
                 '}';
     }

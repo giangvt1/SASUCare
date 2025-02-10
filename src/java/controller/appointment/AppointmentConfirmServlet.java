@@ -19,6 +19,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+//@WebServlet("/appointment/confirm")
 public class AppointmentConfirmServlet extends HttpServlet {
 
     private final AppointmentDBContext appointmentDB = new AppointmentDBContext();
@@ -30,63 +31,59 @@ public class AppointmentConfirmServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         doPost(req, resp);
     }
+    
+    
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        response.setContentType("application/json");
+        HttpSession session = request.getSession();
         PrintWriter out = response.getWriter();
+        
+//        // **Get logged-in user ID**
+//        Integer customerId = (Integer) session.getAttribute("customerId");
+//        if (customerId == null) {
+//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//            out.write("{\"status\":\"error\", \"message\":\"User not logged in.\"}");
+//            return;
+//        }
+        String customerId = "1";
 
         try {
-            HttpSession session = request.getSession();
-            if (session == null || session.getAttribute("currentCustomer") == null) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                out.write("{\"status\":\"error\", \"message\":\"User not logged in.\"}");
-                return;
-            }
-
-            //  Get customer from session
-            Customer customer = (Customer) session.getAttribute("currentCustomer");
-//          
-            //  Get doctor & schedule IDs from request
             int doctorId = Integer.parseInt(request.getParameter("doctor"));
-            int scheduleId = Integer.parseInt(request.getParameter("schedule"));
+            int scheduleId = Integer.parseInt(request.getParameter("schedule")); // Corrected parameter name
 
-            //  Retrieve data from DB
+            // **Retrieve objects**
+            Customer customer = customerDB.get(String.valueOf(customerId));
             Doctor doctor = doctorDB.get(String.valueOf(doctorId));
             DoctorSchedule doctorSchedule = doctorScheduleDB.get(String.valueOf(scheduleId));
 
-//              Validate that all objects exist
+            // **Check if all necessary data exists**
             if (customer == null || doctor == null || doctorSchedule == null) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.write("{\"status\":\"error\", \"message\":\"Invalid appointment details.\"}");
                 return;
             }
 
-            //  Create appointment object
+            // **Create and insert appointment**
             Appointment appointment = new Appointment();
             appointment.setCustomer(customer);
             appointment.setDoctor(doctor);
             appointment.setDoctorSchedule(doctorSchedule);
-            appointment.setStatus("Pending");
+            appointment.setStatus("Confirmed");
 
-            //  Insert appointment into DB
             appointmentDB.insert(appointment);
 
-            //  Mark doctor schedule as booked
+            // **Mark doctor schedule as booked**
             doctorSchedule.setAvailable(false);
             doctorScheduleDB.update(doctorSchedule);
 
+            // **Redirect to appointment history page**
+//            response.sendRedirect(request.getContextPath() + "/user/appointments");
 
-            out.write(customer.getId()+"wwefrwef");
-
-        } catch (NumberFormatException e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            out.write("{\"status\":\"error\", \"message\":\"Invalid input format.\"}");
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.write("{\"status\":\"error\", \"message\":\"An error occurred while booking.\"}");
-            
         }
     }
 }
