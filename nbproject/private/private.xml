@@ -46,6 +46,12 @@
         <group/>
         <group>
             <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/inter1/SWP391_GROUP6/src/java/Constant/Iconstant.java</file>
+        <group name="ThisForTest">
+            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/controller/doctor/ViewApplication.java</file>
+            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/dao/GoogleDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/dao/DoctorDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/dal/DBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/model/Application.java</file>
         </group>
     </open-files>
 </project-private>
