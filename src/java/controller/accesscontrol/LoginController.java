@@ -55,7 +55,6 @@ public class LoginController extends HttpServlet {
             response.sendRedirect("Home.jsp");
             
         } else {
-            System.out.println("222222222222");
             Customer customer = customerDAO.get(account.getId());
             
             HttpSession session = request.getSession(false);
