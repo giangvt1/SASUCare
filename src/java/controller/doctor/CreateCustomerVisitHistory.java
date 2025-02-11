@@ -4,6 +4,7 @@
  */
 package controller.doctor;
 
+import controller.systemaccesscontrol.BaseRBACController;
 import dao.CustomerDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,12 +18,13 @@ import java.util.Date;
 import model.Customer;
 import model.MedicalHistory;
 import model.VisitHistory;
+import model.system.User;
 
 /**
  *
  * @author TRUNG
  */
-public class CreateCustomerVisitHistory extends HttpServlet {
+public class CreateCustomerVisitHistory extends BaseRBACController {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -85,16 +87,21 @@ public class CreateCustomerVisitHistory extends HttpServlet {
         String diagnoses = request.getParameter("diagnoses");
         String treatmentPlan = request.getParameter("treatmentPlan");
         String nextAppointmentStr = request.getParameter("nextAppointment");
+
         // Tạo ngày hiện tại dạng java.util.Date
         java.util.Date utilDate = new java.util.Date();
 
-// Chuyển đổi sang java.sql.Date
-        java.sql.Date visitDate = new java.sql.Date(utilDate.getTime()); // Chuyển đổi đúng cách sang java.sql.Date
+        java.sql.Date visitDate = new java.sql.Date(utilDate.getTime());
 
-        // Chuyển đổi nextAppointment nếu có
-        java.sql.Date nextAppointment = java.sql.Date.valueOf(nextAppointmentStr);
+        java.sql.Date nextAppointment = null;
+        if (nextAppointmentStr != null && !nextAppointmentStr.isEmpty()) {
+            try {
+                nextAppointment = java.sql.Date.valueOf(nextAppointmentStr);
+            } catch (IllegalArgumentException e) {
+                nextAppointment = null;
+            }
+        }
 
-        // Tạo đối tượng VisitHistory
         VisitHistory visitHistory = new VisitHistory();
         visitHistory.setDid(Integer.parseInt(did));
         visitHistory.setCid(Integer.parseInt(cid));
@@ -125,5 +132,15 @@ public class CreateCustomerVisitHistory extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    @Override
+    protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 
 }

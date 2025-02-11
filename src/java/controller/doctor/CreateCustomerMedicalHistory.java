@@ -4,6 +4,7 @@
  */
 package controller.doctor;
 
+import controller.systemaccesscontrol.BaseRBACController;
 import dao.CustomerDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,12 +16,13 @@ import java.util.ArrayList;
 import model.Customer;
 import model.MedicalHistory;
 import model.VisitHistory;
+import model.system.User;
 
 /**
  *
  * @author TRUNG
  */
-public class CreateCustomerMedicalHistory extends HttpServlet {
+public class CreateCustomerMedicalHistory extends BaseRBACController {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -48,35 +50,16 @@ public class CreateCustomerMedicalHistory extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
         String cid = request.getParameter("cid");
         request.setAttribute("cid", cid);
         request.getRequestDispatcher("CreateCustomerMedicalHistory.jsp").forward(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        // Lấy các tham số từ form
+    protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
         String cid = request.getParameter("cid");
         String name = request.getParameter("name");
         String detail = request.getParameter("detail");
@@ -99,15 +82,5 @@ public class CreateCustomerMedicalHistory extends HttpServlet {
         }
         response.sendRedirect("ShowCustomerMedicalDetail?cid=" + cid);
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
 
 }

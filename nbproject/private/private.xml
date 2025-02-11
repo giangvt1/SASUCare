@@ -19,41 +19,19 @@
             <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_4/src/java/googleservices/ValidateOtp.java</file>
         </group>
         <group name="PRJ301"/>
-        <group/>
-        <group/>
         <group>
-            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/src/java/controller/doctor/CreateCustomerVisitHistory.java</file>
-            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/web/doctor/Dashboard.jsp</file>
-            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/src/java/dao/CustomerDBContext.java</file>
-            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/src/java/controller/doctor/SearchCustomer.java</file>
+            <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/controller/HRController/StaffAccountListController.java</file>
+            <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/controller/appointment/AppointmentDoctorListController.java</file>
+            <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/controller/HRController/UserAccountCreateController.java</file>
+            <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/web/appointment/doctor_list.jsp</file>
+            <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/controller/appointment/DoctorSpecialtiesController.java</file>
         </group>
         <group>
-            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/web/doctor/ViewApplication.jsp</file>
-            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/web/doctor/SendApplication.jsp</file>
-            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/web/doctor/ManageMedical.jsp</file>
-            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/web/css/doctor/manage_medical_style.css</file>
-            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/web/doctor/CustomerMedicalDetail.jsp</file>
-            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/web/css/doctor/doctor_style.css</file>
-            <file>file:/D:/Ky%205/SWP/PRJG6/SWP391_GROUP6/src/java/controller/doctor/ViewApplication.java</file>
-        </group>
-        <group name="PRJ301"/>
-        <group name="PRJ301">
-            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_2/src/java/dal/DBContext.java</file>
-            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_2/src/java/controller/accesscontrol/GoogleLogin.java</file>
-            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_2/src/java/dao/CustomerDBContext.java</file>
-            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_2/src/java/dao/UserDBContext.java</file>
-            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_2/src/java/controller/accesscontrol/RegisterController.java</file>
-            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_2/web/accesscontrol/Login.jsp</file>
-            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_2/src/java/utils/CSRFToken.java</file>
-            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_2/web/profile.jsp</file>
-            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_2/src/java/Constant/Iconstant.java</file>
-            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_2/web/WEB-INF/web.xml</file>
-            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_2/src/java/model/Customer.java</file>
-            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_2/src/java/controller/customermanagement/ProfileController.java</file>
-            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_2/src/java/utils/EmailSender.java</file>
-            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_2/src/java/dao/GoogleDBContext.java</file>
-            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_2/web/Header.jsp</file>
-            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_2/src/java/controller/accesscontrol/LoginController.java</file>
+            <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/controller/HRController/StaffAccountListController.java</file>
+            <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/controller/appointment/AppointmentDoctorListController.java</file>
+            <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/controller/HRController/UserAccountCreateController.java</file>
+            <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/web/appointment/doctor_list.jsp</file>
+            <file>file:/C:/Users/acer/OneDrive/Desktop/LAB/WebApplication1/src/java/controller/appointment/DoctorSpecialtiesController.java</file>
         </group>
     </open-files>
 </project-private>

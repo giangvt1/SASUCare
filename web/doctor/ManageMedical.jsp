@@ -18,7 +18,7 @@
     </head>
     <body class="skin-black">
         <jsp:include page="../admin/AdminHeader.jsp"></jsp:include>
-        <jsp:include page="DoctorLeftSideBar.jsp"></jsp:include>
+        <jsp:include page="../admin/AdminLeftSideBar.jsp"></jsp:include>
             <div class="right-side">
                 <h1 class="text-center text-bold mb-4" style="margin-bottom: 30px;margin-top: 70px">Medical Records Summary</h1>
                 <form action="SearchCustomer" method="get" class="sidebar-form">

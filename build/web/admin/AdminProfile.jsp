@@ -1,14 +1,14 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
       <meta charset="UTF-8">
       <title>Update Profile</title>
       <link href="../css/admin/bootstrap.min.css" rel="stylesheet" type="text/css"/>
       <link href="../css/admin/styleAdmin.css" rel="stylesheet" type="text/css"/>
       <style>
-          /* Nếu sidebar có chiều rộng khoảng 250px, ta thêm margin-left cho nội dung chính */
+          /* Nếu sidebar có chiều rộng khoảng 250px, thêm margin-left cho nội dung chính */
           .main-content {
               margin-top: 50px;
               margin-left: 260px; /* Điều chỉnh theo chiều rộng của sidebar */
@@ -18,6 +18,52 @@
               margin-top: 20px;
           }
       </style>
+      <script>
+          // Hàm chuẩn hóa chuỗi: thay thế nhiều khoảng trắng liên tiếp bằng 1 khoảng trắng và trim
+          function normalizeString(str) {
+              return str.replace(/\s+/g, " ").trim();
+          }
+          
+          function validateProfile() {
+              // Lấy giá trị từ form
+              var fullnameField = document.getElementById("fullname");
+              var addressField = document.getElementById("address");
+              var dobField = document.getElementById("dob");
+              
+              var fullname = fullnameField.value.trim();
+              var normalizedFullname = normalizeString(fullnameField.value);
+              if (fullname === "") {
+                  alert("Full Name is required.");
+                  fullnameField.focus();
+                  return false;
+              }
+              if (fullname !== normalizedFullname) {
+                  alert("Full Name must not contain multiple consecutive spaces.");
+                  fullnameField.focus();
+                  return false;
+              }
+              
+              // Address: nếu có giá trị, không cho phép rỗng và phải ≤ 50 ký tự, cũng không có nhiều khoảng trắng liên tiếp.
+              var address = addressField.value.trim();
+              if (address !== "") {
+                  var normalizedAddress = normalizeString(addressField.value);
+                  if (address !== normalizedAddress) {
+                      alert("Address must not contain multiple consecutive spaces.");
+                      addressField.focus();
+                      return false;
+                  }
+                  if (address.length > 50) {
+                      alert("Address must not exceed 50 characters.");
+                      addressField.focus();
+                      return false;
+                  }
+              }
+              
+              // Date of Birth: nếu có, HTML5 sẽ kiểm tra format, nên không cần validate thêm
+              
+              return true;
+          }
+      </script>
   </head>
   <body>
       <jsp:include page="../admin/AdminHeader.jsp" />
@@ -26,6 +72,7 @@
       <div class="container main-content">
           <h2>Update Profile</h2>
           
+          <!-- Hiển thị thông báo thành công hoặc lỗi -->
           <c:if test="${not empty successMessage}">
               <div class="alert alert-success">${successMessage}</div>
           </c:if>
@@ -33,7 +80,7 @@
               <div class="alert alert-danger">${errorMessage}</div>
           </c:if>
           
-          <form action="${pageContext.request.contextPath}/system/profile" method="POST">
+          <form action="${pageContext.request.contextPath}/system/profile" method="POST" onsubmit="return validateProfile();">
               <div class="form-group">
                   <label for="fullname">Full Name</label>
                   <input type="text" class="form-control" id="fullname" name="fullname" value="${staff.fullname}" required>

@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.system.Feature;
 import model.system.Role;
+import model.system.UserAccountDTO;
 
 /**
  *
@@ -22,24 +23,99 @@ import model.system.Role;
  */
 public class UserDBContext extends DBContext<User> {
 
+    public ArrayList<User> listPaginated(int pageIndex, int pageSize) {
+        ArrayList<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM [User] ORDER BY username OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            // Tính offset dựa trên trang: (pageIndex - 1) * pageSize
+            stm.setInt(1, (pageIndex - 1) * pageSize);
+            stm.setInt(2, pageSize);
+            try (ResultSet rs = stm.executeQuery()) {
+                while (rs.next()) {
+                    User user = new User();
+                    user.setUsername(rs.getString("username"));
+                    user.setDisplayname(rs.getString("displayname"));
+                    user.setGmail(rs.getString("gmail"));
+                    user.setPhone(rs.getString("phone"));
+                    // Nếu cần, lấy danh sách role cho user
+                    user.setRoles(this.getRoles(user.getUsername()));
+                    users.add(user);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return users;
+    }
+
+    public ArrayList<UserAccountDTO> listAccounts(String search, int pageIndex, int pageSize) {
+        ArrayList<UserAccountDTO> list = new ArrayList<>();
+        String sql = "SELECT s.staff_username, s.fullname, u.displayname, u.gmail, u.phone, "
+                + "s.gender, s.dob, s.createat, s.createby, s.updateat, s.updateby, r.name as roleName "
+                + "FROM [User] u "
+                + "JOIN UserRole ur ON ur.username = u.username "
+                + "JOIN [Role] r ON r.id = ur.role_id "
+                + "JOIN Staff s ON s.staff_username = u.username "
+                + "WHERE u.username LIKE ? OR u.displayname LIKE ? OR s.fullname LIKE ? "
+                + "ORDER BY s.staff_username ASC "
+                + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            // Nếu search là null, ta gán chuỗi rỗng, sau đó tạo pattern cho LIKE
+            String filter = "%" + (search != null ? search.trim() : "") + "%";
+            stm.setString(1, filter);
+            stm.setString(2, filter);
+            stm.setString(3, filter);
+            // Tính toán offset
+            stm.setInt(4, (pageIndex - 1) * pageSize);
+            stm.setInt(5, pageSize);
+            try (ResultSet rs = stm.executeQuery()) {
+                while (rs.next()) {
+                    UserAccountDTO dto = new UserAccountDTO();
+                    dto.setStaffUsername(rs.getString("staff_username"));
+                    dto.setFullname(rs.getString("fullname"));
+                    dto.setDisplayname(rs.getString("displayname"));
+                    dto.setGmail(rs.getString("gmail"));
+                    dto.setPhone(rs.getString("phone"));
+                    dto.setGender(rs.getBoolean("gender"));
+                    dto.setDob(rs.getDate("dob"));
+                    dto.setCreateat(rs.getTimestamp("createat"));
+                    dto.setCreateby(rs.getString("createby"));
+                    dto.setUpdateat(rs.getTimestamp("updateat"));
+                    dto.setUpdateby(rs.getString("updateby"));
+                    dto.setRoleName(rs.getString("roleName"));
+                    list.add(dto);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
     public ArrayList<User> searchAndPaginate(String keyword, int pageIndex, int pageSize) {
         ArrayList<User> users = new ArrayList<>();
-        String sql = "SELECT * FROM [User] WHERE username LIKE ? OR gmail LIKE ? "
+        // Sử dụng REPLACE để loại bỏ khoảng trắng từ username và gmail
+        String sql = "SELECT * FROM [User] "
+                + "WHERE REPLACE(username, ' ', '') LIKE ? OR REPLACE(gmail, ' ', '') LIKE ? "
                 + "ORDER BY username OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            stm.setString(1, "%" + keyword + "%");
-            stm.setString(2, "%" + keyword + "%");
+            // Loại bỏ tất cả khoảng trắng trong từ khóa và bọc trong dấu phần trăm để dùng với LIKE
+            String filter = "%" + (keyword != null ? keyword.replaceAll("\\s+", "") : "") + "%";
+            stm.setString(1, filter);
+            stm.setString(2, filter);
             stm.setInt(3, (pageIndex - 1) * pageSize);
             stm.setInt(4, pageSize);
-            ResultSet rs = stm.executeQuery();
-            while (rs.next()) {
-                User user = new User();
-                user.setUsername(rs.getString("username"));
-                user.setDisplayname(rs.getString("displayname"));
-                user.setGmail(rs.getString("gmail"));
-                user.setPhone(rs.getString("phone"));
-                user.setRoles(this.getRoles(user.getUsername()));
-                users.add(user);
+            try (ResultSet rs = stm.executeQuery()) {
+                while (rs.next()) {
+                    User user = new User();
+                    user.setUsername(rs.getString("username"));
+                    user.setDisplayname(rs.getString("displayname"));
+                    user.setGmail(rs.getString("gmail"));
+                    user.setPhone(rs.getString("phone"));
+                    // Nếu cần, lấy danh sách role cho user
+                    user.setRoles(this.getRoles(user.getUsername()));
+                    users.add(user);
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
@@ -83,27 +159,57 @@ public class UserDBContext extends DBContext<User> {
 
     public void deleteUser(String username) {
         try {
-            connection.setAutoCommit(false); // Start transaction
+            connection.setAutoCommit(false); // Bắt đầu transaction
 
-            // 1. Delete from Staff
-            try (PreparedStatement stmStaff = connection.prepareStatement("DELETE FROM Staff WHERE staff_username = ?")) {
+            // 0. Kiểm tra xem user có là Doctor hay không trong bảng Staff
+            boolean isDoctor = false;
+            String sqlCheck = "SELECT isDoctor FROM [Staff] WHERE staff_username = ?";
+            try (PreparedStatement psCheck = connection.prepareStatement(sqlCheck)) {
+                psCheck.setString(1, username);
+                try (ResultSet rs = psCheck.executeQuery()) {
+                    if (rs.next()) {
+                        isDoctor = rs.getBoolean("isDoctor");
+                    }
+                }
+            }
+            System.out.println("isDoctor = " + isDoctor);
+
+            // 1. Nếu user là Doctor, xóa các bản ghi trong bảng Doctor
+            int rowsDoctor = 0;
+            if (isDoctor) {
+                String sql_delete_doctor = "DELETE FROM [Doctor] WHERE staff_id IN (SELECT id FROM [Staff] WHERE staff_username = ?)";
+                try (PreparedStatement stmDoctor = connection.prepareStatement(sql_delete_doctor)) {
+                    stmDoctor.setString(1, username);
+                    rowsDoctor = stmDoctor.executeUpdate();
+                }
+            }
+            System.out.println("Rows deleted from Doctor: " + rowsDoctor);
+
+            // 2. Xóa từ bảng Staff
+            int rowsStaff = 0;
+            try (PreparedStatement stmStaff = connection.prepareStatement("DELETE FROM [Staff] WHERE staff_username = ?")) {
                 stmStaff.setString(1, username);
-                stmStaff.executeUpdate();
+                rowsStaff = stmStaff.executeUpdate();
             }
+            System.out.println("Rows deleted from Staff: " + rowsStaff);
 
-            // 2. Delete from UserRole
-            try (PreparedStatement stmUserRole = connection.prepareStatement("DELETE FROM UserRole WHERE username = ?")) {
+            // 3. Xóa từ bảng UserRole
+            int rowsUserRole = 0;
+            try (PreparedStatement stmUserRole = connection.prepareStatement("DELETE FROM [UserRole] WHERE username = ?")) {
                 stmUserRole.setString(1, username);
-                stmUserRole.executeUpdate();
+                rowsUserRole = stmUserRole.executeUpdate();
             }
+            System.out.println("Rows deleted from UserRole: " + rowsUserRole);
 
-            // 3. Delete from User
+            // 4. Xóa từ bảng User
+            int rowsUser = 0;
             try (PreparedStatement stmUser = connection.prepareStatement("DELETE FROM [User] WHERE username = ?")) {
                 stmUser.setString(1, username);
-                stmUser.executeUpdate();
+                rowsUser = stmUser.executeUpdate();
             }
+            System.out.println("Rows deleted from User: " + rowsUser);
 
-            connection.commit(); // Commit transaction if all operations are successful
+            connection.commit(); // Commit transaction nếu tất cả thành công
             System.out.println("User '" + username + "' deleted successfully.");
 
         } catch (SQLException ex) {
@@ -111,60 +217,25 @@ public class UserDBContext extends DBContext<User> {
             Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
             if (connection != null) {
                 try {
-                    connection.rollback(); // Rollback if any operation fails
+                    connection.rollback(); // Rollback nếu có lỗi
                     System.err.println("Transaction rolled back.");
                 } catch (SQLException rollbackEx) {
                     System.err.println("Error rolling back transaction: " + rollbackEx.getMessage());
                     Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, rollbackEx);
                 }
             }
+            throw new RuntimeException(ex);
         } finally {
             if (connection != null) {
                 try {
-                    connection.setAutoCommit(true); // Set auto-commit back to true
-                    connection.close(); // Close the connection in the finally block
+                    connection.setAutoCommit(true); // Đặt lại autoCommit
+                    connection.close(); // Đóng kết nối (nếu bạn quản lý connection theo cách này)
                 } catch (SQLException closeEx) {
                     System.err.println("Error closing connection: " + closeEx.getMessage());
                     Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, closeEx);
                 }
             }
         }
-    }
-
-    public ArrayList<User> listPaginated(int pageIndex, int pageSize) {
-        ArrayList<User> users = new ArrayList<>();
-        String sql = "SELECT * FROM [User] ORDER BY username OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-        try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            stm.setInt(1, (pageIndex - 1) * pageSize);
-            stm.setInt(2, pageSize);
-            ResultSet rs = stm.executeQuery();
-            while (rs.next()) {
-                User user = new User();
-                user.setUsername(rs.getString("username"));
-                user.setDisplayname(rs.getString("displayname"));
-                user.setGmail(rs.getString("gmail"));
-                user.setPhone(rs.getString("phone"));
-                // Lấy danh sách role nếu cần
-                user.setRoles(this.getRoles(user.getUsername()));
-                users.add(user);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return users;
-    }
-
-    public int getTotalUserCount() {
-        String sql = "SELECT COUNT(*) AS total FROM [User]";
-        try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            ResultSet rs = stm.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("total");
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return 0;
     }
 
     @Override
@@ -177,26 +248,19 @@ public class UserDBContext extends DBContext<User> {
         String sql_insert_user = "INSERT INTO [User](username, password, displayname, gmail, phone) VALUES (?,?,?,?,?)";
         String sql_insert_user_role = "INSERT INTO [UserRole](username, role_id) VALUES (?,?)";
         String sql_insert_staff = "INSERT INTO [Staff](staff_username, createby, createat) VALUES (?,?,?)";
-        // Sửa lại SQL cho Doctor: chỉ có 1 tham số (staff_id)
         String sql_insert_doctor = "INSERT INTO [Doctor](staff_id) VALUES (?)";
-
-        // Mã hóa mật khẩu sử dụng BCrypt với cost = 12
         String hashedPassword = BCrypt.hashpw(model.getPassword(), BCrypt.gensalt(12));
 
         try (PreparedStatement stmUser = connection.prepareStatement(sql_insert_user); PreparedStatement stmUserRole = connection.prepareStatement(sql_insert_user_role); // Dùng RETURN_GENERATED_KEYS để lấy id của Staff
                  PreparedStatement stmStaff = connection.prepareStatement(sql_insert_staff, Statement.RETURN_GENERATED_KEYS); PreparedStatement stmDoctor = connection.prepareStatement(sql_insert_doctor)) {
 
             connection.setAutoCommit(false);
-
-            // Insert vào bảng User
             stmUser.setString(1, model.getUsername());
             stmUser.setString(2, hashedPassword);
             stmUser.setString(3, model.getDisplayname());
             stmUser.setString(4, model.getGmail());
             stmUser.setString(5, model.getPhone());
             stmUser.executeUpdate();
-
-            // Insert vào bảng UserRole (nếu có role)
             if (model.getRoles() != null) {
                 for (Role role : model.getRoles()) {
                     stmUserRole.setString(1, model.getUsername());
@@ -204,25 +268,17 @@ public class UserDBContext extends DBContext<User> {
                     stmUserRole.executeUpdate();
                 }
             }
-
-            // Tạo timestamp hiện tại dùng chung
             Timestamp createAt = new Timestamp(System.currentTimeMillis());
-
-            // Insert vào bảng Staff (staff_username, createby, createat)
             stmStaff.setString(1, model.getUsername());
             stmStaff.setString(2, createdBy.getUsername());
             stmStaff.setTimestamp(3, createAt);
             stmStaff.executeUpdate();
-
-            // Lấy Staff id được sinh tự động
             int generatedStaffId = -1;
             try (ResultSet rs = stmStaff.getGeneratedKeys()) {
                 if (rs.next()) {
                     generatedStaffId = rs.getInt(1);
                 }
             }
-
-            // Kiểm tra nếu user có role Doctor (role_id = 5)
             boolean isDoctor = false;
             if (model.getRoles() != null) {
                 for (Role role : model.getRoles()) {
@@ -234,20 +290,22 @@ public class UserDBContext extends DBContext<User> {
             }
 
             if (isDoctor && generatedStaffId != -1) {
-                // Insert vào bảng Doctor chỉ với staff_id
                 stmDoctor.setInt(1, generatedStaffId);
                 stmDoctor.executeUpdate();
             }
 
-            connection.commit();  // Commit nếu mọi thứ thành công
+            connection.commit();
         } catch (SQLException ex) {
-            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
             try {
                 connection.rollback();
             } catch (SQLException e) {
                 Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, "Rollback failed", e);
             }
-            throw new RuntimeException("Error inserting user: " + ex.getMessage(), ex);
+            if (ex.getMessage().contains("Violation of PRIMARY KEY constraint")) {
+                throw new RuntimeException("Username is duplicated", ex);
+            } else {
+                throw new RuntimeException("Error inserting user: " + ex.getMessage(), ex);
+            }
         } finally {
             try {
                 connection.setAutoCommit(true);
@@ -303,6 +361,30 @@ public class UserDBContext extends DBContext<User> {
     @Override
     public User get(String id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public int getTotalUserCount(String keyword) {
+        int total = 0;
+        String sql = "SELECT COUNT(*) AS total "
+                + "FROM [User] u "
+                + "JOIN Staff s ON s.staff_username = u.username "
+                + "WHERE REPLACE(REPLACE(u.username, ' ', ''), '+', '') LIKE ? "
+                + "OR REPLACE(REPLACE(u.displayname, ' ', ''), '+', '') LIKE ? "
+                + "OR REPLACE(REPLACE(s.fullname, ' ', ''), '+', '') LIKE ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            // Chuẩn hóa từ khóa tìm kiếm
+            String filter = "%" + (keyword != null ? keyword.replaceAll("[\\s+]", "") : "") + "%";
+            stm.setString(1, filter);
+            stm.setString(2, filter);
+            stm.setString(3, filter);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                total = rs.getInt("total");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return total;
     }
 
     public ArrayList<Role> getRoles(String username) {

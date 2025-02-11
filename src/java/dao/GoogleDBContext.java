@@ -15,14 +15,14 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.GoogleAccount;
-import jakarta.mail.Authenticator; // Correct import
-import jakarta.mail.PasswordAuthentication; // Correct import
-import jakarta.mail.Session; // Correct import
-import jakarta.mail.Transport; // Correct import
-import jakarta.mail.Message; // Correct import
-import jakarta.mail.MessagingException; // Correct import
-import jakarta.mail.internet.InternetAddress; // Correct import
-import jakarta.mail.internet.MimeMessage; // Correct import
+import jakarta.mail.Authenticator;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 
 /**
  *

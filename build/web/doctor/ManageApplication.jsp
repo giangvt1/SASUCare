@@ -16,8 +16,8 @@
         <link href="../css/admin/styleAdmin.css" rel="stylesheet" type="text/css" />
     </head>
     <body class="skin-black">
-        <jsp:include page="../admin/AdminHeader.jsp"></jsp:include>
-        <jsp:include page="../doctor/DoctorLeftSideBar.jsp"></jsp:include>
+        <jsp:include page="../admin/AdminHeader.jsp" />
+        <jsp:include page="../admin/AdminLeftSideBar.jsp" />
         <div class="right-side">
             <a href="../doctor/SendApplication.jsp">Send Application</a>
             <a href="ViewApplication?did=16">View Application</a>

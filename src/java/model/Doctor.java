@@ -1,8 +1,11 @@
 package model;
+
 import java.util.ArrayList;
+import java.util.List;
 import model.system.Staff;
 
 public class Doctor {
+
     private int id;
     private String name;
     private Staff staff;
@@ -10,12 +13,13 @@ public class Doctor {
     private String phoneNumber;
     private boolean gender; // true = Male, false = Female
     private String address;
-    private String specialty; // Department name
+    private List<String> specialties;
     private ArrayList<DoctorSchedule> doctorSchedules;
+
     public Doctor() {
     }
 
-    public Doctor(int id, String name, Staff staff, String email, String phoneNumber, boolean gender, String address, String specialty, ArrayList<DoctorSchedule> doctorSchedules) {
+    public Doctor(int id, String name, Staff staff, String email, String phoneNumber, boolean gender, String address, List<String> specialties, ArrayList<DoctorSchedule> doctorSchedules) {
         this.id = id;
         this.name = name;
         this.staff = staff;
@@ -23,8 +27,14 @@ public class Doctor {
         this.phoneNumber = phoneNumber;
         this.gender = gender;
         this.address = address;
-        this.specialty = specialty;
+        this.specialties = specialties;
         this.doctorSchedules = doctorSchedules;
+    }
+
+    public Doctor(int id, String name, List<String> specialties) {
+        this.id = id;
+        this.name = name;
+        this.specialties = specialties;
     }
 
     public Staff getStaff() {
@@ -34,11 +44,6 @@ public class Doctor {
     public void setStaff(Staff staff) {
         this.staff = staff;
     }
-
-
- 
-
-  
 
     public int getId() {
         return id;
@@ -88,12 +93,12 @@ public class Doctor {
         this.address = address;
     }
 
-    public String getSpecialty() {
-        return specialty;
+    public List<String> getSpecialties() {
+        return specialties;
     }
 
-    public void setSpecialty(String specialty) {
-        this.specialty = specialty;
+    public void setSpecialties(List<String> specialties) {
+        this.specialties = specialties;
     }
 
     public ArrayList<DoctorSchedule> getDoctorSchedules() {
@@ -103,6 +108,5 @@ public class Doctor {
     public void setDoctorSchedules(ArrayList<DoctorSchedule> doctorSchedules) {
         this.doctorSchedules = doctorSchedules;
     }
-
 
 }

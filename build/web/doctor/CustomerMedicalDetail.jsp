@@ -14,11 +14,11 @@
         <!-- font Awesome -->
         <link href="../css/admin/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <link href="../css/admin/styleAdmin.css" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" href="../css/doctor/doctor_style.css"/>
+        <link rel="stylesheet" href="../css/doctor/customer_medical_detail_style.css"/>
     </head>
     <body class="skin-black"">
         <jsp:include page="../admin/AdminHeader.jsp"></jsp:include>
-        <jsp:include page="DoctorLeftSideBar.jsp"></jsp:include>
+        <jsp:include page="../admin/AdminLeftSideBar.jsp"></jsp:include>
             <div class="right-side">
                 <h1 class="text-center text-bold mb-4" style="margin-bottom: 30px;margin-top: 70px">Medical Records Summary</h1>
                 <!--hien thong tin khach hang-->
@@ -64,10 +64,11 @@
                         <tr><td class="index">${status.index + 1}</td>
                             <td>${m.name}</td>
                             <td>${m.detail}</td>
-                            <td><a href="UpdateCustomerMedicalHistory?cid=${customer.id}&id=${m.id}&name=${m.name}&detail=${m.detail}">Update</a>/
+                            <td><a href="UpdateCustomerMedicalHistory?cid=${customer.id}&id=${m.id}&name=${m.name}&detail=${m.detail}"><button type="button">Update</button>
+                                </a>/
                                 <a href="#" onclick="doDelete(${status.index + 1}, 'DeleteCustomerMedicalHistory', '${customer.id}', '${m.id}')">
-                                <button type="button">Delete</button>
-                            </a></td>
+                                    <button type="button">Delete</button>
+                                </a></td>
                         </tr>
                     </c:forEach>
                 </tbody>
@@ -98,7 +99,8 @@
                         <td>${v.diagnoses}</td>
                         <td>${v.treatmentPlan}</td>
                         <td>${v.nextAppointment}</td>
-                        <td><a href="UpdateCustomerVisitHistory?cid=${customer.id}&id=${v.id}&visitDate=${v.visitDate}&reasonForVisit=${v.reasonForVisit}&diagnoses=${v.diagnoses}&treatmentPlan=${v.treatmentPlan}&nextAppointment=${v.nextAppointment}">Update</a>
+                        <td><a href="UpdateCustomerVisitHistory?cid=${customer.id}&id=${v.id}&visitDate=${v.visitDate}&reasonForVisit=${v.reasonForVisit}&diagnoses=${v.diagnoses}&treatmentPlan=${v.treatmentPlan}&nextAppointment=${v.nextAppointment}"><button type="button">Update</button>
+                            </a>
                             /<a href="#" onclick="doDelete(${status.index + 1}, 'DeleteCustomerVisitHistory', '${customer.id}', '${v.id}')">
                                 <button type="button">Delete</button>
                             </a></td>

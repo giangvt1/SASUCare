@@ -12,7 +12,7 @@
     </head>
     <body class="skin-black">
         <jsp:include page="../admin/AdminHeader.jsp" />
-        <jsp:include page="../doctor/DoctorLeftSideBar.jsp" />
+        <jsp:include page="../admin/AdminLeftSideBar.jsp" />
         <div class="right-side">
             <h2 class="mb-3">List Aplication</h2>
             <table class="table table-bordered">
