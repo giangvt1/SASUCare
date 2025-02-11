@@ -1,19 +1,27 @@
+    /*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package dao;
 
 import dal.DBContext;
 import model.Doctor;
-import model.DoctorSchedule;
-import model.Shift;
-import model.Application;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Application;
+import model.DoctorSchedule;
+import model.Shift;
 
+/**
+ *
+ * @author acer
+ */
 public class DoctorDBContext extends DBContext<Doctor> {
 
     private static final Logger LOGGER = Logger.getLogger(DoctorDBContext.class.getName());
@@ -88,66 +96,6 @@ public class DoctorDBContext extends DBContext<Doctor> {
         return doctor;
     }
 
-    public List<Doctor> getDoctorsByFilters(String name, List<String> selectedSpecialties, Date selectedDate) {
-        HashMap<Integer, Doctor> doctorMap = new HashMap<>();
-
-        // Start the base SQL query
-        String sql = "SELECT d.id, s.fullname, dep.name AS specialty "
-                + "FROM Doctor d "
-                + "JOIN Staff s ON d.staff_id = s.id "
-                + "JOIN Doctor_Department dd ON d.id = dd.doctor_id "
-                + "JOIN Department dep ON dd.department_id = dep.id "
-                + "JOIN Doctor_Schedule ds ON d.id = ds.doctor_id "
-                + "WHERE ds.schedule_date = ? "; // Ensures only doctors with a schedule that day are fetched
-
-        ArrayList<Object> paramValues = new ArrayList<>();
-        paramValues.add(selectedDate);  // Filter by selected date
-
-        // Add filtering by doctor's name (if provided)
-        if (name != null && !name.trim().isEmpty()) {
-            sql += " AND s.fullname LIKE ?";
-            paramValues.add("%" + name + "%");
-        }
-
-        // Add filtering by specialties (if selected)
-        if (selectedSpecialties != null && !selectedSpecialties.isEmpty()) {
-            sql += " AND dep.id IN (";
-            sql += String.join(", ", Collections.nCopies(selectedSpecialties.size(), "?"));
-            sql += ")";
-            paramValues.addAll(selectedSpecialties);
-        }
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            // Set parameters dynamically
-            for (int i = 0; i < paramValues.size(); i++) {
-                stmt.setObject(i + 1, paramValues.get(i));
-            }
-
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                int doctorId = rs.getInt("id");
-                String doctorFullName = rs.getString("fullname");
-                String specialty = rs.getString("specialty");
-
-                // If doctor is not in the list, add them
-                doctorMap.putIfAbsent(doctorId, new Doctor(doctorId, doctorFullName, new ArrayList<>()));
-
-                // Add specialty if not already in the list
-                if (!doctorMap.get(doctorId).getSpecialties().contains(specialty)) {
-                    doctorMap.get(doctorId).getSpecialties().add(specialty);
-                }
-            }
-
-            if (doctor != null) {
-                doctor.setSpecialties(specialties);
-            }
-        } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "Error retrieving doctor list", ex);
-        }
-
-        return new ArrayList<>(doctorMap.values());
-    }
-
     @Override
     public ArrayList<Doctor> list() {
         HashMap<Integer, Doctor> doctorMap = new HashMap<>();
@@ -180,7 +128,7 @@ public class DoctorDBContext extends DBContext<Doctor> {
 
     @Override
     public Doctor get(String id) {
-        return getDoctorById(Integer.parseInt(id));
+        return null;
     }
 
     public ArrayList<DoctorSchedule> getDoctorSchedules(int doctorId, Date date) {
@@ -214,14 +162,12 @@ public class DoctorDBContext extends DBContext<Doctor> {
         return schedules;
     }
 
+// Get specialties for a doctor
     public ArrayList<String> getDoctorSpecialties(int doctorId) {
         ArrayList<String> specialties = new ArrayList<>();
-        String sql = """
-                SELECT dep.name
-                FROM Department dep
-                JOIN Doctor_Department dd ON dep.id = dd.department_id
-                WHERE dd.doctor_id = ?
-                """;
+        String sql = "SELECT s.name FROM Department s "
+                + "JOIN Doctor_Department dd ON s.id = dd.department_id "
+                + "WHERE dd.doctor_id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, doctorId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -229,8 +175,8 @@ public class DoctorDBContext extends DBContext<Doctor> {
                     specialties.add(rs.getString("name"));
                 }
             }
-        } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "Error fetching specialties for doctor", ex);
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error fetching specialties for doctor", e);
         }
         return specialties;
     }
@@ -309,16 +255,17 @@ public class DoctorDBContext extends DBContext<Doctor> {
 
     @Override
     public void insert(Doctor model) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public void update(Doctor model) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public void delete(Doctor model) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
 }
