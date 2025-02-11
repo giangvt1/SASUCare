@@ -21,11 +21,13 @@ public class CustomerDBContext extends DBContext<Customer> {
 
     public ArrayList<Customer> searchCustomerInMedical(String name, Date dob, Boolean gender, int page) {
         ArrayList<Customer> customers = new ArrayList<>();
-        String sql = "SELECT id,gender,dob,address,phone_number,fullname,google_id FROM [Customer] WHERE 1=1";
+        int totalRecords = 0;
+        String sql = "SELECT * FROM [Customer] WHERE 1=1";
 
+        // Sử dụng StringBuilder để thêm điều kiện động
         StringBuilder sqlBuilder = new StringBuilder(sql);
         if (name != null && !name.isEmpty()) {
-            sqlBuilder.append(" AND fullname COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?");
+            sqlBuilder.append(" AND fullname LIKE ?");
         }
         if (dob != null) {
             sqlBuilder.append(" AND dob = ?");
@@ -34,8 +36,10 @@ public class CustomerDBContext extends DBContext<Customer> {
             sqlBuilder.append(" AND gender = ?");
         }
 
+        // Thêm phân trang
         sqlBuilder.append(" ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
 
+        // Nếu không có tham số tìm kiếm, trả về danh sách rỗng
         if ((name == null || name.isEmpty()) && dob == null && gender == null) {
             return customers;
         }
@@ -50,11 +54,11 @@ public class CustomerDBContext extends DBContext<Customer> {
                 stm.setDate(paramIndex++, new java.sql.Date(dob.getTime()));
             }
             if (gender != null) {
-                stm.setBoolean(paramIndex++, Boolean.TRUE.equals(gender));
-
+                stm.setBoolean(paramIndex++, gender);
             }
 
-            int offset = (page - 1) * 10;
+            // Tính toán OFFSET và FETCH
+            int offset = (page - 1) * 10; // Trang bắt đầu từ 1
             stm.setInt(paramIndex++, offset);
             stm.setInt(paramIndex++, 10);
 
@@ -62,6 +66,9 @@ public class CustomerDBContext extends DBContext<Customer> {
                 while (rs.next()) {
                     Customer customer = new Customer();
                     customer.setId(rs.getInt("id"));
+                    customer.setUsername(rs.getString("username"));
+                    customer.setPassword(rs.getString("password"));
+                    customer.setGmail(rs.getString("gmail"));
                     customer.setGender(rs.getBoolean("gender"));
                     customer.setDob(rs.getDate("dob"));
                     customer.setAddress(rs.getString("address"));
@@ -362,15 +369,15 @@ public class CustomerDBContext extends DBContext<Customer> {
 
     @Override
     public void update(Customer model) {
-        String sql = "UPDATE [Customer] SET username = ?, password = ?, gmail = ?, gender = ?, dob = ?, address = ?, phone_number = ?, google_id = ?, fullname = ? WHERE gmail = ?";
-        try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            stm.setString(1, model.getUsername());
-            stm.setString(2, model.getPassword());
-            stm.setString(3, model.getGmail());
-            stm.setBoolean(4, model.isGender());
-            stm.setDate(5, new java.sql.Date(model.getDob().getTime()));
-            stm.setString(6, model.getAddress());
-            stm.setString(7, model.getPhone_number());
+    String sql = "UPDATE [Customer] SET username = ?, password = ?, gmail = ?, gender = ?, dob = ?, address = ?, phone_number = ?, google_id = ? WHERE id = ?";
+    try (PreparedStatement stm = connection.prepareStatement(sql)) {
+        stm.setString(1, model.getUsername());
+        stm.setString(2, model.getPassword());
+        stm.setString(3, model.getGmail());
+        stm.setBoolean(4, model.isGender());
+        stm.setDate(5, new java.sql.Date(model.getDob().getTime()));
+        stm.setString(6, model.getAddress());
+        stm.setString(7, model.getPhone_number());
 
             // Kiểm tra GoogleAccount và thêm ID nếu có
             if (model.getGoogle_id() != null) {
@@ -393,6 +400,18 @@ public class CustomerDBContext extends DBContext<Customer> {
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Error updating customer: {0}", ex.getMessage());
         }
+
+        // Cập nhật dựa trên ID
+        stm.setInt(9, model.getId());
+
+        int rowsAffected = stm.executeUpdate();
+        if (rowsAffected > 0) {
+            System.out.println("Customer updated successfully.");
+        } else {
+            System.out.println("Customer update failed.");
+        }
+    } catch (SQLException ex) {
+        LOGGER.log(Level.SEVERE, "Error updating customer: {0}", ex.getMessage());
     }
 
     @Override
@@ -459,7 +478,6 @@ public class CustomerDBContext extends DBContext<Customer> {
                 customer.setDob(rs.getDate("dob")); // Chuyển đổi từ SQL Date sang Java Date
                 customer.setAddress(rs.getString("address"));
                 customer.setPhone_number(rs.getString("phone_number"));
-                customer.setFullname(rs.getString("fullname"));
 
                 // Nếu GoogleAccount tồn tại
                 if (google_id != null) {
@@ -485,10 +503,11 @@ public class CustomerDBContext extends DBContext<Customer> {
         try {
             stm = connection.prepareStatement(sql);
             stm.setString(1, username);
-            stm.setString(2, hashPassword(password));
+            stm.setString(2, password);
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
                 customer = new Customer();
+                customer.setId(rs.getInt("id"));
                 customer.setFullname(rs.getString("fullname"));
                 customer.setUsername(rs.getString("username"));
                 customer.setPassword(rs.getString("password")); // Lấy password
@@ -641,4 +660,20 @@ public class CustomerDBContext extends DBContext<Customer> {
             LOGGER.log(Level.SEVERE, "Error updating password: {0}", ex.getMessage());
         }
     }
+
+    @Override
+    public void delete(Customer model) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public ArrayList<Customer> list() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Customer get(String id) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
+
