@@ -164,7 +164,8 @@
                                 Kasd dolor no lorem nonumy sit labore tempor at justo rebum
                                 rebum stet, justo elitr dolor amet sit
                             </p>
-                            <a class="btn btn-lg btn-primary rounded-pill" href="">
+                            <a class="btn btn-lg btn-primary rounded-pill" href="capcuu.jsp">
+                                
                                 <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>
@@ -181,7 +182,7 @@
                                 Kasd dolor no lorem nonumy sit labore tempor at justo rebum
                                 rebum stet, justo elitr dolor amet sit
                             </p>
-                            <a class="btn btn-lg btn-primary rounded-pill" href="">
+                            <a class="btn btn-lg btn-primary rounded-pill" href="Operation.jsp">
                                 <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>
@@ -198,7 +199,7 @@
                                 Kasd dolor no lorem nonumy sit labore tempor at justo rebum
                                 rebum stet, justo elitr dolor amet sit
                             </p>
-                            <a class="btn btn-lg btn-primary rounded-pill" href="">
+                            <a class="btn btn-lg btn-primary rounded-pill" href="OutdoorCheckup.jsp">
                                 <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>
@@ -215,7 +216,7 @@
                                 Kasd dolor no lorem nonumy sit labore tempor at justo rebum
                                 rebum stet, justo elitr dolor amet sit
                             </p>
-                            <a class="btn btn-lg btn-primary rounded-pill" href="">
+                            <a class="btn btn-lg btn-primary rounded-pill" href="AmbulanceService.jsp">
                                 <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>
@@ -232,7 +233,7 @@
                                 Kasd dolor no lorem nonumy sit labore tempor at justo rebum
                                 rebum stet, justo elitr dolor amet sit
                             </p>
-                            <a class="btn btn-lg btn-primary rounded-pill" href="">
+                            <a class="btn btn-lg btn-primary rounded-pill" href="Medicine.jsp">
                                 <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>
@@ -249,7 +250,7 @@
                                 Kasd dolor no lorem nonumy sit labore tempor at justo rebum
                                 rebum stet, justo elitr dolor amet sit
                             </p>
-                            <a class="btn btn-lg btn-primary rounded-pill" href="">
+                            <a class="btn btn-lg btn-primary rounded-pill" href="BloodTesting.jsp">
                                 <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>
@@ -265,7 +266,7 @@
                 <div class="row gx-5">
                     <div class="col-lg-6 mb-5 mb-lg-0">
                         <div class="mb-4">
-                            <h5
+                             <h5
                                 class="d-inline-block text-white text-uppercase border-bottom border-5"
                                 >
                                 Appointment

@@ -4,6 +4,7 @@ import dal.DBContext;
 import model.Doctor;
 import model.DoctorSchedule;
 import model.Shift;
+import model.system.Staff;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,7 +13,62 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
+
     private static final Logger LOGGER = Logger.getLogger(DoctorScheduleDBContext.class.getName());
+
+    // Get available future dates for a doctor
+    public List<Date> getAvailableDates(int doctorId) {
+        List<Date> availableDates = new ArrayList<>();
+        String sql = """
+            SELECT DISTINCT schedule_date 
+            FROM Doctor_Schedule 
+            WHERE doctor_id = ? AND available = 1 AND schedule_date >= GETDATE()
+            ORDER BY schedule_date ASC
+        """;
+
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setInt(1, doctorId);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                availableDates.add(rs.getDate("schedule_date"));
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error fetching available dates: {0}", ex.getMessage());
+        }
+        return availableDates;
+    }
+
+    // Get available time slots for a doctor on a specific date
+    public DoctorSchedule getScheduleByDateAndShift(int doctorId, Date date, int shiftId) {
+        DoctorSchedule schedule = null;
+        String sql = """
+        SELECT ds.id, ds.schedule_date, ds.shift_id, s.time_start, s.time_end, ds.available
+        FROM Doctor_Schedule ds
+        JOIN Shift s ON ds.shift_id = s.id
+        WHERE ds.doctor_id = ? AND ds.schedule_date = ? AND ds.shift_id = ? AND ds.available = 1
+    """;
+
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setInt(1, doctorId);
+            stm.setDate(2, date);
+            stm.setInt(3, shiftId);
+            ResultSet rs = stm.executeQuery();
+
+            if (rs.next()) { // Fetch only one record
+                Shift shift = new Shift(rs.getInt("shift_id"), rs.getTime("time_start"), rs.getTime("time_end"));
+                schedule = new DoctorSchedule(
+                        rs.getInt("id"),
+                        null, // Doctor object can be set later if needed
+                        rs.getDate("schedule_date"),
+                        shift,
+                        rs.getInt("available") == 1
+                );
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error fetching doctor schedule by date & shift: {0}", ex.getMessage());
+        }
+        return schedule;
+    }
 
     @Override
     public void insert(DoctorSchedule schedule) {
@@ -20,15 +76,15 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
         try (PreparedStatement stm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stm.setInt(1, schedule.getDoctor().getId());
             stm.setDate(2, schedule.getScheduleDate());
-            stm.setInt(3, schedule.getShift().getId()); // Use shift_id instead of time_start/time_end
-            stm.setBoolean(4, schedule.isAvailable());
+            stm.setInt(3, schedule.getShift().getId());
+            stm.setInt(4, schedule.isAvailable() ? 1 : 0); // Chuyển boolean thành int
 
             int affectedRows = stm.executeUpdate();
             if (affectedRows > 0) {
                 ResultSet generatedKeys = stm.getGeneratedKeys();
                 if (generatedKeys.next()) {
                     schedule.setId(generatedKeys.getInt(1));
-                    System.out.println("Doctor schedule added successfully with ID: " + schedule.getId());
+                    LOGGER.info("Doctor schedule added successfully with ID: " + schedule.getId());
                 }
             }
         } catch (SQLException ex) {
@@ -39,6 +95,7 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
     @Override
     public DoctorSchedule get(String id) {
         DoctorSchedule schedule = null;
+        DoctorDBContext docDb = new DoctorDBContext();
         String sql = """
             SELECT ds.id, ds.doctor_id, ds.schedule_date, ds.shift_id, s.time_start, s.time_end, ds.available
             FROM Doctor_Schedule ds
@@ -49,22 +106,16 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
             stm.setInt(1, Integer.parseInt(id));
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
-                schedule = new DoctorSchedule();
-                schedule.setId(rs.getInt("id"));
+                Doctor doctor = docDb.getDoctorById(rs.getInt("doctor_id"));
+                Shift shift = new Shift(rs.getInt("shift_id"), rs.getTime("time_start"), rs.getTime("time_end"));
 
-                Doctor doctor = new Doctor();
-                doctor.setId(rs.getInt("doctor_id"));
-                schedule.setDoctor(doctor);
-
-                schedule.setScheduleDate(rs.getDate("schedule_date"));
-
-                Shift shift = new Shift();
-                shift.setId(rs.getInt("shift_id"));
-                shift.setTimeStart(rs.getTime("time_start"));
-                shift.setTimeEnd(rs.getTime("time_end"));
-
-                schedule.setShift(shift);
-                schedule.setAvailable(rs.getBoolean("available"));
+                schedule = new DoctorSchedule(
+                        rs.getInt("id"),
+                        doctor,
+                        rs.getDate("schedule_date"),
+                        shift,
+                        rs.getInt("available") == 1
+                );
             }
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Error fetching doctor schedule: {0}", ex.getMessage());
@@ -76,8 +127,8 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
     public void update(DoctorSchedule schedule) {
         String sql = "UPDATE Doctor_Schedule SET available = ? WHERE id = ?";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            stm.setBoolean(1, schedule.isAvailable());
-            stm.setInt(2, schedule.getId()); // Updating Doctor_Schedule instead of Shift
+            stm.setInt(1, schedule.isAvailable() ? 1 : 0);
+            stm.setInt(2, schedule.getId());
             stm.executeUpdate();
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Error updating doctor schedule: {0}", ex.getMessage());
@@ -92,9 +143,9 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
 
             int affectedRows = stm.executeUpdate();
             if (affectedRows > 0) {
-                System.out.println("Doctor schedule deleted successfully.");
+                LOGGER.info("Doctor schedule deleted successfully.");
             } else {
-                System.out.println("No doctor schedule found with the given ID.");
+                LOGGER.warning("No doctor schedule found with the given ID.");
             }
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Error deleting doctor schedule: {0}", ex.getMessage());
@@ -103,6 +154,7 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
 
     public List<DoctorSchedule> getSchedulesByDoctor(int doctorId, Date date) {
         List<DoctorSchedule> schedules = new ArrayList<>();
+        DoctorDBContext docDB = new DoctorDBContext();
         String sql = """
             SELECT ds.id, ds.schedule_date, ds.shift_id, s.time_start, s.time_end, ds.available
             FROM Doctor_Schedule ds
@@ -115,17 +167,14 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-                Shift shift = new Shift();
-                shift.setId(rs.getInt("shift_id"));
-                shift.setTimeStart(rs.getTime("time_start"));
-                shift.setTimeEnd(rs.getTime("time_end"));
-
-                DoctorSchedule schedule = new DoctorSchedule();
-                schedule.setId(rs.getInt("id"));
-                schedule.setScheduleDate(rs.getDate("schedule_date"));
-                schedule.setShift(shift);
-                schedule.setAvailable(rs.getBoolean("available"));
-
+                Shift shift = new Shift(rs.getInt("shift_id"), rs.getTime("time_start"), rs.getTime("time_end"));
+                DoctorSchedule schedule = new DoctorSchedule(
+                        rs.getInt("id"),
+                        docDB.getDoctorById(doctorId),
+                        rs.getDate("schedule_date"),
+                        shift,
+                        rs.getInt("available") == 1
+                );
                 schedules.add(schedule);
             }
         } catch (SQLException ex) {

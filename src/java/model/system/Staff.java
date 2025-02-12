@@ -1,46 +1,42 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model.system;
+
 import java.sql.*;
-import java.util.ArrayList;
-/**
- *
- * @author acer
- */
+
 public class Staff {
     private int id;
-    private String username;
-    private String password;
-    private String fullname;
-    private String email;
-    private String phonenumber;
-    private Date dob;
-    private ArrayList<Role> role=new ArrayList<>();
-    private String address;
+    private User staff_username;
     private boolean gender;
-
-    public boolean isGender() {
-        return gender;
-    }
-
-    public void setGender(boolean gender) {
-        this.gender = gender;
-    }
+    private String fullname;
+    private Date dob;
+    private String address;
+    private User createby;
+    private Timestamp createat;
+    private User updateby;
+    private Timestamp updateat;
+    private boolean isDoctor; 
     
-    public String getAddress() {
-        return address;
-    }
+    
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
- 
+    // Constructor mặc định
     public Staff() {
     }
 
+    // Constructor đầy đủ có bao gồm isDoctor
+    public Staff(int id, User staffusername, boolean gender, String fullname, Date dob, String address, User createby, Timestamp createat, User updateby, Timestamp updateat, boolean isDoctor) {
+        this.id = id;
+        this.staff_username = staffusername;
+        this.gender = gender;
+        this.fullname = fullname;
+        this.dob = dob;
+        this.address = address;
+        this.createby = createby;
+        this.createat = createat;
+        this.updateby = updateby;
+        this.updateat = updateat;
+        this.isDoctor = isDoctor;
+    }
+
+    // Getters and setters
     public int getId() {
         return id;
     }
@@ -49,20 +45,20 @@ public class Staff {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public User getStaffusername() {
+        return staff_username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setStaffusername(User staffusername) {
+        this.staff_username = staffusername;
     }
 
-    public String getPassword() {
-        return password;
+    public boolean isGender() {
+        return gender;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setGender(boolean gender) {
+        this.gender = gender;
     }
 
     public String getFullname() {
@@ -73,22 +69,6 @@ public class Staff {
         this.fullname = fullname;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhonenumber() {
-        return phonenumber;
-    }
-
-    public void setPhonenumber(String phonenumber) {
-        this.phonenumber = phonenumber;
-    }
-
     public Date getDob() {
         return dob;
     }
@@ -97,31 +77,51 @@ public class Staff {
         this.dob = dob;
     }
 
-
-    public ArrayList<Role> getRole() {
-        return role;
+    public String getAddress() {
+        return address;
     }
 
-    public void setRole(ArrayList<Role> role) {
-        this.role = role;
-    }
-
-    public Staff(int id, String username, String password, String fullname, String email, String phonenumber, Date dob, ArrayList<Role> role, String address, boolean gender) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.fullname = fullname;
-        this.email = email;
-        this.phonenumber = phonenumber;
-        this.dob = dob;
-        this.role = role;
+    public void setAddress(String address) {
         this.address = address;
-        this.gender = gender;
     }
 
-    
+    public User getCreateby() {
+        return createby;
+    }
 
+    public void setCreateby(User createby) {
+        this.createby = createby;
+    }
 
-    
-    
+    public Timestamp getCreateat() {
+        return createat;
+    }
+
+    public void setCreateat(Timestamp createat) {
+        this.createat = createat;
+    }
+
+    public User getUpdateby() {
+        return updateby;
+    }
+
+    public void setUpdateby(User updateby) {
+        this.updateby = updateby;
+    }
+
+    public Timestamp getUpdateat() {
+        return updateat;
+    }
+
+    public void setUpdateat(Timestamp updateat) {
+        this.updateat = updateat;
+    }
+
+    public boolean isDoctor() {
+        return isDoctor;
+    }
+
+    public void setDoctor(boolean isDoctor) {
+        this.isDoctor = isDoctor;
+    }
 }

@@ -19,7 +19,6 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-//@WebServlet("/appointment/confirm")
 public class AppointmentConfirmServlet extends HttpServlet {
 
     private final AppointmentDBContext appointmentDB = new AppointmentDBContext();
@@ -31,59 +30,70 @@ public class AppointmentConfirmServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         doPost(req, resp);
     }
-    
-    
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
+//        response.setContentType("application/json");
         PrintWriter out = response.getWriter();
-        
-//        // **Get logged-in user ID**
-//        Integer customerId = (Integer) session.getAttribute("customerId");
-//        if (customerId == null) {
-//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//            out.write("{\"status\":\"error\", \"message\":\"User not logged in.\"}");
-//            return;
-//        }
-        String customerId = "1";
 
         try {
-            int doctorId = Integer.parseInt(request.getParameter("doctor"));
-            int scheduleId = Integer.parseInt(request.getParameter("schedule")); // Corrected parameter name
+            HttpSession session = request.getSession();
+            if (session == null || session.getAttribute("currentCustomer") == null) {
+                String currentUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
+                session.setAttribute("redirectAfterLogin", currentUrl); // Store the URL in session
 
-            // **Retrieve objects**
-            Customer customer = customerDB.get(String.valueOf(customerId));
+                // Send JavaScript to show alert and redirect
+                response.setContentType("text/html");
+                out.println("<script type='text/javascript'>");
+                out.println("alert('You are not logged in. Please login to continue.');");
+                out.println("window.location.href='" + request.getContextPath() + "/Home.jsp';");
+                out.println("</script>");
+                out.close();
+                return;
+            }
+
+            //  Get customer from session
+            Customer customer = (Customer) session.getAttribute("currentCustomer");
+//          
+            //  Get doctor & schedule IDs from request
+            int doctorId = Integer.parseInt(request.getParameter("doctor"));
+            int scheduleId = Integer.parseInt(request.getParameter("schedule"));
+
+            //  Retrieve data from DB
             Doctor doctor = doctorDB.get(String.valueOf(doctorId));
             DoctorSchedule doctorSchedule = doctorScheduleDB.get(String.valueOf(scheduleId));
 
-            // **Check if all necessary data exists**
+//              Validate that all objects exist
             if (customer == null || doctor == null || doctorSchedule == null) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.write("{\"status\":\"error\", \"message\":\"Invalid appointment details.\"}");
                 return;
             }
 
-            // **Create and insert appointment**
+            //  Create appointment object
             Appointment appointment = new Appointment();
             appointment.setCustomer(customer);
             appointment.setDoctor(doctor);
             appointment.setDoctorSchedule(doctorSchedule);
-            appointment.setStatus("Confirmed");
+            appointment.setStatus("Pending");
 
+            //  Insert appointment into DB
             appointmentDB.insert(appointment);
 
-            // **Mark doctor schedule as booked**
+            //  Mark doctor schedule as booked
             doctorSchedule.setAvailable(false);
             doctorScheduleDB.update(doctorSchedule);
 
-            // **Redirect to appointment history page**
-//            response.sendRedirect(request.getContextPath() + "/user/appointments");
+            out.write(customer.getId() + " successfully");
 
+        } catch (NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            out.write("{\"status\":\"error\", \"message\":\"Invalid input format.\"}");
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.write("{\"status\":\"error\", \"message\":\"An error occurred while booking.\"}");
+
         }
     }
 }

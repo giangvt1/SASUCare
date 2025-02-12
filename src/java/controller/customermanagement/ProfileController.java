@@ -5,6 +5,7 @@
 
 package controller.customermanagement;
 
+import dao.CustomerDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -92,7 +93,37 @@ public class ProfileController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        System.out.println("111111111");
+        HttpSession mySession = request.getSession();
+        Customer customer = (Customer) mySession.getAttribute("currentCustomer");
+
+        if (customer == null) {
+            response.sendRedirect("login.jsp"); // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+            return;
+        }
+
+        CustomerDBContext customerDAO = new CustomerDBContext();
+
+        String fullName = request.getParameter("name");
+        String phone = request.getParameter("phone");
+        String address = request.getParameter("address");
+
+        // Kiểm tra input không được null hoặc rỗng
+        if (fullName != null && !fullName.trim().isEmpty()) {
+            customer.setFullname(fullName);
+        }
+        if (address != null && !address.trim().isEmpty()) {
+            customer.setAddress(address);
+        }
+        if (phone != null && !phone.trim().isEmpty()) {
+            customer.setPhone_number(phone);
+        }
+
+        // Cập nhật thông tin khách hàng
+        customerDAO.update(customer);
+
+        // Sau khi cập nhật có thể chuyển hướng đến trang profile hoặc thông báo thành công
+        response.sendRedirect("./profile");
+
     }
 
     /** 

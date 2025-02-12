@@ -9,36 +9,16 @@
         </group>
         <group name="PRJ301"/>
         <group name="ThisForTest">
-            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/model/GoogleAccount.java</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/model/DoctorSchedule.java</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/web/appointment/appointment_confirm.jsp</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/utils/EmailSender.java</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/dal/DBContext.java</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/dao/RoleDBContext.java</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/web/appointment/doctor_list.jsp</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/model/Customer.java</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/dao/DoctorDBContext.java</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/controller/appointment/AppointmentCalendarServlet.java</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/web/appointment/appointment-calendar.jsp</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/dao/DoctorScheduleDBContext.java</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/model/Shift.java</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/controller/accesscontrol/ForgetPasswordController.java</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/dao/AppointmentDBContext.java</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/web/Header.jsp</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/model/Feature.java</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/controller/appointment/DoctorSpecialtiesController.java</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/controller/appointment/AppointmentDoctorListController.java</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/web/WEB-INF/web.xml</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/web/Footer.jsp</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/web/Home.jsp</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/dao/StaffDBContext.java</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/controller/accesscontrol/GoogleLogin.java</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/model/Doctor.java</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/controller/appointment/AppointmentConfirmServlet.java</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/controller/accesscontrol/BaseRequiredAuthentication.java</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/dao/CustomerDBContext.java</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/model/Appointment.java</file>
-            <file>file:/D:/GitHub/SWP391_GROUP6/src/java/controller/accesscontrol/BaseRBACController.java</file>
+            <file>file:/D:/Project-Backup/web/WEB-INF/web.xml</file>
+            <file>file:/D:/Project-Backup/web/appointment/appointment-calendar.jsp</file>
+            <file>file:/D:/Project-Backup/src/java/controller/appointment/AppointmentDoctorListController.java</file>
+            <file>file:/D:/Project-Backup/src/java/dao/DoctorScheduleDBContext.java</file>
+            <file>file:/D:/Project-Backup/src/java/dao/CustomerDBContext.java</file>
+            <file>file:/D:/Project-Backup/src/java/controller/appointment/AppointmentConfirmServlet.java</file>
+            <file>file:/D:/Project-Backup/src/java/dao/DoctorDBContext.java</file>
+            <file>file:/D:/Project-Backup/src/java/controller/accesscontrol/LoginController.java</file>
+            <file>file:/D:/Project-Backup/web/appointment/doctor_list.jsp</file>
+            <file>file:/D:/Project-Backup/src/java/dao/AppointmentDBContext.java</file>
         </group>
     </open-files>
 </project-private>

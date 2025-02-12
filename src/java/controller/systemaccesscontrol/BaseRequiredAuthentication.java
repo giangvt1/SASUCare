@@ -1,21 +1,32 @@
 package controller.systemaccesscontrol;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this lgicense
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
-import model.system.Staff;
+import model.system.User;
 
-/**
- *
- * @author acer
- */
 public abstract class BaseRequiredAuthentication extends HttpServlet {
+
+    private static final int SESSION_TIMEOUT = 30 * 60; // 30 minutes
+
+    private void ensureSecureSession(HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        session.setMaxInactiveInterval(SESSION_TIMEOUT);
+
+        // Check if session is expired
+        Long lastAccess = (Long) session.getAttribute("lastAccessTime");
+        long currentTime = System.currentTimeMillis();
+
+        if (lastAccess != null && (currentTime - lastAccess) > (SESSION_TIMEOUT * 1000)) {
+            session.invalidate();
+            return;
+        }
+
+        session.setAttribute("lastAccessTime", currentTime);
+    }
 
     private boolean isAuthenticated(HttpServletRequest req) {
         return req.getSession().getAttribute("account") != null;
@@ -23,24 +34,26 @@ public abstract class BaseRequiredAuthentication extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (isAuthenticated(req)) {
-            doAuthenGet(req, resp, (Staff) req.getSession().getAttribute("account"));
+        User loggedUser = (User) req.getSession().getAttribute("account");
+        if (loggedUser != null) {
+            doAuthenGet(req, resp, loggedUser);
         } else {
-            resp.sendRedirect("../error403.jsp");
+            resp.sendRedirect(req.getContextPath() + "/error403.jsp");
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (isAuthenticated(req)) {
-            doAuthenPost(req, resp, (Staff) req.getSession().getAttribute("account"));
+        User loggedUser = (User) req.getSession().getAttribute("account");
+        if (loggedUser != null) {
+            doAuthenPost(req, resp, loggedUser);
         } else {
-            resp.sendRedirect("../error403.jsp");
+            resp.sendRedirect(req.getContextPath() + "/error403.jsp");
         }
     }
 
-    protected abstract void doAuthenGet(HttpServletRequest req, HttpServletResponse resp, Staff logged) throws ServletException, IOException;
+    // Các phương thức mà các controller con cần triển khai để xử lý logic sau khi đã xác thực
+    protected abstract void doAuthenGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException;
 
-    protected abstract void doAuthenPost(HttpServletRequest req, HttpServletResponse resp, Staff logged) throws ServletException, IOException;
-
+    protected abstract void doAuthenPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException;
 }

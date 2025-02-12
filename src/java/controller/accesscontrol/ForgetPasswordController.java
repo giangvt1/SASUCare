@@ -9,11 +9,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import javax.mail.*;
-import javax.mail.internet.*;
+import jakarta.mail.*;
+import jakarta.mail.internet.*;
 import java.util.*;
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
 import java.io.*;
 
 public class ForgetPasswordController extends HttpServlet {

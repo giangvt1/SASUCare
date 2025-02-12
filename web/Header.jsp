@@ -70,7 +70,7 @@
         <div class="container-fluid sticky-top bg-white shadow-sm nav-pad">
             <div class="container">
                 <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0">
-                    <a href="/SWP391_GR6/Home.jsp" class="navbar-brand">
+                    <a href="Home.jsp" class="navbar-brand">
                         <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-clinic-medical me-2"></i>Medinova</h1>
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -79,9 +79,9 @@
                     <div class="collapse navbar-collapse" id="navbarCollapse">
                         <div class="navbar-nav ms-auto py-0">
                             <a href="Home.jsp" class="nav-item nav-link active">Home</a>
-                            <a href="about.html" class="nav-item nav-link">About</a>
-                            <a href="service.html" class="nav-item nav-link">Service</a>
-                            <a href="price.html" class="nav-item nav-link">Pricing</a>
+                            <a href="about.jsp" class="nav-item nav-link">About</a>
+                            <a href="service.jsp" class="nav-item nav-link">Service</a>
+                            <a href="price.jsp" class="nav-item nav-link">Pricing</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                                 <div class="dropdown-menu m-0">
@@ -93,7 +93,7 @@
                                     <a href="search.html" class="dropdown-item">Search</a>
                                 </div>
                             </div>
-                            <a href="contact.html" class="nav-item nav-link">Contact</a>
+                            <a href="contact.jsp" class="nav-item nav-link">Contact</a>
                             <c:if test="${not empty sessionScope.currentCustomer}">
                                 <a href="./profile" class="nav-item nav-link">
                                     Welcome, ${sessionScope.currentCustomer.fullname}

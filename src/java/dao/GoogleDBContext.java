@@ -5,16 +5,24 @@
 package dao;
 
 import dal.DBContext;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Properties;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.GoogleAccount;
+import jakarta.mail.Authenticator; // Correct import
+import jakarta.mail.PasswordAuthentication; // Correct import
+import jakarta.mail.Session; // Correct import
+import jakarta.mail.Transport; // Correct import
+import jakarta.mail.Message; // Correct import
+import jakarta.mail.MessagingException; // Correct import
+import jakarta.mail.internet.InternetAddress; // Correct import
+import jakarta.mail.internet.MimeMessage; // Correct import
 
 /**
  *
@@ -166,5 +174,42 @@ public class GoogleDBContext extends DBContext<GoogleAccount>{
         return account;
     }
     
-    
+    public int sendOtp(String gmail) {
+        Random rand = new Random();
+        int otpvalue = 100000 + rand.nextInt(900000);
+
+        String to = gmail;
+
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.socketFactory.port", "465");
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");  // Or jakarta.net.ssl.SSLSocketFactory if needed.
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.port", "465");
+
+        Session session = Session.getInstance(props, new Authenticator() { // Use getInstance
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("hailnhe181075@fpt.edu.vn", "mjpxokkwmtgkxqro");
+            }
+        });
+
+
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("hailnhe181075@fpt.edu.vn")); // Use your actual "from" email.
+            message.setRecipients(Message.RecipientType.TO, to);  // Use setRecipients if sending to one address
+            message.setSubject("Your OTP"); // More descriptive subject
+            message.setText("Your OTP is: " + otpvalue);
+
+            Transport.send(message);
+            System.out.println("Message sent successfully");
+            return otpvalue; // Return OTP on success
+
+        } catch (MessagingException e) {
+            LOGGER.log(Level.SEVERE, "Error sending OTP email", e); // Log the exception
+            e.printStackTrace(); // Print the stack trace for debugging.
+            return -1; // Return -1 to indicate failure.  Don't throw a RuntimeException.
+        }
+    }
 }

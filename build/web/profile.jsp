@@ -53,7 +53,6 @@
                             id="name" 
                             name="name" 
                             value="${customer.fullname}" 
-                            required 
                             placeholder="Enter your full name">
                     </div>
 
@@ -66,7 +65,7 @@
                             id="email" 
                             name="email" 
                             value="${customer.gmail}" 
-                            required 
+                            readonly=""
                             placeholder="Enter your email">
                     </div>
 
@@ -78,8 +77,7 @@
                             class="form-control" 
                             id="phone" 
                             name="phone" 
-                            value="" 
-                            required 
+                            value="${customer.phone_number}" 
                             placeholder="Enter your phone number">
                     </div>
                     <div class="mb-3">
@@ -89,8 +87,7 @@
                             class="form-control" 
                             id="address" 
                             name="address" 
-                            value="${''}" 
-                            required 
+                            value="${customer.address}" 
                             placeholder="Enter your address">
                     </div>
 

@@ -5,6 +5,8 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -16,7 +18,6 @@
             <a href="../admin/Dashboard.jsp" class="logo">
                 Director
             </a>
-            <!-- Header Navbar: style can be found in header.less -->
             <nav class="navbar navbar-static-top" role="navigation">
                 <!-- Sidebar toggle button-->
                 <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
@@ -25,6 +26,21 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </a>
+                <div class="navbar-right">
+                    <span class="user-role">
+                        Roles:
+                        <c:choose>
+                            <c:when test="${not empty sessionScope.userRoles}">
+                                <c:forEach var="role" items="${sessionScope.userRoles}">
+                                    <span class="badge badge-info" style="margin-right: 5px; font-size: 12px; padding: 3px 7px;">
+                                        ${role}
+                                    </span>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>No Roles</c:otherwise>
+                        </c:choose>
+                    </span>
+                </div>
                 <div class="navbar-right">
                     <ul class="nav navbar-nav">
                         <!-- Messages: style can be found in dropdown.less-->
@@ -180,13 +196,20 @@
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <i class="fa fa-user"></i>
-                                <span>Jane Doe <i class="caret"></i></span>
+                                <span> <% 
+                                model.system.User account = (model.system.User) session.getAttribute("account");
+                                if (account != null) {
+                                    out.print(account.getDisplayname());
+                                } else {
+                                    out.print("Guest");
+                                }
+                                    %><i class="caret"></i></span>
                             </a>
                             <ul class="dropdown-menu dropdown-custom dropdown-menu-right">
                                 <li class="dropdown-header text-center">Account</li>
 
                                 <li>
-                                    <a href="#">
+                                    <a href="../hr/edit">
                                         <i class="fa fa-clock-o fa-fw pull-right"></i>
                                         <span class="badge badge-success pull-right">10</span> Updates</a>
                                     <a href="#">
@@ -201,7 +224,7 @@
                                 <li class="divider"></li>
 
                                 <li>
-                                    <a href="#">
+                                    <a href="../system/profile">
                                         <i class="fa fa-user fa-fw pull-right"></i>
                                         Profile
                                     </a>
