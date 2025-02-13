@@ -19,11 +19,12 @@ public class CustomerDBContext extends DBContext<Customer> {
 
     private static final Logger LOGGER = Logger.getLogger(CustomerDBContext.class.getName());
 
-    public ArrayList<Customer> searchCustomerInMedical(String name, Date dob, Boolean gender, int page) {
+    public ArrayList<Customer> searchCustomerInMedical(String name, Date dob, Boolean gender, int page, String sort, int size) {
         ArrayList<Customer> customers = new ArrayList<>();
-        String sql = "SELECT id,gender,dob,address,phone_number,fullname,google_id FROM [Customer] WHERE 1=1";
+        String sql = "SELECT id, gender, dob, address, phone_number, fullname, google_id FROM [Customer] WHERE 1=1";
 
         StringBuilder sqlBuilder = new StringBuilder(sql);
+
         if (name != null && !name.isEmpty()) {
             sqlBuilder.append(" AND fullname COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?");
         }
@@ -34,11 +35,27 @@ public class CustomerDBContext extends DBContext<Customer> {
             sqlBuilder.append(" AND gender = ?");
         }
 
-        sqlBuilder.append(" ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
-
-        if ((name == null || name.isEmpty()) && dob == null && gender == null) {
-            return customers;
+        switch (sort) {
+            case "default":
+                sqlBuilder.append(" ORDER BY id");
+                break;
+            case "customerNameAZ":
+                sqlBuilder.append(" ORDER BY fullname ASC");
+                break;
+            case "customerNameZA":
+                sqlBuilder.append(" ORDER BY fullname DESC");
+                break;
+            case "customerDOBLTH":
+                sqlBuilder.append(" ORDER BY dob ASC");
+                break;
+            case "customerDOBHTL":
+                sqlBuilder.append(" ORDER BY dob DESC");
+                break;
+            default:
+                throw new AssertionError("Invalid sort type: " + sort);
         }
+        // Phân trang
+        sqlBuilder.append(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
 
         try (PreparedStatement stm = connection.prepareStatement(sqlBuilder.toString())) {
             int paramIndex = 1;
@@ -50,13 +67,12 @@ public class CustomerDBContext extends DBContext<Customer> {
                 stm.setDate(paramIndex++, new java.sql.Date(dob.getTime()));
             }
             if (gender != null) {
-                stm.setBoolean(paramIndex++, Boolean.TRUE.equals(gender));
-
+                stm.setBoolean(paramIndex++, gender);
             }
 
-            int offset = (page - 1) * 10;
+            int offset = (page - 1) * size;
             stm.setInt(paramIndex++, offset);
-            stm.setInt(paramIndex++, 10);
+            stm.setInt(paramIndex++, size);
 
             try (ResultSet rs = stm.executeQuery()) {
                 while (rs.next()) {

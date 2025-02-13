@@ -20,10 +20,12 @@
         </group>
         <group name="PRJ301"/>
         <group>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/inter1/SWP391_GROUP6/src/java/dao/CustomerDBContext.java</file>
+            <file>file:/D:/Ky%205/SWP/doctor/SWP391_GROUP6/src/java/dal/DBContext.java</file>
         </group>
         <group>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/inter1/SWP391_GROUP6/src/java/dao/DoctorDBContext.java</file>
+            <file>file:/D:/Ky%205/SWP/doctor/SWP391_GROUP6/web/doctor/SearchCustomer.jsp</file>
+            <file>file:/D:/Ky%205/SWP/doctor/SWP391_GROUP6/src/java/controller/doctor/ShowCustomerMedicalDetail.java</file>
+            <file>file:/D:/Ky%205/SWP/doctor/SWP391_GROUP6/web/doctor/CustomerMedicalDetail.jsp</file>
         </group>
     </open-files>
 </project-private>

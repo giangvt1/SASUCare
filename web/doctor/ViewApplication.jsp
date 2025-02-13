@@ -8,13 +8,14 @@
         <link href="../css/admin/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <link href="../css/admin/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <link href="../css/admin/styleAdmin.css" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" href="../css/doctor/doctor_style.css"/>
+        <link rel="stylesheet" href="../css/doctor/manage_medical_style.css"/>
     </head>
     <body class="skin-black">
         <jsp:include page="../admin/AdminHeader.jsp" />
         <jsp:include page="../admin/AdminLeftSideBar.jsp" />
         <div class="right-side">
             <h2 class="mb-3">List Aplication</h2>
+            <a href="../doctor/SendApplication.jsp">Send Application</a>
             <table class="table table-bordered">
                 <thead>
                     <tr>

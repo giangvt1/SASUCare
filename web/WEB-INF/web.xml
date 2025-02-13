@@ -84,6 +84,14 @@
         <servlet-name>ViewApplication</servlet-name>
         <servlet-class>controller.doctor.ViewApplication</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>EditCustomerMedicalHistory</servlet-name>
+        <servlet-class>controller.doctor.EditCustomerMedicalHistory</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditCustomerVisitHistory</servlet-name>
+        <servlet-class>controller.doctor.EditCustomerVisitHistory</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
         <url-pattern>/forgetpassword</url-pattern>
@@ -224,5 +232,13 @@
     <servlet-mapping>
         <servlet-name>ViewApplication</servlet-name>
         <url-pattern>/doctor/ViewApplication</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditCustomerMedicalHistory</servlet-name>
+        <url-pattern>/doctor/EditCustomerMedicalHistory</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditCustomerVisitHistory</servlet-name>
+        <url-pattern>/doctor/EditCustomerVisitHistory</url-pattern>
     </servlet-mapping>
 </web-app>
