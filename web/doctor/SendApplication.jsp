@@ -21,12 +21,13 @@
         <jsp:include page="../admin/AdminLeftSideBar.jsp" />
         <div class="right-side">
             <h3 class="text-center">Send Application</h3>
+            <a href="ViewApplication?did=16">View Application</a>
             <form action="SendApplication" method="POST" class="mt-4">
                 <input type="text" hidden id="did" name="did" value="16"required><br><br>
                 <div class="form-group">
                     <label for="name">Loại đơn</label>
                     <select class="form-contsrol" id="name" name="name" required>
-                        <option value="">-- Chọn loại đơn --</option>
+                        <option value="">-- Type Application --</option>
                         <option value="tang luong">Đơn xin tăng lương</option>
                         <option value="doi lich">Đơn xin đổi lịch làm</option>
                         <option value="xin nghi">Đơn xin nghỉ</option>
@@ -42,7 +43,20 @@
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>
+        <script>
+            document.querySelector("form").addEventListener("submit", function (event) {
+                let reason = document.getElementById("reason").value.trim();
+                let mess = "";
+                if (reason === "") {
+                    mess += "Reason not null\n";
 
+                }
+                if (mess !== "") {
+                    alert(mess);
+                    event.preventDefault();
+                }
+            });
+        </script>
         <!-- jQuery 2.0.2 -->
         <script src="../js/jquery.min.js" type="text/javascript"></script>
         <!-- Bootstrap -->
