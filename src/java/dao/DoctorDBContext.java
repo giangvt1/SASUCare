@@ -1,4 +1,4 @@
-    /*
+/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
@@ -25,6 +25,113 @@ import model.Shift;
 public class DoctorDBContext extends DBContext<Doctor> {
 
     private static final Logger LOGGER = Logger.getLogger(DoctorDBContext.class.getName());
+
+    public List<Application> getApplicationsByDoctorID(String name, Date date, String status, int did, int page, String sort, int size) {
+        List<Application> applications = new ArrayList<>();
+        StringBuilder sqlBuilder = new StringBuilder(
+                "SELECT id, name, date, doctor_id, reason, status, reply FROM Application WHERE doctor_id = ?"
+        );
+
+        if (name != null && !name.isEmpty()) {
+            sqlBuilder.append(" AND name LIKE ?");
+        }
+        if (date != null) {
+            sqlBuilder.append(" AND date = ?");
+        }
+        if (status != null && !status.isEmpty()) {
+            sqlBuilder.append(" AND status LIKE ?");
+        }
+
+        // Thêm điều kiện sắp xếp
+        switch (sort) {
+            case "dateLTH":
+                sqlBuilder.append(" ORDER BY date ASC");
+                break;
+            case "dateHTL":
+                sqlBuilder.append(" ORDER BY date DESC");
+                break;
+            default:
+                sqlBuilder.append(" ORDER BY id");
+                break;
+        }
+
+        // Thêm phân trang
+        sqlBuilder.append(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+
+        try (PreparedStatement stm = connection.prepareStatement(sqlBuilder.toString())) {
+            int paramIndex = 1;
+            stm.setInt(paramIndex++, did);
+
+            if (name != null && !name.isEmpty()) {
+                stm.setString(paramIndex++, "%" + name + "%");
+            }
+            if (date != null) {
+                stm.setDate(paramIndex++, new java.sql.Date(date.getTime()));
+            }
+            if (status != null && !status.isEmpty()) {
+                stm.setString(paramIndex++, "%" + status + "%");
+            }
+
+            // Xử lý phân trang
+            int offset = (page - 1) * size;
+            stm.setInt(paramIndex++, offset);
+            stm.setInt(paramIndex++, size);
+
+            try (ResultSet rs = stm.executeQuery()) {
+                while (rs.next()) {
+                    Application app = new Application(
+                            rs.getInt("id"),
+                            rs.getInt("doctor_id"),
+                            rs.getString("name"),
+                            rs.getString("reason"),
+                            rs.getDate("date")
+                    );
+                    app.setStatus(rs.getString("status"));
+                    app.setReply(rs.getString("reply"));
+                    applications.add(app);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return applications;
+    }
+
+    @Override
+    public Doctor get(String id) {
+        return null;
+    }
+
+    public ArrayList<DoctorSchedule> getDoctorSchedules(int doctorId, Date date) {
+        ArrayList<DoctorSchedule> schedules = new ArrayList<>();
+        String sql = """
+                SELECT ds.id, ds.schedule_date, s.id AS shift_id, s.time_start, s.time_end, ds.available
+                FROM Doctor_Schedule ds
+                JOIN Shift s ON ds.shift_id = s.id
+                WHERE ds.doctor_id = ? AND ds.schedule_date = ?
+                """;
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, doctorId);
+            stmt.setDate(2, date);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                schedules.add(new DoctorSchedule(
+                        rs.getInt("id"),
+                        getDoctorById(doctorId),
+                        rs.getDate("schedule_date"),
+                        new Shift(
+                                rs.getInt("shift_id"),
+                                rs.getTime("time_start"),
+                                rs.getTime("time_end")
+                        ),
+                        rs.getInt("available") == 1 // Chuyển đổi `int` → `boolean`
+                ));
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error retrieving doctor schedules", ex);
+        }
+        return schedules;
+    }
 
     public List<Application> getApplicationsByDoctorID(int did, int page) {
         List<Application> applications = new ArrayList<>();
@@ -124,42 +231,6 @@ public class DoctorDBContext extends DBContext<Doctor> {
             LOGGER.log(Level.SEVERE, "Error retrieving doctor list", ex);
         }
         return new ArrayList<>(doctorMap.values());
-    }
-
-    @Override
-    public Doctor get(String id) {
-        return null;
-    }
-
-    public ArrayList<DoctorSchedule> getDoctorSchedules(int doctorId, Date date) {
-        ArrayList<DoctorSchedule> schedules = new ArrayList<>();
-        String sql = """
-                SELECT ds.id, ds.schedule_date, s.id AS shift_id, s.time_start, s.time_end, ds.available
-                FROM Doctor_Schedule ds
-                JOIN Shift s ON ds.shift_id = s.id
-                WHERE ds.doctor_id = ? AND ds.schedule_date = ?
-                """;
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, doctorId);
-            stmt.setDate(2, date);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                schedules.add(new DoctorSchedule(
-                        rs.getInt("id"),
-                        getDoctorById(doctorId),
-                        rs.getDate("schedule_date"),
-                        new Shift(
-                                rs.getInt("shift_id"),
-                                rs.getTime("time_start"),
-                                rs.getTime("time_end")
-                        ),
-                        rs.getInt("available") == 1 // Chuyển đổi `int` → `boolean`
-                ));
-            }
-        } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "Error retrieving doctor schedules", ex);
-        }
-        return schedules;
     }
 
 // Get specialties for a doctor

@@ -9,7 +9,6 @@ import dao.CustomerDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.VisitHistory;
@@ -22,8 +21,12 @@ import model.system.User;
 public class EditCustomerVisitHistory extends BaseRBACController {
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
         String id = request.getParameter("id");
         String did = request.getParameter("did");
         String cid = request.getParameter("cid");
@@ -61,22 +64,15 @@ public class EditCustomerVisitHistory extends BaseRBACController {
             visitHistory.setId(Integer.parseInt(id));
             isCreated = customerDB.updateVisitHistory(visitHistory);
         }
-        if (isCreated) {
-            request.setAttribute("message", "Medical history edit successfully!");
-        } else {
-            request.setAttribute("message", "Failed to edit medical history.");
-        }
-        response.sendRedirect("ShowCustomerMedicalDetail?cid=" + cid);
-    }
 
-    @Override
-    protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+        String message = isCreated ? "Visit history edited successfully!" : "Failed to edit visit history.";
 
-    @Override
-    protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        out.println("<script type='text/javascript'>");
+        out.println("alert('" + message + "');");
+        out.println("window.location.href='ShowCustomerMedicalDetail?cid=" + cid + "';");
+        out.println("</script>");
     }
 
 }

@@ -26,22 +26,67 @@ public class TestPackageDBContext extends DBContext<Test>{
 
     @Override
     public void insert(Test model) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+         String sql = "INSERT INTO TestPackages (name, description, price, duration_minutes, category) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, model.getName());
+            ps.setString(2, model.getDescription());
+            ps.setDouble(3, model.getPrice());
+            ps.setInt(4, model.getDuration_minutes());
+            ps.setString(5, model.getCategory());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            LOGGER.log(java.util.logging.Level.SEVERE, "Insert TestPackage error", e);
+        }
     }
 
     @Override
     public void update(Test model) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        String sql = "UPDATE TestPackages SET name = ?, description = ?, price = ?, duration_minutes = ?, category = ? WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, model.getName());
+            ps.setString(2, model.getDescription());
+            ps.setDouble(3, model.getPrice());
+            ps.setInt(4, model.getDuration_minutes());
+            ps.setString(5, model.getCategory());
+            ps.setInt(6, model.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            LOGGER.log(java.util.logging.Level.SEVERE, "Update TestPackage error", e);
+        }
     }
 
     @Override
     public void delete(Test model) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        String sql = "DELETE FROM TestPackages WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, model.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            LOGGER.log(java.util.logging.Level.SEVERE, "Delete TestPackage error", e);
+        }
     }
 
     @Override
     public ArrayList<Test> list() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        ArrayList<Test> tests = new ArrayList<>();
+        String sql = "SELECT * FROM TestPackages";
+        try (PreparedStatement ps = connection.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Test test = new Test(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getDouble("price"),
+                        rs.getInt("duration_minutes"),
+                        rs.getString("category")
+                );
+                tests.add(test);
+            }
+        } catch (SQLException e) {
+            LOGGER.log(java.util.logging.Level.SEVERE, "List TestPackages error", e);
+        }
+        return tests;
     }
 
     @Override

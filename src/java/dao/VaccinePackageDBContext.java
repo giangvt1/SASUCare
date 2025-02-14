@@ -28,22 +28,66 @@ public class VaccinePackageDBContext extends DBContext<Vaccine>{
 
     @Override
     public void insert(Vaccine model) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        String sql = "INSERT INTO VaccinePackages (name, description, price, duration_minutes, category) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, model.getName());
+            ps.setString(2, model.getDescription());
+            ps.setDouble(3, model.getPrice());
+            ps.setInt(4, model.getDuration_minutes());
+            ps.setString(5, model.getCategory());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void update(Vaccine model) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+ String sql = "UPDATE VaccinePackages SET name=?, description=?, price=?, duration_minutes=?, category=? WHERE id=?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, model.getName());
+            ps.setString(2, model.getDescription());
+            ps.setDouble(3, model.getPrice());
+            ps.setInt(4, model.getDuration_minutes());
+            ps.setString(5, model.getCategory());
+            ps.setInt(6, model.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void delete(Vaccine model) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        String sql = "DELETE FROM VaccinePackages WHERE id=?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, model.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public ArrayList<Vaccine> list() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        ArrayList<Vaccine> vaccines = new ArrayList<>();
+        String sql = "SELECT * FROM VaccinePackages";
+        try (PreparedStatement ps = connection.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                vaccines.add(new Vaccine(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getString("description"),
+                    rs.getDouble("price"),
+                    rs.getInt("duration_minutes"),
+                    rs.getString("category")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return vaccines;
     }
 
     @Override
@@ -112,7 +156,8 @@ public class VaccinePackageDBContext extends DBContext<Vaccine>{
         }
         return categories;
     }
-    
+
+
     
     
     

@@ -40,8 +40,16 @@ public class AppointmentConfirmServlet extends HttpServlet {
         try {
             HttpSession session = request.getSession();
             if (session == null || session.getAttribute("currentCustomer") == null) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                out.write("{\"status\":\"error\", \"message\":\"User not logged in.\"}");
+                String currentUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
+                session.setAttribute("redirectAfterLogin", currentUrl); // Store the URL in session
+
+                // Send JavaScript to show alert and redirect
+                response.setContentType("text/html");
+                out.println("<script type='text/javascript'>");
+                out.println("alert('You are not logged in. Please login to continue.');");
+                out.println("window.location.href='" + request.getContextPath() + "/Home.jsp';");
+                out.println("</script>");
+                out.close();
                 return;
             }
 
@@ -77,8 +85,7 @@ public class AppointmentConfirmServlet extends HttpServlet {
             doctorSchedule.setAvailable(false);
             doctorScheduleDB.update(doctorSchedule);
 
-
-            out.write(customer.getId()+" successfully");
+            out.write(customer.getId() + " successfully");
 
         } catch (NumberFormatException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -86,7 +93,7 @@ public class AppointmentConfirmServlet extends HttpServlet {
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.write("{\"status\":\"error\", \"message\":\"An error occurred while booking.\"}");
-            
+
         }
     }
 }

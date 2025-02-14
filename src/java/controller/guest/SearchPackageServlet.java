@@ -27,7 +27,10 @@ import java.util.List;
  */
 @WebServlet(urlPatterns={"/SearchPackageServlet"})
 public class SearchPackageServlet extends HttpServlet {
-   
+   private final PackageDBContext db = new PackageDBContext();
+    
+    
+    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -49,6 +52,7 @@ public class SearchPackageServlet extends HttpServlet {
             out.println("<h1>Servlet SearchPackageServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
+            
         }
     } 
 
@@ -63,27 +67,51 @@ public class SearchPackageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String keyword = request.getParameter("keyword");
-        String category = request.getParameter("category");
+         PackageDBContext db = new PackageDBContext();
+//        String keyword = request.getParameter("keyword");
+//        String category = request.getParameter("category");
+//
+//        PackageDBContext db = new PackageDBContext();
+//        
+//        // Lấy danh sách tất cả danh mục để hiển thị trong filter
+//        List<String> categories = db.getAllCategories();
+//
+//        // Nếu không nhập keyword, mặc định tìm tất cả
+//        if (keyword == null) {
+//            keyword = "";
+//        }
+//
+//        // Lấy danh sách gói khám theo từ khóa và danh mục
+//        List<Package> packages = db.searchPackages(keyword, category);
+//
+//        request.setAttribute("packages", packages);
+//        request.setAttribute("categories", categories);
+//        request.setAttribute("keyword", keyword);
+//        request.setAttribute("selectedCategory", category);
+//        request.getRequestDispatcher("SearchPackageForm1.jsp").forward(request, response);
+        String action = request.getParameter("action");
+        String idStr = request.getParameter("id");
 
-        PackageDBContext db = new PackageDBContext();
-        
-        // Lấy danh sách tất cả danh mục để hiển thị trong filter
+        // Lấy danh sách gói khám và danh mục
+        List<Package> packages = db.list();
         List<String> categories = db.getAllCategories();
-
-        // Nếu không nhập keyword, mặc định tìm tất cả
-        if (keyword == null) {
-            keyword = "";
-        }
-
-        // Lấy danh sách gói khám theo từ khóa và danh mục
-        List<Package> packages = db.searchPackages(keyword, category);
-
         request.setAttribute("packages", packages);
         request.setAttribute("categories", categories);
-        request.setAttribute("keyword", keyword);
-        request.setAttribute("selectedCategory", category);
-        request.getRequestDispatcher("SearchPackageForm1.jsp").forward(request, response);
+
+        if ("edit".equals(action) && idStr != null) {
+            int id = Integer.parseInt(idStr);
+            Package pkg = db.get(String.valueOf(id));
+            request.setAttribute("editPackage", pkg);
+        } else if ("delete".equals(action) && idStr != null) {
+            int id = Integer.parseInt(idStr);
+            db.delete(new Package(id, "", "", 0, 0, ""));
+            response.sendRedirect("SearchPackageServlet"); // Quay lại trang chính
+            return;
+        }
+
+        request.getRequestDispatcher("SearchPackageForm.jsp").forward(request, response);
+
+            
     } 
 
     /** 
@@ -96,7 +124,23 @@ public class SearchPackageServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+          
+int id = request.getParameter("id") != null && !request.getParameter("id").isEmpty() ? Integer.parseInt(request.getParameter("id")) : 0;
+        String name = request.getParameter("name");
+        String description = request.getParameter("description");
+        double price = Double.parseDouble(request.getParameter("price"));
+        int duration = Integer.parseInt(request.getParameter("duration"));
+        String category = request.getParameter("category");
+
+        Package pkg = new Package(id, name, description, price, duration, category);
+
+        if (id == 0) {
+            db.insert(pkg); // Thêm mới
+        } else {
+            db.update(pkg); // Cập nhật
+        }
+
+        response.sendRedirect("SearchPackageServlet");
     }
 
     /** 

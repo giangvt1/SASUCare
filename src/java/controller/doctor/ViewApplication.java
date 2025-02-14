@@ -12,6 +12,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.List;
 import model.Application;
 import model.system.User;
@@ -24,6 +25,23 @@ public class ViewApplication extends BaseRBACController {
 
     @Override
     protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
+        String name = request.getParameter("name");
+        String dateStr = request.getParameter("date");
+        String status = request.getParameter("status");
+        String pageStr = request.getParameter("page");
+        String sortStr = request.getParameter("sort");
+        String sizeStr = request.getParameter("size");
+        String sort = "default";
+        int size = 10;
+        java.sql.Date date = null;
+        if (dateStr != null && !dateStr.isEmpty()) {
+            try {
+                date = java.sql.Date.valueOf(dateStr);
+            } catch (IllegalArgumentException e) {
+                date = null;
+            }
+        }
+
         int did = Integer.parseInt(request.getParameter("did"));
         int page = 1;
         if (request.getParameter("page") != null) {
@@ -33,12 +51,17 @@ public class ViewApplication extends BaseRBACController {
                 page = 1;
             }
         }
-
+        if (sortStr != null) {
+            sort = sortStr;
+        }
+        if (sizeStr != null) {
+            size = Integer.parseInt(sizeStr);
+        }
         DoctorDBContext d = new DoctorDBContext();
-        List<Application> applications = d.getApplicationsByDoctorID(did, page);
+        List<Application> applications = d.getApplicationsByDoctorID(name, date, status, did, page, sort, size);
 
         // Kiểm tra xem có trang tiếp theo không
-        List<Application> nextPageCheck = d.getApplicationsByDoctorID(did, page + 1);
+        List<Application> nextPageCheck = d.getApplicationsByDoctorID(name, date, status, did, page + 1, sort, size);
         boolean hasNextPage = !nextPageCheck.isEmpty();
 
         request.setAttribute("applications", applications);

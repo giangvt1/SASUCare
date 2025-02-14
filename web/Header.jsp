@@ -70,7 +70,7 @@
         <div class="container-fluid sticky-top bg-white shadow-sm nav-pad">
             <div class="container">
                 <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0">
-                    <a href="Home.jsp" class="navbar-brand">
+                    <a href="${pageContext.request.contextPath}/Home.jsp" class="navbar-brand">
                         <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-clinic-medical me-2"></i>Medinova</h1>
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -78,10 +78,10 @@
                     </button>
                     <div class="collapse navbar-collapse" id="navbarCollapse">
                         <div class="navbar-nav ms-auto py-0">
-                            <a href="Home.jsp" class="nav-item nav-link active">Home</a>
-                            <a href="about.jsp" class="nav-item nav-link">About</a>
-                            <a href="service.jsp" class="nav-item nav-link">Service</a>
-                            <a href="price.jsp" class="nav-item nav-link">Pricing</a>
+                            <a href="${pageContext.request.contextPath}/Home.jsp" class="nav-item nav-link active">Home</a>
+                            <a href="${pageContext.request.contextPath}/about.jsp" class="nav-item nav-link">About</a>
+                            <a href="${pageContext.request.contextPath}/ServiceList" class="nav-item nav-link">Service</a>
+                            <a href="${pageContext.request.contextPath}/price.jsp" class="nav-item nav-link">Pricing</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                                 <div class="dropdown-menu m-0">
@@ -93,9 +93,9 @@
                                     <a href="search.html" class="dropdown-item">Search</a>
                                 </div>
                             </div>
-                            <a href="contact.jsp" class="nav-item nav-link">Contact</a>
+                            <a href="${pageContext.request.contextPath}contact.jsp" class="nav-item nav-link">Contact</a>
                             <c:if test="${not empty sessionScope.currentCustomer}">
-                                <a href="./profile" class="nav-item nav-link">
+                                <a href="${pageContext.request.contextPath}/profile" class="nav-item nav-link">
                                     Welcome, ${sessionScope.currentCustomer.fullname}
                                 </a>
                                 <form action="${pageContext.request.contextPath}/logout" method="get" style="display:inline;">

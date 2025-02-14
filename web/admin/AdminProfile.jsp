@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -17,6 +18,9 @@
           .alert {
               margin-top: 20px;
           }
+          .profile-img {
+              margin-bottom: 15px;
+          }
       </style>
       <script>
           // Hàm chuẩn hóa chuỗi: thay thế nhiều khoảng trắng liên tiếp bằng 1 khoảng trắng và trim
@@ -25,7 +29,6 @@
           }
           
           function validateProfile() {
-              // Lấy giá trị từ form
               var fullnameField = document.getElementById("fullname");
               var addressField = document.getElementById("address");
               var dobField = document.getElementById("dob");
@@ -43,7 +46,6 @@
                   return false;
               }
               
-              // Address: nếu có giá trị, không cho phép rỗng và phải ≤ 50 ký tự, cũng không có nhiều khoảng trắng liên tiếp.
               var address = addressField.value.trim();
               if (address !== "") {
                   var normalizedAddress = normalizeString(addressField.value);
@@ -58,9 +60,6 @@
                       return false;
                   }
               }
-              
-              // Date of Birth: nếu có, HTML5 sẽ kiểm tra format, nên không cần validate thêm
-              
               return true;
           }
       </script>
@@ -80,7 +79,18 @@
               <div class="alert alert-danger">${errorMessage}</div>
           </c:if>
           
-          <form action="${pageContext.request.contextPath}/system/profile" method="POST" onsubmit="return validateProfile();">
+          <form action="${pageContext.request.contextPath}/system/profile" method="POST" enctype="multipart/form-data" onsubmit="return validateProfile();">
+              <!-- Phần upload ảnh -->
+              <div class="form-group">
+                  <label for="img">Profile Image (JPG or PNG only)</label>
+                  <c:if test="${not empty staff.img}">
+                      <div class="profile-img">
+                          <img src="${pageContext.request.contextPath}/${staff.img}" alt="Profile Image" class="img-thumbnail" width="150"/>
+                      </div>
+                  </c:if>
+                  <input type="file" class="form-control-file" id="img" name="img" accept=".jpg,.png">
+              </div>
+              
               <div class="form-group">
                   <label for="fullname">Full Name</label>
                   <input type="text" class="form-control" id="fullname" name="fullname" value="${staff.fullname}" required>
@@ -107,5 +117,6 @@
       
       <script src="../js/jquery.min.js"></script>
       <script src="../js/bootstrap.min.js"></script>
+      <script src="../js/main.js"></script>
   </body>
 </html>

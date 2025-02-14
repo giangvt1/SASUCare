@@ -33,15 +33,16 @@ public class PackageDBContext extends DBContext<Package> {
     @Override
     public void insert(Package pkg) {
         String sql = "INSERT INTO packages (name, description, price, duration_minutes, category) VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, pkg.getName());
             ps.setString(2, pkg.getDescription());
             ps.setDouble(3, pkg.getPrice());
             ps.setInt(4, pkg.getDurationMinutes());
             ps.setString(5, pkg.getCategory());
             ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            
+        } catch (SQLException ex) {
+            LOGGER.log(java.util.logging.Level.SEVERE, "Database connection error", ex);
         }
     }
 
@@ -57,20 +58,22 @@ public class PackageDBContext extends DBContext<Package> {
             ps.setString(5, pkg.getCategory());
             ps.setInt(6, pkg.getId());
             ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            
+        } catch (SQLException ex) {
+            LOGGER.log(java.util.logging.Level.SEVERE, "Database connection error", ex);
         }
     }
 
     // Phương thức xóa gói khám
     @Override
     public void delete(Package pkg) {
-        String sql = "DELETE FROM packages WHERE id = ?";
+         String sql = "DELETE FROM packages WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, pkg.getId());
             ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            
+        } catch (SQLException ex) {
+            LOGGER.log(java.util.logging.Level.SEVERE, "Database connection error", ex);
         }
     }
 

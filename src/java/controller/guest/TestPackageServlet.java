@@ -1,4 +1,4 @@
-/*
+    /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
@@ -60,24 +60,57 @@ public class TestPackageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+//        String keyword = request.getParameter("keyword");
+//        String category = request.getParameter("category");
+//        
+//        TestPackageDBContext db = new TestPackageDBContext();
+//        List<String> categories = db.getAllCategories();
+//        if (keyword == null) {
+//            keyword = "";
+//        }
+//
+//        // Fetch the list of vaccine packages from DB
+//        List<Test> Test = db.searchPackages(keyword, category);
+//
+//        // Set the attribute for packages
+//        request.setAttribute("Test", Test);
+//        request.setAttribute("categories", categories);
+//        request.setAttribute("keyword", keyword);
+//
+//        // Forward to JSP for rendering
+//        request.getRequestDispatcher("TestPackages.jsp").forward(request, response);
+
+
+
+           
+        String action = request.getParameter("action");
+        String idStr = request.getParameter("id");
         String keyword = request.getParameter("keyword");
         String category = request.getParameter("category");
-        
+
         TestPackageDBContext db = new TestPackageDBContext();
+        
+        // Lấy danh sách tất cả gói xét nghiệm
+        List<Test> tests = db.searchPackages(keyword != null ? keyword : "", category);
         List<String> categories = db.getAllCategories();
-        if (keyword == null) {
-            keyword = "";
-        }
 
-        // Fetch the list of vaccine packages from DB
-        List<Test> Test = db.searchPackages(keyword, category);
-
-        // Set the attribute for packages
-        request.setAttribute("Test", Test);
+        request.setAttribute("tests", tests);
         request.setAttribute("categories", categories);
         request.setAttribute("keyword", keyword);
+        request.setAttribute("selectedCategory", category);
 
-        // Forward to JSP for rendering
+        // Nếu bấm "Sửa", lấy dữ liệu gói xét nghiệm và đổ vào form
+        if ("edit".equals(action) && idStr != null) {
+            int id = Integer.parseInt(idStr);
+            Test test = db.get(String.valueOf(id));
+            request.setAttribute("editTest", test);
+        } else if ("delete".equals(action) && idStr != null) {
+            int id = Integer.parseInt(idStr);
+            db.delete(new Test(id, "", "", 0, 0, ""));
+            response.sendRedirect("TestPackage"); // Quay lại trang chính
+            return;
+        }
+
         request.getRequestDispatcher("TestPackages.jsp").forward(request, response);
     } 
 
@@ -91,7 +124,25 @@ public class TestPackageServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        TestPackageDBContext db = new TestPackageDBContext();
+
+        int id = request.getParameter("id") != null && !request.getParameter("id").isEmpty() 
+                 ? Integer.parseInt(request.getParameter("id")) : 0;
+        String name = request.getParameter("name");
+        String description = request.getParameter("description");
+        double price = Double.parseDouble(request.getParameter("price"));
+        int duration = Integer.parseInt(request.getParameter("duration"));
+        String category = request.getParameter("category");
+
+        Test test = new Test(id, name, description, price, duration, category);
+
+        if (id == 0) {
+            db.insert(test); // Thêm mới
+        } else {
+            db.update(test); // Cập nhật
+        }
+
+        response.sendRedirect("TestPackage");
     }
 
     /** 

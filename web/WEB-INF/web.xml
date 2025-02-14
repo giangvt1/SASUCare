@@ -41,6 +41,18 @@
         <servlet-class>controller.doctor.CreateCustomerMedicalHistory</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>AppointmentListController</servlet-name>
+        <servlet-class>controller.appointment.AppointmentListController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AppointmentCancelController</servlet-name>
+        <servlet-class>controller.appointment.AppointmentCancelController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AppointmentRescheduleController</servlet-name>
+        <servlet-class>controller.appointment.AppointmentRescheduleController</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>AppointmentCalendarServlet</servlet-name>
         <servlet-class>controller.appointment.AppointmentCalendarServlet</servlet-class>
     </servlet>
@@ -228,6 +240,18 @@
     <servlet-mapping>
         <servlet-name>AppointmentCalendarServlet</servlet-name>
         <url-pattern>/appointment</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AppointmentListController</servlet-name>
+        <url-pattern>/appointment/list</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AppointmentCancelController</servlet-name>
+        <url-pattern>/appointment/cancel</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AppointmentRescheduleController</servlet-name>
+        <url-pattern>/appointment/reschedule</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ViewApplication</servlet-name>

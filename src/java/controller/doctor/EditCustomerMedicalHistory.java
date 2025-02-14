@@ -9,11 +9,9 @@ import dao.CustomerDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.MedicalHistory;
-import model.VisitHistory;
 import model.system.User;
 
 /**
@@ -22,8 +20,13 @@ import model.system.User;
  */
 public class EditCustomerMedicalHistory extends BaseRBACController {
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    @Override
+    protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
         int cid = Integer.parseInt(request.getParameter("cid"));
         String name = request.getParameter("name");
         String detail = request.getParameter("detail");
@@ -35,28 +38,22 @@ public class EditCustomerMedicalHistory extends BaseRBACController {
         medicalH.setDetail(detail);
         CustomerDBContext customerDB = new CustomerDBContext();
         boolean isCreated = false;
+
         if (id == null || id.isEmpty()) {
             isCreated = customerDB.createMedicalHistory(medicalH);
         } else {
             medicalH.setId(Integer.parseInt(id));
             isCreated = customerDB.updateMedicalHistory(medicalH);
         }
-        if (isCreated) {
-            request.setAttribute("message", "Medical history edit successfully!");
-        } else {
-            request.setAttribute("message", "Failed to edit medical history.");
-        }
-        response.sendRedirect("ShowCustomerMedicalDetail?cid=" + cid);
-    }
 
-    @Override
-    protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+        String message = isCreated ? "Medical history edited successfully!" : "Failed to edit medical history.";
 
-    @Override
-    protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
-
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        out.println("<script type='text/javascript'>");
+        out.println("alert('" + message + "');");
+        out.println("window.location.href='ShowCustomerMedicalDetail?cid=" + cid + "';");
+        out.println("</script>");
     }
 
 }

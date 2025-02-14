@@ -61,25 +61,27 @@ public class VaccinePackageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String keyword = request.getParameter("keyword");
-        String category = request.getParameter("category");
+        String action = request.getParameter("action");
+        String idStr = request.getParameter("id");
         
         VaccinePackageDBContext db = new VaccinePackageDBContext();
-
-        // Fetch the list of vaccine packages from DB
+        List<Vaccine> vaccines = db.list();
         List<String> categories = db.getAllCategories();
-        if (keyword == null) {
-            keyword = "";
-        }
-        List<Vaccine> vaccines = db.searchPackages(keyword, category);
         
-
-        // Set the attribute for packages
         request.setAttribute("vaccines", vaccines);
         request.setAttribute("categories", categories);
-        request.setAttribute("keyword", keyword);
-
-        // Forward to JSP for rendering
+        
+        if ("edit".equals(action) && idStr != null) {
+            int id = Integer.parseInt(idStr);
+            Vaccine vaccine = db.get(String.valueOf(id));
+            request.setAttribute("editVaccine", vaccine);
+        } else if ("delete".equals(action) && idStr != null) {
+            int id = Integer.parseInt(idStr);
+            db.delete(new Vaccine(id, "", "", 0, 0, ""));
+            response.sendRedirect("VaccinePackage");
+            return;
+        }
+        
         request.getRequestDispatcher("VaccinePackages.jsp").forward(request, response);
     } 
 
@@ -93,7 +95,24 @@ public class VaccinePackageServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        VaccinePackageDBContext db = new VaccinePackageDBContext();
+        
+        int id = request.getParameter("id") != null && !request.getParameter("id").isEmpty() ? Integer.parseInt(request.getParameter("id")) : 0;
+        String name = request.getParameter("name");
+        String description = request.getParameter("description");
+        double price = Double.parseDouble(request.getParameter("price"));
+        int duration = Integer.parseInt(request.getParameter("duration"));
+        String category = request.getParameter("category");
+        
+        Vaccine vaccine = new Vaccine(id, name, description, price, duration, category);
+        
+        if (id == 0) {
+            db.insert(vaccine);
+        } else {
+            db.update(vaccine);
+        }
+        
+        response.sendRedirect("VaccinePackage");
     }
 
     /** 

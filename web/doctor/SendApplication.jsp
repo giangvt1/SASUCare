@@ -23,7 +23,7 @@
             <h3 class="text-center">Send Application</h3>
             <a href="ViewApplication?did=16">View Application</a>
             <form action="SendApplication" method="POST" class="mt-4">
-                <input type="text" hidden id="did" name="did" value="16"required><br><br>
+                <input type="text" hidden id="did" name="did" value="16" required><br><br>
                 <div class="form-group">
                     <label for="name">Loại đơn</label>
                     <select class="form-contsrol" id="name" name="name" required>

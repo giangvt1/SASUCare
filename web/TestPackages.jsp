@@ -28,40 +28,69 @@
         <div class="container">
 
     
-    <form action="TestPackage" method="get">
-    <input type="text" name="keyword" placeholder="Search by name" value="${keyword}" />
-    <input type="submit" value="Search" />
-</form>
+    <!-- FORM TÌM KIẾM -->
+        <form action="TestPackage" method="get" class="form-container">
+            <input type="text" name="keyword" placeholder="Nhập từ khóa..." value="${keyword}" />
+            <select name="category">
+                <option value="all">Tất cả danh mục</option>
+                <c:forEach var="cat" items="${categories}">
+                    <option value="${cat}" ${selectedCategory == cat ? 'selected' : ''}>${cat}</option>
+                </c:forEach>
+            </select>
+            <button type="submit">Tìm kiếm</button>
+        </form>
 
+        <!-- FORM THÊM GÓI XÉT NGHIỆM -->
+        <h3> </h3>
+        <form action="TestPackage" method="post" class="form-container">
+            <input type="hidden" name="action" value="add">
+            <input type="text" name="name" placeholder="Tên gói" required>
+            <input type="text" name="description" placeholder="Mô tả">
+            <input type="number" step="0.01" name="price" placeholder="Giá" required>
+            <input type="number" name="duration" placeholder="Thời gian (phút)" required>
+            <select name="category">
+                <option value="">Chọn danh mục</option>
+                <c:forEach var="cat" items="${categories}">
+                    <option value="${cat}">${cat}</option>
+                </c:forEach>
+            </select>
+            <button type="submit">Thêm</button>
+        </form>
 
-    <table border="1">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Duration</th>
-                <th>Category</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-        <c:forEach var="test" items="${Test}">
+        <!-- DANH SÁCH GÓI XÉT NGHIỆM -->
+        <table>
+            <thead>
                 <tr>
-                    <td>${test.id}</td>
-                    <td><a href="packageDetail.jsp?testId=${test.id}">${test.name}</a></td>
-                    <td>${test.description}</td>
-                    <td>${test.price}</td>
-                    <td>${test.duration_minutes}</td>
-                    <td>${test.category}</td>
-                    <td>
-                        <a href="./appointment">Đặt lịch</a>
-                    </td>
+                    <th>ID</th>
+                    <th>Tên Gói</th>
+                    <th>Mô Tả</th>
+                    <th>Giá</th>
+                    <th>Thời Gian</th>
+                    <th>Danh Mục</th>
+                    <th>Hành Động</th>
                 </tr>
-            </c:forEach>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <c:forEach var="test" items="${tests}">
+                    <tr>
+                        <td>${test.id}</td>
+                        <td>${test.name}</td>
+                        <td>${test.description}</td>
+                        <td>${test.price}</td>
+                        <td>${test.duration_minutes}</td>
+                        <td>${test.category}</td>
+                        <td>
+                            <a href="TestPackage?action=edit&id=${test.id}" class="edit-btn">Sửa</a> |
+                            <a href="TestPackage?action=delete&id=${test.id}" class="delete-btn" onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</a>
+                        </td>
+                    </tr>
+                </c:forEach>
+            </tbody>
+        </table>
+
+        <c:if test="${empty tests}">
+            <p>Không tìm thấy gói xét nghiệm nào.</p>
+        </c:if>
     </div>
     <jsp:include page="Footer.jsp"></jsp:include>
     </body>

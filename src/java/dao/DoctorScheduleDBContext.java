@@ -16,6 +16,60 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
 
     private static final Logger LOGGER = Logger.getLogger(DoctorScheduleDBContext.class.getName());
 
+    // Get available future dates for a doctor
+    public List<Date> getAvailableDates(int doctorId) {
+        List<Date> availableDates = new ArrayList<>();
+        String sql = """
+            SELECT DISTINCT schedule_date 
+            FROM Doctor_Schedule 
+            WHERE doctor_id = ? AND available = 1 AND schedule_date >= GETDATE()
+            ORDER BY schedule_date ASC
+        """;
+
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setInt(1, doctorId);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                availableDates.add(rs.getDate("schedule_date"));
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error fetching available dates: {0}", ex.getMessage());
+        }
+        return availableDates;
+    }
+
+    // Get available time slots for a doctor on a specific date
+    public DoctorSchedule getScheduleByDateAndShift(int doctorId, Date date, int shiftId) {
+        DoctorSchedule schedule = null;
+        String sql = """
+        SELECT ds.id, ds.schedule_date, ds.shift_id, s.time_start, s.time_end, ds.available
+        FROM Doctor_Schedule ds
+        JOIN Shift s ON ds.shift_id = s.id
+        WHERE ds.doctor_id = ? AND ds.schedule_date = ? AND ds.shift_id = ? AND ds.available = 1
+    """;
+
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setInt(1, doctorId);
+            stm.setDate(2, date);
+            stm.setInt(3, shiftId);
+            ResultSet rs = stm.executeQuery();
+
+            if (rs.next()) { // Fetch only one record
+                Shift shift = new Shift(rs.getInt("shift_id"), rs.getTime("time_start"), rs.getTime("time_end"));
+                schedule = new DoctorSchedule(
+                        rs.getInt("id"),
+                        null, // Doctor object can be set later if needed
+                        rs.getDate("schedule_date"),
+                        shift,
+                        rs.getInt("available") == 1
+                );
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error fetching doctor schedule by date & shift: {0}", ex.getMessage());
+        }
+        return schedule;
+    }
+
     @Override
     public void insert(DoctorSchedule schedule) {
         String sql = "INSERT INTO Doctor_Schedule (doctor_id, schedule_date, shift_id, available) VALUES (?, ?, ?, ?)";
