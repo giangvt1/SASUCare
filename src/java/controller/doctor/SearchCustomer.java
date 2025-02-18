@@ -7,9 +7,7 @@ package controller.doctor;
 import controller.systemaccesscontrol.BaseRBACController;
 import dao.CustomerDBContext;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -34,7 +32,8 @@ public class SearchCustomer extends BaseRBACController {
         String sortStr = request.getParameter("sort");
         String sizeStr = request.getParameter("size");
         String sort = "default";
-        int size = 10;
+        int sizeOfList = 0;
+        int sizeOfEachTable = 10;
         Date customerDate = null;
         if (customerDateStr != null && !customerDateStr.isEmpty()) {
             try {
@@ -62,15 +61,19 @@ public class SearchCustomer extends BaseRBACController {
             sort = sortStr;
         }
         if (sizeStr != null) {
-            size = Integer.parseInt(sizeStr);
+            sizeOfEachTable = Integer.parseInt(sizeStr);
         }
         CustomerDBContext customerDB = new CustomerDBContext();
-        ArrayList<Customer> resultLists = customerDB.searchCustomerInMedical(customerName, (java.sql.Date) customerDate, customerGender, page, sort, size);
+        ArrayList<Customer> resultLists = customerDB.searchCustomerInMedical(customerName, (java.sql.Date) customerDate, customerGender, page, sort, sizeOfEachTable);
 
-        int nextPageSize = customerDB.searchCustomerInMedical(customerName, (java.sql.Date) customerDate, customerGender, page + 1, sort, size).size();
+        int nextPageSize = customerDB.searchCustomerInMedical(customerName, (java.sql.Date) customerDate, customerGender, page + 1, sort, sizeOfEachTable).size();
         boolean hasNextPage = nextPageSize > 0;
+        int totalCustomers = customerDB.countCustomerInMedical(customerName, (java.sql.Date) customerDate, customerGender);
+        int totalPages = (int) Math.ceil((double) totalCustomers / sizeOfEachTable);
+
+        request.setAttribute("totalPages", totalPages);
         request.setAttribute("customers", resultLists);
-        request.setAttribute("currentPage", page); // Gửi thông tin trang hiện tại đến JSP để hiển thị
+        request.setAttribute("currentPage", page);
         request.setAttribute("hasNextPage", hasNextPage);
         request.getRequestDispatcher("SearchCustomer.jsp").forward(request, response);
     }

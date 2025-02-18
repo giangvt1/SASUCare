@@ -39,22 +39,21 @@ public class CustomerDBContext extends DBContext<Customer> {
             case "default":
                 sqlBuilder.append(" ORDER BY id");
                 break;
-            case "customerNameAZ":
+            case "fullNameAZ":
                 sqlBuilder.append(" ORDER BY fullname ASC");
                 break;
-            case "customerNameZA":
+            case "fullNameZA":
                 sqlBuilder.append(" ORDER BY fullname DESC");
                 break;
-            case "customerDOBLTH":
+            case "fullDOBLTH":
                 sqlBuilder.append(" ORDER BY dob ASC");
                 break;
-            case "customerDOBHTL":
+            case "fullDOBHTL":
                 sqlBuilder.append(" ORDER BY dob DESC");
                 break;
             default:
                 throw new AssertionError("Invalid sort type: " + sort);
         }
-        // Phân trang
         sqlBuilder.append(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
 
         try (PreparedStatement stm = connection.prepareStatement(sqlBuilder.toString())) {
@@ -98,6 +97,47 @@ public class CustomerDBContext extends DBContext<Customer> {
         }
 
         return customers;
+    }
+
+    public int countCustomerInMedical(String name, Date dob, Boolean gender) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM [Customer] WHERE 1=1";
+
+        StringBuilder sqlBuilder = new StringBuilder(sql);
+
+        if (name != null && !name.isEmpty()) {
+            sqlBuilder.append(" AND fullname COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?");
+        }
+        if (dob != null) {
+            sqlBuilder.append(" AND dob = ?");
+        }
+        if (gender != null) {
+            sqlBuilder.append(" AND gender = ?");
+        }
+
+        try (PreparedStatement stm = connection.prepareStatement(sqlBuilder.toString())) {
+            int paramIndex = 1;
+
+            if (name != null && !name.isEmpty()) {
+                stm.setString(paramIndex++, "%" + name + "%");
+            }
+            if (dob != null) {
+                stm.setDate(paramIndex++, new java.sql.Date(dob.getTime()));
+            }
+            if (gender != null) {
+                stm.setBoolean(paramIndex++, gender);
+            }
+
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt(1);
+                }
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error counting customers: {0}", ex.getMessage());
+        }
+
+        return count;
     }
 
     public ArrayList<MedicalHistory> showMedicalHistory(int Cid) {

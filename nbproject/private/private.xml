@@ -20,16 +20,16 @@
         </group>
         <group name="PRJ301"/>
         <group>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/backup/src/java/controller/appointment/AppointmentConfirmServlet.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/backup/web/doctor/SearchCustomer.jsp</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/backup/src/java/controller/doctor/ViewApplication.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/backup/src/java/controller/doctor/SearchCustomer.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/backup/web/doctor/ViewApplication.jsp</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/backup/src/java/dao/CustomerDBContext.java</file>
+            <file>file:/D:/Ky%205/SWP/SWP391_GROUP6/src/java/controller/doctor/SearchCustomer.java</file>
+            <file>file:/D:/Ky%205/SWP/SWP391_GROUP6/web/css/doctor/doctor_style.css</file>
+            <file>file:/D:/Ky%205/SWP/SWP391_GROUP6/src/java/dao/CustomerDBContext.java</file>
+            <file>file:/D:/Ky%205/SWP/SWP391_GROUP6/web/doctor/SearchCustomer.jsp</file>
         </group>
         <group>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/backup/web/Header.jsp</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/backup/web/Home.jsp</file>
+            <file>file:/D:/Ky%205/SWP/SWP391_GROUP6/src/java/controller/doctor/SearchCustomer.java</file>
+            <file>file:/D:/Ky%205/SWP/SWP391_GROUP6/web/css/doctor/doctor_style.css</file>
+            <file>file:/D:/Ky%205/SWP/SWP391_GROUP6/src/java/dao/CustomerDBContext.java</file>
+            <file>file:/D:/Ky%205/SWP/SWP391_GROUP6/web/doctor/SearchCustomer.jsp</file>
         </group>
     </open-files>
 </project-private>

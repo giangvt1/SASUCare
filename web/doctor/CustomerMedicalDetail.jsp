@@ -10,7 +10,7 @@
         <!-- font Awesome -->
         <link href="../css/admin/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <link href="../css/admin/styleAdmin.css" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" href="../css/doctor/customer_medical_detail_style.css"/>
+        <link rel="stylesheet" href="../css/doctor/doctor_style.css"/>
     </head>
     <body class="skin-black"">
         <jsp:include page="../admin/AdminHeader.jsp"></jsp:include>

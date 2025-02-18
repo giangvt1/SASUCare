@@ -1,0 +1,96 @@
+table {
+    border: 2px solid #ddd;
+    border-collapse: collapse;
+    width: 90%;
+    margin: 20px auto;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.search-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-header span {
+    font-weight: bold;
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+.search-header input[type="text"]{
+    width: 545px;
+}
+.filter-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-item span {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.filter-item input[type="date"],
+.filter-item select {
+    width: 150px;
+    height: 40px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.pre-next-Btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.page-link-container {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Giảm khoảng cách giữa các nút */
+}
+
+/* Nút phân trang */
+.page-link {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    margin: 0;
+    text-decoration: none;
+    color: #333;
+    border: 1px solid #ccc;
+    transition: 0.3s;
+}
+
+.page-link:hover,
+.page-link.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+/* Các nút Previous và Next không có khoảng cách ngoài margin */
+.page-link-container a {
+    margin: 0 5px;
+}
+
