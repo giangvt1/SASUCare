@@ -2,14 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/Users/TRUNG/Downloads/Project-G6/src/java/controller/doctor/DeleteCustomerVisitHistory.java</file>
-            <file>file:/C:/Users/TRUNG/Downloads/Project-G6/web/doctor/ManageMedical.jsp</file>
-            <file>file:/C:/Users/TRUNG/Downloads/Project-G6/src/java/controller/doctor/UpdateCustomerVisitHistory.java</file>
-            <file>file:/C:/Users/TRUNG/Downloads/Project-G6/src/java/controller/doctor/DeleteCustomerMedicalHistory.java</file>
-            <file>file:/C:/Users/TRUNG/Downloads/Project-G6/web/doctor/CustomerMedicalDetail.jsp</file>
-            <file>file:/C:/Users/TRUNG/Downloads/Project-G6/web/doctor/UpdateCustomerVisitHistory.jsp</file>
-            <file>file:/C:/Users/TRUNG/Downloads/Project-G6/web/doctor/CreateCustomerVisitHistory.jsp</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>
