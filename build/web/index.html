@@ -1,135 +1,15 @@
 <!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
 <html>
-  <head>
-    <title>Live Chat</title>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f0f2f5;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-      }
-      h1 {
-        margin-top: 20px;
-        color: #333;
-      }
-      .chat {
-        width: 80%;
-        max-width: 600px;
-        height: 400px;
-        border: 2px solid #ccc;
-        border-radius: 10px;
-        background-color: #fff;
-        overflow-y: scroll;
-        padding: 10px;
-        margin: 20px 0;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      }
-      .message {
-        padding: 8px;
-        margin-bottom: 8px;
-        border-radius: 5px;
-        word-wrap: break-word;
-        clear: both;
-      }
-      .received {
-        background-color: #e9ecef;
-        text-align: left;
-        float: left;
-      }
-      .sent {
-        background-color: #007bff;
-        color: white;
-        text-align: right;
-        float: right;
-      }
-      #msg {
-        width: calc(100% - 90px);
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        margin-right: 10px;
-      }
-      button {
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-      }
-      button:hover {
-        background-color: #0056b3;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Live Chat Updates</h1>
-    <div>
-      <div id="chat" class="chat"></div>
-      <div>
-        <input type="text" name="msg" id="msg" placeholder="Enter message here" />
-        <button onclick="return sendMsg();">Enter</button>
-      </div>
-    </div>
-
-    <script>
-      // Tạo WebSocket
-      var wsUrl = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-      var ws = new WebSocket(wsUrl + window.location.host + '/WebChat/chat');
-
-      // Hỏi tên người dùng (hoặc bạn có thể tạo random)
-      var myUsername = prompt('Nhập tên của bạn:') || 'Guest';
-
-      // Khi kết nối WebSocket mở, gửi SET_NAME:<tên> lên server
-      ws.onopen = function() {
-        ws.send('SET_NAME:' + myUsername);
-      };
-
-      // Nhận tin nhắn từ server
-      ws.onmessage = function(event) {
-        var chatBox = document.getElementById('chat');
-        var data = event.data; // dạng "Tên: Nội dung"
-
-        // Tách tên và nội dung
-        var index = data.indexOf(': ');
-        if (index === -1) {
-          // Trường hợp không đúng format, ta cứ append bình thường
-          chatBox.innerHTML += '<div class="message received">' + data + '</div>';
-          return;
-        }
-        var sender = data.substring(0, index);
-        var msg = data.substring(index + 2);
-
-        // So sánh sender với myUsername
-        var isMine = (sender === myUsername);
-        var messageClass = isMine ? 'sent' : 'received';
-
-        // Tạo thẻ div hiển thị
-        var messageHtml = '<div class="message ' + messageClass + '">';
-        messageHtml += '<strong>' + sender + ':</strong> ' + msg;
-        messageHtml += '</div>';
-
-        chatBox.innerHTML += messageHtml;
-        // Tự động scroll xuống cuối
-        chatBox.scrollTop = chatBox.scrollHeight;
-      };
-
-      // Gửi tin nhắn
-      function sendMsg() {
-        var msgInput = document.getElementById('msg');
-        var msg = msgInput.value;
-        if (msg) {
-          ws.send(msg);
-        }
-        msgInput.value = '';
-      }
-    </script>
-  </body>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>TODO write content</div>
+    </body>
 </html>
