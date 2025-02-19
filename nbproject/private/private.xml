@@ -20,16 +20,9 @@
         </group>
         <group name="PRJ301"/>
         <group>
-            <file>file:/D:/Ky%205/SWP/SWP391_GROUP6/src/java/controller/doctor/SearchCustomer.java</file>
             <file>file:/D:/Ky%205/SWP/SWP391_GROUP6/web/css/doctor/doctor_style.css</file>
-            <file>file:/D:/Ky%205/SWP/SWP391_GROUP6/src/java/dao/CustomerDBContext.java</file>
             <file>file:/D:/Ky%205/SWP/SWP391_GROUP6/web/doctor/SearchCustomer.jsp</file>
         </group>
-        <group>
-            <file>file:/D:/Ky%205/SWP/SWP391_GROUP6/src/java/controller/doctor/SearchCustomer.java</file>
-            <file>file:/D:/Ky%205/SWP/SWP391_GROUP6/web/css/doctor/doctor_style.css</file>
-            <file>file:/D:/Ky%205/SWP/SWP391_GROUP6/src/java/dao/CustomerDBContext.java</file>
-            <file>file:/D:/Ky%205/SWP/SWP391_GROUP6/web/doctor/SearchCustomer.jsp</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

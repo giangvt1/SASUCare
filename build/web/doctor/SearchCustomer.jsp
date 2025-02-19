@@ -18,17 +18,19 @@
             <div class="right-side">
                 <h1 class="text-center text-bold mb-4" style="margin-bottom: 30px">Search customer</h1>
                 <form action="SearchCustomer" method="get" class="sidebar-form" id="searchCustomerForm">
-                    <div class="search-header">
-                        <span>Full name</span>
-                        <div class="search-input">
-                            <input type="text" name="customerName" placeholder="Search customer name..." value="${param.customerName}" onchange="this.form.submit()"/>
+                    <div class="search">
+                        <div class="search-header">
+                            <span>Full name</span>
+                            <div class="search-input">
+                                <input type="text" name="customerName" placeholder="Search customer name..." value="${param.customerName}" onchange="this.form.submit()"/>
+                        </div>
                     </div>
                 </div>
 
                 <div class="filter-container">
                     <div class="filter-item">
                         <span>Date of birth</span>
-                        <input type="date" name="customerDate" id="datePicker" value="${param.customerDate}" onchange="this.form.submit()" />
+                        <input type="date" name="customerDate" id="datePicker" value="${param.customerDate}" onblur="this.form.submit()" />
                     </div>
 
                     <div class="filter-item">
@@ -46,8 +48,8 @@
                             <option value="default" ${empty param.sort == 'default' ? 'selected' : ''}>Default</option>
                             <option value="fullNameAZ" ${param.sort == 'fullNameAZ' ? 'selected' : ''}>Full name A-Z</option>
                             <option value="fullNameZA" ${param.sort == 'fullNameZA' ? 'selected' : ''}>Full name Z-A</option>
-                            <option value="fullDOBLTH" ${param.sort == 'fullDOBLTH' ? 'selected' : ''}>Full DOB low to high</option>
-                            <option value="fullDOBHTL" ${param.sort == 'fullDOBHTL' ? 'selected' : ''}>Full DOB high to low</option>
+                            <option value="DOBLTH" ${param.sort == 'fullDOBLTH' ? 'selected' : ''}>DOB low to high</option>
+                            <option value="DOBHTL" ${param.sort == 'fullDOBHTL' ? 'selected' : ''}>DOB high to low</option>
                         </select>
                     </div>
 
@@ -55,19 +57,16 @@
                         <span>Size each table</span>
                         <select name="size" id="size" onchange="this.form.submit()">
                             <option value="10" ${param.size == '10' ? 'selected' : ''}>10</option>
-                            <option value="1" ${param.size == '1' ? 'selected' : ''}>1</option>
-                            <option value="2" ${param.size == '2' ? 'selected' : ''}>2</option>
+                            <option value="5" ${param.size == '5' ? 'selected' : ''}>5</option>
                             <option value="20" ${param.size == '20' ? 'selected' : ''}>20</option>
+                            <option value="100" ${param.size == '100' ? 'selected' : ''}>100</option>
                         </select>
                     </div>
                 </div>
             </form>
-
-
-
-            <div class="customer-list mt-4">
-                <h3 style="margin-left: 10px">Customer Results</h3>
-                <table class="table">
+            <div class="table-data mt-4">
+                <table class="table" style="width:95%">
+                    <h3 class="title">Customer Results</h3>
                     <thead>
                         <tr><th>#</th>
                             <th>Full Name</th>
@@ -78,17 +77,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Duyệt qua danh sách khách hàng -->
-                    <div class="hasNextPage" hidden>${hasNextPage}</div>
-                    <c:forEach var="c" items="${customers}" varStatus="status">
-                        <tr><td class="index">${status.index + 1}</td>
-                            <td><a href="ShowCustomerMedicalDetail?cid=${c.id}">${c.fullname}</a></td>
-                            <td>${c.gender?"Male":"Female"}</td>
-                            <td><fmt:formatDate value="${c.dob}" pattern="dd/MM/yyyy" /></td>
-                            <td>${c.phone_number}</td>
-                            <td>${c.address}</td>
-                        </tr>
-                    </c:forEach>
+                        <c:forEach var="c" items="${customers}" varStatus="status">
+                            <tr><td class="index">${status.index + 1}</td>
+                                <td><a href="ShowCustomerMedicalDetail?cId=${c.id}">${c.fullname}</a></td>
+                                <td>${c.gender?"Male":"Female"}</td>
+                                <td><fmt:formatDate value="${c.dob}" pattern="dd/MM/yyyy" /></td>
+                                <td>${c.phone_number}</td>
+                                <td>${c.address}</td>
+                            </tr>
+                        </c:forEach>
                     </tbody>
                 </table>
 
@@ -107,7 +104,7 @@
                             </c:when>
                             <c:otherwise>
                                 <a class="page-link ${currentPage == 1 ? 'active' : ''}" href="SearchCustomer?page=1&customerName=${param.customerName}&customerDate=${param.customerDate}&customerGender=${param.customerGender}&sort=${param.sort}&size=${param.size}">1</a>
-                                <c:if test="${currentPage > 3}">
+                                <c:if test="${currentPage > 2}">
                                     <span class="page-link">...</span>
                                 </c:if>
 

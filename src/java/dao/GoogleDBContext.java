@@ -28,9 +28,10 @@ import jakarta.mail.internet.MimeMessage;
  *
  * @author ngoch
  */
-public class GoogleDBContext extends DBContext<GoogleAccount>{
+public class GoogleDBContext extends DBContext<GoogleAccount> {
+
     private static final Logger LOGGER = Logger.getLogger(GoogleDBContext.class.getName());
-    
+
     public GoogleAccount findByEmail(String email) {
         String sql = "SELECT * FROM [Google_Authen] WHERE email = ?";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
@@ -53,7 +54,7 @@ public class GoogleDBContext extends DBContext<GoogleAccount>{
         }
         return null;
     }
-        
+
     @Override
     public void insert(GoogleAccount model) {
         String sql = """
@@ -140,7 +141,7 @@ public class GoogleDBContext extends DBContext<GoogleAccount>{
                 account.setGiven_name(rs.getString("given_name")); // Thêm trường 'given_name'
                 account.setFamily_name(rs.getString("family_name")); // Thêm trường 'family_name'
                 account.setPicture(rs.getString("picture"));
-                account.setVerified_email(rs.getBoolean("verified_email")); 
+                account.setVerified_email(rs.getBoolean("verified_email"));
 
                 ggAccounts.add(account);
             }
@@ -149,7 +150,7 @@ public class GoogleDBContext extends DBContext<GoogleAccount>{
         }
         return ggAccounts;
     }
-        
+
     @Override
     public GoogleAccount get(String account_id) {
         GoogleAccount account = null;
@@ -173,7 +174,7 @@ public class GoogleDBContext extends DBContext<GoogleAccount>{
         }
         return account;
     }
-    
+
     public int sendOtp(String gmail) {
         Random rand = new Random();
         int otpvalue = 100000 + rand.nextInt(900000);
@@ -194,7 +195,6 @@ public class GoogleDBContext extends DBContext<GoogleAccount>{
             }
         });
 
-
         try {
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress("hailnhe181075@fpt.edu.vn")); // Use your actual "from" email.
@@ -211,5 +211,43 @@ public class GoogleDBContext extends DBContext<GoogleAccount>{
             e.printStackTrace(); // Print the stack trace for debugging.
             return -1; // Return -1 to indicate failure.  Don't throw a RuntimeException.
         }
+    }
+
+    public void send(String gmail, String title, String messageContent) {
+        String to = gmail;
+
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.socketFactory.port", "465");
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");  // Or jakarta.net.ssl.SSLSocketFactory if needed.
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.port", "465");
+
+        Session session = Session.getInstance(props, new Authenticator() { // Use getInstance
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("hailnhe181075@fpt.edu.vn", "mjpxokkwmtgkxqro");
+            }
+        });
+
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("hailnhe181075@fpt.edu.vn"));
+            message.setRecipients(Message.RecipientType.TO, to);
+            message.setSubject("Title:" + title);
+            message.setText("Mess:" + messageContent);
+
+            Transport.send(message);
+            System.out.println("Message sent successfully");
+
+        } catch (MessagingException e) {
+            LOGGER.log(Level.SEVERE, "Error sending OTP email", e); // Log the exception
+            e.printStackTrace(); // Print the stack trace for debugging.
+        }
+    }
+
+    public static void main(String[] args) {
+        GoogleDBContext g = new GoogleDBContext();
+        g.send("ntvippro24@gmail.com", "hello", "hello");
     }
 }

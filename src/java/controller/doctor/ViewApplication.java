@@ -32,7 +32,7 @@ public class ViewApplication extends BaseRBACController {
         String sortStr = request.getParameter("sort");
         String sizeStr = request.getParameter("size");
         String sort = "default";
-        int size = 10;
+        int sizeOfEachTable = 10;
         java.sql.Date date = null;
         if (dateStr != null && !dateStr.isEmpty()) {
             try {
@@ -44,9 +44,10 @@ public class ViewApplication extends BaseRBACController {
 
         int did = Integer.parseInt(request.getParameter("did"));
         int page = 1;
-        if (request.getParameter("page") != null) {
+        if (pageStr != null && !pageStr.isEmpty()) {
             try {
-                page = Integer.parseInt(request.getParameter("page"));
+                page = Integer.parseInt(pageStr);
+
             } catch (NumberFormatException e) {
                 page = 1;
             }
@@ -54,20 +55,18 @@ public class ViewApplication extends BaseRBACController {
         if (sortStr != null) {
             sort = sortStr;
         }
-        if (sizeStr != null) {
-            size = Integer.parseInt(sizeStr);
+        if (sizeStr != null && !sizeStr.isEmpty()) {
+            sizeOfEachTable = Integer.parseInt(sizeStr);
         }
         DoctorDBContext d = new DoctorDBContext();
-        List<Application> applications = d.getApplicationsByDoctorID(name, date, status, did, page, sort, size);
+        List<Application> applications = d.getApplicationsByDoctorID(name, date, status, did, page, sort, sizeOfEachTable);
 
-        // Kiểm tra xem có trang tiếp theo không
-        List<Application> nextPageCheck = d.getApplicationsByDoctorID(name, date, status, did, page + 1, sort, size);
-        boolean hasNextPage = !nextPageCheck.isEmpty();
+        int totalApplications = d.getApplicationsCountByDoctorID(name, date, status, did);
+        int totalPages = (int) Math.ceil((double) totalApplications / sizeOfEachTable);
 
         request.setAttribute("applications", applications);
         request.setAttribute("currentPage", page);
-        request.setAttribute("hasNextPage", hasNextPage);
-
+        request.setAttribute("totalPages", totalPages);
         request.getRequestDispatcher("ViewApplication.jsp").forward(request, response);
     }
 

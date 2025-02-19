@@ -32,7 +32,6 @@ public class SearchCustomer extends BaseRBACController {
         String sortStr = request.getParameter("sort");
         String sizeStr = request.getParameter("size");
         String sort = "default";
-        int sizeOfList = 0;
         int sizeOfEachTable = 10;
         Date customerDate = null;
         if (customerDateStr != null && !customerDateStr.isEmpty()) {
@@ -65,16 +64,12 @@ public class SearchCustomer extends BaseRBACController {
         }
         CustomerDBContext customerDB = new CustomerDBContext();
         ArrayList<Customer> resultLists = customerDB.searchCustomerInMedical(customerName, (java.sql.Date) customerDate, customerGender, page, sort, sizeOfEachTable);
-
-        int nextPageSize = customerDB.searchCustomerInMedical(customerName, (java.sql.Date) customerDate, customerGender, page + 1, sort, sizeOfEachTable).size();
-        boolean hasNextPage = nextPageSize > 0;
         int totalCustomers = customerDB.countCustomerInMedical(customerName, (java.sql.Date) customerDate, customerGender);
         int totalPages = (int) Math.ceil((double) totalCustomers / sizeOfEachTable);
 
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("customers", resultLists);
         request.setAttribute("currentPage", page);
-        request.setAttribute("hasNextPage", hasNextPage);
         request.getRequestDispatcher("SearchCustomer.jsp").forward(request, response);
     }
 

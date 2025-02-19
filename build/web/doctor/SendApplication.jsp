@@ -1,9 +1,3 @@
-<%-- 
-    Document   : SendApplicaion
-    Created on : 27 thg 1, 2025, 23:10:36
-    Author     : TRUNG
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -14,19 +8,37 @@
         <!-- font Awesome -->
         <link href="../css/admin/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <link href="../css/admin/styleAdmin.css" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" href="../css/doctor/manage_medical_style.css"/>
+        <link rel="stylesheet" href="../css/doctor/doctor_style.css"/>
     </head>
     <body class="skin-black">
         <jsp:include page="../admin/AdminHeader.jsp" />
         <jsp:include page="../admin/AdminLeftSideBar.jsp" />
+        <style>
+            .right-side {
+                padding: 20px; 
+                background-color: #fff; 
+                border-radius: 5px; 
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+            }
+            
+            textarea.form-control {
+                resize: vertical;
+            }
+
+            .btn {
+                width: 100%; 
+                padding: 10px; 
+            }
+        </style>
         <div class="right-side">
-            <h3 class="text-center">Send Application</h3>
-            <a href="ViewApplication?did=16">View Application</a>
+            <h3 class="text-center title">Send Application</h3>
+            <a class="back-btn" href="ViewApplication?did=16">View Application</a>
             <form action="SendApplication" method="POST" class="mt-4">
-                <input type="text" hidden id="did" name="did" value="16" required><br><br>
+                <input type="text" hidden id="did" name="did" value="16" required><br>
+                <input type="text" hidden id="hrid" name="hrid" value="32" required><br>
                 <div class="form-group">
                     <label for="name">Loại đơn</label>
-                    <select class="form-contsrol" id="name" name="name" required>
+                    <select style="width: 15%" class="form-control" id="name" name="name" required>
                         <option value="">-- Type Application --</option>
                         <option value="tang luong">Đơn xin tăng lương</option>
                         <option value="doi lich">Đơn xin đổi lịch làm</option>

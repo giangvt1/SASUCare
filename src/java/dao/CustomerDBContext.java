@@ -45,10 +45,10 @@ public class CustomerDBContext extends DBContext<Customer> {
             case "fullNameZA":
                 sqlBuilder.append(" ORDER BY fullname DESC");
                 break;
-            case "fullDOBLTH":
+            case "DOBLTH":
                 sqlBuilder.append(" ORDER BY dob ASC");
                 break;
-            case "fullDOBHTL":
+            case "DOBHTL":
                 sqlBuilder.append(" ORDER BY dob DESC");
                 break;
             default:
@@ -140,12 +140,18 @@ public class CustomerDBContext extends DBContext<Customer> {
         return count;
     }
 
-    public ArrayList<MedicalHistory> showMedicalHistory(int Cid) {
+    public ArrayList<MedicalHistory> getMedicalHistoryByCustomerIdPaginated(int Cid, int page, int size) {
         ArrayList<MedicalHistory> list = new ArrayList<>();
-        String sql = "SELECT * FROM [MedicalHistory] WHERE CustomerID = ?";
+        String sql = "SELECT * FROM [MedicalHistory] WHERE CustomerID = ? "
+                + "ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setInt(1, Cid);
+            int offset = (page - 1) * size;
+            stm.setInt(2, offset);
+            stm.setInt(3, size);
             ResultSet rs = stm.executeQuery();
+
             while (rs.next()) {
                 MedicalHistory m = new MedicalHistory();
                 m.setId(rs.getInt("id"));
@@ -158,6 +164,23 @@ public class CustomerDBContext extends DBContext<Customer> {
             ex.printStackTrace();
         }
         return list;
+    }
+
+    public int getTotalMedicalHistoryCountByCustomerId(int Cid) {
+        int totalCount = 0;
+        String sql = "SELECT COUNT(*) FROM [MedicalHistory] WHERE CustomerID = ?";
+
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setInt(1, Cid);
+            ResultSet rs = stm.executeQuery();
+
+            if (rs.next()) {
+                totalCount = rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return totalCount;
     }
 
     public boolean createMedicalHistory(MedicalHistory m) {
@@ -241,15 +264,16 @@ public class CustomerDBContext extends DBContext<Customer> {
     }
 
     // Phương thức lấy danh sách lịch sử khám bệnh theo CustomerID, có phân trang
-    public ArrayList<VisitHistory> getVisitHistoriesByCustomerIdPaginated(int customerId, int page) {
+    public ArrayList<VisitHistory> getVisitHistoriesByCustomerIdPaginated(int customerId, int page, int size) {
         ArrayList<VisitHistory> visitHistories = new ArrayList<>();
-        String sql = "SELECT * FROM VisitHistory WHERE CustomerID = ? ORDER BY VisitDate DESC OFFSET ? ROWS FETCH NEXT 10 ROWS ONLY";
+        String sql = "SELECT * FROM VisitHistory WHERE CustomerID = ? ORDER BY VisitDate DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
-        int offset = (page - 1) * 10; // Tính vị trí bắt đầu (OFFSET)
+        int offset = (page - 1) * size;
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, customerId);  // Gán giá trị CustomerID
-            ps.setInt(2, offset);  // Gán giá trị OFFSET
+            ps.setInt(1, customerId);
+            ps.setInt(2, offset);
+            ps.setInt(3, size);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -257,11 +281,11 @@ public class CustomerDBContext extends DBContext<Customer> {
                             rs.getInt("id"),
                             rs.getInt("DoctorID"),
                             rs.getInt("CustomerID"),
-                            rs.getDate("VisitDate"),
+                            rs.getTimestamp("VisitDate"), // Chỉnh sửa ở đây
                             rs.getString("ReasonForVisit"),
                             rs.getString("Diagnoses"),
                             rs.getString("TreatmentPlan"),
-                            rs.getDate("NextAppointment")
+                            rs.getTimestamp("NextAppointment") // Chỉnh sửa ở đây
                     );
                     visitHistories.add(vh);
                 }
@@ -271,6 +295,25 @@ public class CustomerDBContext extends DBContext<Customer> {
         }
 
         return visitHistories;
+    }
+
+    public int getVisitHistoryCountByCustomerId(int customerId) {
+        String sql = "SELECT COUNT(*) FROM VisitHistory WHERE CustomerID = ?";
+        int count = 0;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, customerId); // Gán CustomerID
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt(1); // Lấy số lượng bản ghi
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return count;
     }
 
     public boolean createVisitHistory(VisitHistory visitHistory) {
