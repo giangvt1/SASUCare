@@ -27,6 +27,8 @@ public class AppointmentDoctorListController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String dateParam = request.getParameter("date");
         Date selectedDate = null;
+        
+        
 
         try {
             if (dateParam != null && !dateParam.isEmpty()) {
@@ -51,6 +53,10 @@ public class AppointmentDoctorListController extends HttpServlet {
         }
 
         String name = request.getParameter("name");
+        
+        if (name != null) {
+            name = name.trim().replaceAll("\\s+", " ").replace(" ", "%");
+        }
 
         // Lấy danh sách bác sĩ từ DB
         List<Doctor> doctors = doctorDB.getDoctorsByFilters(name, selectedSpecialties, selectedDate);

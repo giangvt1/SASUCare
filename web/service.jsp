@@ -4,246 +4,288 @@
     Author     : admin
 --%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
-<!--        <style>
-  /* Căn giữa toàn bộ carousel */
-  .styles_serviceHeader__rJZ7Q .ant-carousel {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  /* Căn giữa các item và đảm bảo khoảng cách đều */
-  .slick-list {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-  }
-
-  .slick-track {
-    display: flex;
-    justify-content: space-evenly; /* Đảm bảo các item cách đều */
-    align-items: center;
-    width: 100%;
-  }
-
-  /* Các item trong carousel */
-  .slick-slide {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: auto;
-    padding: 10px; /* Khoảng cách giữa các item */
-  }
-
-  /* Căn giữa và làm cho biểu tượng lớn hơn */
-  .styles_card__706JX {
-    text-align: center;
-  }
-
-  /* Điều chỉnh kích thước biểu tượng */
-  .styles_card__706JX i {
-    font-size: 60px; /* Điều chỉnh kích thước biểu tượng */
-    color: #003553; /* Màu sắc của biểu tượng */
-    margin-bottom: 10px; /* Khoảng cách giữa biểu tượng và tiêu đề */
-  }
-
-  /* Đảm bảo tiêu đề nằm dưới biểu tượng */
-  .styles_title__IzDio {
-    margin-top: 5px;
-    font-size: 16px; /* Kích thước chữ tiêu đề */
-    text-align: center;
-  }
-</style>-->
-
-<style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 20px;
-        }
-        .heading {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        .card {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin: 20px;
-            overflow: hidden;
-            transition: transform 0.3s;
-            flex: 1 1 calc(33% - 40px);
-            max-width: calc(33% - 40px);
-        }
-        .card:hover {
-            transform: scale(1.05);
-        }
-        .card img {
-            width: 100%;
-            height: auto;
-        }
-        .card-content {
-            padding: 20px;
-            text-align: center;
-        }
-        .card-content h3 {
-            margin: 0 0 10px;
-        }
-        .more {
-            color: #007bff;
-            text-decoration: none;
-        }
-        .grid {
+        <!--        <style>
+          /* Căn giữa toàn bộ carousel */
+          .styles_serviceHeader__rJZ7Q .ant-carousel {
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
-        }
-    </style>
+            align-items: center;
+          }
+        
+          /* Căn giữa các item và đảm bảo khoảng cách đều */
+          .slick-list {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+          }
+        
+          .slick-track {
+            display: flex;
+            justify-content: space-evenly; /* Đảm bảo các item cách đều */
+            align-items: center;
+            width: 100%;
+          }
+        
+          /* Các item trong carousel */
+          .slick-slide {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: auto;
+            padding: 10px; /* Khoảng cách giữa các item */
+          }
+        
+          /* Căn giữa và làm cho biểu tượng lớn hơn */
+          .styles_card__706JX {
+            text-align: center;
+          }
+        
+          /* Điều chỉnh kích thước biểu tượng */
+          .styles_card__706JX i {
+            font-size: 60px; /* Điều chỉnh kích thước biểu tượng */
+            color: #003553; /* Màu sắc của biểu tượng */
+            margin-bottom: 10px; /* Khoảng cách giữa biểu tượng và tiêu đề */
+          }
+        
+          /* Đảm bảo tiêu đề nằm dưới biểu tượng */
+          .styles_title__IzDio {
+            margin-top: 5px;
+            font-size: 16px; /* Kích thước chữ tiêu đề */
+            text-align: center;
+          }
+        </style>-->
+
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+            }
+            .container {
+                max-width: 1200px;
+                margin: auto;
+                padding: 20px;
+            }
+            .heading {
+                text-align: center;
+                margin-bottom: 40px;
+            }
+            .card {
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                margin: 20px;
+                overflow: hidden;
+                transition: transform 0.3s;
+                flex: 1 1 calc(33% - 40px);
+                max-width: calc(33% - 40px);
+            }
+            .card:hover {
+                transform: scale(1.05);
+            }
+            .card img {
+                width: 100%;
+                height: auto;
+            }
+            .card-content {
+                padding: 20px;
+                text-align: center;
+            }
+            .card-content h3 {
+                margin: 0 0 10px;
+            }
+            .more {
+                color: #007bff;
+                text-decoration: none;
+            }
+            .grid {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        </style>
 
     </head>
-    
-    
-    
+
+
+
     <body>
         <jsp:include page="Header.jsp"></jsp:include>
-        
 
 
 
-<div class="container">
-    <div class="heading">
-        <h1>Chuyên khoa điều trị</h1>
-    </div>
-    <div class="grid">
-        <div class="card">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvWLUFmU1UcUxxpMBtfKhfEIS89U5eR2GSPw&s" alt="Cấp cứu">
-            <div class="card-content">
-                <h3>Cấp cứu</h3>
-                <a class="more" href="khoacapcuu.jsp">More →</a>
-            </div>
-        </div>
-        <div class="card">
-            <img src="https://datafiles.nghean.gov.vn/nan-ubnd/2882/quantritintuc20242/m2638436058638817220.jpg" alt="Tim mạch">
-            <div class="card-content">
-                <h3>Tim mạch</h3>
-                <a class="more" href="khoatimmach.jsp">More →</a>
-            </div>
-        </div>
-        <div class="card">
-            <img src="https://cdn.benhvienthucuc.vn/wp-content/uploads/2021/06/kinh-nghiem-tim-dia-chi-kham-chuyen-khoa-co-xuong-khop-o-dau-tot-1.jpg" alt="Xương Khớp">
-            <div class="card-content">
-                <h3>Xương Khớp</h3>
-                <a class="more" href="khoaxuongkhop.jsp">More →</a>
-            </div>
-        </div>
-        <div class="card">
-            <img src="https://cms-prod.s3-sgn09.fptcloud.com/cau_tao_chuc_nang_cua_he_ho_hap_va_mot_so_benh_thuong_gap_2_15facfc931.jfif" alt="Hô Hấp">
-            <div class="card-content">
-                <h3>Hô Hấp</h3>
-                <a class="more" href="#">More →</a>
-            </div>
-        </div>
-        <div class="card">
-            <img src="https://www.vinmec.com/static/uploads/20190524_042142_717615_NBI_tieu_hoa_max_1800x1800_jpg_f8625d797f.jpg" alt="Tiêu hóa">
-            <div class="card-content">
-                <h3>Tiêu hóa</h3>
-                <a class="more" href="#">More →</a>
-            </div>
-        </div>
-        <div class="card">
-            <img src="https://benhvien22-12.com/wp-content/uploads/2021/08/khoa-nhi.jpg" alt="Khoa Nhi">
-            <div class="card-content">
-                <h3>Khoa Nhi</h3>
-                <a class="more" href="#">More →</a>
-            </div>
-        </div>
-        <div class="card">
-            <img src="https://phongkhamdinhcu.vn/wp-content/uploads/khoa-noi-than-kinh.jpg" alt="Thần kinh">
-            <div class="card-content">
-                <h3>Thần kinh</h3>
-                <a class="more" href="#">More →</a>
-            </div>
-        </div>
-        <div class="card">
-            <img src="https://nhakhoakim.com/wp-content/uploads/2022/03/rang-ham-mat-tieng-anh-la-gi-1.png" alt="Răng Hàm Mặt">
-            <div class="card-content">
-                <h3>Răng Hàm Mặt</h3>
-                <a class="more" href="#">More →</a>
-            </div>
-        </div>
-        <div class="card">
-            <img src="https://benhviendongnai.com.vn/wp-content/uploads/2023/09/poster-2-scaled.jpg" alt="Mắt">
-            <div class="card-content">
-                <h3>Mắt</h3>
-                <a class="more" href="#">More →</a>
-            </div>
-        </div>
-        <div class="card">
-            <img src="https://thanhnien.mediacdn.vn/Uploaded/linhnt-qc/2022_01_10/mh-1-4707.jpg" alt="Thẩm Mỹ">
-            <div class="card-content">
-                <h3>Thẩm Mỹ</h3>
-                <a class="more" href="#">More →</a>
-            </div>
-        </div>
-        <div class="card">
-            <img src="https://bizweb.dktcdn.net/thumb/1024x1024/100/413/259/files/cong-nghe-te-bao-goc-2.jpg?v=1673515663024" alt="Viện nghiên cứu tế bào gốc và công nghệ Gen">
-            <div class="card-content">
-                <h3>Viện nghiên cứu tế bào gốc và công nghệ Gen</h3>
-                <a class="more" href="#">More →</a>
-            </div>
-        </div>
-        <div class="card">
-            <img src="https://suckhoedoisong.qltns.mediacdn.vn/324455921873985536/2021/10/12/photo-1634049650013-1634049663521446262357.png" alt="Trung tâm Vacxin">
-            <div class="card-content">
-                <h3>Trung tâm Vacxin</h3>
-                <a class="more" href="#">More →</a>
-            </div>
-        </div>
-        <div class="card">
-            <img src="https://lienhiepkhktnghean.org.vn/uploads/thong-tin-khoa-hoc/2024_04/image-20240416104018-1.jpeg" alt="Trung tâm Y học cổ truyền">
-            <div class="card-content">
-                <h3>Trung tâm Y học cổ truyền </h3>
-                <a class="more" href="#">More →</a>
-            </div>
-        </div>
-        <div class="card">
-            <img src="https://acc.vn/wp-content/uploads/2021/06/59-cac-phuong-phap-vat-ly-tri-lieu.jpg" alt="Vật lí trị liệu">
-            <div class="card-content">
-                <h3>Vật lí trị liệu</h3>
-                <a class="more" href="#">More →</a>
-            </div>
-        </div>
-        <div class="card">
-            <img src="https://hoanhap.vn/files/images/article16548.jpg" alt="Khoa tâm lý">
-            <div class="card-content">
-                <h3>Khoa tâm lý </h3>
-                <a class="more" href="#">More →</a>
-            </div>
-        </div>
-        <div class="card">
-            <img src="https://ykhoahopnhan.vn/wp-content/uploads/2019/05/ent-1.jpg" alt="Tai mũi họng">
-            <div class="card-content">
-                <h3>Tai mũi họng</h3>
-                <a class="more" href="#">More →</a>
-            </div>
-        </div>
-    </div>
-</div>
 
-        
+            <div class="container">
+                <div class="heading">
+                    <h1>Chuyên khoa điều trị</h1>
+                </div>
+                <div class="grid">
+                <c:forEach var="service" items="${services}">
+                    <div class="card">
+                        <c:choose>
+                            <c:when test="${service.id == 1}">
+
+                                <img src="https://png.pngtree.com/png-vector/20240430/ourmid/pngtree-medical-check-up-schedule-vector-png-image_12344159.png" alt="Cấp cứu">
+                                <div class="card-content">
+                                    <h3>${service.name}</h3>
+                                    <a class="more" href="khoacapcuu.jsp">More →</a>
+                                </div>
+
+                            </c:when>
+                            <c:when test="${service.id == 2}">
+                                <img src="https://cdn.pixabay.com/photo/2021/01/27/06/48/medical-5953866_960_720.png" alt="Đặt Khám Bác Sĩ">
+                                <div class="card-content">
+                                    <h3>${service.name}</h3>
+                                    <a class="more" href="khoatimmach.jsp">More →</a>
+                                </div>
+
+                            </c:when>
+                            <c:when test="${service.id == 3}">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTr9WUs4R_V4y9Oi-a6xL1SL4q8WjXY6S23DjgOLsT-fcd8lQkcIdqMohza1ZXR9zUEDuA&usqp=CAU" alt="Call Video Với Bác Sĩ">
+                                <div class="card-content">
+                                    <h3>${service.name}</h3>
+                                    <a class="more" href="khoaxuongkhop.jsp">More →</a>
+                                </div>
+
+
+                            </c:when>
+                            <c:when test="${service.id == 4}">
+                                <img src="https://png.pngtree.com/png-vector/20230222/ourmid/pngtree-blood-test-line-icon-png-image_6613520.png" alt="Đặt lịch xét nghiệm">
+                                <div class="card-content">
+                                    <h3>${service.name}</h3>
+                                    <a class="more" href="TestPackage">More →</a>
+                                </div>
+
+                            </c:when>
+                            <c:when test="${service.id == 5}">
+                                <img src="https://media.istockphoto.com/id/1211178700/vi/vec-to/medical-shield-line-icon-b%E1%BA%A3o-v%E1%BB%87-s%E1%BB%A9c-kh%E1%BB%8Fe-ph%E1%BA%B3ng-ch%C3%A9o-vect%C6%A1-y-t%E1%BA%BF.jpg?s=170667a&w=0&k=20&c=23k39Blz-vn47AWsf1vydP1CNJYaRkHGYJ5UJgF9ygo=" alt="Gói Khám Sức Khỏe">
+                                <div class="card-content">
+                                    <h3>${service.name}</h3>
+                                    <a class="more" href="SearchPackageServlet">More →</a>
+                                </div>
+
+                            </c:when>
+                            <c:when test="${service.id == 6}">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2907/2907474.png" alt="Đặt lịch tiêm chủng">
+                                <div class="card-content">
+                                    <h3>${service.name}</h3>
+                                    <a class="more" href="VaccinePackage">More →</a>
+                                </div>
+
+                            </c:when>
+                            <c:when test="${service.id == 7}">
+                                <img src="https://w7.pngwing.com/pngs/24/963/png-transparent-doctor-icon-screenshot-physician-health-professional-health-care-doctor-of-medicine-stethoscope-miscellaneous-rectangle-logo-thumbnail.png" alt="Khám Ngoài Giờ">
+                                <div class="card-content">
+                                    <h3>${service.name}</h3>
+                                    <a class="more" href="khoaxuongkhop.jsp">More →</a>
+                                </div>
+
+                            </c:when>
+                            <c:when test="${service.id == 8}">
+                                <img src="https://png.pngtree.com/png-vector/20201226/ourmid/pngtree-care-icon-png-image_2647740.jpg" alt="Y tế tại nhà">
+                                <div class="card-content">
+                                    <h3>${service.name}</h3>
+                                    <a class="more" href="khoaxuongkhop.jsp">More →</a>
+                                </div>
+
+                            </c:when>
+                            <c:when test="${service.id == 9}">
+                                <img src="https://static.thenounproject.com/png/1168142-200.png" alt="Thanh Toán Viện Phí">
+                                <div class="card-content">
+                                    <h3>${service.name}</h3>
+                                    <a class="more" href="khoaxuongkhop.jsp">More →</a>
+                                </div>
+
+                            </c:when>
+                            <c:otherwise>
+                                <img src="https://via.placeholder.com/100" alt="Dịch vụ khác">
+                            </c:otherwise>
+                        </c:choose>
+
+                    </div>
+                </c:forEach>
+            </div>
+        </div>
+
+
+        <!--<div class="grid">
+                <div class="card">
+                    <img src="https://png.pngtree.com/png-vector/20240430/ourmid/pngtree-medical-check-up-schedule-vector-png-image_12344159.png" alt="Cấp cứu">
+                    <div class="card-content">
+                        <h3>Đặt Khám Tại Cơ Sở</h3>
+                        <a class="more" href="khoacapcuu.jsp">More →</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="https://cdn.pixabay.com/photo/2021/01/27/06/48/medical-5953866_960_720.png" alt="Tim mạch">
+                    <div class="card-content">
+                        <h3>Đặt Khám Bác Sĩ</h3>
+                        <a class="more" href="khoatimmach.jsp">More →</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTr9WUs4R_V4y9Oi-a6xL1SL4q8WjXY6S23DjgOLsT-fcd8lQkcIdqMohza1ZXR9zUEDuA&usqp=CAU" alt="Xương Khớp">
+                    <div class="card-content">
+                        <h3>Call Video Với Bác Sĩ</h3>
+                        <a class="more" href="khoaxuongkhop.jsp">More →</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="https://png.pngtree.com/png-vector/20230222/ourmid/pngtree-blood-test-line-icon-png-image_6613520.png" alt="Hô Hấp">
+                    <div class="card-content">
+                        <h3>Đặt lịch xét nghiệm</h3>
+                        <a class="more" href="TestPackage">More →</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="https://media.istockphoto.com/id/1211178700/vi/vec-to/medical-shield-line-icon-b%E1%BA%A3o-v%E1%BB%87-s%E1%BB%A9c-kh%E1%BB%8Fe-ph%E1%BA%B3ng-ch%C3%A9o-vect%C6%A1-y-t%E1%BA%BF.jpg?s=170667a&w=0&k=20&c=23k39Blz-vn47AWsf1vydP1CNJYaRkHGYJ5UJgF9ygo=" alt="Tiêu hóa">
+                    <div class="card-content">
+                        <h3>Gói Khám Sức Khỏe</h3>
+                        <a class="more" href="SearchPackageServlet">More →</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2907/2907474.png" alt="Hô Hấp">
+                    <div class="card-content">
+                        <h3>Đặt lịch tiêm chủng</h3>
+                        <a class="more" href="VaccinePackage">More →</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="https://w7.pngwing.com/pngs/24/963/png-transparent-doctor-icon-screenshot-physician-health-professional-health-care-doctor-of-medicine-stethoscope-miscellaneous-rectangle-logo-thumbnail.png" alt="Khoa Nhi">
+                    <div class="card-content">
+                        <h3>Khám Ngoài giờ</h3>
+                        <a class="more" href="khoanhi.jsp">More →</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="https://png.pngtree.com/png-vector/20201226/ourmid/pngtree-care-icon-png-image_2647740.jpg" alt="Thần kinh">
+                    <div class="card-content">
+                        <h3>Y tế tại nhà</h3>
+                        <a class="more" href="#">More →</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="https://static.thenounproject.com/png/1168142-200.png" alt="Răng Hàm Mặt">
+                    <div class="card-content">
+                        <h3>Thanh Toán Viện Phí</h3>
+                        <a class="more" href="#">More →</a>
+                    </div>
+                </div>
+                
+            </div>
+        </div>-->
+
+
         <jsp:include page="Footer.jsp"></jsp:include>
         <!-- JavaScript Libraries -->
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

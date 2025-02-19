@@ -33,8 +33,6 @@
     </head>
     <body>
         <jsp:include page="Header.jsp"></jsp:include>
-
-
         <!-- Hero Start -->
         <div class="container-fluid bg-primary py-5 mb-5 hero-header">
             <div class="container py-5">
@@ -266,7 +264,7 @@
                 <div class="row gx-5">
                     <div class="col-lg-6 mb-5 mb-lg-0">
                         <div class="mb-4">
-                             <h5
+                            <h5
                                 class="d-inline-block text-white text-uppercase border-bottom border-5"
                                 >
                                 Appointment

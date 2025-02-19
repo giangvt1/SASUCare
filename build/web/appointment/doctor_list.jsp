@@ -7,113 +7,9 @@
     <head>
         <meta charset="UTF-8">
         <title>Book Your Appointment</title>
-        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="../static/css/appointment/doctor-choose-style.css">
     </head>
 
-    <style>
-        /* Modal background */
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1; /* Sit on top */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgb(0,0,0); /* Fallback color */
-            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-            padding-top: 60px;
-        }
-
-        .checkbox-container {
-            text-align: left;
-            display: inline-block;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        /* Modal content */
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto; /* 5% from the top and centered */
-            padding: 20px;
-            border: 1px solid #888;
-            width: 40%; /* Smaller width */
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            position: relative; /* Position relative to contain the close button */
-        }
-
-        /* Close button */
-        .close {
-            color: #aaa;
-            position: absolute; /* Position absolute within the modal content */
-            top: 10px;
-            right: 20px;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        /* Table styling */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 18px;
-            text-align: left;
-            background-color: #fff;
-            border: 1px solid #ddd;
-        }
-
-        table th, table td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        table th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-
-        table tr:hover {
-            background-color: #f5f5f5;
-        }
-
-        table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        table tr:nth-child(odd) {
-            background-color: #fff;
-        }
-
-        table th, table td {
-            text-align: center;
-        }
-
-        table th {
-            background-color:rgb(86, 175, 226);
-            color: white;
-        }
-
-        table td {
-            color: #333;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-
-    </style>
     <body>
         <jsp:include page="../Header.jsp"></jsp:include>
 
@@ -294,5 +190,6 @@
                 document.getElementById("bookingModal").style.display = "none";
             }
         </script>
+        <jsp:include page="../Footer.jsp"/>
     </body>
 </html>

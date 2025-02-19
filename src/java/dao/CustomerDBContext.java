@@ -18,15 +18,15 @@ import model.VisitHistory;
 public class CustomerDBContext extends DBContext<Customer> {
 
     private static final Logger LOGGER = Logger.getLogger(CustomerDBContext.class.getName());
-    public ArrayList<Customer> searchCustomerInMedical(String name, Date dob, Boolean gender, int page) {
-        ArrayList<Customer> customers = new ArrayList<>();
-        int totalRecords = 0;
-        String sql = "SELECT * FROM [Customer] WHERE 1=1";
 
-        // Sử dụng StringBuilder để thêm điều kiện động
+    public ArrayList<Customer> searchCustomerInMedical(String name, Date dob, Boolean gender, int page, String sort, int size) {
+        ArrayList<Customer> customers = new ArrayList<>();
+        String sql = "SELECT id, gender, dob, address, phone_number, fullname, google_id FROM [Customer] WHERE 1=1";
+
         StringBuilder sqlBuilder = new StringBuilder(sql);
+
         if (name != null && !name.isEmpty()) {
-            sqlBuilder.append(" AND fullname LIKE ?");
+            sqlBuilder.append(" AND fullname COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?");
         }
         if (dob != null) {
             sqlBuilder.append(" AND dob = ?");
@@ -35,13 +35,27 @@ public class CustomerDBContext extends DBContext<Customer> {
             sqlBuilder.append(" AND gender = ?");
         }
 
-        // Thêm phân trang
-        sqlBuilder.append(" ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
-
-        // Nếu không có tham số tìm kiếm, trả về danh sách rỗng
-        if ((name == null || name.isEmpty()) && dob == null && gender == null) {
-            return customers;
+        switch (sort) {
+            case "default":
+                sqlBuilder.append(" ORDER BY id");
+                break;
+            case "customerNameAZ":
+                sqlBuilder.append(" ORDER BY fullname ASC");
+                break;
+            case "customerNameZA":
+                sqlBuilder.append(" ORDER BY fullname DESC");
+                break;
+            case "customerDOBLTH":
+                sqlBuilder.append(" ORDER BY dob ASC");
+                break;
+            case "customerDOBHTL":
+                sqlBuilder.append(" ORDER BY dob DESC");
+                break;
+            default:
+                throw new AssertionError("Invalid sort type: " + sort);
         }
+        // Phân trang
+        sqlBuilder.append(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
 
         try (PreparedStatement stm = connection.prepareStatement(sqlBuilder.toString())) {
             int paramIndex = 1;
@@ -56,18 +70,14 @@ public class CustomerDBContext extends DBContext<Customer> {
                 stm.setBoolean(paramIndex++, gender);
             }
 
-            // Tính toán OFFSET và FETCH
-            int offset = (page - 1) * 10; // Trang bắt đầu từ 1
+            int offset = (page - 1) * size;
             stm.setInt(paramIndex++, offset);
-            stm.setInt(paramIndex++, 10); // Mỗi trang 10 đối tượng
+            stm.setInt(paramIndex++, size);
 
             try (ResultSet rs = stm.executeQuery()) {
                 while (rs.next()) {
                     Customer customer = new Customer();
                     customer.setId(rs.getInt("id"));
-                    customer.setUsername(rs.getString("username"));
-                    customer.setPassword(rs.getString("password"));
-                    customer.setGmail(rs.getString("gmail"));
                     customer.setGender(rs.getBoolean("gender"));
                     customer.setDob(rs.getDate("dob"));
                     customer.setAddress(rs.getString("address"));
@@ -158,7 +168,8 @@ public class CustomerDBContext extends DBContext<Customer> {
         }
         return false; // Trả về false nếu gặp lỗi
     }
-public Customer getCustomerById(int id) {
+
+    public Customer getCustomerById(int id) {
         Customer customer = null;
         String sql = "SELECT * FROM [Customer] WHERE id = ?";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
@@ -312,7 +323,6 @@ public Customer getCustomerById(int id) {
 //        }
 //        return role;
 //    }
-
 //    public ArrayList<Feature> getRoleFeatures(int roleId) {
 //        ArrayList<Feature> features = new ArrayList<>();
 //        String sql = "SELECT * FROM features WHERE role_id = ?";
@@ -330,7 +340,6 @@ public Customer getCustomerById(int id) {
 //        }
 //        return features;
 //    }
-
     /**
      *
      * @param model
@@ -369,36 +378,38 @@ public Customer getCustomerById(int id) {
 
     @Override
     public void update(Customer model) {
-    String sql = "UPDATE [Customer] SET username = ?, password = ?, gmail = ?, gender = ?, dob = ?, address = ?, phone_number = ?, google_id = ? WHERE id = ?";
-    try (PreparedStatement stm = connection.prepareStatement(sql)) {
-        stm.setString(1, model.getUsername());
-        stm.setString(2, model.getPassword());
-        stm.setString(3, model.getGmail());
-        stm.setBoolean(4, model.isGender());
-        stm.setDate(5, new java.sql.Date(model.getDob().getTime()));
-        stm.setString(6, model.getAddress());
-        stm.setString(7, model.getPhone_number());
+        String sql = "UPDATE [Customer] SET username = ?, password = ?, gmail = ?, gender = ?, dob = ?, address = ?, phone_number = ?, google_id = ?, fullname = ? WHERE gmail = ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setString(1, model.getUsername());
+            stm.setString(2, model.getPassword());
+            stm.setString(3, model.getGmail());
+            stm.setBoolean(4, model.isGender());
+            stm.setDate(5, new java.sql.Date(model.getDob().getTime()));
+            stm.setString(6, model.getAddress());
+            stm.setString(7, model.getPhone_number());
 
-        // Kiểm tra GoogleAccount và thêm ID nếu có
-        if (model.getGoogle_id() != null) {
-            stm.setString(8, model.getGoogle_id().getId());
-        } else {
-            stm.setNull(8, java.sql.Types.VARCHAR);
+            // Kiểm tra GoogleAccount và thêm ID nếu có
+            if (model.getGoogle_id() != null) {
+                stm.setString(8, model.getGoogle_id().getId());
+            } else {
+                stm.setNull(8, java.sql.Types.VARCHAR);
+            }
+
+            stm.setString(9, model.getFullname());
+
+            // Cập nhật dựa trên ID
+            stm.setString(10, model.getGmail());
+
+            int rowsAffected = stm.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Customer updated successfully.");
+            } else {
+                System.out.println("Customer update failed.");
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error updating customer: {0}", ex.getMessage());
         }
-
-        // Cập nhật dựa trên ID
-        stm.setInt(9, model.getId());
-
-        int rowsAffected = stm.executeUpdate();
-        if (rowsAffected > 0) {
-            System.out.println("Customer updated successfully.");
-        } else {
-            System.out.println("Customer update failed.");
-        }
-    } catch (SQLException ex) {
-        LOGGER.log(Level.SEVERE, "Error updating customer: {0}", ex.getMessage());
     }
-}
 
     @Override
     public void delete(Customer model) {
@@ -464,6 +475,7 @@ public Customer getCustomerById(int id) {
                 customer.setDob(rs.getDate("dob")); // Chuyển đổi từ SQL Date sang Java Date
                 customer.setAddress(rs.getString("address"));
                 customer.setPhone_number(rs.getString("phone_number"));
+                customer.setFullname(rs.getString("fullname"));
 
                 // Nếu GoogleAccount tồn tại
                 if (google_id != null) {
@@ -524,9 +536,9 @@ public Customer getCustomerById(int id) {
                 Logger.getLogger(CustomerDBContext.class.getName()).log(Level.SEVERE, "Error closing resources: {0}", e);
             }
         }
-        return customer; // Trả về null nếu không tìm thấy người dùng
+        return customer;
     }
-    
+
     public List<String> listEmail() {
         ArrayList<String> listEmails = new ArrayList<>();
         String sql = "SELECT [gmail] FROM [Customer]"; // Sử dụng cột 'gmail' thay vì 'email'
@@ -539,7 +551,7 @@ public Customer getCustomerById(int id) {
         }
         return listEmails;
     }
-    
+
     public boolean isCustomerExisted(String gmail) {
         String sql = "SELECT * FROM [Customer] WHERE gmail = ?";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
@@ -553,7 +565,7 @@ public Customer getCustomerById(int id) {
         }
         return false;
     }
-    
+
     public void changePass(Customer customer, String newPassword) {
 
         String sql = "UPDATE [Customer] SET password = ? WHERE username = ?";
@@ -573,7 +585,7 @@ public Customer getCustomerById(int id) {
             LOGGER.log(Level.SEVERE, "Error updating password: {0}", ex.getMessage());
         }
     }
-    
+
     public boolean checkPassword(String gmail, String password, String confirmPassword) {
         // Mẫu kiểm tra độ mạnh của mật khẩu
         String passwordPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>])[A-Za-z\\d!@#$%^&*(),.?\":{}|<>]{6,}$";
@@ -612,6 +624,7 @@ public Customer getCustomerById(int id) {
         System.out.println("Password validation successful.");
         return true;
     }
+
     private String hashPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -626,23 +639,23 @@ public Customer getCustomerById(int id) {
             throw new RuntimeException(e);
         }
     }
-    
-    public void updatePassword(String gmail, String newPassword) {
-    String sql = "UPDATE [Customer] SET password = ? WHERE gmail = ?";
-    try (PreparedStatement stm = connection.prepareStatement(sql)) {
-        // Mã hóa mật khẩu mới trước khi lưu
-        String hashedPassword = hashPassword(newPassword);
-        stm.setString(1, hashedPassword);
-        stm.setString(2, gmail);
 
-        int rowsAffected = stm.executeUpdate();
-        if (rowsAffected > 0) {
-            System.out.println("Password updated successfully.");
-        } else {
-            System.out.println("Password update failed. No matching user found.");
+    public void updatePassword(String gmail, String newPassword) {
+        String sql = "UPDATE [Customer] SET password = ? WHERE gmail = ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            // Mã hóa mật khẩu mới trước khi lưu
+            String hashedPassword = hashPassword(newPassword);
+            stm.setString(1, hashedPassword);
+            stm.setString(2, gmail);
+
+            int rowsAffected = stm.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Password updated successfully.");
+            } else {
+                System.out.println("Password update failed. No matching user found.");
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error updating password: {0}", ex.getMessage());
         }
-    } catch (SQLException ex) {
-        LOGGER.log(Level.SEVERE, "Error updating password: {0}", ex.getMessage());
     }
-}
 }

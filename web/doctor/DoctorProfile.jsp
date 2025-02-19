@@ -12,7 +12,7 @@
     </head>
     <body class="skin-black">
         <jsp:include page="../admin/AdminHeader.jsp"></jsp:include>
-        <jsp:include page="DoctorLeftSideBar.jsp"></jsp:include>
+        <jsp:include page="../admin/AdminLeftSideBar.jsp"></jsp:include>
             <div class="right-side">
                 <h1 style="margin-top: 50px">Doctor Profile</h1>
                 <form action="UpdateDoctorProfile" method="post">

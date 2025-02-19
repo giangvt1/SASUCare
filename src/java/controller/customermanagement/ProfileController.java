@@ -104,6 +104,7 @@ public class ProfileController extends HttpServlet {
         CustomerDBContext customerDAO = new CustomerDBContext();
 
         String fullName = request.getParameter("name");
+        System.out.println("name: " + fullName);
         String phone = request.getParameter("phone");
         String address = request.getParameter("address");
 
@@ -114,6 +115,17 @@ public class ProfileController extends HttpServlet {
         if (address != null && !address.trim().isEmpty()) {
             customer.setAddress(address);
         }
+        
+        String phonePattern = "^[0-9]{10}$";
+        if (!phone.matches(phonePattern)) {
+            response.setContentType("text/html");
+            response.getWriter().println("<script type='text/javascript'>");
+            response.getWriter().println("alert('Phone number must be exactly 10 digits.');");
+            response.getWriter().println("window.history.back();");
+            response.getWriter().println("</script>");
+            return;
+        }
+        
         if (phone != null && !phone.trim().isEmpty()) {
             customer.setPhone_number(phone);
         }

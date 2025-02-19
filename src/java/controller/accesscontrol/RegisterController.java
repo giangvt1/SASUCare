@@ -65,45 +65,10 @@ public class RegisterController extends HttpServlet {
         // Lấy dữ liệu từ form
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        String confirmPassword = request.getParameter("confirm-password");
         String fullname = request.getParameter("full-name");
         String email = request.getParameter("email");
         String phoneNumber = request.getParameter("phone-number");
-
-        String passwordPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>])[A-Za-z\\d!@#$%^&*(),.?\":{}|<>]{6,}$";
-        if (!password.matches(passwordPattern)) {
-            // Nếu mật khẩu không hợp lệ
-            response.setContentType("text/html");
-            response.getWriter().println("<script type='text/javascript'>");
-            response.getWriter().println("alert('Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.');");
-            response.getWriter().println("window.location.href = 'Home.jsp';");
-            response.getWriter().println("</script>");
-            return;
-        }
-
-        String phonePattern = "^[0-9]{10}$";
-        if (!phoneNumber.matches(phonePattern)) {
-            response.setContentType("text/html");
-            response.getWriter().println("<script type='text/javascript'>");
-            response.getWriter().println("alert('Phone number must be exactly 10 digits.');");
-            response.getWriter().println("window.location.href = 'Home.jsp';");
-            response.getWriter().println("</script>");
-            return;
-        }
         
-        if (!password.equals(confirmPassword)) {
-            response.setContentType("text/html");
-            response.getWriter().println("<script type='text/javascript'>");
-            response.getWriter().println("alert('Passwords do not match!');");
-            response.getWriter().println("window.location.href = 'Home.jsp';");
-            response.getWriter().println("</script>");
-            return;
-            
-            
-        }
-        
-        
-        Customer customer = new Customer();
         CustomerDBContext customerDAO = new CustomerDBContext();
         
         if(customerDAO.isCustomerExisted(email)) {

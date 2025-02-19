@@ -1,9 +1,5 @@
-<%-- 
-    Document   : CustomerMedicalDetail
-    Created on : 27 thg 1, 2025, 19:23:49
-    Author     : TRUNG
---%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>   
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -18,7 +14,7 @@
     </head>
     <body class="skin-black"">
         <jsp:include page="../admin/AdminHeader.jsp"></jsp:include>
-        <jsp:include page="DoctorLeftSideBar.jsp"></jsp:include>
+        <jsp:include page="../admin/AdminLeftSideBar.jsp"></jsp:include>
             <div class="right-side">
                 <h1 class="text-center text-bold mb-4" style="margin-bottom: 30px;margin-top: 70px">Medical Records Summary</h1>
                 <!--hien thong tin khach hang-->
@@ -37,7 +33,7 @@
                         <tr>
                             <td>${customer.fullname}</td>
                         <td>${customer.gender?"Male":"Female"}</td>
-                        <td>${customer.dob}</td>
+                        <td><fmt:formatDate value="${customer.dob}" pattern="dd/MM/yyyy" /></td>
                         <td>${customer.phone_number}</td>
                         <td>${customer.address}</td>
                     </tr>
@@ -45,10 +41,7 @@
             </table>
             <!--hien lich su benh an-->
             <h3 style="margin-left: 10px">Medical History</h3> 
-            <a style="margin-left: 10px; font-size: 24px;" class="add-medical-history"
-               href="CreateCustomerMedicalHistory?cid=${customer.id}">
-                add
-            </a>
+            <a href="EditCustomerMedicalHistory.jsp?cid=${customer.id}">Add</a>
             <table class="table">
                 <thead>
                     <tr>
@@ -64,10 +57,11 @@
                         <tr><td class="index">${status.index + 1}</td>
                             <td>${m.name}</td>
                             <td>${m.detail}</td>
-                            <td><a href="UpdateCustomerMedicalHistory?cid=${customer.id}&id=${m.id}&name=${m.name}&detail=${m.detail}">Update</a>/
+                            <td><a href="EditCustomerMedicalHistory.jsp?cid=${customer.id}&id=${m.id}&name=${m.name}&detail=${m.detail}"><button type="button">Update</button></a>
+                                /
                                 <a href="#" onclick="doDelete(${status.index + 1}, 'DeleteCustomerMedicalHistory', '${customer.id}', '${m.id}')">
-                                <button type="button">Delete</button>
-                            </a></td>
+                                    <button type="button">Delete</button>
+                                </a></td>
                         </tr>
                     </c:forEach>
                 </tbody>
@@ -75,7 +69,7 @@
             <!--hien visitHistory-->
             <h3 style="margin-left: 10px">Visit History</h3>
             <a style="margin-left: 10px; font-size: 24px;" class="add-visit-history"
-               href="CreateCustomerVisitHistory?cid=${customer.id}">
+               href="EditCustomerVisitHistory.jsp?cid=${customer.id}">
                 add
             </a>
             <table class="table">
@@ -93,12 +87,13 @@
                 <div class="hasNextPage" hidden>${hasNextPage}</div>
                 <c:forEach var="v" items="${visitHistoryList}" varStatus="status">
                     <tr><td class="index">${status.index + 1}</td>
-                        <td>${v.visitDate}</td>
+                        <td><fmt:formatDate value="${v.visitDate}" pattern="dd/MM/yyyy" /></td>
                         <td>${v.reasonForVisit}</td>
                         <td>${v.diagnoses}</td>
                         <td>${v.treatmentPlan}</td>
-                        <td>${v.nextAppointment}</td>
-                        <td><a href="UpdateCustomerVisitHistory?cid=${customer.id}&id=${v.id}&visitDate=${v.visitDate}&reasonForVisit=${v.reasonForVisit}&diagnoses=${v.diagnoses}&treatmentPlan=${v.treatmentPlan}&nextAppointment=${v.nextAppointment}">Update</a>
+                        <td><fmt:formatDate value="${v.nextAppointment}" pattern="dd/MM/yyyy" /></td>
+                        <td><a href="EditCustomerVisitHistory.jsp?cid=${customer.id}&id=${v.id}&visitDate=${v.visitDate}&reasonForVisit=${v.reasonForVisit}&diagnoses=${v.diagnoses}&treatmentPlan=${v.treatmentPlan}&nextAppointment=${v.nextAppointment}"><button type="button">Update</button>
+                            </a>
                             /<a href="#" onclick="doDelete(${status.index + 1}, 'DeleteCustomerVisitHistory', '${customer.id}', '${v.id}')">
                                 <button type="button">Delete</button>
                             </a></td>

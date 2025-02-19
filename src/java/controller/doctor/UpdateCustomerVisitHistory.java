@@ -4,6 +4,7 @@
  */
 package controller.doctor;
 
+import controller.systemaccesscontrol.BaseRBACController;
 import dao.CustomerDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,51 +16,15 @@ import java.util.ArrayList;
 import model.Customer;
 import model.MedicalHistory;
 import model.VisitHistory;
+import model.system.User;
 
 /**
  *
  * @author TRUNG
  */
-public class UpdateCustomerVisitHistory extends HttpServlet {
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet UpdateCustomerVisitHistory</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet UpdateCustomerVisitHistory at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+public class UpdateCustomerVisitHistory extends BaseRBACController {
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
         String id = request.getParameter("id");
         String cid = request.getParameter("cid");
         String visitDate = request.getParameter("visitDate");
@@ -77,17 +42,8 @@ public class UpdateCustomerVisitHistory extends HttpServlet {
         request.getRequestDispatcher("UpdateCustomerVisitHistory.jsp").forward(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
         String id = request.getParameter("id");
         String did = request.getParameter("did");
         String cid = request.getParameter("cid");
@@ -99,10 +55,15 @@ public class UpdateCustomerVisitHistory extends HttpServlet {
 
         java.sql.Date visitDate = java.sql.Date.valueOf(visitDateStr); // Chuyển đổi đúng cách sang java.sql.Date
 
-        // Chuyển đổi nextAppointment nếu có
-        java.sql.Date nextAppointment = java.sql.Date.valueOf(nextAppointmentStr);
+        java.sql.Date nextAppointment = null;
+        if (nextAppointmentStr != null && !nextAppointmentStr.isEmpty()) {
+            try {
+                nextAppointment = java.sql.Date.valueOf(nextAppointmentStr);
+            } catch (IllegalArgumentException e) {
+                nextAppointment = null;
+            }
+        }
 
-        // Tạo đối tượng VisitHistory
         VisitHistory visitHistory = new VisitHistory();
         visitHistory.setId(Integer.parseInt(id));
         visitHistory.setDid(Integer.parseInt(did));
@@ -112,11 +73,10 @@ public class UpdateCustomerVisitHistory extends HttpServlet {
         visitHistory.setDiagnoses(diagnoses);
         visitHistory.setTreatmentPlan(treatmentPlan);
         visitHistory.setNextAppointment(nextAppointment);
-        // Gọi DAO để thêm bản ghi
+
         CustomerDBContext customerDB = new CustomerDBContext();
         boolean isCreated = customerDB.updateVisitHistory(visitHistory);
 
-        // Thông báo kết quả
         if (isCreated) {
             request.setAttribute("message", "Medical history created successfully!");
         } else {
@@ -124,15 +84,5 @@ public class UpdateCustomerVisitHistory extends HttpServlet {
         }
         response.sendRedirect("ShowCustomerMedicalDetail?cid=" + cid);
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
 
 }
