@@ -149,21 +149,27 @@
                     var errorElement = getErrorElement(input);
                     var trimmedValue = input.value.trim();
 
-                    if (trimmedValue === "") {
+                    if (input.value !== "" && trimmedValue === "") {
+                        // Nếu input không rỗng nhưng chỉ chứa khoảng trắng
                         errorElement.innerText = "This field cannot be empty or contain only spaces";
                         errorElement.style.color = "red";
-                    } else if (!regex.test(trimmedValue)) {
+                    } else if (trimmedValue !== "" && !regex.test(trimmedValue)) {
+                        // Nếu input không rỗng và không hợp lệ theo regex
                         errorElement.innerText = errorMessage;
                         errorElement.style.color = "red";
                     } else {
+                        // Nếu input rỗng hoàn toàn hoặc hợp lệ
                         errorElement.innerText = "";
                     }
-                    toggleSubmitButton();
                 }
 
                 function validateConfirmPassword() {
                     var errorElement = getErrorElement(confirmPassword);
-                    if (confirmPassword.value.trim() === "") {
+
+                    if (password.value.trim() === "") {
+                        // Nếu mật khẩu chính chưa nhập, xóa lỗi xác nhận mật khẩu
+                        errorElement.innerText = "";
+                    } else if (confirmPassword.value.trim() === "") {
                         errorElement.innerText = "";
                     } else if (confirmPassword.value !== password.value) {
                         errorElement.innerText = "Passwords do not match";
@@ -171,16 +177,7 @@
                     } else {
                         errorElement.innerText = "";
                     }
-                    toggleSubmitButton();
                 }
-
-                // Kiểm tra nếu có error-message thì disable nút submit
-                function toggleSubmitButton() {
-                    var errorMessages = document.querySelectorAll(".error-message");
-                    var hasError = Array.from(errorMessages).some(error => error.innerText.trim() !== "");
-                    document.querySelector("button[type='submit']").disabled = hasError;
-                }
-
 
                 function getErrorElement(input) {
                     return document.getElementById(input.id + "-error");

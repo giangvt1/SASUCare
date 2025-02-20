@@ -116,16 +116,6 @@ public class ProfileController extends HttpServlet {
             customer.setAddress(address);
         }
         
-        String phonePattern = "^[0-9]{10}$";
-        if (!phone.matches(phonePattern)) {
-            response.setContentType("text/html");
-            response.getWriter().println("<script type='text/javascript'>");
-            response.getWriter().println("alert('Phone number must be exactly 10 digits.');");
-            response.getWriter().println("window.history.back();");
-            response.getWriter().println("</script>");
-            return;
-        }
-        
         if (phone != null && !phone.trim().isEmpty()) {
             customer.setPhone_number(phone);
         }

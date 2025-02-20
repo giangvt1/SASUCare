@@ -2,7 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group name="PRJ301"/>
         <group>
             <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/backup/src/java/controller/appointment/AppointmentConfirmServlet.java</file>
             <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/backup/web/doctor/SearchCustomer.jsp</file>
@@ -16,10 +15,25 @@
             <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/backup/web/Home.jsp</file>
         </group>
         <group name="PRJ301">
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/src/java/controller/systemaccesscontrol/UserLoginController.java</file>
             <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/src/java/controller/accesscontrol/RegisterController.java</file>
             <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/web/css/login_style.css</file>
             <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/src/java/dal/DBContext.java</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/src/java/Constant/Iconstant.java</file>
             <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/web/accesscontrol/Login.jsp</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/src/java/controller/customermanagement/ProfileController.java</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/web/profile.jsp</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/web/accesscontrol/Register.jsp</file>
+        </group>
+        <group name="PRJ301">
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/src/java/controller/systemaccesscontrol/UserLoginController.java</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/src/java/controller/accesscontrol/RegisterController.java</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/web/css/login_style.css</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/src/java/dal/DBContext.java</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/src/java/Constant/Iconstant.java</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/web/accesscontrol/Login.jsp</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/src/java/controller/customermanagement/ProfileController.java</file>
+            <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/web/profile.jsp</file>
             <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/web/accesscontrol/Register.jsp</file>
         </group>
     </open-files>
