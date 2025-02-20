@@ -22,5 +22,23 @@
             <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/web/accesscontrol/Login.jsp</file>
             <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/web/accesscontrol/Register.jsp</file>
         </group>
+        <group name="ThisForTest">
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/appointment/doctor_list.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/appointment/waiting-appointment.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentCalendarServlet.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentDoctorListController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/DoctorDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/Home.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/DoctorScheduleDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentRescheduleController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/Header.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentListController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentConfirmServlet.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/appointment/appointment_list.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dal/DBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/accesscontrol/LoginController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/CustomerDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/WEB-INF/web.xml</file>
+        </group>
     </open-files>
 </project-private>
