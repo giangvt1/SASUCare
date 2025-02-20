@@ -1,0 +1,116 @@
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+}
+
+.reset-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.step-indicator {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.step {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: #6c757d;
+    position: relative;
+    z-index: 1;
+}
+
+.step.active {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.step.completed {
+    background-color: #198754;
+    color: white;
+}
+
+.step-connector {
+    width: 100px;
+    height: 2px;
+    background-color: #e9ecef;
+    margin: 17px 10px;
+}
+
+.step-connector.active {
+    background-color: #0d6efd;
+}
+
+.password-strength {
+    height: 5px;
+    border-radius: 2px;
+    margin-top: 0.5rem;
+    background-color: #e9ecef;
+    overflow: hidden;
+}
+
+.strength-meter {
+    height: 100%;
+    width: 0;
+    transition: all 0.3s ease;
+}
+
+.requirement-list li {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+}
+
+.requirement-list li.valid {
+    color: #198754;
+}
+
+.requirement-list li i {
+    width: 20px;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+}
+
+.password-toggle {
+    cursor: pointer;
+    color: #6c757d;
+}
+
+.success-checkmark {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #198754;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    margin: 0 auto 2rem;
+}
+
+.verification-input {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    font-size: 1.5rem;
+    border-radius: 10px;
+    border: 2px solid #dee2e6;
+    margin: 0 5px;
+}
+
+.verification-input:focus {
+    border-color: #0d6efd;
+    box-shadow: none;
+}
