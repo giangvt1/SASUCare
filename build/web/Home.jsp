@@ -27,18 +27,12 @@
             href="../lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css"
             rel="stylesheet"
             />
-
-        <!-- Customized Bootstrap Stylesheet -->
-        <link href="css/bootstrap.min.css" rel="stylesheet" />
-
-        <!-- Template Stylesheet -->
-        <link href="css/style.css" rel="stylesheet" />
-        <link href="css/login_style.css" rel="stylesheet" />
+        <link href="css/style.css" rel="stylesheet" type="text/css"/>
+        <link href="css/login_style.css" rel="stylesheet" type="text/css"/>
+        <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
         <jsp:include page="Header.jsp"></jsp:include>
-
-
         <!-- Hero Start -->
         <div class="container-fluid bg-primary py-5 mb-5 hero-header">
             <div class="container py-5">
@@ -48,7 +42,7 @@
                             class="d-inline-block text-primary text-uppercase border-bottom border-5"
                             style="border-color: rgba(256, 256, 256, 0.3) !important"
                             >
-                            Welcome To Medinova
+                            Welcome To SASUCare
                         </h5>
                         <h1 class="display-1 text-white mb-md-4">
                             Best Healthcare Solution In Your City
@@ -58,7 +52,7 @@
                                >Find Doctor</a
                             >
                             <a
-                                href=""
+                                href="${pageContext.request.contextPath}/appointment"
                                 class="btn btn-outline-light rounded-pill py-md-3 px-md-5 mx-2"
                                 >Appointment</a
                             >
@@ -168,7 +162,8 @@
                                 Kasd dolor no lorem nonumy sit labore tempor at justo rebum
                                 rebum stet, justo elitr dolor amet sit
                             </p>
-                            <a class="btn btn-lg btn-primary rounded-pill" href="">
+                            <a class="btn btn-lg btn-primary rounded-pill" href="capcuu.jsp">
+                                
                                 <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>
@@ -185,7 +180,7 @@
                                 Kasd dolor no lorem nonumy sit labore tempor at justo rebum
                                 rebum stet, justo elitr dolor amet sit
                             </p>
-                            <a class="btn btn-lg btn-primary rounded-pill" href="">
+                            <a class="btn btn-lg btn-primary rounded-pill" href="Operation.jsp">
                                 <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>
@@ -202,7 +197,7 @@
                                 Kasd dolor no lorem nonumy sit labore tempor at justo rebum
                                 rebum stet, justo elitr dolor amet sit
                             </p>
-                            <a class="btn btn-lg btn-primary rounded-pill" href="">
+                            <a class="btn btn-lg btn-primary rounded-pill" href="OutdoorCheckup.jsp">
                                 <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>
@@ -219,7 +214,7 @@
                                 Kasd dolor no lorem nonumy sit labore tempor at justo rebum
                                 rebum stet, justo elitr dolor amet sit
                             </p>
-                            <a class="btn btn-lg btn-primary rounded-pill" href="">
+                            <a class="btn btn-lg btn-primary rounded-pill" href="AmbulanceService.jsp">
                                 <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>
@@ -236,7 +231,7 @@
                                 Kasd dolor no lorem nonumy sit labore tempor at justo rebum
                                 rebum stet, justo elitr dolor amet sit
                             </p>
-                            <a class="btn btn-lg btn-primary rounded-pill" href="">
+                            <a class="btn btn-lg btn-primary rounded-pill" href="Medicine.jsp">
                                 <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>
@@ -253,7 +248,7 @@
                                 Kasd dolor no lorem nonumy sit labore tempor at justo rebum
                                 rebum stet, justo elitr dolor amet sit
                             </p>
-                            <a class="btn btn-lg btn-primary rounded-pill" href="">
+                            <a class="btn btn-lg btn-primary rounded-pill" href="BloodTesting.jsp">
                                 <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>

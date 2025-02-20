@@ -1,3 +1,8 @@
+<%-- 
+    Document   : Footerjsp
+    Created on : 13 thg 1, 2025, 21:30:59
+    Author     : TRUNG
+--%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
@@ -21,12 +26,8 @@
             href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css"
             rel="stylesheet"
             />
-
-        <!-- Customized Bootstrap Stylesheet -->
-        <link href="css/bootstrap.min.css" rel="stylesheet" />
-
-        <!-- Template Stylesheet -->
-        <link href="css/style.css" rel="stylesheet" />
+        <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
         <!-- Topbar Start -->
@@ -69,7 +70,7 @@
         <div class="container-fluid sticky-top bg-white shadow-sm nav-pad">
             <div class="container">
                 <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0">
-                    <a href="index.html" class="navbar-brand">
+                    <a href="${pageContext.request.contextPath}/Home.jsp" class="navbar-brand">
                         <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-clinic-medical me-2"></i>Medinova</h1>
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -77,10 +78,10 @@
                     </button>
                     <div class="collapse navbar-collapse" id="navbarCollapse">
                         <div class="navbar-nav ms-auto py-0">
-                            <a href="index.html" class="nav-item nav-link active">Home</a>
-                            <a href="about.html" class="nav-item nav-link">About</a>
-                            <a href="service.html" class="nav-item nav-link">Service</a>
-                            <a href="price.html" class="nav-item nav-link">Pricing</a>
+                            <a href="${pageContext.request.contextPath}/Home.jsp" class="nav-item nav-link active">Home</a>
+                            <a href="${pageContext.request.contextPath}/about.jsp" class="nav-item nav-link">About</a>
+                            <a href="${pageContext.request.contextPath}/ServiceList" class="nav-item nav-link">Service</a>
+                            <a href="${pageContext.request.contextPath}/price.jsp" class="nav-item nav-link">Pricing</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                                 <div class="dropdown-menu m-0">
@@ -92,14 +93,16 @@
                                     <a href="search.html" class="dropdown-item">Search</a>
                                 </div>
                             </div>
-                            <a href="contact.html" class="nav-item nav-link">Contact</a>
-                            <c:if test="${not empty sessionScope.account}">
-                                <a href="view/usermanagement/profile.jsp" class="nav-item nav-link">User Profile</a>
+                            <a href="${pageContext.request.contextPath}/contact.jsp" class="nav-item nav-link">Contact</a>
+                            <c:if test="${not empty sessionScope.currentCustomer}">
+                                <a href="${pageContext.request.contextPath}/profile" class="nav-item nav-link">
+                                    Welcome, ${sessionScope.currentCustomer.fullname}
+                                </a>
                                 <form action="${pageContext.request.contextPath}/logout" method="get" style="display:inline;">
                                     <button type="submit" class="nav-item nav-link btn btn-link">Logout</button>
                                 </form>
                             </c:if>
-                            <c:if test="${empty sessionScope.account}">
+                            <c:if test="${empty sessionScope.currentCustomer}">
                                 <div class="d-flex align-items-center ms-auto">
                                     <button class="nav-item nav-link bg-primary nav-btn btn-register">Register</button>
                                     <button class="nav-item nav-link bg-primary nav-btn btn-login">Login</button>
@@ -145,7 +148,7 @@
             });
             changeRegister.addEventListener('click', () => {
                 loginContainer.classList.add("d-none");
-                registerContainer.classList.remove("d-none"); 
+                registerContainer.classList.remove("d-none");
             });
         </script>
     </body>

@@ -1,80 +1,156 @@
-<%-- 
-    Document   : AdminLeftSideBar
-    Created on : 20 thg 1, 2025, 19:56:29
-    Author     : TRUNG
---%>
-
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
-    </head>
-    <body>
-        <aside class="left-side sidebar-offcanvas">
-        <!-- sidebar: style can be found in sidebar.less -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">  
+    <title>Admin Sidebar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Sidebar styles */
+        .sidebar {
+            background: #222d32;
+            color: #b8c7ce;
+            min-height: 100vh;
+            padding: 15px;
+            font-family: 'Arial', sans-serif;
+        }
+        .user-panel {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #4b646f;
+            display: flex;
+            align-items: center;
+        }
+        .user-panel .image img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+        }
+        .user-panel .info {
+            margin-left: 10px;
+        }
+        .user-panel .info p {
+            margin: 0;
+            font-weight: bold;
+            color: #fff;
+        }
+        .user-panel .info a {
+            color: #00a65a;
+            font-size: 12px;
+            text-decoration: none;
+        }
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-menu li {
+            margin-bottom: 8px;
+        }
+        .sidebar-menu li a {
+            color: #b8c7ce;
+            display: block;
+            padding: 10px 15px;
+            border-radius: 3px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .sidebar-menu li a:hover,
+        .sidebar-menu li.active a {
+            background: #1e282c;
+            color: #fff;
+        }
+        .sidebar-menu li a i {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <aside class="left-side sidebar-offcanvas">
+        <!-- Sidebar -->
         <section class="sidebar">
-          <!-- Sidebar user panel -->
-          <div class="user-panel">
-            <div class="pull-left image">
-              <img src="img/26115.jpg" class="img-circle" alt="User Image" />
+            <!-- User panel -->
+            <div class="user-panel">
+                <div class="image">
+                    <c:choose>
+                        <c:when test="${not empty sessionScope.staff and not empty sessionScope.staff.img}">
+                            <img src="${pageContext.request.contextPath}/${sessionScope.staff.img}" class="img-circle" alt="User Image" />
+                        </c:when>
+                        <c:otherwise>
+                            <img src="${pageContext.request.contextPath}/img/default-profile.jpg" class="img-circle" alt="User Image" />
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+                <div class="info">
+                    <p>
+                        Hello, 
+                        <c:choose>
+                            <c:when test="${not empty sessionScope.account}">
+                                ${sessionScope.account.displayname}
+                            </c:when>
+                            <c:otherwise>
+                                Guest
+                            </c:otherwise>
+                        </c:choose>
+                    </p>
+                    <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                </div>
             </div>
-            <div class="pull-left info">
-              <p>Hello, Jane</p>
 
-              <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
-            </div>
-          </div>
-          <!-- search form -->
-          <form action="#" method="get" class="sidebar-form">
-            <div class="input-group">
-              <input
-                type="text"
-                name="q"
-                class="form-control"
-                placeholder="Search..."
-              />
-              <span class="input-group-btn">
-                <button
-                  type="submit"
-                  name="seach"
-                  id="search-btn"
-                  class="btn btn-flat"
-                >
-                  <i class="fa fa-search"></i>
-                </button>
-              </span>
-            </div>
-          </form>
-          <!-- /.search form -->
-          <!-- sidebar menu: : style can be found in sidebar.less -->
-          <ul class="sidebar-menu">
-            <li class="active">
-              <a href="index.html">
-                <i class="fa fa-dashboard"></i> <span>Dashboard</span>
-              </a>
-            </li>
-            <li>
-              <a href="general.html">
-                <i class="fa fa-gavel"></i> <span>General</span>
-              </a>
-            </li>
+            <!-- Lấy danh sách URL được phép từ session -->
+            <c:set var="allowedUrls" value="${sessionScope.allowedUrls}" />
 
-            <li>
-              <a href="basic_form.html">
-                <i class="fa fa-globe"></i> <span>Basic Elements</span>
-              </a>
-            </li>
+            <!-- Sidebar menu -->
+            <ul class="sidebar-menu">
+                <!-- Dashboard luôn hiển thị -->
+                <li class="active">
+                    <a href="${pageContext.request.contextPath}/admin/Dashboard.jsp">
+                        <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+                    </a>
+                </li>
 
-            <li>
-              <a href="simple.html">
-                <i class="fa fa-glass"></i> <span>Simple tables</span>
-              </a>
-            </li>
-          </ul>
+                <!-- Nếu user có vai trò HR -->
+                <c:if test="${allowedUrls != null and allowedUrls.contains('/hr/create')}">
+                    <li>
+                        <a href="../hr/create">
+                            <i class="fa fa-user-plus"></i> <span>Create Account</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../hr/accountlist">
+                            <i class="fa fa-globe"></i> <span>Account List</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../hr/calendarmanage">
+                            <i class="fa fa-table"></i> <span>Doctor Calendar</span>
+                        </a>
+                    </li>
+                </c:if>
+
+                <!-- Nếu user có vai trò Doctor -->
+                <c:if test="${allowedUrls != null and (allowedUrls.contains('/doctor/SendApplication.jsp') or allowedUrls.contains('/doctor/ManageMedical.jsp'))}">
+                        <li>
+                            <a href="../doctor/ViewApplication?did=16">
+                                <i class="fa fa-envelope"></i> <span>Manage Application</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="../doctor/SearchCustomer?page=1&sort=default&size=10">
+                                <i class="fa fa-medkit"></i> <span>Manage Medical</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="../doctor/waiting-appointment">
+                                <i class="fa fa-medkit"></i> <span>Appoinment</span>
+                            </a>
+                        </li>
+                    </c:if>
+            </ul>
         </section>
         <!-- /.sidebar -->
-      </aside>
-    </body>
+    </aside>
+</body>
 </html>

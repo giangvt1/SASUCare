@@ -15,7 +15,7 @@
         <h1>Create Visit History</h1>
         <form action="UpdateCustomerVisitHistory" method="post">
             <input type="text" hidden id="id" name="id" value="${id}" required><br><br>
-            <input type="text" hidden id="did" name="did" value="1" required><br><br>
+            <input type="text" hidden id="did" name="did" value="16" required><br><br>
             <input type="text" hidden id="cid" name="cid" value="${cid}" required><br><br>
 
             <label for="reasonForVisit">Reason for Visit:</label>

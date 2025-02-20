@@ -1,9 +1,3 @@
-<%-- 
-    Document   : CreateCustomerVisitHistory
-    Created on : 28 thg 1, 2025, 10:55:01
-    Author     : TRUNG
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -25,8 +19,8 @@
 
             <label for="nextAppointment">Next Appointment:</label>
             <input type="date" id="nextAppointment" name="nextAppointment"><br><br>
-            <input type="text" hidden id="did" name="did" value="1"required><br><br>
-            <input type="text" hidden id="cid" name="cid" value="${cid}"required><br><br>
+            <input type="text" hidden id="did" name="did" value="16" required><br><br>
+            <input type="text" hidden id="cid" name="cid" value="${cid}" required><br><br>
             <button type="submit">Create</button>
         </form>
     </body>

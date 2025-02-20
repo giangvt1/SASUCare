@@ -10,8 +10,9 @@
         <link href="../css/admin/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <link href="../css/admin/styleAdmin.css" rel="stylesheet" type="text/css" />
     </head>
-    <body class="skin-black""><jsp:include page="../admin/AdminHeader.jsp"></jsp:include>
-        <jsp:include page="DoctorLeftSideBar.jsp"></jsp:include>
+    <body class="skin-black">
+        <jsp:include page="../admin/AdminHeader.jsp"></jsp:include>
+        <jsp:include page="../admin/AdminLeftSideBar.jsp"></jsp:include>
             <div class="right-side">
                 <h1 style="margin-top: 50px">Doctor Profile</h1>
                 <form action="UpdateDoctorProfile" method="post">

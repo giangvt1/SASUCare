@@ -1,9 +1,3 @@
-<%-- 
-    Document   : SendApplicaion
-    Created on : 27 thg 1, 2025, 23:10:36
-    Author     : TRUNG
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -14,31 +8,62 @@
         <!-- font Awesome -->
         <link href="../css/admin/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <link href="../css/admin/styleAdmin.css" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" href="../css/doctor/manage_medical_style.css"/>
+        <link rel="stylesheet" href="../css/doctor/doctor_style.css"/>
     </head>
-    <body class="skin-black"">
-        <jsp:include page="../admin/AdminHeader.jsp"></jsp:include>
-        <jsp:include page="DoctorLeftSideBar.jsp"></jsp:include>
-            <div class="right-side">
-                <h3 class="text-center">Send Application</h3>
-                <form action="SendApplication" method="POST" class="mt-4">
-                    <div class="form-group">
-                        <label for="did">Doctor ID</label>
-                        <input type="number" class="form-control" id="did" name="did" placeholder="Enter Department ID" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="reason">Reason</label>
-                        <textarea class="form-control" id="reason" name="reason" placeholder="Enter your reason" rows="4" required></textarea>
-                    </div>
-                    <div>${message}</div>
+    <body class="skin-black">
+        <jsp:include page="../admin/AdminHeader.jsp" />
+        <jsp:include page="../admin/AdminLeftSideBar.jsp" />
+        <style>
+            .right-side {
+                padding: 20px; 
+                background-color: #fff; 
+                border-radius: 5px; 
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+            }
+            
+            textarea.form-control {
+                resize: vertical;
+            }
+        </style>
+        <div class="right-side">
+            <h3 class="text-center title">Send Application</h3>
+            <a class="back-btn" href="ViewApplication?did=16">View Application</a>
+            <form action="SendApplication" method="POST" class="mt-4">
+                <input type="text" hidden id="did" name="did" value="16" required><br>
+                <input type="text" hidden id="hrid" name="hrid" value="34" required><br>
+                <div class="form-group">
+                    <label for="name">Loại đơn</label>
+                    <select style="width: 15%" class="form-control" id="name" name="name" required>
+                        <option value="">-- Type Application --</option>
+                        <option value="tang luong">Đơn xin tăng lương</option>
+                        <option value="doi lich">Đơn xin đổi lịch làm</option>
+                        <option value="xin nghi">Đơn xin nghỉ</option>
+                        <option value="chuyen cong tac">Đơn xin chuyển đơn vị công tác</option>
+                        <option value="khac">Các loại đơn khác</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="reason">Reason</label>
+                    <textarea class="form-control" id="reason" name="reason" placeholder="Enter your reason" rows="10" required></textarea>
+                </div>
+                <div>${message}</div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>
+        <script>
+            document.querySelector("form").addEventListener("submit", function (event) {
+                let reason = document.getElementById("reason").value.trim();
+                let mess = "";
+                if (reason === "") {
+                    mess += "Reason not null\n";
 
+                }
+                if (mess !== "") {
+                    alert(mess);
+                    event.preventDefault();
+                }
+            });
+        </script>
         <!-- jQuery 2.0.2 -->
         <script src="../js/jquery.min.js" type="text/javascript"></script>
         <!-- Bootstrap -->
