@@ -24,18 +24,13 @@
             textarea.form-control {
                 resize: vertical;
             }
-
-            .btn {
-                width: 100%; 
-                padding: 10px; 
-            }
         </style>
         <div class="right-side">
             <h3 class="text-center title">Send Application</h3>
             <a class="back-btn" href="ViewApplication?did=16">View Application</a>
             <form action="SendApplication" method="POST" class="mt-4">
                 <input type="text" hidden id="did" name="did" value="16" required><br>
-                <input type="text" hidden id="hrid" name="hrid" value="32" required><br>
+                <input type="text" hidden id="hrid" name="hrid" value="34" required><br>
                 <div class="form-group">
                     <label for="name">Loại đơn</label>
                     <select style="width: 15%" class="form-control" id="name" name="name" required>

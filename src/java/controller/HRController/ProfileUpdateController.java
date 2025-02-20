@@ -63,20 +63,15 @@ public class ProfileUpdateController extends BaseRBACController {
             }
             String uploadPath = request.getServletContext().getRealPath("") + File.separator + "uploads";
             File uploadDir = new File(uploadPath);
-            // Tạo tên file mới với timestamp để tránh trùng lặp
-            String newFileName = System.currentTimeMillis() + "_" + fileName;
-            String filePath = uploadPath + File.separator + newFileName;
-            filePart.write(filePath);
-            // Lưu đường dẫn tương đối (sẽ được sử dụng trong JSP)
-            staff.setImg("uploads" + File.separator + newFileName);
-        }
-        
-        // Lấy và trim các giá trị đầu vào khác
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs();
+            }
             String newFileName = System.currentTimeMillis() + "_" + fileName;
             String filePath = uploadPath + File.separator + newFileName;
             filePart.write(filePath);
             staff.setImg("uploads" + File.separator + newFileName);
         }
+
         String fullname = request.getParameter("fullname") != null ? request.getParameter("fullname").trim() : "";
         String genderStr = request.getParameter("gender");
         String address = request.getParameter("address") != null ? request.getParameter("address").trim() : "";
@@ -98,6 +93,7 @@ public class ProfileUpdateController extends BaseRBACController {
             request.getRequestDispatcher("/admin/AdminProfile.jsp").forward(request, response);
             return;
         }
+
         if (!address.isEmpty()) {
             if (address.length() > 50) {
                 request.setAttribute("errorMessage", "Address must not exceed 50 characters.");
@@ -111,6 +107,7 @@ public class ProfileUpdateController extends BaseRBACController {
                 return;
             }
         }
+
         java.sql.Date dob = null;
         if (!dobStr.isEmpty()) {
             try {
@@ -123,6 +120,7 @@ public class ProfileUpdateController extends BaseRBACController {
                 return;
             }
         }
+
         boolean gender = "true".equalsIgnoreCase(genderStr);
 
         try {
@@ -150,6 +148,7 @@ public class ProfileUpdateController extends BaseRBACController {
                     request.getRequestDispatcher("/admin/AdminProfile.jsp").forward(request, response);
                     return;
                 }
+
                 staff.setFullname(normalizedFullname);
                 staff.setGender(gender);
                 staff.setAddress(address.isEmpty() ? staff.getAddress() : address);

@@ -142,6 +142,7 @@ public class DoctorDBContext extends DBContext<Doctor> {
     public Doctor get(String id) {
         return null;
     }
+    
 
     public ArrayList<DoctorSchedule> getDoctorSchedules(int doctorId, Date date) {
         ArrayList<DoctorSchedule> schedules = new ArrayList<>();

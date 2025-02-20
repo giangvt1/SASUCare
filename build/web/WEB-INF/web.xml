@@ -112,6 +112,14 @@
         <servlet-name>VisitHistoryExportServlet</servlet-name>
         <servlet-class>controller.doctor.VisitHistoryExportServlet</servlet-class>
     </servlet>
+        <servlet>
+        <servlet-name>AppointmentWaitingController</servlet-name>
+        <servlet-class>controller.appointment.AppointmentWaitingController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AppointmentActionController</servlet-name>
+        <servlet-class>controller.appointment.AppointmentActionController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
         <url-pattern>/forgetpassword</url-pattern>
@@ -280,5 +288,13 @@
     <servlet-mapping>
         <servlet-name>VisitHistoryExportServlet</servlet-name>
         <url-pattern>/doctor/VisitHistoryExportServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AppointmentWaitingController</servlet-name>
+        <url-pattern>/doctor/waiting-appointment</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AppointmentActionController</servlet-name>
+        <url-pattern>/doctor/appointment/action</url-pattern>
     </servlet-mapping>
 </web-app>

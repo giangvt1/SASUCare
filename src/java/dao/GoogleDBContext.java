@@ -234,8 +234,8 @@ public class GoogleDBContext extends DBContext<GoogleAccount> {
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress("hailnhe181075@fpt.edu.vn"));
             message.setRecipients(Message.RecipientType.TO, to);
-            message.setSubject("Title:" + title);
-            message.setText("Mess:" + messageContent);
+            message.setSubject(" " + title);
+            message.setText(" " + messageContent);
 
             Transport.send(message);
             System.out.println("Message sent successfully");
@@ -248,6 +248,6 @@ public class GoogleDBContext extends DBContext<GoogleAccount> {
 
     public static void main(String[] args) {
         GoogleDBContext g = new GoogleDBContext();
-        g.send("ntvippro24@gmail.com", "hello", "hello");
+        g.send("ntvippro24@gmail.com", "ttttt", "tttt");
     }
 }

@@ -142,6 +142,11 @@
                                 <i class="fa fa-medkit"></i> <span>Manage Medical</span>
                             </a>
                         </li>
+                        <li>
+                            <a href="../doctor/waiting-appointment">
+                                <i class="fa fa-medkit"></i> <span>Appoinment</span>
+                            </a>
+                        </li>
                     </c:if>
             </ul>
         </section>

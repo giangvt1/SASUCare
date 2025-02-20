@@ -8,18 +8,18 @@ import java.sql.Timestamp;
  */
 public class VisitHistory {
 
-    private int id, Did, Cid;
-    private Timestamp visitDate; // Thay đổi kiểu dữ liệu
+    private int id, doctorId, customerId;
+    private Timestamp visitDate;
     private String reasonForVisit, diagnoses, treatmentPlan;
-    private Timestamp nextAppointment; // Thay đổi kiểu dữ liệu
+    private Timestamp nextAppointment;
 
     public VisitHistory() {
     }
 
-    public VisitHistory(int id, int Did, int Cid, Timestamp visitDate, String reasonForVisit, String diagnoses, String treatmentPlan, Timestamp nextAppointment) {
+    public VisitHistory(int id, int doctorId, int customerId, Timestamp visitDate, String reasonForVisit, String diagnoses, String treatmentPlan, Timestamp nextAppointment) {
         this.id = id;
-        this.Did = Did;
-        this.Cid = Cid;
+        this.doctorId = doctorId;
+        this.customerId = customerId;
         this.visitDate = visitDate;
         this.reasonForVisit = reasonForVisit;
         this.diagnoses = diagnoses;
@@ -35,20 +35,20 @@ public class VisitHistory {
         this.id = id;
     }
 
-    public int getDid() {
-        return Did;
+    public int getDoctorId() {
+        return doctorId;
     }
 
-    public void setDid(int Did) {
-        this.Did = Did;
+    public void setDoctorId(int doctorId) {
+        this.doctorId = doctorId;
     }
 
-    public int getCid() {
-        return Cid;
+    public int getCustomerId() {
+        return customerId;
     }
 
-    public void setCid(int Cid) {
-        this.Cid = Cid;
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
     }
 
     public Timestamp getVisitDate() { // Thay đổi kiểu trả về

@@ -155,7 +155,7 @@ public class CustomerDBContext extends DBContext<Customer> {
             while (rs.next()) {
                 MedicalHistory m = new MedicalHistory();
                 m.setId(rs.getInt("id"));
-                m.setCid(rs.getInt("CustomerID"));
+                m.setCustomerId(rs.getInt("CustomerID"));
                 m.setName(rs.getString("Name"));
                 m.setDetail(rs.getString("Detail"));
                 list.add(m);
@@ -186,18 +186,16 @@ public class CustomerDBContext extends DBContext<Customer> {
     public boolean createMedicalHistory(MedicalHistory m) {
         String sql = "INSERT INTO MedicalHistory (CustomerID, Name, Detail) VALUES (?, ?, ?)";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            // Gán các giá trị vào PreparedStatement
-            stm.setInt(1, m.getCid());
+            stm.setInt(1, m.getCustomerId());
             stm.setString(2, m.getName());
             stm.setString(3, m.getDetail());
 
-            // Thực thi câu lệnh và kiểm tra số dòng bị ảnh hưởng
             int rowsInserted = stm.executeUpdate();
-            return rowsInserted > 0; // Nếu chèn thành công, trả về true
+            return rowsInserted > 0;
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return false; // Trả về false nếu gặp lỗi
+        return false;
     }
 
     public boolean updateMedicalHistory(MedicalHistory m) {
@@ -320,13 +318,14 @@ public class CustomerDBContext extends DBContext<Customer> {
         String sql = "INSERT INTO VisitHistory (DoctorID, CustomerID, VisitDate, ReasonForVisit, Diagnoses, TreatmentPlan, NextAppointment) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, visitHistory.getDid());
-            ps.setInt(2, visitHistory.getCid());
-            ps.setDate(3, new java.sql.Date(visitHistory.getVisitDate().getTime()));
+            ps.setInt(1, visitHistory.getDoctorId());
+            ps.setInt(2, visitHistory.getCustomerId());
+
+            ps.setTimestamp(3, visitHistory.getVisitDate() != null ? visitHistory.getVisitDate() : null);
             ps.setString(4, visitHistory.getReasonForVisit());
             ps.setString(5, visitHistory.getDiagnoses());
             ps.setString(6, visitHistory.getTreatmentPlan());
-            ps.setDate(7, visitHistory.getNextAppointment() != null ? new java.sql.Date(visitHistory.getNextAppointment().getTime()) : null);
+            ps.setTimestamp(7, visitHistory.getNextAppointment() != null ? visitHistory.getNextAppointment() : null);
 
             int rowsInserted = ps.executeUpdate();
             return rowsInserted > 0;
@@ -342,8 +341,8 @@ public class CustomerDBContext extends DBContext<Customer> {
                 + "WHERE id = ?";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, visitHistory.getDid());
-            ps.setInt(2, visitHistory.getCid());
+            ps.setInt(1, visitHistory.getDoctorId());
+            ps.setInt(2, visitHistory.getCustomerId());
             ps.setDate(3, new java.sql.Date(visitHistory.getVisitDate().getTime()));
             ps.setString(4, visitHistory.getReasonForVisit());
             ps.setString(5, visitHistory.getDiagnoses());
@@ -358,6 +357,7 @@ public class CustomerDBContext extends DBContext<Customer> {
         }
         return false;
     }
+
 
     public boolean deleteVisitHistory(int visitHistoryId) {
         String sql = "DELETE FROM VisitHistory WHERE id = ?";

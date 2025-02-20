@@ -9,12 +9,9 @@ import dao.DoctorDBContext;
 import dao.GoogleDBContext;
 import dao.StaffDBContext;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Date;
 import model.Application;
 import model.system.User;
 
@@ -53,8 +50,8 @@ public class SendApplication extends BaseRBACController {
 
         if (isCreated) {
             request.setAttribute("message", "Application sent successfully!");
-            String mess = "Bạn có 1 application gửi đến từ Doctor có id:" + did;
-            g.send(gmail, "Thông báo", mess);
+            String mess = "You have an Application from Doctor have id:" + did;
+            g.send(gmail, "Notification", mess);
 
         } else {
             request.setAttribute("message", "Failed to send application.");
