@@ -6,6 +6,8 @@ package controller.doctor;
 
 import controller.systemaccesscontrol.BaseRBACController;
 import dao.DoctorDBContext;
+import dao.GoogleDBContext;
+import dao.StaffDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -22,32 +24,6 @@ import model.system.User;
  */
 public class SendApplication extends BaseRBACController {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet SendApplication</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet SendApplication at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
-
     @Override
     protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -58,27 +34,28 @@ public class SendApplication extends BaseRBACController {
         int did = Integer.parseInt(request.getParameter("did"));
         String name = request.getParameter("name");
         String reason = request.getParameter("reason");
-
-// Lấy ngày từ form hoặc dùng ngày hiện tại
-// Tạo ngày hiện tại dạng java.util.Date
+        int hrId = Integer.parseInt(request.getParameter("hrid"));
         java.util.Date utilDate = new java.util.Date();
 
-// Chuyển đổi sang java.sql.Date
-        java.sql.Date date = new java.sql.Date(utilDate.getTime()); // Chuyển đổi đúng cách sang java.sql.Date
+        java.sql.Date date = new java.sql.Date(utilDate.getTime());
 
-// Tạo đối tượng Application và gán các giá trị
         Application a = new Application();
         a.setDid(did);
         a.setName(name);
         a.setReason(reason);
-        a.setDate(date);  // Trực tiếp sử dụng date là java.sql.Date
+        a.setDate(date);
 
-// Gọi phương thức để tạo ứng dụng
         DoctorDBContext d = new DoctorDBContext();
+        GoogleDBContext g = new GoogleDBContext();
+        StaffDBContext s = new StaffDBContext();
+        String gmail = s.getUserGmailByStaffId(hrId);
         boolean isCreated = d.createApplicationForDid(a);
 
         if (isCreated) {
             request.setAttribute("message", "Application sent successfully!");
+            String mess = "Bạn có 1 application gửi đến từ Doctor có id:" + did;
+            g.send(gmail, "Thông báo", mess);
+
         } else {
             request.setAttribute("message", "Failed to send application.");
         }

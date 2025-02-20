@@ -1,10 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-import java.sql.*;
+import java.sql.Timestamp;
 
 /**
  *
@@ -13,14 +9,14 @@ import java.sql.*;
 public class VisitHistory {
 
     private int id, Did, Cid;
-    private Date visitDate;
+    private Timestamp visitDate; // Thay đổi kiểu dữ liệu
     private String reasonForVisit, diagnoses, treatmentPlan;
-    private Date nextAppointment;
+    private Timestamp nextAppointment; // Thay đổi kiểu dữ liệu
 
     public VisitHistory() {
     }
 
-    public VisitHistory(int id, int Did, int Cid, Date visitDate, String reasonForVisit, String diagnoses, String treatmentPlan, Date nextAppointment) {
+    public VisitHistory(int id, int Did, int Cid, Timestamp visitDate, String reasonForVisit, String diagnoses, String treatmentPlan, Timestamp nextAppointment) {
         this.id = id;
         this.Did = Did;
         this.Cid = Cid;
@@ -55,11 +51,11 @@ public class VisitHistory {
         this.Cid = Cid;
     }
 
-    public Date getVisitDate() {
+    public Timestamp getVisitDate() { // Thay đổi kiểu trả về
         return visitDate;
     }
 
-    public void setVisitDate(Date visitDate) {
+    public void setVisitDate(Timestamp visitDate) { // Thay đổi kiểu tham số
         this.visitDate = visitDate;
     }
 
@@ -87,11 +83,11 @@ public class VisitHistory {
         this.treatmentPlan = treatmentPlan;
     }
 
-    public Date getNextAppointment() {
+    public Timestamp getNextAppointment() { // Thay đổi kiểu trả về
         return nextAppointment;
     }
 
-    public void setNextAppointment(Date nextAppointment) {
+    public void setNextAppointment(Timestamp nextAppointment) { // Thay đổi kiểu tham số
         this.nextAppointment = nextAppointment;
     }
 

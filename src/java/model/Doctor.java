@@ -8,10 +8,10 @@ public class Doctor {
 
     private int id;
     private String name;
-    private Staff staff;
+    private Staff staff;    
     private String email;
     private String phoneNumber;
-    private boolean gender; // true = Male, false = Female
+    private boolean gender;
     private String address;
     private List<String> specialties;
     private ArrayList<DoctorSchedule> doctorSchedules;

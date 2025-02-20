@@ -104,6 +104,14 @@
         <servlet-name>EditCustomerVisitHistory</servlet-name>
         <servlet-class>controller.doctor.EditCustomerVisitHistory</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>MedicalHistoryExportServlet</servlet-name>
+        <servlet-class>controller.doctor.MedicalHistoryExportServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>VisitHistoryExportServlet</servlet-name>
+        <servlet-class>controller.doctor.VisitHistoryExportServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
         <url-pattern>/forgetpassword</url-pattern>
@@ -264,5 +272,13 @@
     <servlet-mapping>
         <servlet-name>EditCustomerVisitHistory</servlet-name>
         <url-pattern>/doctor/EditCustomerVisitHistory</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MedicalHistoryExportServlet</servlet-name>
+        <url-pattern>/doctor/MedicalHistoryExportServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VisitHistoryExportServlet</servlet-name>
+        <url-pattern>/doctor/VisitHistoryExportServlet</url-pattern>
     </servlet-mapping>
 </web-app>

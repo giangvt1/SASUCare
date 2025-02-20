@@ -13,7 +13,7 @@ public class Staff {
     private Timestamp createat;
     private User updateby;
     private Timestamp updateat;
-    private boolean isDoctor; // Trường mới, xác định nhân viên có phải là bác sĩ hay không
+    private boolean isDoctor; 
     private String img;
 
     public User getStaff_username() {
