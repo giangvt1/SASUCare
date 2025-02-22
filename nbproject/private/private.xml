@@ -14,15 +14,14 @@
             <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/web/accesscontrol/Register.jsp</file>
         </group>
         <group name="PRJ301"/>
-        <group/>
-        <group>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/inter1/SWP391_GROUP6/src/java/dao/CustomerDBContext.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/inter1/SWP391_GROUP6/src/java/controller/doctor/ShowCustomerMedicalDetail.java</file>
-        </group>
         <group>
             <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/inter1/SWP391_GROUP6/src/java/dao/StaffDBContext.java</file>
             <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/inter1/SWP391_GROUP6/src/java/controller/doctor/SendApplication.java</file>
             <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/inter1/SWP391_GROUP6/src/java/dao/GoogleDBContext.java</file>
         </group>
+        <group>
+            <file>file:/C:/prj/SWP391_GROUP6/src/java/dal/DBContext.java</file>
+        </group>
+        <group/>
     </open-files>
 </project-private>
