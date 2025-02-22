@@ -5,28 +5,12 @@
         <servlet-class>controller.accesscontrol.ForgetPasswordController</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>UserAccountCreateController</servlet-name>
-        <servlet-class>controller.HRController.UserAccountCreateController</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>StaffAccountListController</servlet-name>
-        <servlet-class>controller.HRController.StaffAccountListController</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>ProfileController</servlet-name>
-        <servlet-class>controller.customermanagement.ProfileController</servlet-class>
+        <servlet-class>controller.usermanagement.ProfileController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>SearchCustomer</servlet-name>
         <servlet-class>controller.doctor.SearchCustomer</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>UserLoginController</servlet-name>
-        <servlet-class>controller.systemaccesscontrol.UserLoginController</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>UserLogoutController</servlet-name>
-        <servlet-class>controller.systemaccesscontrol.UserLogoutController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ShowCustomerMedicalDetail</servlet-name>
@@ -39,30 +23,6 @@
     <servlet>
         <servlet-name>CreateMedicalHistory</servlet-name>
         <servlet-class>controller.doctor.CreateCustomerMedicalHistory</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>AppointmentListController</servlet-name>
-        <servlet-class>controller.appointment.AppointmentListController</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>AppointmentCancelController</servlet-name>
-        <servlet-class>controller.appointment.AppointmentCancelController</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>AppointmentRescheduleController</servlet-name>
-        <servlet-class>controller.appointment.AppointmentRescheduleController</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>AppointmentCalendarServlet</servlet-name>
-        <servlet-class>controller.appointment.AppointmentCalendarServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>AppointmentDoctorListController</servlet-name>
-        <servlet-class>controller.appointment.AppointmentDoctorListController</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>AppointmentConfirmServlet</servlet-name>
-        <servlet-class>controller.appointment.AppointmentConfirmServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>UpdateMedicalHistory</servlet-name>
@@ -92,18 +52,6 @@
         <servlet-name>UpdateDoctorProfile</servlet-name>
         <servlet-class>controller.doctor.UpdateDoctorProfile</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>ViewApplication</servlet-name>
-        <servlet-class>controller.doctor.ViewApplication</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>EditCustomerMedicalHistory</servlet-name>
-        <servlet-class>controller.doctor.EditCustomerMedicalHistory</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>EditCustomerVisitHistory</servlet-name>
-        <servlet-class>controller.doctor.EditCustomerVisitHistory</servlet-class>
-    </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
         <url-pattern>/forgetpassword</url-pattern>
@@ -121,33 +69,9 @@
         <servlet-name>RegisterController</servlet-name>
         <servlet-class>controller.accesscontrol.RegisterController</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>NewPassword</servlet-name>
-        <servlet-class>googleservices.NewPassword</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ProfileUpdateController</servlet-name>
-        <servlet-class>controller.HRController.ProfileUpdateController</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>CalendarDoctorManageController</servlet-name>
-        <servlet-class>controller.HRController.CalendarDoctorManageController</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>EditUserController</servlet-name>
-        <servlet-class>controller.HRController.EditUserController</servlet-class>
-    </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/login</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>UserLoginController</servlet-name>
-        <url-pattern>/system/login</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>UserLogoutController</servlet-name>
-        <url-pattern>/system/logout</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>LogoutController</servlet-name>
@@ -204,65 +128,5 @@
     <servlet-mapping>
         <servlet-name>UpdateDoctorProfile</servlet-name>
         <url-pattern>/doctor/UpdateDoctorProfile</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>NewPassword</servlet-name>
-        <url-pattern>/NewPassword</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ProfileUpdateController</servlet-name>
-        <url-pattern>/system/profile</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>CalendarDoctorManageController</servlet-name>
-        <url-pattern>/hr/calendarmanage</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>EditUserController</servlet-name>
-        <url-pattern>/hr/edit</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>UserAccountCreateController</servlet-name>
-        <url-pattern>/hr/create</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>StaffAccountListController</servlet-name>
-        <url-pattern>/hr/accountlist</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>AppointmentDoctorListController</servlet-name>
-        <url-pattern>/appointment/doctor</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>AppointmentConfirmServlet</servlet-name>
-        <url-pattern>/appointment/confirm</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>AppointmentCalendarServlet</servlet-name>
-        <url-pattern>/appointment</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>AppointmentListController</servlet-name>
-        <url-pattern>/appointment/list</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>AppointmentCancelController</servlet-name>
-        <url-pattern>/appointment/cancel</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>AppointmentRescheduleController</servlet-name>
-        <url-pattern>/appointment/reschedule</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ViewApplication</servlet-name>
-        <url-pattern>/doctor/ViewApplication</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>EditCustomerMedicalHistory</servlet-name>
-        <url-pattern>/doctor/EditCustomerMedicalHistory</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>EditCustomerVisitHistory</servlet-name>
-        <url-pattern>/doctor/EditCustomerVisitHistory</url-pattern>
     </servlet-mapping>
 </web-app>

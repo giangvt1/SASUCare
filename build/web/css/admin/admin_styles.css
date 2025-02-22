@@ -1,0 +1,379 @@
+/* admin_styles.css */
+
+:root {
+    --primary-color: #3c8dbc; /* Bootstrap primary color */
+    --secondary-color: #222d32; /* Dark grey for sidebar */
+    --text-color: #333;
+    --text-color-light: #b8c7ce;
+    --background-color: #ecf0f5; /* Light grey background */
+    --header-height: 50px;
+    --sidebar-width: 230px; /* Slightly wider for better readability */
+    --border-color: #d2d6de;
+    --hover-color: #1e282c;
+    --font-family: 'Arial', sans-serif;
+    --badge-background-color: #00c0ef;  /* Example badge background color*/
+    --badge-text-color: #ffffff;      /* Text color for badges */
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* =============== Header Styles =============== */
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--header-height);
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    z-index: 1031;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    max-width: 230px; /* Control logo width */
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-decoration: none;
+    color: white;
+    margin-right: auto; /* Push to the left */
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-role {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.badge {
+    background-color: var(--badge-background-color);
+    color: var(--badge-text-color);
+    padding: 3px 7px;
+    font-size: 12px;
+    border-radius: 4px;
+    margin-right: 5px; /* Space between badges */
+}
+.badge-info{
+    background-color: #17a2b8; /* Bootstrap info color */
+}
+
+.nav {
+    display: flex; /* Use flexbox */
+    flex-wrap: wrap; /* Allow wrapping */
+}
+.navbar-nav {
+    margin-left: 0;/*reset boostrap margin*/
+    gap: 15px;
+}
+
+.navbar-nav > li > a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    display: flex; /* Use flex for alignment */
+    align-items: center; /* Vertically align icon and text */
+}
+
+.navbar-nav > li > a:hover{
+    background-color: rgba(255,255,255,0.1); /* Light background on hover */
+
+}
+
+.dropdown-menu {
+    white-space: nowrap; /* Keep dropdown items from wrapping */
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    min-width: 200px;
+    padding: 0;
+    margin-top: 5px;  /* Add some space above the dropdown*/
+}
+.dropdown-menu li.dropdown-header{
+    padding: 8px 15px;
+}
+
+.dropdown-menu > li > a {
+    display: block;
+    padding: 8px 15px;
+    color: #333;
+    text-decoration: none;
+    clear: both;
+}
+
+.dropdown-menu > li > a:hover {
+    background-color: #f5f5f5;
+}
+.dropdown-menu .divider {
+    height: 1px;
+    margin: 5px 0;
+    background-color: #eee;
+}
+
+/* User Menu Dropdown */
+.user-menu .dropdown-menu {
+    right: 0; /* Align to the right */
+    left: auto; /* Remove left alignment */
+}
+/* =============== Sidebar Styles =============== */
+
+.left-side {
+    position: fixed;
+    left: 0;
+    top: var(--header-height);
+    width: var(--sidebar-width);
+    height: calc(100% - var(--header-height));
+    background-color: var(--secondary-color);
+    color: var(--text-color-light);
+    overflow-y: auto;
+    transition: transform 0.3s ease, width 0.3s ease;
+    z-index: 1030;
+    padding-top: 10px; /* Add top padding */
+}
+.left-side.sidebar-offcanvas { /* More specific selector */
+    transform: translateX(-100%); /* Hide sidebar off-screen */
+    width: 0;  /* Collapse the width */
+
+}
+.sidebar {
+    padding: 15px;
+}
+
+.user-panel {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-panel .image img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.2);
+}
+
+.user-panel .info {
+    margin-left: 15px;
+}
+
+.user-panel .info p {
+    margin: 0;
+    font-weight: 600;
+    color: white;
+}
+
+.user-panel .info a {
+    color: #5cb85c; /* Green online indicator */
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.user-panel .info a i.fa-circle{
+    font-size: 10px;/*set size for circle*/
+}
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-menu > li {
+    margin-bottom: 5px;
+}
+
+.sidebar-menu > li > a {
+    display: block;
+    padding: 12px 15px;
+    color: var(--text-color-light);
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebar-menu > li > a > i {
+    margin-right: 8px;
+    width: 20px;
+    text-align: center;
+}
+
+.sidebar-menu > li > a:hover,
+.sidebar-menu > li.active > a {
+    background-color: var(--hover-color);
+    color: white;
+}
+
+
+/* =============== Right Side (Main Content) =============== */
+
+.right-side {
+    margin-left: auto;
+    padding: 20px;
+    margin-top: var(--header-height);
+    transition: margin-left 0.3s ease;
+}
+
+.right-side.strech {
+    margin-left: 0;
+}
+
+/* =============== Dashboard Styles =============== */
+
+.dashboard-content {
+    background: whitesmoke;
+    min-height: calc(100vh - 50px); /* Adjust for header height */
+    padding: 20px;
+}
+
+/* Card styling */
+.card {
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    border: none; /* Remove default Bootstrap border */
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+.card h4 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem; /* Add some space below the heading */
+    color: #333; /* Darker color for headings */
+
+}
+
+.card p {
+    margin-bottom: 0; /* Remove extra space */
+    font-size: 1rem; /*Font size*/
+}
+
+/* Chart container */
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    margin: 20px 0;
+}
+
+/* Table responsiveness */
+@media (max-width: 768px) {
+    .left-side {
+        width: var(--sidebar-width);  /* Initial width on small screens */
+        transform: translateX(-100%); /* Initially hidden */
+        transition: transform 0.3s ease, width 0.3s ease;
+    }
+    .table-responsive {
+        overflow-x: auto;
+    }
+    /* Header adjustments for small screens */
+    .header {
+        flex-wrap: wrap;
+        height: auto; /* Let height adjust to content */
+    }
+    .logo {
+        margin-right: 0;  /* Remove margin on small screens*/
+        margin-bottom: 10px; /* Add space below logo */
+    }
+    .navbar {
+        width: 100%; /*Navbar fill full width on smaller screens*/
+    }
+    .navbar-right {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        margin-left: 0; /* Reset margin */
+
+    }
+    .navbar-nav {
+        gap: 5px; /* Reduce spacing on smaller screens */
+        flex-direction: column;
+        width: 100%; /* Full width */
+
+    }
+
+    .navbar-nav > li {
+        margin: 0; /*Reset margin*/
+        width: 100%; /* Full width */
+    }
+
+    .dropdown .dropdown-menu {
+        width: auto; /* Adjust width as needed for small screens*/
+        min-width: 160px; /* Set a minimum width */
+        left: auto;
+    }
+    .right-side {
+        margin-left: 0; /* Remove margin on small screens */
+        margin-top: auto;  /* Reset margin-top */
+    }
+}
+
+/* FullCalendar-specific styles (adjust as needed if you use a different theme) */
+
+.main-content {
+    margin-top: auto;
+    margin-left: auto;
+    padding: 20px;
+}
+.alert { /* Style alerts */
+    margin-bottom: 1rem; /* Standard Bootstrap spacing */
+}
+.fc .fc-toolbar.fc-header-toolbar {
+    margin-bottom: 1.5em; /* Spacing below the toolbar */
+    flex-wrap: wrap; /* Allow wrapping of toolbar buttons on small screens*/
+}
+
+.fc-theme-bootstrap5 .fc-toolbar button {
+    /* Ensure Bootstrap 5 button styles apply */
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.375rem 0.75rem; /* Bootstrap button padding */
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.fc-theme-bootstrap5 .fc-toolbar button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+    color: white;
+}
+.right-side.strech {
+    margin-left: 0; /* Correct value to remove margin*/
+
+}
+.fc-theme-bootstrap5 .fc-toolbar .fc-button-group > * {
+    margin-right: 5px; /* Add some spacing between buttons */
+}
+.fc-prev-button,
+.fc-next-button {
+    margin-right: 15px;
+}
+.fc-today-button{
+    margin-left: 15px;
+}

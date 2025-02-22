@@ -118,4 +118,21 @@ public class StaffDBContext extends DBContext<Staff> {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
+    public String getUserGmailByStaffId(int staffId) {
+        String gmail = null;
+        String sql = "SELECT u.gmail FROM Staff s JOIN [User] u ON s.staff_username = u.username WHERE s.id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, staffId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                gmail = rs.getString("gmail");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return gmail;
+    }
+
 }

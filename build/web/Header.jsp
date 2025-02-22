@@ -93,7 +93,7 @@
                                     <a href="search.html" class="dropdown-item">Search</a>
                                 </div>
                             </div>
-                            <a href="${pageContext.request.contextPath}contact.jsp" class="nav-item nav-link">Contact</a>
+                            <a href="${pageContext.request.contextPath}/contact.jsp" class="nav-item nav-link">Contact</a>
                             <c:if test="${not empty sessionScope.currentCustomer}">
                                 <a href="${pageContext.request.contextPath}/profile" class="nav-item nav-link">
                                     Welcome, ${sessionScope.currentCustomer.fullname}
