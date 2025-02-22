@@ -111,7 +111,7 @@ public class TestPackageServlet extends HttpServlet {
             return;
         }
 
-        request.getRequestDispatcher("GusTest.jsp").forward(request, response);
+        request.getRequestDispatcher("TestPackages.jsp").forward(request, response);
     } 
 
     /** 

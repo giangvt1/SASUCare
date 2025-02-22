@@ -64,7 +64,7 @@ public abstract class BaseRBACController extends BaseRequiredAuthentication {
         }
     }
 
-    private boolean isSessionValid(HttpSession session) {
+    boolean isSessionValid(HttpSession session) {
         Long lastAccess = (Long) session.getAttribute("lastAccessTime");
         if (lastAccess == null) {
             return false;

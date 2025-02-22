@@ -50,3 +50,19 @@
 .button:hover {
     background-color: #1776b6;
 }
+
+.error-message {
+    position: absolute;
+    font-size: 12px;
+    color: red;
+    margin-top: 2px;
+    left: 0;
+    bottom: -50%;
+}
+.input-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+

@@ -63,8 +63,6 @@ public class VaccinePackageServlet extends HttpServlet {
     throws ServletException, IOException {
         String action = request.getParameter("action");
         String idStr = request.getParameter("id");
-        String keyword = request.getParameter("keyword");
-        String category = request.getParameter("category");
         
         VaccinePackageDBContext db = new VaccinePackageDBContext();
         List<Vaccine> vaccines = db.list();
@@ -72,8 +70,6 @@ public class VaccinePackageServlet extends HttpServlet {
         
         request.setAttribute("vaccines", vaccines);
         request.setAttribute("categories", categories);
-        request.setAttribute("keyword", keyword);
-        request.setAttribute("selectedCategory", category);
         
         if ("edit".equals(action) && idStr != null) {
             int id = Integer.parseInt(idStr);
@@ -86,7 +82,7 @@ public class VaccinePackageServlet extends HttpServlet {
             return;
         }
         
-        request.getRequestDispatcher("GusVaccine.jsp").forward(request, response);
+        request.getRequestDispatcher("VaccinePackages.jsp").forward(request, response);
     } 
 
     /** 

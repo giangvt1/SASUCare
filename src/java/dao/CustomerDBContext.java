@@ -39,22 +39,21 @@ public class CustomerDBContext extends DBContext<Customer> {
             case "default":
                 sqlBuilder.append(" ORDER BY id");
                 break;
-            case "customerNameAZ":
+            case "fullNameAZ":
                 sqlBuilder.append(" ORDER BY fullname ASC");
                 break;
-            case "customerNameZA":
+            case "fullNameZA":
                 sqlBuilder.append(" ORDER BY fullname DESC");
                 break;
-            case "customerDOBLTH":
+            case "DOBLTH":
                 sqlBuilder.append(" ORDER BY dob ASC");
                 break;
-            case "customerDOBHTL":
+            case "DOBHTL":
                 sqlBuilder.append(" ORDER BY dob DESC");
                 break;
             default:
                 throw new AssertionError("Invalid sort type: " + sort);
         }
-        // Phân trang
         sqlBuilder.append(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
 
         try (PreparedStatement stm = connection.prepareStatement(sqlBuilder.toString())) {
@@ -100,16 +99,63 @@ public class CustomerDBContext extends DBContext<Customer> {
         return customers;
     }
 
-    public ArrayList<MedicalHistory> showMedicalHistory(int Cid) {
+    public int countCustomerInMedical(String name, Date dob, Boolean gender) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM [Customer] WHERE 1=1";
+
+        StringBuilder sqlBuilder = new StringBuilder(sql);
+
+        if (name != null && !name.isEmpty()) {
+            sqlBuilder.append(" AND fullname COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?");
+        }
+        if (dob != null) {
+            sqlBuilder.append(" AND dob = ?");
+        }
+        if (gender != null) {
+            sqlBuilder.append(" AND gender = ?");
+        }
+
+        try (PreparedStatement stm = connection.prepareStatement(sqlBuilder.toString())) {
+            int paramIndex = 1;
+
+            if (name != null && !name.isEmpty()) {
+                stm.setString(paramIndex++, "%" + name + "%");
+            }
+            if (dob != null) {
+                stm.setDate(paramIndex++, new java.sql.Date(dob.getTime()));
+            }
+            if (gender != null) {
+                stm.setBoolean(paramIndex++, gender);
+            }
+
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt(1);
+                }
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error counting customers: {0}", ex.getMessage());
+        }
+
+        return count;
+    }
+
+    public ArrayList<MedicalHistory> getMedicalHistoryByCustomerIdPaginated(int Cid, int page, int size) {
         ArrayList<MedicalHistory> list = new ArrayList<>();
-        String sql = "SELECT * FROM [MedicalHistory] WHERE CustomerID = ?";
+        String sql = "SELECT * FROM [MedicalHistory] WHERE CustomerID = ? "
+                + "ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setInt(1, Cid);
+            int offset = (page - 1) * size;
+            stm.setInt(2, offset);
+            stm.setInt(3, size);
             ResultSet rs = stm.executeQuery();
+
             while (rs.next()) {
                 MedicalHistory m = new MedicalHistory();
                 m.setId(rs.getInt("id"));
-                m.setCid(rs.getInt("CustomerID"));
+                m.setCustomerId(rs.getInt("CustomerID"));
                 m.setName(rs.getString("Name"));
                 m.setDetail(rs.getString("Detail"));
                 list.add(m);
@@ -120,21 +166,36 @@ public class CustomerDBContext extends DBContext<Customer> {
         return list;
     }
 
-    public boolean createMedicalHistory(MedicalHistory m) {
-        String sql = "INSERT INTO MedicalHistory (CustomerID, Name, Detail) VALUES (?, ?, ?)";
-        try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            // Gán các giá trị vào PreparedStatement
-            stm.setInt(1, m.getCid());
-            stm.setString(2, m.getName());
-            stm.setString(3, m.getDetail());
+    public int getTotalMedicalHistoryCountByCustomerId(int Cid) {
+        int totalCount = 0;
+        String sql = "SELECT COUNT(*) FROM [MedicalHistory] WHERE CustomerID = ?";
 
-            // Thực thi câu lệnh và kiểm tra số dòng bị ảnh hưởng
-            int rowsInserted = stm.executeUpdate();
-            return rowsInserted > 0; // Nếu chèn thành công, trả về true
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setInt(1, Cid);
+            ResultSet rs = stm.executeQuery();
+
+            if (rs.next()) {
+                totalCount = rs.getInt(1);
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return false; // Trả về false nếu gặp lỗi
+        return totalCount;
+    }
+
+    public boolean createMedicalHistory(MedicalHistory m) {
+        String sql = "INSERT INTO MedicalHistory (CustomerID, Name, Detail) VALUES (?, ?, ?)";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setInt(1, m.getCustomerId());
+            stm.setString(2, m.getName());
+            stm.setString(3, m.getDetail());
+
+            int rowsInserted = stm.executeUpdate();
+            return rowsInserted > 0;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
 
     public boolean updateMedicalHistory(MedicalHistory m) {
@@ -201,15 +262,16 @@ public class CustomerDBContext extends DBContext<Customer> {
     }
 
     // Phương thức lấy danh sách lịch sử khám bệnh theo CustomerID, có phân trang
-    public ArrayList<VisitHistory> getVisitHistoriesByCustomerIdPaginated(int customerId, int page) {
+    public ArrayList<VisitHistory> getVisitHistoriesByCustomerIdPaginated(int customerId, int page, int size) {
         ArrayList<VisitHistory> visitHistories = new ArrayList<>();
-        String sql = "SELECT * FROM VisitHistory WHERE CustomerID = ? ORDER BY VisitDate DESC OFFSET ? ROWS FETCH NEXT 10 ROWS ONLY";
+        String sql = "SELECT * FROM VisitHistory WHERE CustomerID = ? ORDER BY VisitDate DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
-        int offset = (page - 1) * 10; // Tính vị trí bắt đầu (OFFSET)
+        int offset = (page - 1) * size;
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, customerId);  // Gán giá trị CustomerID
-            ps.setInt(2, offset);  // Gán giá trị OFFSET
+            ps.setInt(1, customerId);
+            ps.setInt(2, offset);
+            ps.setInt(3, size);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -217,11 +279,11 @@ public class CustomerDBContext extends DBContext<Customer> {
                             rs.getInt("id"),
                             rs.getInt("DoctorID"),
                             rs.getInt("CustomerID"),
-                            rs.getDate("VisitDate"),
+                            rs.getTimestamp("VisitDate"), // Chỉnh sửa ở đây
                             rs.getString("ReasonForVisit"),
                             rs.getString("Diagnoses"),
                             rs.getString("TreatmentPlan"),
-                            rs.getDate("NextAppointment")
+                            rs.getTimestamp("NextAppointment") // Chỉnh sửa ở đây
                     );
                     visitHistories.add(vh);
                 }
@@ -233,17 +295,37 @@ public class CustomerDBContext extends DBContext<Customer> {
         return visitHistories;
     }
 
+    public int getVisitHistoryCountByCustomerId(int customerId) {
+        String sql = "SELECT COUNT(*) FROM VisitHistory WHERE CustomerID = ?";
+        int count = 0;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, customerId); // Gán CustomerID
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt(1); // Lấy số lượng bản ghi
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return count;
+    }
+
     public boolean createVisitHistory(VisitHistory visitHistory) {
         String sql = "INSERT INTO VisitHistory (DoctorID, CustomerID, VisitDate, ReasonForVisit, Diagnoses, TreatmentPlan, NextAppointment) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, visitHistory.getDid());
-            ps.setInt(2, visitHistory.getCid());
-            ps.setDate(3, new java.sql.Date(visitHistory.getVisitDate().getTime()));
+            ps.setInt(1, visitHistory.getDoctorId());
+            ps.setInt(2, visitHistory.getCustomerId());
+
+            ps.setTimestamp(3, visitHistory.getVisitDate() != null ? visitHistory.getVisitDate() : null);
             ps.setString(4, visitHistory.getReasonForVisit());
             ps.setString(5, visitHistory.getDiagnoses());
             ps.setString(6, visitHistory.getTreatmentPlan());
-            ps.setDate(7, visitHistory.getNextAppointment() != null ? new java.sql.Date(visitHistory.getNextAppointment().getTime()) : null);
+            ps.setTimestamp(7, visitHistory.getNextAppointment() != null ? visitHistory.getNextAppointment() : null);
 
             int rowsInserted = ps.executeUpdate();
             return rowsInserted > 0;
@@ -259,8 +341,8 @@ public class CustomerDBContext extends DBContext<Customer> {
                 + "WHERE id = ?";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, visitHistory.getDid());
-            ps.setInt(2, visitHistory.getCid());
+            ps.setInt(1, visitHistory.getDoctorId());
+            ps.setInt(2, visitHistory.getCustomerId());
             ps.setDate(3, new java.sql.Date(visitHistory.getVisitDate().getTime()));
             ps.setString(4, visitHistory.getReasonForVisit());
             ps.setString(5, visitHistory.getDiagnoses());
@@ -275,6 +357,7 @@ public class CustomerDBContext extends DBContext<Customer> {
         }
         return false;
     }
+
 
     public boolean deleteVisitHistory(int visitHistoryId) {
         String sql = "DELETE FROM VisitHistory WHERE id = ?";

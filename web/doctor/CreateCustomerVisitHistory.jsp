@@ -1,9 +1,3 @@
-<%-- 
-    Document   : CreateCustomerVisitHistory
-    Created on : 28 thg 1, 2025, 10:55:01
-    Author     : TRUNG
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>

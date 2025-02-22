@@ -15,6 +15,26 @@ import java.util.logging.Logger;
 public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
 
     private static final Logger LOGGER = Logger.getLogger(DoctorScheduleDBContext.class.getName());
+     public List<DoctorSchedule> getAvailableShiftsForDate(int doctorId, Date selectedDate) {
+        List<DoctorSchedule> shifts = new ArrayList<>();
+        String sql = "SELECT * FROM Doctor_Schedule WHERE doctor_id = ? AND schedule_date = ? AND available = 1";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, doctorId);
+            stmt.setDate(2, selectedDate);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                DoctorSchedule schedule = new DoctorSchedule();
+                schedule.setId(rs.getInt("id"));
+                schedule.setScheduleDate(rs.getDate("schedule_date"));
+                // Add other fields as needed
+                shifts.add(schedule);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return shifts;
+    }
+
 
     // Get available future dates for a doctor
     public List<Date> getAvailableDates(int doctorId) {

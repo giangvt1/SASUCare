@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package model;
 
 import java.sql.*;
@@ -13,16 +10,16 @@ import java.sql.*;
 public class MedicalHistory {
 
     private int id;
-    private int Cid;
+    private int customerId;
     private String name;
     private String detail;
 
     public MedicalHistory() {
     }
 
-    public MedicalHistory(int id, int Cid, String name, String detail) {
+    public MedicalHistory(int id, int customerId, String name, String detail) {
         this.id = id;
-        this.Cid = Cid;
+        this.customerId = customerId;
         this.name = name;
         this.detail = detail;
     }
@@ -35,12 +32,12 @@ public class MedicalHistory {
         this.id = id;
     }
 
-    public int getCid() {
-        return Cid;
+    public int getCustomerId() {
+        return customerId;
     }
 
-    public void setCid(int Cid) {
-        this.Cid = Cid;
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
     }
 
     public String getName() {
