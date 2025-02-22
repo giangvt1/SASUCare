@@ -120,6 +120,10 @@
         <servlet-name>AppointmentActionController</servlet-name>
         <servlet-class>controller.appointment.AppointmentActionController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ManageServiceServlet</servlet-name>
+        <servlet-class>controller.customerService.ManageServiceServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
         <url-pattern>/forgetpassword</url-pattern>
@@ -296,5 +300,9 @@
     <servlet-mapping>
         <servlet-name>AppointmentActionController</servlet-name>
         <url-pattern>/doctor/appointment/action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ManageServiceServlet</servlet-name>
+        <url-pattern>/ManageService</url-pattern>
     </servlet-mapping>
 </web-app>

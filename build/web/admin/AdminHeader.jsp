@@ -31,7 +31,6 @@
                             <c:otherwise>No Roles</c:otherwise>
                         </c:choose>
                     </span>
-
                     <ul class="nav navbar-nav">
                         <%-- User Account Dropdown --%>
                         <li class="dropdown user user-menu">

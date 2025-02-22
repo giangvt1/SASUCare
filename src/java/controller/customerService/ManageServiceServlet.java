@@ -1,36 +1,26 @@
-package controller.guest;
-
-
-
-
-
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-
-import dao.PackageDBContext;
+package controller.customerService;
 import model.Package;
+import dao.PackageDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  * @author admin
  */
-@WebServlet(urlPatterns={"/SearchPackage"})
-public class SearchPackageServlet extends HttpServlet {
-   private final PackageDBContext db = new PackageDBContext();
-    
-    
-    
+public class ManageServiceServlet extends HttpServlet {
+   private static final int PAGE_SIZE = 10;
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -46,13 +36,12 @@ public class SearchPackageServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet SearchPackageServlet</title>");  
+            out.println("<title>Servlet ManageServiceServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet SearchPackageServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet ManageServiceServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
-            
         }
     } 
 
@@ -67,36 +56,41 @@ public class SearchPackageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-         PackageDBContext db = new PackageDBContext();
-//        String keyword = request.getParameter("keyword");
-//        String category = request.getParameter("category");
-//
-//        PackageDBContext db = new PackageDBContext();
-//        
-//        // Lấy danh sách tất cả danh mục để hiển thị trong filter
-//        List<String> categories = db.getAllCategories();
-//
-//        // Nếu không nhập keyword, mặc định tìm tất cả
-//        if (keyword == null) {
-//            keyword = "";
-//        }
-//
-//        // Lấy danh sách gói khám theo từ khóa và danh mục
-//        List<Package> packages = db.searchPackages(keyword, category);
-//
-//        request.setAttribute("packages", packages);
-//        request.setAttribute("categories", categories);
-//        request.setAttribute("keyword", keyword);
-//        request.setAttribute("selectedCategory", category);
-//        request.getRequestDispatcher("SearchPackageForm1.jsp").forward(request, response);
+        PackageDBContext db = new PackageDBContext();
+
         String action = request.getParameter("action");
         String idStr = request.getParameter("id");
+        String keyword = request.getParameter("keyword");
+        String category = request.getParameter("category");
+//        String search = request.getParameter("search");
+        if (keyword != null) {
+            keyword = keyword.trim().replaceAll("\\s+", " ").replace(" ", "%");
+        }
+
+        // Xử lý view (mặc định là extended)
+        String view = request.getParameter("view");
+        if (view == null || view.trim().isEmpty()) {
+            view = "extended";
+        }
+
+        // Xử lý số trang, mặc định là 1
+        int pageIndex = 1;
+        try {
+            String pageParam = request.getParameter("page");
+            if (pageParam != null && !pageParam.trim().isEmpty()) {
+                pageIndex = Integer.parseInt(pageParam);
+            }
+        } catch (NumberFormatException ex) {
+            pageIndex = 1;
+        }
 
         // Lấy danh sách gói khám và danh mục
-        List<Package> packages = db.list();
+        ArrayList<Package> packages = (ArrayList<Package>) db.searchPackages1(keyword, category, pageIndex, PAGE_SIZE);
         List<String> categories = db.getAllCategories();
         request.setAttribute("packages", packages);
         request.setAttribute("categories", categories);
+        request.setAttribute("keyword", keyword);
+        request.setAttribute("selectedCategory", category);
 
         if ("edit".equals(action) && idStr != null) {
             int id = Integer.parseInt(idStr);
@@ -105,13 +99,11 @@ public class SearchPackageServlet extends HttpServlet {
         } else if ("delete".equals(action) && idStr != null) {
             int id = Integer.parseInt(idStr);
             db.delete(new Package(id, "", "", 0, 0, ""));
-            response.sendRedirect("SearchPackageServlet"); // Quay lại trang chính
+            response.sendRedirect("ManageService"); // Quay lại trang chính
             return;
         }
 
-        request.getRequestDispatcher("GusPackage.jsp").forward(request, response);
-
-            
+        request.getRequestDispatcher("SearchPackageForm.jsp").forward(request, response);
     } 
 
     /** 
@@ -124,23 +116,29 @@ public class SearchPackageServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-          
-int id = request.getParameter("id") != null && !request.getParameter("id").isEmpty() ? Integer.parseInt(request.getParameter("id")) : 0;
-        String name = request.getParameter("name");
-        String description = request.getParameter("description");
-        double price = Double.parseDouble(request.getParameter("price"));
-        int duration = Integer.parseInt(request.getParameter("duration"));
-        String category = request.getParameter("category");
+        PackageDBContext db = new PackageDBContext();
+        try {
+            int id = request.getParameter("id") != null && !request.getParameter("id").isEmpty()
+                    ? Integer.parseInt(request.getParameter("id")) : 0;
+            String name = request.getParameter("name");
+            String description = request.getParameter("description");
+            double price = Double.parseDouble(request.getParameter("price"));
+            int duration = Integer.parseInt(request.getParameter("duration"));
+            String category = request.getParameter("category");
 
-        Package pkg = new Package(id, name, description, price, duration, category);
+            Package pkg = new Package(id, name, description, price, duration, category);
 
-        if (id == 0) {
-            db.insert(pkg); // Thêm mới
-        } else {
-            db.update(pkg); // Cập nhật
+            if (id == 0) {
+                db.insert(pkg); // Thêm mới
+            } else {
+                db.update(pkg); // Cập nhật
+            }
+
+            response.sendRedirect("ManageService");
+        } catch (Exception e) {
+            request.setAttribute("error", "Dữ liệu nhập vào không hợp lệ");
+            request.getRequestDispatcher("SearchPackageForm.jsp").forward(request, response);
         }
-
-        response.sendRedirect("SearchPackageServlet");
     }
 
     /** 

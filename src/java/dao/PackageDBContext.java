@@ -32,7 +32,7 @@ public class PackageDBContext extends DBContext<Package> {
     // Phương thức thêm gói khám mới
     @Override
     public void insert(Package pkg) {
-        String sql = "INSERT INTO packages (name, description, price, duration_minutes, category) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO ServicePackage  (name, description, price, duration_minutes, category) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, pkg.getName());
             ps.setString(2, pkg.getDescription());
@@ -49,7 +49,7 @@ public class PackageDBContext extends DBContext<Package> {
     // Phương thức cập nhật gói khám
     @Override
     public void update(Package pkg) {
-        String sql = "UPDATE packages SET name = ?, description = ?, price = ?, duration_minutes = ?, category = ? WHERE id = ?";
+        String sql = "UPDATE ServicePackage  SET name = ?, description = ?, price = ?, duration_minutes = ?, category = ? WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, pkg.getName());
             ps.setString(2, pkg.getDescription());
@@ -67,7 +67,7 @@ public class PackageDBContext extends DBContext<Package> {
     // Phương thức xóa gói khám
     @Override
     public void delete(Package pkg) {
-         String sql = "DELETE FROM packages WHERE id = ?";
+         String sql = "DELETE FROM ServicePackage  WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, pkg.getId());
             ps.executeUpdate();
@@ -81,7 +81,7 @@ public class PackageDBContext extends DBContext<Package> {
     @Override
     public ArrayList<Package> list() {
         ArrayList<Package> packages = new ArrayList<>();
-        String sql = "SELECT * FROM packages";
+        String sql = "SELECT * FROM ServicePackage ";
         try (PreparedStatement ps = connection.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -104,7 +104,7 @@ public class PackageDBContext extends DBContext<Package> {
     // Phương thức lấy thông tin chi tiết của một gói khám theo ID
     @Override
     public Package get(String id) {
-        String sql = "SELECT * FROM packages WHERE id = ?";
+        String sql = "SELECT * FROM ServicePackage  WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, Integer.parseInt(id));
             ResultSet rs = ps.executeQuery();
@@ -125,44 +125,147 @@ public class PackageDBContext extends DBContext<Package> {
     }
 
     // Phương thức tìm kiếm gói khám theo từ khóa và danh mục
-    public List<Package> searchPackages(String keyword, String category) {
+    public List<Package> searchPackages1(String keyword, String category,int pageIndex, int pageSize) {
+//        List<Package> packages = new ArrayList<>();
+//        String sql = "SELECT * FROM ServicePackage  WHERE name LIKE ?";
+//
+//        if (category != null && !category.isEmpty() && !category.equals("all")) {
+//            sql += " AND category = ?";
+//        }
+//
+//        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+//            ps.setString(1, "%" + keyword + "%");
+////            ps.setString(2, "%" + keyword + "%");
+//
+//            if (category != null && !category.isEmpty() && !category.equals("all")) {
+//                ps.setString(2, category);
+//            }
+//
+//            ResultSet rs = ps.executeQuery();
+//            while (rs.next()) {
+//                Package pkg = new Package(
+//                    rs.getInt("id"),
+//                    rs.getString("name"),
+//                    rs.getString("description"),
+//                    rs.getDouble("price"),
+//                    rs.getInt("duration_minutes"),
+//                    rs.getString("category")
+//                );
+//                packages.add(pkg);
+//            }
+//        } catch (SQLException ex) {
+//            LOGGER.log(java.util.logging.Level.SEVERE, "Database connection error", ex);
+//        }
+//        return packages;
         List<Package> packages = new ArrayList<>();
-        String sql = "SELECT * FROM packages WHERE name LIKE ?";
+        String sql = "SELECT * FROM ServicePackage WHERE REPLACE(name, ' ', '') LIKE ?";
 
         if (category != null && !category.isEmpty() && !category.equals("all")) {
             sql += " AND category = ?";
         }
+        sql += " ORDER BY name OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, "%" + keyword + "%");
-//            ps.setString(2, "%" + keyword + "%");
+            String filter = "%" + (keyword != null ? keyword.replaceAll("\\s+", "") : "") + "%";
+            ps.setString(1, filter);
 
+            int paramIndex = 2;
             if (category != null && !category.isEmpty() && !category.equals("all")) {
-                ps.setString(2, category);
+                ps.setString(paramIndex++, category);
             }
+            ps.setInt(paramIndex++, (pageIndex - 1) * pageSize);
+            ps.setInt(paramIndex, pageSize);
 
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Package pkg = new Package(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getString("description"),
-                    rs.getDouble("price"),
-                    rs.getInt("duration_minutes"),
-                    rs.getString("category")
-                );
-                packages.add(pkg);
+                packages.add(new Package(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getDouble("price"),
+                        rs.getInt("duration_minutes"),
+                        rs.getString("category")
+                ));
             }
         } catch (SQLException ex) {
             LOGGER.log(java.util.logging.Level.SEVERE, "Database connection error", ex);
         }
         return packages;
+    
+    }
+    public List<Package> searchPackages(String keyword, String category) {
+//        List<Package> packages = new ArrayList<>();
+//        String sql = "SELECT * FROM ServicePackage  WHERE name LIKE ?";
+//
+//        if (category != null && !category.isEmpty() && !category.equals("all")) {
+//            sql += " AND category = ?";
+//        }
+//
+//        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+//            ps.setString(1, "%" + keyword + "%");
+////            ps.setString(2, "%" + keyword + "%");
+//
+//            if (category != null && !category.isEmpty() && !category.equals("all")) {
+//                ps.setString(2, category);
+//            }
+//
+//            ResultSet rs = ps.executeQuery();
+//            while (rs.next()) {
+//                Package pkg = new Package(
+//                    rs.getInt("id"),
+//                    rs.getString("name"),
+//                    rs.getString("description"),
+//                    rs.getDouble("price"),
+//                    rs.getInt("duration_minutes"),
+//                    rs.getString("category")
+//                );
+//                packages.add(pkg);
+//            }
+//        } catch (SQLException ex) {
+//            LOGGER.log(java.util.logging.Level.SEVERE, "Database connection error", ex);
+//        }
+//        return packages;
+        List<Package> packages = new ArrayList<>();
+        String sql = "SELECT * FROM ServicePackage WHERE REPLACE(name, ' ', '') LIKE ?";
+
+        if (category != null && !category.isEmpty() && !category.equals("all")) {
+            sql += " AND category = ?";
+        }
+        sql += " ORDER BY name OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            String filter = "%" + (keyword != null ? keyword.replaceAll("\\s+", "") : "") + "%";
+            ps.setString(1, filter);
+
+            int paramIndex = 2;
+            if (category != null && !category.isEmpty() && !category.equals("all")) {
+                ps.setString(paramIndex++, category);
+            }
+//            ps.setInt(paramIndex++, (pageIndex - 1) * pageSize);
+//            ps.setInt(paramIndex, pageSize);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                packages.add(new Package(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getDouble("price"),
+                        rs.getInt("duration_minutes"),
+                        rs.getString("category")
+                ));
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(java.util.logging.Level.SEVERE, "Database connection error", ex);
+        }
+        return packages;
+    
     }
 
     // Phương thức lấy tất cả danh mục để hiển thị trong bộ lọc
     public List<String> getAllCategories() {
         List<String> categories = new ArrayList<>();
-        String sql = "SELECT DISTINCT category FROM packages";
+        String sql = "SELECT DISTINCT category FROM ServicePackage ";
         try (PreparedStatement ps = connection.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
