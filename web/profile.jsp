@@ -33,7 +33,6 @@
                 <h2>User Profile</h2>
             </div>
 
-            <!-- Success/Error Messages -->
             <c:if test="${not empty message}">
                 <div class="alert alert-success">${message}</div>
             </c:if>
@@ -41,10 +40,8 @@
                 <div class="alert alert-danger">${error}</div>
             </c:if>
 
-            <!-- Profile Form -->
             <c:if test="${not empty customer}">
-                <form action="${pageContext.request.contextPath}/profile" method="post">
-                    <!-- Full Name -->
+                <form action="${pageContext.request.contextPath}/profile" method="post" id="profileForm">
                     <div class="mb-3">
                         <label for="name" class="form-label">Full Name</label>
                         <input 
@@ -54,9 +51,9 @@
                             name="name" 
                             value="${customer.fullname}" 
                             placeholder="Enter your full name">
+                        <div id="name-error" class="text-danger"></div>
                     </div>
 
-                    <!-- Email -->
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
                         <input 
@@ -69,7 +66,6 @@
                             placeholder="Enter your email">
                     </div>
 
-                    <!-- Phone -->
                     <div class="mb-3">
                         <label for="phone" class="form-label">Phone Number</label>
                         <input 
@@ -79,7 +75,9 @@
                             name="phone" 
                             value="${customer.phone_number}" 
                             placeholder="Enter your phone number">
+                        <div id="phone-error" class="text-danger"></div>
                     </div>
+                    
                     <div class="mb-3">
                         <label for="address" class="form-label">Address</label>
                         <input 
@@ -91,60 +89,119 @@
                             placeholder="Enter your address">
                     </div>
 
-                    <!-- Submit Button -->
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary">Update Profile</button>
                     </div>
                 </form>
-                            
-                <c:if test="${empty google}">
-                    <form action="./changepass" method="post">
-                    <!-- Old Password -->
-                    <div class="mb-3">
-                        <label for="oldPassword" class="form-label">Current Password</label>
-                        <input 
-                            type="password" 
-                            class="form-control" 
-                            id="oldPassword" 
-                            name="oldPassword" 
-                            required 
-                            placeholder="Enter your current password">
-                    </div>
-
-                    <!-- New Password -->
-                    <div class="mb-3">
-                        <label for="newPassword" class="form-label">New Password</label>
-                        <input 
-                            type="password" 
-                            class="form-control" 
-                            id="newPassword" 
-                            name="newPassword" 
-                            required 
-                            placeholder="Enter your new password">
-                    </div>
-
-                    <!-- Confirm New Password -->
-                    <div class="mb-3">
-                        <label for="confirmPassword" class="form-label">Confirm New Password</label>
-                        <input 
-                            type="password" 
-                            class="form-control" 
-                            id="confirmPassword" 
-                            name="confirmPassword" 
-                            required 
-                            placeholder="Confirm your new password">
-                    </div>
-
-                    <!-- Submit Button -->
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-danger">Change Password</button>
-                    </div>
-                </form>
-                </c:if>
             </c:if>
         </div>
 
         <jsp:include page="/Footer.jsp"/>
         <script src="../../js/bootstrap.bundle.min.js"></script>
+
+        <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const profileForm = document.getElementById("profileForm");
+        const passwordForm = document.getElementById("passwordForm");
+
+        if (profileForm) {
+            profileForm.addEventListener("submit", function (e) {
+                if (!validateProfileForm()) {
+                    e.preventDefault();
+                }
+            });
+        }
+
+        if (passwordForm) {
+            passwordForm.addEventListener("submit", function (e) {
+                if (!validatePasswordForm()) {
+                    e.preventDefault();
+                }
+            });
+        }
+
+        function validateProfileForm() {
+            let isValid = true;
+
+            // Validate Full Name (Hỗ trợ tiếng Việt)
+            const name = document.getElementById("name");
+            const nameError = document.getElementById("name-error");
+            const nameValue = name.value.trim();
+
+            if (!/^[\p{L}\s]{3,20}$/u.test(nameValue)) {
+                nameError.innerText = "Name must be 3 - 20 characters";
+                isValid = false;
+            } else if (/^\s|\s$/.test(name.value) || /\s{2,}/.test(name.value)) {
+                nameError.innerText = "Invalid name!";
+                isValid = false;
+            } else {
+                nameError.innerText = "";
+            }
+
+            // Validate Phone Number (10-11 số)
+            const phone = document.getElementById("phone");
+            const phoneError = document.getElementById("phone-error");
+            if (!/^0\d{9}$/.test(phone.value.trim())) {
+                phoneError.innerText = "Phone number must be 10 digits!";
+                isValid = false;
+            } else {
+                phoneError.innerText = "";
+            }
+
+            // Validate Address (5 - 50 characters)
+            const address = document.getElementById("address");
+            let addressError = document.getElementById("address-error");
+
+            if (!addressError) {
+                addressError = document.createElement("div");
+                addressError.id = "address-error";
+                addressError.classList.add("text-danger");
+                address.parentNode.appendChild(addressError);
+            }
+
+            const addressValue = address.value.trim();
+            if (addressValue.length < 5 || addressValue.length > 50) {
+                addressError.innerText = "Address must be between 5 - 50 characters.";
+                isValid = false;
+            } else if (/\s{2,}/.test(addressValue)) {
+                addressError.innerText = "Invalid input!";
+                isValid = false;
+            } else {
+                addressError.innerText = "";
+            }
+
+            return isValid;
+        }
+
+        function validatePasswordForm() {
+            let isValid = true;
+
+            const newPassword = document.getElementById("newPassword");
+            const confirmPassword = document.getElementById("confirmPassword");
+            const passwordError = document.getElementById("password-error");
+            const confirmPasswordError = document.getElementById("confirm-password-error");
+
+            // Validate new password strength
+            const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*]).{6,}$/;
+            if (!passwordRegex.test(newPassword.value)) {
+                passwordError.innerText = "Invalid Password!";
+                isValid = false;
+            } else {
+                passwordError.innerText = "";
+            }
+
+            // Confirm new password match
+            if (newPassword.value !== confirmPassword.value) {
+                confirmPasswordError.innerText = "Password doesn't match!";
+                isValid = false;
+            } else {
+                confirmPasswordError.innerText = "";
+            }
+
+            return isValid;
+        }
+    });
+</script>
+
     </body>
 </html>
