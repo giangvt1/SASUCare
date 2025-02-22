@@ -1,9 +1,10 @@
 package controller.appointment;
 
-import com.google.gson.Gson;
 import java.io.IOException;
-import java.sql.Date;
+import java.io.PrintWriter;
 import java.util.List;
+import java.sql.Date;
+
 import dao.AppointmentDBContext;
 import dao.DoctorScheduleDBContext;
 import jakarta.servlet.ServletException;
@@ -24,14 +25,7 @@ public class AppointmentRescheduleController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Fetch doctorId and selected date from the request
-        int doctorId = Integer.parseInt(request.getParameter("doctorId"));
-        Date selectedDate = Date.valueOf(request.getParameter("date"));
-
-        // Fetch available shifts for the given doctor and date
-        List<DoctorSchedule> availableShifts = doctorScheduleDB.getAvailableShiftsForDate(doctorId, selectedDate);
-
-       
+      
     }
 
     @Override
@@ -41,31 +35,31 @@ public class AppointmentRescheduleController extends HttpServlet {
         Date newDate = Date.valueOf(request.getParameter("date"));
         int newShiftId = Integer.parseInt(request.getParameter("shift"));
 
-        // Fetch appointment by ID
+        // Fetch appointment
         Appointment appointment = appointmentDB.get(String.valueOf(appointmentId));
         if (appointment == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Appointment not found");
             return;
         }
 
-        // Validate that the new date is in the future
+        // Validate new date (must be in the future)
         if (newDate.before(new java.util.Date())) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Cannot reschedule to a past date");
             return;
         }
 
-        // Fetch the new doctor schedule for the given date and shift
+        // Fetch new schedule
         DoctorSchedule newSchedule = doctorScheduleDB.getScheduleByDateAndShift(appointment.getDoctor().getId(), newDate, newShiftId);
         if (newSchedule == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid schedule");
             return;
         }
 
-        // Update appointment with the new schedule
+        // Update appointment
         appointment.setDoctorSchedule(newSchedule);
         appointmentDB.update(appointment);
 
-        // Redirect back to the appointment list with a success message
-        response.sendRedirect(request.getContextPath() + "/appointment/list");
+        // Redirect to appointment list with success message
+        response.sendRedirect(request.getContextPath() + "/appointment/list?success=rescheduled");
     }
 }

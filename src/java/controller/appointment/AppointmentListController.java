@@ -27,16 +27,8 @@ public class AppointmentListController extends HttpServlet {
         
         // Get filters from request
         String doctorName = request.getParameter("doctorName");
-        
-        if (doctorName != null) {
-            doctorName = doctorName.trim().replaceAll("\\s+", " ").replace(" ", "%");
-        }
         String status = request.getParameter("status");
         boolean sortAsc = "asc".equals(request.getParameter("sortOrder"));
-        
-        if (doctorName != null) {
-            doctorName = doctorName.trim().replaceAll("\\s+", " ").replace(" ", "%");
-        }
 
         // Fetch filtered appointments
         List<Appointment> appointments = appointmentDB.getAppointmentsByFilters(

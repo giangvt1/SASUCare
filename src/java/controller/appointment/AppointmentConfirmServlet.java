@@ -34,6 +34,7 @@ public class AppointmentConfirmServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+//        response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
         try {
@@ -66,7 +67,7 @@ public class AppointmentConfirmServlet extends HttpServlet {
 //              Validate that all objects exist
             if (customer == null || doctor == null || doctorSchedule == null) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                out.write("{\"status\":\"error\", \"message\":\"Invalid appointment details.\"}" +"hello"+ customer + "D" + doctor + "DS" + doctorSchedule);
+                out.write("{\"status\":\"error\", \"message\":\"Invalid appointment details.\"}");
                 return;
             }
 
@@ -94,7 +95,5 @@ public class AppointmentConfirmServlet extends HttpServlet {
             out.write("{\"status\":\"error\", \"message\":\"An error occurred while booking.\"}");
 
         }
-        // Redirect back to the appointment list page
-        response.sendRedirect(request.getContextPath() + "/appointment/list");
     }
 }

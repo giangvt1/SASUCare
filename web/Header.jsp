@@ -71,7 +71,7 @@
             <div class="container">
                 <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0">
                     <a href="${pageContext.request.contextPath}/Home.jsp" class="navbar-brand">
-                        <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-clinic-medical me-2"></i>SASUCARE</h1>
+                        <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-clinic-medical me-2"></i>Medinova</h1>
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                         <span class="navbar-toggler-icon"></span>
@@ -89,11 +89,11 @@
                                     <a href="detail.html" class="dropdown-item">Blog Detail</a>
                                     <a href="team.html" class="dropdown-item">The Team</a>
                                     <a href="testimonial.html" class="dropdown-item">Testimonial</a>
-                                   <a href="<%= request.getContextPath() %>/appointment" class="dropdown-item">Appointment</a>
+                                    <a href="appointment.html" class="dropdown-item">Appointment</a>
                                     <a href="search.html" class="dropdown-item">Search</a>
                                 </div>
                             </div>
-                            <a href="${pageContext.request.contextPath}contact.jsp" class="nav-item nav-link">Contact</a>
+                            <a href="${pageContext.request.contextPath}/contact.jsp" class="nav-item nav-link">Contact</a>
                             <c:if test="${not empty sessionScope.currentCustomer}">
                                 <a href="${pageContext.request.contextPath}/profile" class="nav-item nav-link">
                                     Welcome, ${sessionScope.currentCustomer.fullname}

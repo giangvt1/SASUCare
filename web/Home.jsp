@@ -52,7 +52,7 @@
                                >Find Doctor</a
                             >
                             <a
-                                href="<%= request.getContextPath() %>/appointment"
+                                href="${pageContext.request.contextPath}/appointment"
                                 class="btn btn-outline-light rounded-pill py-md-3 px-md-5 mx-2"
                                 >Appointment</a
                             >

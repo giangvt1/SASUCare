@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
-   <servlet>
+    <servlet>
         <servlet-name>ForgetPasswordController</servlet-name>
         <servlet-class>controller.accesscontrol.ForgetPasswordController</servlet-class>
     </servlet>
@@ -105,6 +105,14 @@
         <servlet-class>controller.doctor.EditCustomerVisitHistory</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>MedicalHistoryExportServlet</servlet-name>
+        <servlet-class>controller.doctor.MedicalHistoryExportServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>VisitHistoryExportServlet</servlet-name>
+        <servlet-class>controller.doctor.VisitHistoryExportServlet</servlet-class>
+    </servlet>
+        <servlet>
         <servlet-name>AppointmentWaitingController</servlet-name>
         <servlet-class>controller.appointment.AppointmentWaitingController</servlet-class>
     </servlet>
@@ -272,6 +280,14 @@
     <servlet-mapping>
         <servlet-name>EditCustomerVisitHistory</servlet-name>
         <url-pattern>/doctor/EditCustomerVisitHistory</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MedicalHistoryExportServlet</servlet-name>
+        <url-pattern>/doctor/MedicalHistoryExportServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VisitHistoryExportServlet</servlet-name>
+        <url-pattern>/doctor/VisitHistoryExportServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>AppointmentWaitingController</servlet-name>

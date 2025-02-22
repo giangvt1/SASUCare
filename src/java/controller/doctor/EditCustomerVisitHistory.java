@@ -1,16 +1,18 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller.doctor;
 
 import controller.systemaccesscontrol.BaseRBACController;
 import dao.CustomerDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Timestamp;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import static java.lang.String.format;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.VisitHistory;
 import model.system.User;
 
@@ -22,34 +24,41 @@ public class EditCustomerVisitHistory extends BaseRBACController {
 
     @Override
     protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
         String id = request.getParameter("id");
         String did = request.getParameter("did");
-        String cid = request.getParameter("cid");
+        String cId = request.getParameter("cId");
         String visitDateStr = request.getParameter("visitDate");
         String reasonForVisit = request.getParameter("reasonForVisit");
         String diagnoses = request.getParameter("diagnoses");
         String treatmentPlan = request.getParameter("treatmentPlan");
         String nextAppointmentStr = request.getParameter("nextAppointment");
 
-        java.sql.Date visitDate = java.sql.Date.valueOf(visitDateStr);
+        Timestamp visitDate = null;
+        Timestamp nextAppointment = null;
 
-        java.sql.Date nextAppointment = null;
-        if (nextAppointmentStr != null && !nextAppointmentStr.isEmpty()) {
-            try {
-                nextAppointment = java.sql.Date.valueOf(nextAppointmentStr);
-            } catch (IllegalArgumentException e) {
-                nextAppointment = null;
+        String error = "";
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+        try {
+            if (visitDateStr != null && !visitDateStr.isEmpty()) {
+                visitDate = new Timestamp(format.parse(visitDateStr).getTime());
             }
+            if (nextAppointmentStr != null && !nextAppointmentStr.isEmpty()) {
+                nextAppointment = new Timestamp(format.parse(nextAppointmentStr).getTime());
+            }
+        } catch (IllegalArgumentException e) {
+            error = "Date not valid";
+        } catch (ParseException ex) {
+            Logger.getLogger(EditCustomerVisitHistory.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         VisitHistory visitHistory = new VisitHistory();
-        visitHistory.setDid(Integer.parseInt(did));
-        visitHistory.setCid(Integer.parseInt(cid));
+        visitHistory.setDoctorId(Integer.parseInt(did));
+        visitHistory.setCustomerId(Integer.parseInt(cId));
         visitHistory.setVisitDate(visitDate);
         visitHistory.setReasonForVisit(reasonForVisit);
         visitHistory.setDiagnoses(diagnoses);
@@ -57,7 +66,7 @@ public class EditCustomerVisitHistory extends BaseRBACController {
         visitHistory.setNextAppointment(nextAppointment);
 
         CustomerDBContext customerDB = new CustomerDBContext();
-        boolean isCreated = false;
+        boolean isCreated;
         if (id == null || id.isEmpty()) {
             isCreated = customerDB.createVisitHistory(visitHistory);
         } else {
@@ -70,9 +79,8 @@ public class EditCustomerVisitHistory extends BaseRBACController {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         out.println("<script type='text/javascript'>");
-        out.println("alert('" + message + "');");
-        out.println("window.location.href='ShowCustomerMedicalDetail?cid=" + cid + "';");
+        out.println("alert('" + message + error + "');");
+        out.println("window.location.href='ShowCustomerMedicalDetail?cId=" + cId + "';");
         out.println("</script>");
     }
-
 }

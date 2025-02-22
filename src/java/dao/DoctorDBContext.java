@@ -25,8 +25,6 @@ import model.Shift;
 public class DoctorDBContext extends DBContext<Doctor> {
 
     private static final Logger LOGGER = Logger.getLogger(DoctorDBContext.class.getName());
-    
-    
 
     public List<Application> getApplicationsByDoctorID(String name, Date date, String status, int did, int page, String sort, int size) {
         List<Application> applications = new ArrayList<>();
@@ -99,10 +97,52 @@ public class DoctorDBContext extends DBContext<Doctor> {
         return applications;
     }
 
+    public int getApplicationsCountByDoctorID(String name, Date date, String status, int did) {
+        int count = 0;
+        StringBuilder sqlBuilder = new StringBuilder(
+                "SELECT COUNT(*) AS total FROM Application WHERE doctor_id = ?"
+        );
+
+        if (name != null && !name.isEmpty()) {
+            sqlBuilder.append(" AND name LIKE ?");
+        }
+        if (date != null) {
+            sqlBuilder.append(" AND date = ?");
+        }
+        if (status != null && !status.isEmpty()) {
+            sqlBuilder.append(" AND status LIKE ?");
+        }
+
+        try (PreparedStatement stm = connection.prepareStatement(sqlBuilder.toString())) {
+            int paramIndex = 1;
+            stm.setInt(paramIndex++, did);
+
+            if (name != null && !name.isEmpty()) {
+                stm.setString(paramIndex++, "%" + name + "%");
+            }
+            if (date != null) {
+                stm.setDate(paramIndex++, new java.sql.Date(date.getTime()));
+            }
+            if (status != null && !status.isEmpty()) {
+                stm.setString(paramIndex++, "%" + status + "%");
+            }
+
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt("total");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
     @Override
     public Doctor get(String id) {
-        return getDoctorById(Integer.parseInt(id));
+        return null;
     }
+    
 
     public ArrayList<DoctorSchedule> getDoctorSchedules(int doctorId, Date date) {
         ArrayList<DoctorSchedule> schedules = new ArrayList<>();
