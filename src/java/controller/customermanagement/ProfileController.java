@@ -104,7 +104,6 @@ public class ProfileController extends HttpServlet {
         CustomerDBContext customerDAO = new CustomerDBContext();
 
         String fullName = request.getParameter("name");
-        System.out.println("name: " + fullName);
         String phone = request.getParameter("phone");
         String address = request.getParameter("address");
 

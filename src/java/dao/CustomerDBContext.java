@@ -467,7 +467,7 @@ public class CustomerDBContext extends DBContext<Customer> {
             stm.setString(2, model.getPassword());
             stm.setString(3, model.getGmail());
             stm.setBoolean(4, model.isGender());
-            stm.setDate(5, new java.sql.Date(model.getDob().getTime()));
+            stm.setDate(5, new java.sql.Date(System.currentTimeMillis()));
             stm.setString(6, model.getAddress());
             stm.setString(7, model.getPhone_number());
 
