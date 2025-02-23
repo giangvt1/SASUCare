@@ -18,7 +18,7 @@ public class ValidateOtp extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        request.getRequestDispatcher("./EnterOtp.jsp").forward(request, response);
+        request.getRequestDispatcher("./google/EnterOtp.jsp").forward(request, response);
 
     } 
 
