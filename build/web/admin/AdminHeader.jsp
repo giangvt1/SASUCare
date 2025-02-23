@@ -51,7 +51,7 @@
                             <ul class="dropdown-menu dropdown-custom dropdown-menu-right">
                                 <li class="dropdown-header text-center">Account</li>
                                 <li>
-                                    <a href="${pageContext.request.contextPath}/hr/edit">
+                                    <a href="${pageContext.request.contextPath}/system/resetpass">
                                         <i class="fa fa-clock-o fa-fw pull-right"></i> Updates
                                     </a>
                                 </li>

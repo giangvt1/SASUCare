@@ -55,8 +55,45 @@
             }
         </style>
         <script>
-            // JavaScript validation (unchanged)
-            // ... (your validation script)
+            // Regex patterns for validation
+            const phonePattern = /^0\d{9}$/;
+            // Trims the input field value on blur
+            function trimInput(id) {
+            let field = document.getElementById(id);
+            if (field) {
+            field.value = field.value.trim();
+            }
+            }
+
+            // Validate form on submit
+            function validateForm() {
+            let username = document.getElementById("username").value.trim();
+            let displayname = document.getElementById("displayname").value.trim();
+            let email = document.getElementById("gmail").value.trim();
+            let phone = document.getElementById("phone").value.trim();
+            if (!username) {
+            alert("Username is required.");
+            return false;
+            }
+            if (!displayname) {
+            alert("Display Name is required.");
+            return false;
+            }
+            if (!email) {
+            alert("Email is required");
+            return false;
+            }
+            if (!phone || !phonePattern.test(phone)) {
+            alert("Phone number must be exactly 10 digits and start with 0.");
+            return false;
+            }
+            let rolesSelect = document.getElementById("roles");
+            if (!rolesSelect.value) {
+            alert("Please select at least one role.");
+            return false;
+            }
+            return true;
+            }
         </script>
 
     </head>
@@ -80,23 +117,27 @@
                         <table>
                             <tr>
                                 <th><label for="username">Username</label></th>
-                                <td><input type="text" name="username" id="username" required onblur="trimInput('username')" /></td>
-                            </tr>
-                            <tr>
-                                <th><label for="password">Password</label></th>
-                                <td><input type="password" name="password" id="password" required onblur="trimInput('password')" /></td>
+                                <td>
+                                    <input type="text" name="username" id="username" required onblur="trimInput('username')" />
+                                </td>
                             </tr>
                             <tr>
                                 <th><label for="displayname">Display Name</label></th>
-                                <td><input type="text" name="displayname" id="displayname" required onblur="trimInput('displayname')" /></td>
+                                <td>
+                                    <input type="text" name="displayname" id="displayname" required onblur="trimInput('displayname')" />
+                                </td>
                             </tr>
                             <tr>
                                 <th><label for="gmail">Email</label></th>
-                                <td><input type="email" name="gmail" id="gmail" required onblur="trimInput('gmail')" /></td>
+                                <td>
+                                    <input type="email" name="gmail" id="gmail" required onblur="trimInput('gmail')" />
+                                </td>
                             </tr>
                             <tr>
                                 <th><label for="phone">Phone Number</label></th>
-                                <td><input type="tel" name="phone" id="phone" required onblur="trimInput('phone')" /></td>
+                                <td>
+                                    <input type="tel" name="phone" id="phone" required onblur="trimInput('phone')" />
+                                </td>
                             </tr>
                             <tr>
                                 <th><label for="roles">Role</label></th>

@@ -23,6 +23,36 @@ import model.system.UserAccountDTO;
  */
 public class UserDBContext extends DBContext<User> {
 
+    public boolean isEmailExists(String email) {
+        String sql = "SELECT COUNT(*) FROM [User] WHERE gmail = ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setString(1, email);
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // Nếu count > 0 nghĩa là email đã tồn tại
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    public boolean resetPassword(String username, String newPassword) {
+        String sql = "UPDATE [User] SET password = ? WHERE username = ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            // Hash mật khẩu mới sử dụng hàm hashPassword đã có trong class
+            String hashedPassword = hashPassword(newPassword);
+            stm.setString(1, hashedPassword);
+            stm.setString(2, username);
+            int rowsAffected = stm.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
     public ArrayList<User> listPaginated(int pageIndex, int pageSize) {
         ArrayList<User> users = new ArrayList<>();
         String sql = "SELECT * FROM [User] ORDER BY username OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";

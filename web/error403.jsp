@@ -6,6 +6,6 @@
 <body>
     <h1>403 - Access Denied</h1>
     <p>${errorMessage}</p>
-    <a href="${pageContext.request.contextPath}/admin/Dashboard.jsp">Go back to Home</a>
+    <a href="${pageContext.request.contextPath}/system/login">Go back to Login Page</a>
 </body>
 </html>
