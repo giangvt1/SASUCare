@@ -80,7 +80,7 @@ public class ProfileController extends HttpServlet {
         request.setAttribute("google", googleAccount);
 
             // Forward request sang file JSP
-        request.getRequestDispatcher("customer/sprofile.jsp").forward(request, response);
+        request.getRequestDispatcher("./customer/profile.jsp").forward(request, response);
     } 
 
     /** 
