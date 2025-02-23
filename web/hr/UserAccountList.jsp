@@ -8,22 +8,25 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>User Account List</title>
-        <%-- ALL CSS and JS includes are now in AdminHeader.jsp --%>
+        <%-- No CSS or JS includes here, they are in AdminHeader.jsp --%>
     </head>
     <body>
         <jsp:include page="../admin/AdminHeader.jsp" />
         <jsp:include page="../admin/AdminLeftSideBar.jsp" />
 
-        <div class="right-side"> <%-- Essential for layout --%>
-            <div class="main-content"> <%-- Main content container --%>
+        <div class="right-side">
+            <div class="main-content">
+                <c:set var="searchValue" value="${param.search == null ? '' : param.search}"/> <%--Set searchValue--%>
+
                 <h2>User Account List</h2>
 
                 <form method="get" action="${pageContext.request.contextPath}/hr/accountlist" class="mb-3">
                     <div class="input-group">
-                        <input type="text" name="search" class="form-control" placeholder="Search..." value="${param.search}">
+                        <input type="text" name="search" class="form-control" placeholder="Search..." value="${searchValue}">
                         <button type="submit" class="btn btn-primary">Search</button>
-                        <a href="?page=${currentPage}&view=basic&search=${param.search}" class="btn btn-secondary">Basic View</a>
-                        <a href="?page=${currentPage}&view=extended&search=${param.search}" class="btn btn-secondary">Extended View</a>
+                        <%-- Improved View Switcher Links --%>
+                        <a href="?page=1&view=basic&search=${param.search}" class="btn btn-secondary">Basic View</a>
+                        <a href="?page=1&view=extended&search=${param.search}" class="btn btn-secondary">Extended View</a>
                     </div>
                 </form>
 
@@ -87,9 +90,9 @@
                                         <td>${user.roleName}</td>
                                     </c:if>
                                     <td>
-                                        <a href="${pageContext.request.contextPath}/hr/edit?username=${user.staffUsername}" class="btn btn-warning btn-sm">Edit</a>
-                                        <a href="${pageContext.request.contextPath}/hr/accountlist?action=delete&username=${user.staffUsername}" 
-                                           class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
+                                        <a href="${pageContext.request.contextPath}/hr/edit?username=${user.staffUsername}&page=${requestScope.currentPage}&view=${param.view}&search=${searchValue}" class="btn btn-warning btn-sm">Edit</a> <%-- Corrected Edit link --%>
+                                        <a href="${pageContext.request.contextPath}/hr/accountlist?action=delete&username=${user.staffUsername}&page=${requestScope.currentPage}&view=${param.view}&search=${searchValue}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a><%-- Corrected Delete link --%>
+
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -98,33 +101,38 @@
                 </div>
 
 
-                <nav aria-label="Page navigation">
-                    <ul class="pagination">
-                        <c:if test="${currentPage > 1}">
+                <%-- Pagination (corrected and improved) --%>
+                <%-- Pagination --%>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+
+                        <c:if test="${requestScope.currentPage > 1}">
                             <li class="page-item">
-                                <a class="page-link" href="?page=${currentPage - 1}&search=${param.search}&view=${param.view}" aria-label="Previous">
+                                <a class="page-link" href="?page=${requestScope.currentPage - 1}&search=${searchValue}&view=${param.view}" aria-label="Previous">
                                     <span aria-hidden="true">«</span>
                                 </a>
                             </li>
                         </c:if>
+                        <c:forEach var="i" begin="1" end="${requestScope.totalPages}">
 
-                        <%-- Pagination numbers --%>
-                        <c:forEach var="i" begin="1" end="${totalPages}">
-                            <li class="page-item ${i == currentPage ? 'active' : ''}">
-                                <a class="page-link" href="?page=${i}&search=${param.search}&view=${param.view}">${i}</a>
+                            <li class="page-item ${i == requestScope.currentPage ? 'active' : ''}">
+                                <a class="page-link" href="?page=${i}&search=${searchValue}&view=${param.view}">${i}</a>
                             </li>
                         </c:forEach>
 
-                        <c:if test="${currentPage < totalPages}">
+                        <c:if test="${requestScope.currentPage < requestScope.totalPages}">
                             <li class="page-item">
-                                <a class="page-link" href="?page=${currentPage + 1}&search=${param.search}&view=${param.view}" aria-label="Next">
+                                <a class="page-link" href="?page=${requestScope.currentPage + 1}&search=${searchValue}&view=${param.view}" aria-label="Next">
                                     <span aria-hidden="true">»</span>
                                 </a>
                             </li>
                         </c:if>
+
                     </ul>
-                </nav> <%-- Close pagination nav --%>
+                </nav>
+
             </div> <%-- Close .main-content --%>
         </div> <%-- Close .right-side --%>
+
     </body>
 </html>
