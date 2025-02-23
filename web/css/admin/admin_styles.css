@@ -11,8 +11,8 @@
     --border-color: #d2d6de;
     --hover-color: #1e282c;
     --font-family: 'Arial', sans-serif;
-    --badge-background-color: #00c0ef;  /* Example badge background color*/
-    --badge-text-color: #ffffff;      /* Text color for badges */
+    --badge-background-color: #00c0ef;
+    --badge-text-color: #ffffff;
 }
 
 body {
@@ -24,7 +24,6 @@ body {
 }
 
 /* =============== Header Styles =============== */
-
 .header {
     position: fixed;
     top: 0;
@@ -34,21 +33,20 @@ body {
     background-color: var(--primary-color);
     color: white;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* Căn đều logo và menu */
     align-items: center;
     padding: 0 20px;
     z-index: 1031;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    justify-content: flex-start;
 }
 
 .logo {
-    max-width: 230px; /* Control logo width */
+    max-width: 230px;
     font-size: 1.8rem;
     font-weight: bold;
     text-decoration: none;
     color: white;
-    margin-right: 0; /* Push to the left */
+    margin-right: 0;
 }
 
 .navbar-right {
@@ -69,18 +67,18 @@ body {
     padding: 3px 7px;
     font-size: 12px;
     border-radius: 4px;
-    margin-right: 5px; /* Space between badges */
+    margin-right: 5px;
 }
-.badge-info{
-    background-color: #17a2b8; /* Bootstrap info color */
+.badge-info {
+    background-color: #17a2b8;
 }
 
 .nav {
-    display: flex; /* Use flexbox */
-    flex-wrap: wrap; /* Allow wrapping */
+    display: flex;
+    flex-wrap: wrap;
 }
 .navbar-nav {
-    margin-left: 0;/*reset boostrap margin*/
+    margin-left: 0;
     gap: 15px;
 }
 
@@ -88,17 +86,16 @@ body {
     color: white;
     text-decoration: none;
     padding: 10px 15px;
-    display: flex; /* Use flex for alignment */
-    align-items: center; /* Vertically align icon and text */
+    display: flex;
+    align-items: center;
 }
 
-.navbar-nav > li > a:hover{
-    background-color: rgba(255,255,255,0.1); /* Light background on hover */
-
+.navbar-nav > li > a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .dropdown-menu {
-    white-space: nowrap; /* Keep dropdown items from wrapping */
+    white-space: nowrap;
     position: absolute;
     top: 100%;
     right: 0;
@@ -109,9 +106,9 @@ body {
     z-index: 1000;
     min-width: 200px;
     padding: 0;
-    margin-top: 5px;  /* Add some space above the dropdown*/
+    margin-top: 5px;
 }
-.dropdown-menu li.dropdown-header{
+.dropdown-menu li.dropdown-header {
     padding: 8px 15px;
 }
 
@@ -122,26 +119,28 @@ body {
     text-decoration: none;
     clear: both;
 }
-.sidebar-toggle {  /* Style for the toggle button */
+
+.sidebar-toggle {
     background-color: transparent;
     border: none;
     color: white;
     font-size: 1.5rem;
     cursor: pointer;
-    margin-right: 15px; /* Add some spacing */
-    z-index: 1032; /* Ensure toggle is above sidebar */
+    margin-right: 15px;
+    z-index: 1032;
     position: relative;
 }
 .sidebar-toggle::before {
-    content: "\276C";  /* Unicode character for right arrow */
+    content: "\276C";  /* Mũi tên phải */
     position: absolute;
-    left: 50%;        /* Center horizontally */
+    left: 50%;
     transform: translateX(-50%);
-    transition: transform 0.3s ease; /* Smooth transition */
+    transition: transform 0.3s ease;
 }
-.sidebar-toggle.active::before { /* Change arrow direction when toggled */
-    content: "\276D"; /* Unicode character for left arrow */
+.sidebar-toggle.active::before {
+    content: "\276D"; /* Mũi tên trái */
 }
+
 .dropdown-menu > li > a:hover {
     background-color: #f5f5f5;
 }
@@ -151,13 +150,12 @@ body {
     background-color: #eee;
 }
 
-/* User Menu Dropdown */
 .user-menu .dropdown-menu {
-    right: 0; /* Align to the right */
-    left: auto; /* Remove left alignment */
+    right: 0;
+    left: auto;
 }
-/* =============== Sidebar Styles =============== */
 
+/* =============== Sidebar Styles =============== */
 .left-side {
     position: fixed;
     left: 0;
@@ -167,19 +165,17 @@ body {
     background-color: var(--secondary-color);
     color: var(--text-color-light);
     overflow-y: auto;
-    z-index: 1030;
     padding-top: 10px;
-    transform: translateX(calc(-1 * var(--sidebar-width))); /* Initially hidden */
+    transform: translateX(calc(-1 * var(--sidebar-width))); /* Ẩn ban đầu */
     visibility: hidden;
     opacity: 0;
-    transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease; /*Smooth transition*/
-    z-index: 1; /*Lower z-index*/
+    transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 1;
 }
-.left-side.sidebar-offcanvas { /* More specific selector */
-    transform: translateX(0); /* Slide in */
+.left-side.sidebar-offcanvas {
+    transform: translateX(0); /* Hiển thị sidebar */
     visibility: visible;
     opacity: 1;
-
 }
 .sidebar {
     padding: 15px;
@@ -197,7 +193,7 @@ body {
     width: 45px;
     height: 45px;
     border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.2);
+    border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 .user-panel .info {
@@ -211,15 +207,15 @@ body {
 }
 
 .user-panel .info a {
-    color: #5cb85c; /* Green online indicator */
+    color: #5cb85c;
     text-decoration: none;
     display: flex;
     align-items: center;
     gap: 5px;
 }
 
-.user-panel .info a i.fa-circle{
-    font-size: 10px;/*set size for circle*/
+.user-panel .info a i.fa-circle {
+    font-size: 10px;
 }
 .sidebar-menu {
     list-style: none;
@@ -251,12 +247,10 @@ body {
     color: white;
 }
 
-
 /* =============== Right Side (Main Content) =============== */
-
 .right-side {
     position: relative;
-    margin-left: 0; /* Initial state with sidebar visible */
+    margin-left: 0; /* Khi sidebar ẩn */
     padding: 20px;
     margin-top: var(--header-height);
     min-height: calc(100vh - var(--header-height));
@@ -265,15 +259,14 @@ body {
 }
 
 .right-side.strech {
-    margin-left: var(--sidebar-width);
-    width: 100%;
+    margin-left: var(--sidebar-width); /* Đẩy nội dung sang phải khi sidebar hiển thị */
+    width: calc(100% - var(--sidebar-width));
 }
 
 /* =============== Dashboard Styles =============== */
-
 .dashboard-content {
     background: whitesmoke;
-    min-height: calc(100vh - 50px); /* Adjust for header height */
+    min-height: calc(100vh - 50px);
     padding: 20px;
 }
 
@@ -283,7 +276,7 @@ body {
     margin-bottom: 20px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
-    border: none; /* Remove default Bootstrap border */
+    border: none;
 }
 
 .card:hover {
@@ -292,14 +285,13 @@ body {
 
 .card h4 {
     font-size: 1.2rem;
-    margin-bottom: 0.5rem; /* Add some space below the heading */
-    color: #333; /* Darker color for headings */
-
+    margin-bottom: 0.5rem;
+    color: #333;
 }
 
 .card p {
-    margin-bottom: 0; /* Remove extra space */
-    font-size: 1rem; /*Font size*/
+    margin-bottom: 0;
+    font-size: 1rem;
 }
 
 /* Chart container */
@@ -325,88 +317,77 @@ body {
     .table-responsive {
         overflow-x: auto;
     }
-    /* Header adjustments for small screens */
     .header {
         flex-wrap: wrap;
-        height: auto; /* Let height adjust to content */
+        height: auto;
     }
     .logo {
-        margin-right: 0;  /* Remove margin on small screens*/
-        margin-bottom: 10px; /* Add space below logo */
+        margin-right: 0;
+        margin-bottom: 10px;
     }
     .navbar {
-        width: 100%; /*Navbar fill full width on smaller screens*/
+        width: 100%;
     }
     .navbar-right {
         flex-direction: column;
         align-items: flex-start;
         width: 100%;
-        margin-left: 0; /* Reset margin */
-
+        margin-left: 0;
     }
     .navbar-nav {
-        gap: 5px; /* Reduce spacing on smaller screens */
+        gap: 5px;
         flex-direction: column;
-        width: 100%; /* Full width */
-
+        width: 100%;
     }
-
     .navbar-nav > li {
-        margin: 0; /*Reset margin*/
-        width: 100%; /* Full width */
+        margin: 0;
+        width: 100%;
     }
-
     .dropdown .dropdown-menu {
-        width: auto; /* Adjust width as needed for small screens*/
-        min-width: 160px; /* Set a minimum width */
+        width: auto;
+        min-width: 160px;
         left: auto;
     }
     .right-side {
         margin-left: 0;
+        width: 100%;
     }
 }
 
-/* FullCalendar-specific styles (adjust as needed if you use a different theme) */
-
+/* FullCalendar-specific styles */
 .main-content {
     margin-top: auto;
     margin-left: auto;
     padding: 20px;
 }
-.alert { /* Style alerts */
-    margin-bottom: 1rem; /* Standard Bootstrap spacing */
+.alert {
+    margin-bottom: 1rem;
 }
 .fc .fc-toolbar.fc-header-toolbar {
-    margin-bottom: 1.5em; /* Spacing below the toolbar */
-    flex-wrap: wrap; /* Allow wrapping of toolbar buttons on small screens*/
+    margin-bottom: 1.5em;
+    flex-wrap: wrap;
 }
-
 .fc-theme-bootstrap5 .fc-toolbar button {
-    /* Ensure Bootstrap 5 button styles apply */
     background-color: var(--primary-color);
     color: white;
     border: none;
-    padding: 0.375rem 0.75rem; /* Bootstrap button padding */
+    padding: 0.375rem 0.75rem;
     font-size: 1rem;
     line-height: 1.5;
     border-radius: 0.25rem;
     transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 .fc-theme-bootstrap5 .fc-toolbar button:hover {
-    background-color: #0056b3; /* Darker shade on hover */
+    background-color: #0056b3;
     color: white;
 }
-.right-side.strech {
-    margin-left: 0; /* Correct value to remove margin*/
-
-}
 .fc-theme-bootstrap5 .fc-toolbar .fc-button-group > * {
-    margin-right: 5px; /* Add some spacing between buttons */
+    margin-right: 5px;
 }
 .fc-prev-button,
 .fc-next-button {
     margin-right: 15px;
 }
-.fc-today-button{
+.fc-today-button {
     margin-left: 15px;
 }
