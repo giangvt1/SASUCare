@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dao;
 
 import dal.DBContext;
@@ -11,10 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.Application;
 import model.DoctorSchedule;
 import model.Shift;
 
@@ -26,123 +20,10 @@ public class DoctorDBContext extends DBContext<Doctor> {
 
     private static final Logger LOGGER = Logger.getLogger(DoctorDBContext.class.getName());
 
-    public List<Application> getApplicationsByDoctorID(String name, Date date, String status, int did, int page, String sort, int size) {
-        List<Application> applications = new ArrayList<>();
-        StringBuilder sqlBuilder = new StringBuilder(
-                "SELECT id, name, date, doctor_id, reason, status, reply FROM Application WHERE doctor_id = ?"
-        );
-
-        if (name != null && !name.isEmpty()) {
-            sqlBuilder.append(" AND name LIKE ?");
-        }
-        if (date != null) {
-            sqlBuilder.append(" AND date = ?");
-        }
-        if (status != null && !status.isEmpty()) {
-            sqlBuilder.append(" AND status LIKE ?");
-        }
-
-        // Thêm điều kiện sắp xếp
-        switch (sort) {
-            case "dateLTH":
-                sqlBuilder.append(" ORDER BY date ASC");
-                break;
-            case "dateHTL":
-                sqlBuilder.append(" ORDER BY date DESC");
-                break;
-            default:
-                sqlBuilder.append(" ORDER BY id");
-                break;
-        }
-
-        // Thêm phân trang
-        sqlBuilder.append(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
-
-        try (PreparedStatement stm = connection.prepareStatement(sqlBuilder.toString())) {
-            int paramIndex = 1;
-            stm.setInt(paramIndex++, did);
-
-            if (name != null && !name.isEmpty()) {
-                stm.setString(paramIndex++, "%" + name + "%");
-            }
-            if (date != null) {
-                stm.setDate(paramIndex++, new java.sql.Date(date.getTime()));
-            }
-            if (status != null && !status.isEmpty()) {
-                stm.setString(paramIndex++, "%" + status + "%");
-            }
-
-            // Xử lý phân trang
-            int offset = (page - 1) * size;
-            stm.setInt(paramIndex++, offset);
-            stm.setInt(paramIndex++, size);
-
-            try (ResultSet rs = stm.executeQuery()) {
-                while (rs.next()) {
-                    Application app = new Application(
-                            rs.getInt("id"),
-                            rs.getInt("doctor_id"),
-                            rs.getString("name"),
-                            rs.getString("reason"),
-                            rs.getDate("date")
-                    );
-                    app.setStatus(rs.getString("status"));
-                    app.setReply(rs.getString("reply"));
-                    applications.add(app);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return applications;
-    }
-
-    public int getApplicationsCountByDoctorID(String name, Date date, String status, int did) {
-        int count = 0;
-        StringBuilder sqlBuilder = new StringBuilder(
-                "SELECT COUNT(*) AS total FROM Application WHERE doctor_id = ?"
-        );
-
-        if (name != null && !name.isEmpty()) {
-            sqlBuilder.append(" AND name LIKE ?");
-        }
-        if (date != null) {
-            sqlBuilder.append(" AND date = ?");
-        }
-        if (status != null && !status.isEmpty()) {
-            sqlBuilder.append(" AND status LIKE ?");
-        }
-
-        try (PreparedStatement stm = connection.prepareStatement(sqlBuilder.toString())) {
-            int paramIndex = 1;
-            stm.setInt(paramIndex++, did);
-
-            if (name != null && !name.isEmpty()) {
-                stm.setString(paramIndex++, "%" + name + "%");
-            }
-            if (date != null) {
-                stm.setDate(paramIndex++, new java.sql.Date(date.getTime()));
-            }
-            if (status != null && !status.isEmpty()) {
-                stm.setString(paramIndex++, "%" + status + "%");
-            }
-
-            try (ResultSet rs = stm.executeQuery()) {
-                if (rs.next()) {
-                    count = rs.getInt("total");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return count;
-    }
-
     @Override
     public Doctor get(String id) {
         return null;
     }
-    
 
     public ArrayList<DoctorSchedule> getDoctorSchedules(int doctorId, Date date) {
         ArrayList<DoctorSchedule> schedules = new ArrayList<>();
@@ -173,40 +54,6 @@ public class DoctorDBContext extends DBContext<Doctor> {
             LOGGER.log(Level.SEVERE, "Error retrieving doctor schedules", ex);
         }
         return schedules;
-    }
-
-    public List<Application> getApplicationsByDoctorID(int did, int page) {
-        List<Application> applications = new ArrayList<>();
-        int pageSize = 10;
-        int offset = (page - 1) * pageSize;
-
-        String sql = "SELECT id, name, date, doctor_id, reason, status, reply "
-                + "FROM Application WHERE doctor_id = ? "
-                + "ORDER BY date DESC "
-                + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-
-        try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            stm.setInt(1, did);
-            stm.setInt(2, offset);
-            stm.setInt(3, pageSize);
-            ResultSet rs = stm.executeQuery();
-
-            while (rs.next()) {
-                Application app = new Application(
-                        rs.getInt("id"),
-                        rs.getInt("doctor_id"),
-                        rs.getString("name"),
-                        rs.getString("reason"),
-                        rs.getDate("date")
-                );
-                app.setStatus(rs.getString("status"));
-                app.setReply(rs.getString("reply"));
-                applications.add(app);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return applications;
     }
 
     public Doctor getDoctorById(int doctorId) {
@@ -294,22 +141,6 @@ public class DoctorDBContext extends DBContext<Doctor> {
         return specialties;
     }
 
-    public boolean createApplicationForDid(Application application) {
-        String sql = "INSERT INTO Application (doctor_id, name, reason, date) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            stm.setInt(1, application.getDid());
-            stm.setString(2, application.getName());
-            stm.setString(3, application.getReason());
-            stm.setDate(4, application.getDate());
-
-            int rowsInserted = stm.executeUpdate();
-            return rowsInserted > 0;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return false;
-    }
-
     public List<Doctor> getDoctorsByFilters(String name, List<String> selectedSpecialties, Date selectedDate) {
         HashMap<Integer, Doctor> doctorMap = new HashMap<>();
 
@@ -364,6 +195,24 @@ public class DoctorDBContext extends DBContext<Doctor> {
         }
 
         return new ArrayList<>(doctorMap.values());
+    }
+
+    public Integer getDoctorIdByStaffId(int staffId) {
+        String sql = "SELECT id FROM Doctor WHERE staff_id = ?";
+        Integer doctorId = null;
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, staffId);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                doctorId = rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return doctorId;
     }
 
     @Override

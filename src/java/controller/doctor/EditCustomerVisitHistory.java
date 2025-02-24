@@ -2,13 +2,13 @@ package controller.doctor;
 
 import controller.systemaccesscontrol.BaseRBACController;
 import dao.CustomerDBContext;
+import dao.DoctorDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import static java.lang.String.format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.logging.Level;
@@ -30,14 +30,16 @@ public class EditCustomerVisitHistory extends BaseRBACController {
     @Override
     protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
         String id = request.getParameter("id");
-        String did = request.getParameter("did");
-        String cId = request.getParameter("cId");
+        int staffId = Integer.parseInt(request.getParameter("sId"));
+        String customerId = request.getParameter("cId");
         String visitDateStr = request.getParameter("visitDate");
         String reasonForVisit = request.getParameter("reasonForVisit");
         String diagnoses = request.getParameter("diagnoses");
         String treatmentPlan = request.getParameter("treatmentPlan");
         String nextAppointmentStr = request.getParameter("nextAppointment");
 
+        DoctorDBContext doctorDB = new DoctorDBContext();
+        int doctorId = doctorDB.getDoctorIdByStaffId(staffId);
         Timestamp visitDate = null;
         Timestamp nextAppointment = null;
 
@@ -57,8 +59,8 @@ public class EditCustomerVisitHistory extends BaseRBACController {
         }
 
         VisitHistory visitHistory = new VisitHistory();
-        visitHistory.setDoctorId(Integer.parseInt(did));
-        visitHistory.setCustomerId(Integer.parseInt(cId));
+        visitHistory.setDoctorId(doctorId);
+        visitHistory.setCustomerId(Integer.parseInt(customerId));
         visitHistory.setVisitDate(visitDate);
         visitHistory.setReasonForVisit(reasonForVisit);
         visitHistory.setDiagnoses(diagnoses);
@@ -80,7 +82,7 @@ public class EditCustomerVisitHistory extends BaseRBACController {
         PrintWriter out = response.getWriter();
         out.println("<script type='text/javascript'>");
         out.println("alert('" + message + error + "');");
-        out.println("window.location.href='ShowCustomerMedicalDetail?cId=" + cId + "';");
+        out.println("window.location.href='ShowCustomerMedicalDetail?cId=" + customerId + "';");
         out.println("</script>");
     }
 }

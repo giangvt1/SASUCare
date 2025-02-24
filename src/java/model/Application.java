@@ -1,30 +1,35 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-import java.sql.*;
+import java.sql.Timestamp;
 
-/**
- *
- * @author TRUNG
- */
 public class Application {
 
-    private int id, Did;
-    private String name, reason, status, reply;
-    private Date date;
+    private int id;
+    private int typeId;
+    private String typeName;
+    private int staffSendId;
+    private int staffProgressId;
+    private String reason;
+    private String status;
+    private String reply;
+    private Timestamp dateSend;
+    private Timestamp dateReply;
 
     public Application() {
     }
 
-    public Application(int id, int Did, String name, String reason, Date date) {
+    public Application(int id, int typeId, String typeName, int staffSendId, int staffProgressId,
+            String reason, String status, String reply, Timestamp dateSend, Timestamp dateReply) {
         this.id = id;
-        this.Did = Did;
-        this.name = name;
+        this.typeId = typeId;
+        this.typeName = typeName;
+        this.staffSendId = staffSendId;
+        this.staffProgressId = staffProgressId;
         this.reason = reason;
-        this.date = date;
+        this.status = status;
+        this.reply = reply;
+        this.dateSend = dateSend;
+        this.dateReply = dateReply;
     }
 
     public int getId() {
@@ -35,20 +40,36 @@ public class Application {
         this.id = id;
     }
 
-    public int getDid() {
-        return Did;
+    public int getTypeId() {
+        return typeId;
     }
 
-    public void setDid(int Did) {
-        this.Did = Did;
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
     }
 
-    public String getName() {
-        return name;
+    public String getTypeName() {
+        return typeName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
+
+    public int getStaffSendId() {
+        return staffSendId;
+    }
+
+    public void setStaffSendId(int staffSendId) {
+        this.staffSendId = staffSendId;
+    }
+
+    public int getStaffProgressId() {
+        return staffProgressId;
+    }
+
+    public void setStaffProgressId(int staffProgressId) {
+        this.staffProgressId = staffProgressId;
     }
 
     public String getReason() {
@@ -57,14 +78,6 @@ public class Application {
 
     public void setReason(String reason) {
         this.reason = reason;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
 
     public String getStatus() {
@@ -83,4 +96,19 @@ public class Application {
         this.reply = reply;
     }
 
+    public Timestamp getDateSend() {
+        return dateSend;
+    }
+
+    public void setDateSend(Timestamp dateSend) {
+        this.dateSend = dateSend;
+    }
+
+    public Timestamp getDateReply() {
+        return dateReply;
+    }
+
+    public void setDateReply(Timestamp dateReply) {
+        this.dateReply = dateReply;
+    }
 }
