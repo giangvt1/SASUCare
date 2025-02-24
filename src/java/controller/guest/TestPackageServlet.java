@@ -24,7 +24,7 @@ import model.Vaccine;
  */
 @WebServlet(name="TestPackageServlet", urlPatterns={"/TestPackage"})
 public class TestPackageServlet extends HttpServlet {
-   
+   private static final int PAGE_SIZE = 10;
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -60,58 +60,68 @@ public class TestPackageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-//        String keyword = request.getParameter("keyword");
-//        String category = request.getParameter("category");
-//        
-//        TestPackageDBContext db = new TestPackageDBContext();
-//        List<String> categories = db.getAllCategories();
-//        if (keyword == null) {
-//            keyword = "";
-//        }
-//
-//        // Fetch the list of vaccine packages from DB
-//        List<Test> Test = db.searchPackages(keyword, category);
-//
-//        // Set the attribute for packages
-//        request.setAttribute("Test", Test);
-//        request.setAttribute("categories", categories);
-//        request.setAttribute("keyword", keyword);
-//
-//        // Forward to JSP for rendering
-//        request.getRequestDispatcher("TestPackages.jsp").forward(request, response);
-
-
-
+        
+        TestPackageDBContext db = new TestPackageDBContext();
            
         String action = request.getParameter("action");
         String idStr = request.getParameter("id");
         String keyword = request.getParameter("keyword");
         String category = request.getParameter("category");
+//        String search = request.getParameter("search");
+        if (keyword != null) {
+            keyword = keyword.trim().replaceAll("\\s+", " ").replace(" ", "%");
+        }
 
-        TestPackageDBContext db = new TestPackageDBContext();
+        // Xử lý view (mặc định là extended)
+        String view = request.getParameter("view");
+        if (view == null || view.trim().isEmpty()) {
+            view = "extended";
+        }
+
+        // Xử lý số trang, mặc định là 1
+        int pageIndex = 1;
+try {
+    String pageParam = request.getParameter("page");
+    if (pageParam != null && !pageParam.trim().isEmpty()) {
+        pageIndex = Integer.parseInt(pageParam);
+    }
+} catch (NumberFormatException ex) {
+    pageIndex = 1;
+}
+
+int totalRecords = db.countTotalPackages(keyword, category);
+int totalPages = (int) Math.ceil((double) totalRecords / PAGE_SIZE);
+if (pageIndex > totalPages) {
+    pageIndex = totalPages;
+}
+
+        
         
         // Lấy danh sách tất cả gói xét nghiệm
-        List<Test> tests = db.searchPackages(keyword != null ? keyword : "", category);
+        List<Test> tests = db.searchPackages(keyword, "Test", pageIndex, PAGE_SIZE);
         List<String> categories = db.getAllCategories();
 
         request.setAttribute("tests", tests);
         request.setAttribute("categories", categories);
         request.setAttribute("keyword", keyword);
         request.setAttribute("selectedCategory", category);
+        request.setAttribute("currentPage", pageIndex);
+request.setAttribute("totalPages", totalPages);
+request.setAttribute("view", view);
 
         // Nếu bấm "Sửa", lấy dữ liệu gói xét nghiệm và đổ vào form
-        if ("edit".equals(action) && idStr != null) {
-            int id = Integer.parseInt(idStr);
-            Test test = db.get(String.valueOf(id));
-            request.setAttribute("editTest", test);
-        } else if ("delete".equals(action) && idStr != null) {
-            int id = Integer.parseInt(idStr);
-            db.delete(new Test(id, "", "", 0, 0, ""));
-            response.sendRedirect("TestPackage"); // Quay lại trang chính
-            return;
-        }
+//        if ("edit".equals(action) && idStr != null) {
+//            int id = Integer.parseInt(idStr);
+//            Test test = db.get(String.valueOf(id));
+//            request.setAttribute("editTest", test);
+//        } else if ("delete".equals(action) && idStr != null) {
+//            int id = Integer.parseInt(idStr);
+//            db.delete(new Test(id, "", "", 0, 0, ""));
+//            response.sendRedirect("TestPackage"); // Quay lại trang chính
+//            return;
+//        }
 
-        request.getRequestDispatcher("TestPackages.jsp").forward(request, response);
+        request.getRequestDispatcher("./guest/GusTest.jsp").forward(request, response);
     } 
 
     /** 

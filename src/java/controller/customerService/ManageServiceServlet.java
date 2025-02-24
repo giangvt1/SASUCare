@@ -2,8 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-
 package controller.customerService;
+
 import model.Package;
 import dao.PackageDBContext;
 import java.io.IOException;
@@ -20,34 +20,39 @@ import java.util.List;
  * @author admin
  */
 public class ManageServiceServlet extends HttpServlet {
-   private static final int PAGE_SIZE = 10;
-    /** 
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+
+    private static final int PAGE_SIZE = 10;
+
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ManageServiceServlet</title>");  
+            out.println("<title>Servlet ManageServiceServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ManageServiceServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet ManageServiceServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
-    } 
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /** 
+    /**
      * Handles the HTTP <code>GET</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -55,7 +60,7 @@ public class ManageServiceServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         PackageDBContext db = new PackageDBContext();
 
         String action = request.getParameter("action");
@@ -84,13 +89,24 @@ public class ManageServiceServlet extends HttpServlet {
             pageIndex = 1;
         }
 
+        int totalRecords = db.countTotalPackages(keyword, category);
+        int totalPages = (int) Math.ceil((double) totalRecords / PAGE_SIZE);
+        if (pageIndex > totalPages) {
+            pageIndex = totalPages;
+        }
         // Lấy danh sách gói khám và danh mục
-        ArrayList<Package> packages = (ArrayList<Package>) db.searchPackages1(keyword, category, pageIndex, PAGE_SIZE);
-        List<String> categories = db.getAllCategories();
+        ArrayList<Package> packages = (ArrayList<Package>) db.searchPackages(keyword, category, pageIndex, PAGE_SIZE);
+        List<String> categories = db.getAllCategories1();
         request.setAttribute("packages", packages);
         request.setAttribute("categories", categories);
         request.setAttribute("keyword", keyword);
         request.setAttribute("selectedCategory", category);
+        request.setAttribute("currentPage", pageIndex);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("view", view);
+
+        System.out.println("Current Page: " + pageIndex);
+        System.out.println("Total Pages: " + totalPages);
 
         if ("edit".equals(action) && idStr != null) {
             int id = Integer.parseInt(idStr);
@@ -104,10 +120,11 @@ public class ManageServiceServlet extends HttpServlet {
         }
 
         request.getRequestDispatcher("SearchPackageForm.jsp").forward(request, response);
-    } 
+    }
 
-    /** 
+    /**
      * Handles the HTTP <code>POST</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -115,7 +132,7 @@ public class ManageServiceServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         PackageDBContext db = new PackageDBContext();
         try {
             int id = request.getParameter("id") != null && !request.getParameter("id").isEmpty()
@@ -125,8 +142,11 @@ public class ManageServiceServlet extends HttpServlet {
             double price = Double.parseDouble(request.getParameter("price"));
             int duration = Integer.parseInt(request.getParameter("duration"));
             String category = request.getParameter("category");
+            int serviceId = Integer.parseInt(request.getParameter("service_id"));
 
-            Package pkg = new Package(id, name, description, price, duration, category);
+            Package pkg = new Package(id, name, description, price, duration, category, serviceId);
+
+//            Package pkg = new Package(id, name, description, price, duration, category);
 
             if (id == 0) {
                 db.insert(pkg); // Thêm mới
@@ -136,13 +156,15 @@ public class ManageServiceServlet extends HttpServlet {
 
             response.sendRedirect("ManageService");
         } catch (Exception e) {
+            e.printStackTrace();
             request.setAttribute("error", "Dữ liệu nhập vào không hợp lệ");
             request.getRequestDispatcher("SearchPackageForm.jsp").forward(request, response);
         }
     }
 
-    /** 
+    /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override
