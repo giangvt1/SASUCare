@@ -358,7 +358,6 @@ public class CustomerDBContext extends DBContext<Customer> {
         return false;
     }
 
-
     public boolean deleteVisitHistory(int visitHistoryId) {
         String sql = "DELETE FROM VisitHistory WHERE id = ?";
 
@@ -584,10 +583,11 @@ public class CustomerDBContext extends DBContext<Customer> {
         try {
             stm = connection.prepareStatement(sql);
             stm.setString(1, username);
-            stm.setString(2, hashPassword(password));
+            stm.setString(2, password);
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
                 customer = new Customer();
+                customer.setId(rs.getInt("id"));
                 customer.setFullname(rs.getString("fullname"));
                 customer.setUsername(rs.getString("username"));
                 customer.setPassword(rs.getString("password")); // Lấy password
@@ -618,7 +618,7 @@ public class CustomerDBContext extends DBContext<Customer> {
                 Logger.getLogger(CustomerDBContext.class.getName()).log(Level.SEVERE, "Error closing resources: {0}", e);
             }
         }
-        return customer; // Trả về null nếu không tìm thấy người dùng
+        return customer;
     }
 
     public List<String> listEmail() {

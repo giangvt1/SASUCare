@@ -278,8 +278,8 @@
                         backgroundColor: "#007BFF"
                     }]
             }
-        }); 
+        });
     </script>
-     
+     <script src="${pageContext.request.contextPath}/js/Director/dashboard.js"></script>
 </body>
 </html>

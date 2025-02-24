@@ -7,47 +7,55 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Appointment;
-import model.system.Staff;
 import model.system.User;
 import java.io.IOException;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.Customer;
 
 public class AppointmentWaitingController extends BaseRBACController {
 
     private static final Logger LOGGER = Logger.getLogger(AppointmentWaitingController.class.getName());
     private final AppointmentDBContext appointmentDB = new AppointmentDBContext();
 
-    @Override
     protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged)
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
-        Customer customer = (Customer) session.getAttribute("currentCustomer");
-        
-    
-        
-        // Get filters from request
+
+        String customerName = request.getParameter("customerName");
         String doctorName = request.getParameter("doctorName");
-        
-        if (doctorName != null) {
-            doctorName = doctorName.trim().replaceAll("\\s+", " ").replace(" ", "%");
-        }
         String status = request.getParameter("status");
-        boolean sortAsc = "asc".equals(request.getParameter("sortOrder"));
-        
-        if (doctorName != null) {
-            doctorName = doctorName.trim().replaceAll("\\s+", " ").replace(" ", "%");
+        boolean sortAsc = "asc".equalsIgnoreCase(request.getParameter("sortOrder"));
+
+        int pageIndex = 1;
+        int pageSize = 10;
+
+        try {
+            if (request.getParameter("page") != null) {
+                pageIndex = Integer.parseInt(request.getParameter("page"));
+            }
+            if (request.getParameter("pageSize") != null) {
+                pageSize = Integer.parseInt(request.getParameter("pageSize"));
+            }
+        } catch (NumberFormatException e) {
+            pageIndex = 1;
         }
 
-        // Fetch filtered appointments
-        List<Appointment> appointments = appointmentDB.getAppointmentsByFilters(
-                1, doctorName, status, sortAsc);
-        
-        // Send data to JSP
+        // Get paginated appointments
+        List<Appointment> appointments = appointmentDB.getAppointmentsByFilters(customerName, doctorName, status, sortAsc, pageIndex, pageSize);
+
+        // Get total count for pagination
+        int totalRecords = appointmentDB.countAppointments(customerName, doctorName, status);
+        int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
+
+        // Send attributes to JSP
         request.setAttribute("appointments", appointments);
+        request.setAttribute("currentPage", pageIndex);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("pageSize", pageSize);
         request.getRequestDispatcher("/appointment/waiting-appointment.jsp").forward(request, response);
     }
 
@@ -59,7 +67,7 @@ public class AppointmentWaitingController extends BaseRBACController {
         String appointmentIdStr = request.getParameter("appointmentId");
 
         // Validate input to prevent errors
-        if (appointmentIdStr == null || action == null) {
+        if (appointmentIdStr == null || action == null || appointmentIdStr.trim().isEmpty()) {
             LOGGER.warning("Invalid request: Missing parameters");
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing required parameters.");
             return;
@@ -77,23 +85,28 @@ public class AppointmentWaitingController extends BaseRBACController {
             }
 
             // Handle appointment approval or rejection
-            if ("approve".equalsIgnoreCase(action)) {
-                appointment.setStatus("Confirmed");
-                LOGGER.info("Appointment Approved: ID = " + appointmentId);
-            } else if ("reject".equalsIgnoreCase(action)) {
-                appointment.setStatus("Rejected");
-                LOGGER.info("Appointment Rejected: ID = " + appointmentId);
-            } else {
-                LOGGER.warning("Invalid action: " + action);
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid action");
-                return;
+            switch (action.toLowerCase()) {
+                case "approve":
+                    appointment.setStatus("Confirmed");
+                    LOGGER.info("Appointment Approved: ID = " + appointmentId);
+                    break;
+                case "reject":
+                    appointment.setStatus("Rejected");
+                    LOGGER.info("Appointment Rejected: ID = " + appointmentId);
+                    break;
+                default:
+                    LOGGER.warning("Invalid action: " + action);
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid action");
+                    return;
             }
+
+            appointment.setUpdateAt(Date.valueOf(LocalDate.now()));
 
             // Update the database
             appointmentDB.update(appointment);
 
             // Redirect to appointment list with success message
-            response.sendRedirect(request.getContextPath() + "/doctor/waiting-appointment?success=true");
+            response.sendRedirect(request.getContextPath() + "/doctor/waiting-appointment");
 
         } catch (NumberFormatException e) {
             LOGGER.log(Level.SEVERE, "Invalid appointment ID format", e);

@@ -46,8 +46,8 @@
                 </li>
                 <li>
                     <a href="${pageContext.request.contextPath}/hr/accountlist">
-                        <i class="fa fa-globe"></i> <span>Account List</span>
-                    </a>
+                       <i class="fa fa-globe"></i> <span>Account List</span>
+                   </a>
                 </li>
 
                 <li>
