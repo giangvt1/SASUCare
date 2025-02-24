@@ -15,16 +15,26 @@
         </group>
         <group name="PRJ301"/>
         <group>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/inter1/SWP391_GROUP6/src/java/dao/CustomerDBContext.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/inter1/SWP391_GROUP6/src/java/controller/doctor/ShowCustomerMedicalDetail.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup/web/admin/AdminHeader.jsp</file>
+            <file>file:/C:/Users/admin/Downloads/backup/src/java/controller/customerService/ManageServiceServlet.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup/web/SearchPackageForm.jsp</file>
+            <file>file:/C:/Users/admin/Downloads/backup/src/java/controller/guest/TestPackageServlet.java</file>
         </group>
         <group>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/inter1/SWP391_GROUP6/src/java/dao/StaffDBContext.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/inter1/SWP391_GROUP6/src/java/controller/doctor/SendApplication.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/inter1/SWP391_GROUP6/src/java/dao/GoogleDBContext.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup/web/admin/AdminHeader.jsp</file>
+            <file>file:/C:/Users/admin/Downloads/backup/src/java/controller/customerService/ManageServiceServlet.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup/web/SearchPackageForm.jsp</file>
+            <file>file:/C:/Users/admin/Downloads/backup/src/java/controller/guest/TestPackageServlet.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup/web/VaccinePackages.jsp</file>
         </group>
         <group>
-            <file>file:/C:/prj/SWP391_GROUP6/src/java/dal/DBContext.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup/src/java/controller/customerService/ManageServiceServlet.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup/src/java/controller/guest/SearchPackageServlet.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup/web/SearchPackageForm.jsp</file>
+            <file>file:/C:/Users/admin/Downloads/backup/src/java/dao/TestPackageDBContext.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup/src/java/controller/guest/TestPackageServlet.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup/web/guest/GusPackage.jsp</file>
+            <file>file:/C:/Users/admin/Downloads/backup/web/guest/GusTest.jsp</file>
         </group>
     </open-files>
 </project-private>

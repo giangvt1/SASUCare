@@ -19,6 +19,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,6 +29,7 @@ import java.util.List;
 @WebServlet(urlPatterns={"/SearchPackage"})
 public class SearchPackageServlet extends HttpServlet {
    private final PackageDBContext db = new PackageDBContext();
+   private static final int PAGE_SIZE = 10;
     
     
     
@@ -68,48 +70,59 @@ public class SearchPackageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
          PackageDBContext db = new PackageDBContext();
-//        String keyword = request.getParameter("keyword");
-//        String category = request.getParameter("category");
-//
-//        PackageDBContext db = new PackageDBContext();
-//        
-//        // Lấy danh sách tất cả danh mục để hiển thị trong filter
-//        List<String> categories = db.getAllCategories();
-//
-//        // Nếu không nhập keyword, mặc định tìm tất cả
-//        if (keyword == null) {
-//            keyword = "";
-//        }
-//
-//        // Lấy danh sách gói khám theo từ khóa và danh mục
-//        List<Package> packages = db.searchPackages(keyword, category);
-//
-//        request.setAttribute("packages", packages);
-//        request.setAttribute("categories", categories);
-//        request.setAttribute("keyword", keyword);
-//        request.setAttribute("selectedCategory", category);
-//        request.getRequestDispatcher("SearchPackageForm1.jsp").forward(request, response);
+
         String action = request.getParameter("action");
         String idStr = request.getParameter("id");
+        String keyword = request.getParameter("keyword");
+        String category = request.getParameter("category");
+//        String search = request.getParameter("search");
+        if (keyword != null) {
+            keyword = keyword.trim().replaceAll("\\s+", " ").replace(" ", "%");
+        }
 
+        // Xử lý view (mặc định là extended)
+        String view = request.getParameter("view");
+        if (view == null || view.trim().isEmpty()) {
+            view = "extended";
+        }
+
+        // Xử lý số trang, mặc định là 1
+        int pageIndex = 1; // Mặc định là trang 1
+try {
+    String pageParam = request.getParameter("page");
+    if (pageParam != null && !pageParam.trim().isEmpty()) {
+        pageIndex = Integer.parseInt(pageParam);
+    }
+} catch (NumberFormatException ex) {
+    pageIndex = 1; // Nếu lỗi thì giữ nguyên trang 1
+}
+
+int totalRecords = db.countTotalPackages(keyword, category);
+int totalPages = (int) Math.ceil((double) totalRecords / PAGE_SIZE);
         // Lấy danh sách gói khám và danh mục
-        List<Package> packages = db.list();
+        ArrayList<Package> packages = (ArrayList<Package>) db.searchPackages(keyword, "Packages", pageIndex, PAGE_SIZE);
         List<String> categories = db.getAllCategories();
         request.setAttribute("packages", packages);
         request.setAttribute("categories", categories);
+        request.setAttribute("keyword", keyword);
+        request.setAttribute("selectedCategory", category);
+        request.setAttribute("currentPage", pageIndex);
+request.setAttribute("totalPages", totalPages);
+request.setAttribute("view", view);
+        
 
-        if ("edit".equals(action) && idStr != null) {
-            int id = Integer.parseInt(idStr);
-            Package pkg = db.get(String.valueOf(id));
-            request.setAttribute("editPackage", pkg);
-        } else if ("delete".equals(action) && idStr != null) {
-            int id = Integer.parseInt(idStr);
-            db.delete(new Package(id, "", "", 0, 0, ""));
-            response.sendRedirect("SearchPackageServlet"); // Quay lại trang chính
-            return;
-        }
+//        if ("edit".equals(action) && idStr != null) {
+//            int id = Integer.parseInt(idStr);
+//            Package pkg = db.get(String.valueOf(id));
+//            request.setAttribute("editPackage", pkg);
+//        } else if ("delete".equals(action) && idStr != null) {
+//            int id = Integer.parseInt(idStr);
+//            db.delete(new Package(id, "", "", 0, 0, ""));
+//            response.sendRedirect("SearchPackageServlet"); // Quay lại trang chính
+//            return;
+//        }
 
-        request.getRequestDispatcher("GusPackage.jsp").forward(request, response);
+        request.getRequestDispatcher("./guest/GusPackage.jsp").forward(request, response);
 
             
     } 
