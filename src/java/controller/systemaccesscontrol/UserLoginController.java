@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -52,7 +53,7 @@ public class UserLoginController extends HttpServlet {
                 roleNames.append(role.getName());
             }
             request.getSession().setAttribute("userRoles", roleNames.toString());
-
+            System.out.println("userRoles: " + roleNames.toString());
             ArrayList<Feature> features = new ArrayList<>();
             for (Role role : roles) {
                 features.addAll(role.getFeatures());
@@ -61,6 +62,7 @@ public class UserLoginController extends HttpServlet {
             request.getRequestDispatcher("../admin/Dashboard.jsp").forward(request, response);
         } else {
             request.setAttribute("errorMessage", "Invalid username or password.");
+            
             request.getRequestDispatcher("../admin/AdminLogin.jsp").forward(request, response);
         }
 

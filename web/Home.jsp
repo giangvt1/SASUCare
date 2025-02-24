@@ -1023,8 +1023,21 @@
             var socket = new WebSocket("ws://localhost:9999/SWP391_GR6/chat");
 
             socket.onopen = function() {
+                if (!localStorage.getItem("userRole")) {
+                    localStorage.setItem("userRole", "guest");  // Đặt mặc định là guest nếu chưa có
+                    
+                }
                 console.log("WebSocket Connected.");
+                
+                 let userRole = localStorage.getItem("userRole");
+
+                // Gửi role sau khi WebSocket đã kết nối
+                socket.send(JSON.stringify({ action: "setRole", role: userRole }));
+                console.log("📤 Sent role:", userRole);
             };
+            
+           
+            
             socket.onmessage = function(event) {
                 let chatBody = document.querySelector(".chat-messages");
                 let receivedMessage = document.createElement("div");
