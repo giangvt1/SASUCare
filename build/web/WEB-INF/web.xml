@@ -93,6 +93,10 @@
         <servlet-class>controller.doctor.UpdateDoctorProfile</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>ResetPasswordController</servlet-name>
+        <servlet-class>controller.HRController.ResetPasswordController</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>ViewApplication</servlet-name>
         <servlet-class>controller.doctor.ViewApplication</servlet-class>
     </servlet>
@@ -119,6 +123,10 @@
     <servlet>
         <servlet-name>AppointmentActionController</servlet-name>
         <servlet-class>controller.appointment.AppointmentActionController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ManageServiceServlet</servlet-name>
+        <servlet-class>controller.customerService.ManageServiceServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
@@ -296,5 +304,14 @@
     <servlet-mapping>
         <servlet-name>AppointmentActionController</servlet-name>
         <url-pattern>/doctor/appointment/action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ManageServiceServlet</servlet-name>
+        <url-pattern>/ManageService</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>ResetPasswordController</servlet-name>
+        <url-pattern>/system/resetpass</url-pattern>
     </servlet-mapping>
 </web-app>

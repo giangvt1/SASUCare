@@ -70,7 +70,7 @@
                                             <input
                                                 name="recover-submit"
                                                 class="btn btn-lg btn-primary btn-block"
-                                                value="Reset Password"
+                                                value="Enter"
                                                 type="submit"
                                             />
                                         </div>

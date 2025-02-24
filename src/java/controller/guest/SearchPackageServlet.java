@@ -25,7 +25,7 @@ import java.util.List;
  *
  * @author admin
  */
-@WebServlet(urlPatterns={"/SearchPackageServlet"})
+@WebServlet(urlPatterns={"/SearchPackage"})
 public class SearchPackageServlet extends HttpServlet {
    private final PackageDBContext db = new PackageDBContext();
     
@@ -109,7 +109,7 @@ public class SearchPackageServlet extends HttpServlet {
             return;
         }
 
-        request.getRequestDispatcher("SearchPackageForm.jsp").forward(request, response);
+        request.getRequestDispatcher("GusPackage.jsp").forward(request, response);
 
             
     } 

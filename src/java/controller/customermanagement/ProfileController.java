@@ -80,7 +80,7 @@ public class ProfileController extends HttpServlet {
         request.setAttribute("google", googleAccount);
 
             // Forward request sang file JSP
-        request.getRequestDispatcher("profile.jsp").forward(request, response);
+        request.getRequestDispatcher("./customer/profile.jsp").forward(request, response);
     } 
 
     /** 
@@ -104,7 +104,6 @@ public class ProfileController extends HttpServlet {
         CustomerDBContext customerDAO = new CustomerDBContext();
 
         String fullName = request.getParameter("name");
-        System.out.println("name: " + fullName);
         String phone = request.getParameter("phone");
         String address = request.getParameter("address");
 

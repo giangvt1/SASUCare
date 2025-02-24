@@ -170,7 +170,7 @@
                                 <img src="https://media.istockphoto.com/id/1211178700/vi/vec-to/medical-shield-line-icon-b%E1%BA%A3o-v%E1%BB%87-s%E1%BB%A9c-kh%E1%BB%8Fe-ph%E1%BA%B3ng-ch%C3%A9o-vect%C6%A1-y-t%E1%BA%BF.jpg?s=170667a&w=0&k=20&c=23k39Blz-vn47AWsf1vydP1CNJYaRkHGYJ5UJgF9ygo=" alt="Gói Khám Sức Khỏe">
                                 <div class="card-content">
                                     <h3>${service.name}</h3>
-                                    <a class="more" href="SearchPackageServlet">More →</a>
+                                    <a class="more" href="SearchPackage">More →</a>
                                 </div>
 
                             </c:when>

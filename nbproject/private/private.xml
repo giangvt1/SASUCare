@@ -14,17 +14,12 @@
             <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/web/accesscontrol/Register.jsp</file>
         </group>
         <group name="PRJ301"/>
+        <group/>
         <group>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/inter1/SWP391_GROUP6/src/java/dao/CustomerDBContext.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/inter1/SWP391_GROUP6/src/java/controller/doctor/ShowCustomerMedicalDetail.java</file>
-        </group>
-        <group>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/inter1/SWP391_GROUP6/src/java/dao/StaffDBContext.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/inter1/SWP391_GROUP6/src/java/controller/doctor/SendApplication.java</file>
-            <file>file:/C:/Users/acer/OneDrive/Desktop/CNki5/SWP/inter1/SWP391_GROUP6/src/java/dao/GoogleDBContext.java</file>
-        </group>
-        <group>
-            <file>file:/C:/prj/SWP391_GROUP6/src/java/dal/DBContext.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/js/admin_scripts.js</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/StaffAccountListController.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/hr/UserAccountList.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/UserDBContext.java</file>
         </group>
     </open-files>
 </project-private>

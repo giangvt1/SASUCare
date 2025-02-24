@@ -140,7 +140,7 @@ public class DoctorDBContext extends DBContext<Doctor> {
 
     @Override
     public Doctor get(String id) {
-        return null;
+       return getDoctorById(Integer.parseInt(id));
     }
     
 
