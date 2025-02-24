@@ -5,16 +5,16 @@
 package controller.doctor;
 
 import controller.systemaccesscontrol.BaseRBACController;
-import dao.DoctorDBContext;
+import dao.ApplicationDBContext;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import model.Application;
+import model.TypeApplication;
 import model.system.User;
 
 /**
@@ -25,24 +25,27 @@ public class ViewApplication extends BaseRBACController {
 
     @Override
     protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
-        String name = request.getParameter("name");
-        String dateStr = request.getParameter("date");
+        String typeName = request.getParameter("name");
+        String dateSendStr = request.getParameter("dateSend");
         String status = request.getParameter("status");
         String pageStr = request.getParameter("page");
         String sortStr = request.getParameter("sort");
         String sizeStr = request.getParameter("size");
         String sort = "default";
         int sizeOfEachTable = 10;
-        java.sql.Date date = null;
-        if (dateStr != null && !dateStr.isEmpty()) {
-            try {
-                date = java.sql.Date.valueOf(dateStr);
-            } catch (IllegalArgumentException e) {
-                date = null;
+        java.sql.Date dateSend = null;
+
+        try {
+            if (dateSendStr != null && !dateSendStr.isEmpty()) {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                java.util.Date parsedDate = format.parse(dateSendStr);
+                dateSend = new java.sql.Date(parsedDate.getTime());
             }
+        } catch (ParseException ex) {
+            System.out.println(ex);
         }
 
-        int did = Integer.parseInt(request.getParameter("did"));
+        int staffId = Integer.parseInt(request.getParameter("staffId"));
         int page = 1;
         if (pageStr != null && !pageStr.isEmpty()) {
             try {
@@ -58,12 +61,14 @@ public class ViewApplication extends BaseRBACController {
         if (sizeStr != null && !sizeStr.isEmpty()) {
             sizeOfEachTable = Integer.parseInt(sizeStr);
         }
-        DoctorDBContext d = new DoctorDBContext();
-        List<Application> applications = d.getApplicationsByDoctorID(name, date, status, did, page, sort, sizeOfEachTable);
+        ApplicationDBContext appDAO = new ApplicationDBContext();
+        List<TypeApplication> typeList = appDAO.getAllTypes();
 
-        int totalApplications = d.getApplicationsCountByDoctorID(name, date, status, did);
+        List<Application> applications = appDAO.getApplicationsByStaffID(typeName, dateSend, status, staffId, page, sort, sizeOfEachTable);
+
+        int totalApplications = appDAO.getApplicationsCountByStaffID(typeName, dateSend, status, staffId);
         int totalPages = (int) Math.ceil((double) totalApplications / sizeOfEachTable);
-
+        request.setAttribute("typeList", typeList);
         request.setAttribute("applications", applications);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);

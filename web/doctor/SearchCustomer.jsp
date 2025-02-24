@@ -6,31 +6,24 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Manage Medical</title>
-        <link href="../css/admin/bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <!-- font Awesome -->
-        <link href="../css/admin/font-awesome.min.css" rel="stylesheet" type="text/css" />
-        <link href="../css/admin/styleAdmin.css" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="../css/doctor/doctor_style.css"/>
     </head>
     <body class="skin-black">
-        <jsp:include page="../admin/AdminHeader.jsp"></jsp:include>
-        <jsp:include page="../admin/AdminLeftSideBar.jsp"></jsp:include>
-            <div class="right-side">
-                <h1 class="text-center text-bold mb-4" style="margin-bottom: 30px">Search customer</h1>
-                <form action="SearchCustomer" method="get" class="sidebar-form" id="searchCustomerForm">
-                    <div class="search">
-                        <div class="search-header">
-                            <span>Full name</span>
-                            <div class="search-input">
-                                <input type="text" name="customerName" placeholder="Search customer name..." value="${param.customerName}" onchange="this.form.submit()"/>
+        <jsp:include page="../admin/AdminHeader.jsp" />
+        <jsp:include page="../admin/AdminLeftSideBar.jsp" />
+        <div class="right-side">
+            <h1 class="text-center text-bold mb-4" style="margin-bottom: 30px">Search customer</h1>
+            <form action="SearchCustomer" method="get" class="searchForm">
+                <div class="filter-container">
+                    <div class="filter-item" style="width: 92%">
+                        <span>Full name</span>
+                        <div class="search-input">
+                            <input type="text" name="customerName" placeholder="Search customer name..." value="${param.customerName}" onchange="this.form.submit()"/>
                         </div>
                     </div>
-                </div>
-
-                <div class="filter-container">
                     <div class="filter-item">
                         <span>Date of birth</span>
-                        <input type="date" name="customerDate" id="datePicker" value="${param.customerDate}" onblur="this.form.submit()" />
+                        <input type="date" name="customerDate" id="customerDate" value="${param.customerDate}" onblur="this.form.submit()" />
                     </div>
 
                     <div class="filter-item">
@@ -62,6 +55,9 @@
                             <option value="100" ${param.size == '100' ? 'selected' : ''}>100</option>
                         </select>
                     </div>
+                </div>
+                <div class="submit-container">
+                    <button type="submit" class="back-btn">Submit</button>
                 </div>
             </form>
             <div class="table-data mt-4">

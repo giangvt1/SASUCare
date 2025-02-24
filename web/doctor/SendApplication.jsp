@@ -1,13 +1,10 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Send Application</title>
-        <link href="../css/admin/bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <!-- font Awesome -->
-        <link href="../css/admin/font-awesome.min.css" rel="stylesheet" type="text/css" />
-        <link href="../css/admin/styleAdmin.css" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="../css/doctor/doctor_style.css"/>
     </head>
     <body class="skin-black">
@@ -15,31 +12,28 @@
         <jsp:include page="../admin/AdminLeftSideBar.jsp" />
         <style>
             .right-side {
-                padding: 20px; 
-                background-color: #fff; 
-                border-radius: 5px; 
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+                padding: 20px;
+                background-color: #fff;
+                border-radius: 5px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             }
-            
+
             textarea.form-control {
                 resize: vertical;
             }
         </style>
         <div class="right-side">
             <h3 class="text-center title">Send Application</h3>
-            <a class="back-btn" href="ViewApplication?did=16">View Application</a>
+            <a class="back-btn" href="ViewApplication?staffId=${sessionScope.staff.id}">View Application</a>
             <form action="SendApplication" method="POST" class="mt-4">
-                <input type="text" hidden id="did" name="did" value="16" required><br>
-                <input type="text" hidden id="hrid" name="hrid" value="34" required><br>
+                <input type="text" hidden id="staffId" name="staffId" value="${sessionScope.staff.id}" required><br>
                 <div class="form-group">
-                    <label for="name">Loại đơn</label>
-                    <select style="width: 15%" class="form-control" id="name" name="name" required>
-                        <option value="">-- Type Application --</option>
-                        <option value="tang luong">Đơn xin tăng lương</option>
-                        <option value="doi lich">Đơn xin đổi lịch làm</option>
-                        <option value="xin nghi">Đơn xin nghỉ</option>
-                        <option value="chuyen cong tac">Đơn xin chuyển đơn vị công tác</option>
-                        <option value="khac">Các loại đơn khác</option>
+                    <label for="typeId">Loại đơn</label>
+                    <select style="width: 15%" class="form-control" name="typeId" id="typeId" required="">
+                        <option value="" ${empty param.typeId ? 'selected' : ''}>Type</option>
+                        <c:forEach var="type" items="${typeList}">
+                            <option value="${type.id}" ${param.id == type.id ? 'selected' : ''}>${type.name}</option>
+                        </c:forEach>
                     </select>
                 </div>
                 <div class="form-group">

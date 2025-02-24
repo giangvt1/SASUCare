@@ -47,6 +47,35 @@ th{
     background-color: #0056b3;
 }
 
+.edit-btn {
+    background-color: #ffd700;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.edit-btn:hover {
+    background-color: #ffc107;
+}
+
+.delete-btn {
+    background-color: #ff4d4d;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.delete-btn:hover {
+    background-color: #e60000;
+}
 .export-btn {
     background-color: #007BFF;
     color: white;
@@ -75,56 +104,51 @@ th{
     justify-content: center;
     font-weight: bold;
 }
-.search {
+
+.searchForm {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 60%;
+    margin:5px auto;
+}
+
+.submit-container {
     display: flex;
     justify-content: center;
-}
-
-.search-header {
-    display: flex;
-    margin-bottom: 20px;
-    flex-direction: column;
-}
-
-.search-header span {
-    font-weight: bold;
-    font-size: 16px;
-    margin-right: 10px;
-}
-
-.search-header input[type="text"] {
-    width: 630px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 5px;
+    margin-top: 5px;
 }
 .filter-container {
     display: flex;
-    justify-content: center;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
+    width: 100%;
+    max-width: 800px;
+    column-gap: 2%;
+    row-gap: 10px;
+    justify-content: center;
 }
 
 .filter-item {
     display: flex;
     flex-direction: column;
+    width: 45%;
 }
 
-.filter-item span {
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
+.filter-item input[type="text"],
 .filter-item input[type="date"],
 .filter-item select {
-    width: 150px;
+    width: 100%;
     height: 40px;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
 
+.filter-item span {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
 .pre-next-Btn {
     display: flex;
     justify-content: center;
@@ -136,7 +160,7 @@ th{
 .page-link-container {
     display: flex;
     align-items: center;
-    gap: 5px; /* Giảm khoảng cách giữa các nút */
+    gap: 5px;
 }
 
 /* Nút phân trang */
@@ -159,7 +183,36 @@ th{
     border-color: #007bff;
 }
 
-/* Các nút Previous và Next không có khoảng cách ngoài margin */
 .page-link-container a {
     margin: 0 5px;
+}
+
+.edit-form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 60%;
+    margin: 5px auto;
+}
+
+.edit-form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.edit-form input[type="text"],
+.edit-form input[type="datetime-local"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+textarea.form-control {
+    resize: vertical;
+}
+.form-control{
+    background-color: white;
 }

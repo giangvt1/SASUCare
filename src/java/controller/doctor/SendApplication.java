@@ -5,6 +5,7 @@
 package controller.doctor;
 
 import controller.systemaccesscontrol.BaseRBACController;
+import dao.ApplicationDBContext;
 import dao.DoctorDBContext;
 import dao.GoogleDBContext;
 import dao.StaffDBContext;
@@ -12,7 +13,9 @@ import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 import model.Application;
+import model.TypeApplication;
 import model.system.User;
 
 /**
@@ -23,40 +26,40 @@ public class SendApplication extends BaseRBACController {
 
     @Override
     protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        ApplicationDBContext appDAO = new ApplicationDBContext();
+        List<TypeApplication> typeList = appDAO.getAllTypes();
+        request.setAttribute("typeList", typeList);
+        request.getRequestDispatcher("SendApplication.jsp").forward(request, response);
     }
 
     @Override
     protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
-        int did = Integer.parseInt(request.getParameter("did"));
-        String name = request.getParameter("name");
+        int staffId = Integer.parseInt(request.getParameter("staffId"));
+        int typeId = Integer.parseInt(request.getParameter("typeId"));
         String reason = request.getParameter("reason");
-        int hrId = Integer.parseInt(request.getParameter("hrid"));
-        java.util.Date utilDate = new java.util.Date();
-
-        java.sql.Date date = new java.sql.Date(utilDate.getTime());
-
         Application a = new Application();
-        a.setDid(did);
-        a.setName(name);
+        a.setStaffSendId(staffId);
+        a.setTypeId(typeId);
         a.setReason(reason);
-        a.setDate(date);
-
-        DoctorDBContext d = new DoctorDBContext();
+        ApplicationDBContext appDAO = new ApplicationDBContext();
         GoogleDBContext g = new GoogleDBContext();
         StaffDBContext s = new StaffDBContext();
-        String gmail = s.getUserGmailByStaffId(hrId);
-        boolean isCreated = d.createApplicationForDid(a);
+        List<TypeApplication> typeList = appDAO.getAllTypes();
+        int staffManagerId = appDAO.getStaffManagerIdByTypeApplicationId(typeId);
+        String gmail = s.getUserGmailByStaffId(staffManagerId);
+        boolean isCreated = appDAO.createApplicationForStaff(a);
 
         if (isCreated) {
             request.setAttribute("message", "Application sent successfully!");
-            String mess = "You have an Application from Doctor have id:" + did;
-            g.send(gmail, "Notification", mess);
+            String title = "Notification";
+            String mess = "You have an Application from Doctor";
+            g.send(gmail, title, mess);
 
         } else {
             request.setAttribute("message", "Failed to send application.");
         }
 
+        request.setAttribute("typeList", typeList);
         request.getRequestDispatcher("SendApplication.jsp").forward(request, response);
     }
 
