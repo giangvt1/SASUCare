@@ -23,13 +23,85 @@
 
         <!-- Libraries Stylesheet -->
         <link href="../lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
-        <link
-            href="../lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css"
-            rel="stylesheet"
-            />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
         <link href="css/login_style.css" rel="stylesheet" type="text/css"/>
         <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        
+        <style>
+          .chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: none;
+          }
+          .chat-header {
+            background: #007bff;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+          }
+          .chat-body {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            display: block;
+          }
+          .chat-footer {
+            padding: 10px;
+            display: flex;
+            gap: 5px;
+          }
+          .message {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+          }
+          .received img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+          }
+          .received p, .sent p {
+            background: #f1f1f1;
+            padding: 5px 10px;
+            border-radius: 10px;
+          }
+          .sent p {
+            background: #007bff;
+            color: white;
+            align-self: flex-end;
+          }
+          .chat-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+          }
+          .message.sent {
+              justify-content: flex-end;
+          }
+        </style>
     </head>
     <body>
         <jsp:include page="Header.jsp"></jsp:include>
@@ -897,6 +969,33 @@
             </div>
         </div>
         <!-- Blog End -->
+        
+        <section>
+            <div id="chat-box" class="chat-container">
+              <div class="chat-header" id="chat-toggle">
+                <h5 class="mb-0">Chat</h5>
+                <button id="toggle-chat" class="btn btn-primary btn-sm">&#x25B2;</button>
+              </div>
+              <div class="chat-body">
+                <div class="chat-messages">
+                  <div class="message received">
+                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp" alt="avatar">
+                    <p>Hi, How are you?</p>
+                  </div>
+                  <div class="message sent">
+                    <p>I'm good. How about you?</p>
+                  </div>
+                </div>
+              </div>
+              <div class="chat-footer">
+                <input type="text" class="form-control" placeholder="Type a message">
+                <button class="btn btn-primary">Send</button>
+              </div>
+            </div>
+            <button id="chat-icon" class="chat-icon">
+              <i class="fas fa-comment"></i>
+            </button>
+          </section>
 
         <jsp:include page="Footer.jsp"></jsp:include>
         <!-- JavaScript Libraries -->
@@ -911,5 +1010,60 @@
 
         <!-- Template Javascript -->
         <script src="js/main.js"></script>
+        <script>
+            document.getElementById("toggle-chat").addEventListener("click", function() {
+              document.getElementById("chat-box").style.display = "none";
+              document.getElementById("chat-icon").style.display = "flex";
+            });
+            document.getElementById("chat-icon").addEventListener("click", function() {
+              document.getElementById("chat-box").style.display = "block";
+              document.getElementById("chat-icon").style.display = "none";
+            });
+            
+            var socket = new WebSocket("ws://localhost:9999/SWP391_GR6/chat");
+
+            socket.onopen = function() {
+                console.log("WebSocket Connected.");
+            };
+            socket.onmessage = function(event) {
+                let chatBody = document.querySelector(".chat-messages");
+                let receivedMessage = document.createElement("div");
+                receivedMessage.classList.add("message", "received");
+                receivedMessage.innerHTML = `
+                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp" alt="avatar">
+                    <p>`+ event.data + `</p>
+                `;
+                
+                chatBody.appendChild(receivedMessage);
+                chatBody.scrollTop = chatBody.scrollHeight;
+            };
+
+            socket.onerror = function(error) {
+                console.log("WebSocket Error: " + error);
+            };
+
+            function sendMessage() {
+                let inputField = document.querySelector(".chat-footer input");
+                let message = inputField.value.trim();
+                if (message !== "") {
+                    let chatBody = document.querySelector(".chat-messages");
+                    let sentMessage = document.createElement("div");
+                    sentMessage.classList.add("message", "sent");
+                    sentMessage.innerHTML = `<p>`+ message + `</p>`;
+                    chatBody.appendChild(sentMessage);
+                    chatBody.scrollTop = chatBody.scrollHeight;
+
+                    socket.send(message); // Gửi tin nhắn qua WebSocket
+                    inputField.value = "";
+                }
+            }
+
+            document.querySelector(".chat-footer button").addEventListener("click", sendMessage);
+            document.querySelector(".chat-footer input").addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                    sendMessage();
+                }
+            });
+          </script>
     </body>
 </html>
