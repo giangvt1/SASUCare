@@ -583,7 +583,7 @@ public class CustomerDBContext extends DBContext<Customer> {
         try {
             stm = connection.prepareStatement(sql);
             stm.setString(1, username);
-            stm.setString(2, password);
+            stm.setString(2, hashPassword(password));
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
                 customer = new Customer();
