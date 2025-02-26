@@ -69,6 +69,7 @@ public class ProfileController extends HttpServlet {
         // Lấy đối tượng customer từ session
         Customer customer = (Customer) session.getAttribute("currentCustomer");
         GoogleAccount googleAccount = (GoogleAccount) session.getAttribute("currentGoogle");
+        String action = request.getParameter("action");
         if (customer == null) {
             // Không tìm thấy thông tin khách hàng trong session
             response.getWriter().println("No customer information found in session.");
@@ -78,6 +79,7 @@ public class ProfileController extends HttpServlet {
             // Đặt đối tượng customer làm attribute để gửi sang JSP
         request.setAttribute("customer", customer);
         request.setAttribute("google", googleAccount);
+        request.setAttribute("action", action);
 
             // Forward request sang file JSP
         request.getRequestDispatcher("./customer/profile.jsp").forward(request, response);

@@ -87,7 +87,7 @@ public class LoginController extends HttpServlet {
             response.setContentType("text/html");
             response.getWriter().println("<script type='text/javascript'>"
                     + "alert('Invalid username or password. Please try again.');"
-                    + "window.location.href='login.jsp';"
+                    + "window.history.back();"
                     + "</script>");
         }
     }

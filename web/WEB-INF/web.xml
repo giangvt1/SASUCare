@@ -116,7 +116,7 @@
         <servlet-name>VisitHistoryExportServlet</servlet-name>
         <servlet-class>controller.doctor.VisitHistoryExportServlet</servlet-class>
     </servlet>
-        <servlet>
+    <servlet>
         <servlet-name>AppointmentWaitingController</servlet-name>
         <servlet-class>controller.appointment.AppointmentWaitingController</servlet-class>
     </servlet>
@@ -127,6 +127,14 @@
     <servlet>
         <servlet-name>ManageServiceServlet</servlet-name>
         <servlet-class>controller.customerService.ManageServiceServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PasswordController</servlet-name>
+        <servlet-class>controller.accesscontrol.PasswordController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UploadServlet</servlet-name>
+        <servlet-class>controller.customermanagement.UploadServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
@@ -309,9 +317,16 @@
         <servlet-name>ManageServiceServlet</servlet-name>
         <url-pattern>/ManageService</url-pattern>
     </servlet-mapping>
-    
     <servlet-mapping>
         <servlet-name>ResetPasswordController</servlet-name>
         <url-pattern>/system/resetpass</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PasswordController</servlet-name>
+        <url-pattern>/changepass</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UploadServlet</servlet-name>
+        <url-pattern>/UploadServlet</url-pattern>
     </servlet-mapping>
 </web-app>

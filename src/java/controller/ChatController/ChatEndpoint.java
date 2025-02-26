@@ -93,29 +93,43 @@ public class ChatEndpoint {
         System.err.println("WebSocket Error: " + throwable.getMessage());
     }
     
-    private void assignChat(Session userSession) {
-    String role = userRoles.getOrDefault(userSession, "guest");
+    private void assignChat(Session session) {
+    String role = userRoles.getOrDefault(session, "guest");
 
-    // Nếu là guest và chưa có cặp
-    if ("guest".equals(role) && !chatPairs.containsKey(userSession)) {
+    if ("guest".equals(role) && !chatPairs.containsKey(session)) {
+        // Tìm HR đang online và chưa có cặp
         for (Session staffSession : clients) {
             if ("HR".equals(userRoles.get(staffSession)) && !chatPairs.containsKey(staffSession) && staffSession.isOpen()) {
-                // Ghép đôi guest với HR
-                chatPairs.put(userSession, staffSession);
-                chatPairs.put(staffSession, userSession);
+                // Ghép guest với HR
+                chatPairs.put(session, staffSession);
+                chatPairs.put(staffSession, session);
 
                 // Gửi thông báo
-                sendMessageToUser(userSession, "✅ Bạn đã được kết nối với một HR.");
+                sendMessageToUser(session, "✅ Bạn đã được kết nối với một HR.");
                 sendMessageToUser(staffSession, "📢 Một khách hàng đã được gán cho bạn.");
-
-                return; // Thoát khỏi vòng lặp khi đã ghép thành công
+                return;
             }
         }
+        // Nếu không tìm thấy HR nào, thông báo cho guest
+        sendMessageToUser(session, "⏳ Không có HR nào sẵn sàng. Vui lòng đợi...");
+    } else if ("HR".equals(role) && !chatPairs.containsKey(session)) {
+        // Khi HR online, kiểm tra xem có guest nào đang chờ không
+        for (Session guestSession : clients) {
+            if ("guest".equals(userRoles.get(guestSession)) && !chatPairs.containsKey(guestSession) && guestSession.isOpen()) {
+                // Ghép HR với guest
+                chatPairs.put(guestSession, session);
+                chatPairs.put(session, guestSession);
 
-        // Nếu không tìm thấy HR nào rảnh
-        sendMessageToUser(userSession, "⏳ Không có HR nào sẵn sàng. Vui lòng đợi...");
+                // Gửi thông báo
+                sendMessageToUser(guestSession, "✅ Bạn đã được kết nối với một HR.");
+                sendMessageToUser(session, "📢 Một khách hàng đã được gán cho bạn.");
+                return;
+            }
+        }
+        // Nếu không có guest nào đang chờ, HR không cần thông báo gì thêm
     }
 }
+
 
     
     private void sendMessageToUser(Session session, String message) {
