@@ -58,69 +58,78 @@ public class ManageServiceServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        PackageDBContext db = new PackageDBContext();
+   @Override
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    PackageDBContext db = new PackageDBContext();
 
-        String action = request.getParameter("action");
-        String idStr = request.getParameter("id");
-        String keyword = request.getParameter("keyword");
-        String category = request.getParameter("category");
-//        String search = request.getParameter("search");
-        if (keyword != null) {
-            keyword = keyword.trim().replaceAll("\\s+", " ").replace(" ", "%");
-        }
+    String action = request.getParameter("action");
+    String idStr = request.getParameter("id");
+    String keyword = request.getParameter("keyword");
+    String category = request.getParameter("category");
 
-        // Xử lý view (mặc định là extended)
-        String view = request.getParameter("view");
+    if (keyword != null) {
+        keyword = keyword.trim().replaceAll("\\s+", " ").replace(" ", "%");
+    }
+    String view = request.getParameter("view");
         if (view == null || view.trim().isEmpty()) {
             view = "extended";
         }
 
-        // Xử lý số trang, mặc định là 1
-        int pageIndex = 1;
+    // Xử lý số trang, mặc định là 1
+    int pageIndex = 1;
+    try {
+        String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.trim().isEmpty()) {
+            pageIndex = Integer.parseInt(pageParam);
+        }
+    } catch (NumberFormatException ex) {
+        pageIndex = 1;
+    }
+
+    
+
+    // Lấy danh sách gói khám và danh mục
+    List<Package> packages = db.searchPackages(keyword, category, pageIndex, PAGE_SIZE);
+    List<String> categories = db.getAllCategories1();
+    int totalRecords = db.countTotalPackages(keyword, category);
+    int totalPages = (int) Math.ceil((double) totalRecords / PAGE_SIZE);
+    if (totalPages == 0) {
+        totalPages = 1; // Tránh lỗi chia cho 0
+    }
+    if (pageIndex > totalPages) {
+        pageIndex = totalPages;
+    }
+    request.setAttribute("packages", packages);
+    request.setAttribute("categories", categories);
+    request.setAttribute("keyword", keyword);
+    request.setAttribute("selectedCategory", category);
+    request.setAttribute("currentPage", pageIndex);
+    request.setAttribute("totalPages", totalPages);
+    request.setAttribute("view", view);
+
+    if ("edit".equals(action) && idStr != null) {
         try {
-            String pageParam = request.getParameter("page");
-            if (pageParam != null && !pageParam.trim().isEmpty()) {
-                pageIndex = Integer.parseInt(pageParam);
-            }
-        } catch (NumberFormatException ex) {
-            pageIndex = 1;
-        }
-
-        int totalRecords = db.countTotalPackages(keyword, category);
-        int totalPages = (int) Math.ceil((double) totalRecords / PAGE_SIZE);
-        if (pageIndex > totalPages) {
-            pageIndex = totalPages;
-        }
-        // Lấy danh sách gói khám và danh mục
-        ArrayList<Package> packages = (ArrayList<Package>) db.searchPackages(keyword, category, pageIndex, PAGE_SIZE);
-        List<String> categories = db.getAllCategories1();
-        request.setAttribute("packages", packages);
-        request.setAttribute("categories", categories);
-        request.setAttribute("keyword", keyword);
-        request.setAttribute("selectedCategory", category);
-        request.setAttribute("currentPage", pageIndex);
-        request.setAttribute("totalPages", totalPages);
-        request.setAttribute("view", view);
-
-        System.out.println("Current Page: " + pageIndex);
-        System.out.println("Total Pages: " + totalPages);
-
-        if ("edit".equals(action) && idStr != null) {
             int id = Integer.parseInt(idStr);
             Package pkg = db.get(String.valueOf(id));
             request.setAttribute("editPackage", pkg);
-        } else if ("delete".equals(action) && idStr != null) {
+        } catch (NumberFormatException e) {
+            request.setAttribute("error", "ID không hợp lệ");
+        }
+    } else if ("delete".equals(action) && idStr != null) {
+        try {
             int id = Integer.parseInt(idStr);
             db.delete(new Package(id, "", "", 0, 0, ""));
-            response.sendRedirect("ManageService"); // Quay lại trang chính
+            response.sendRedirect("ManageService");
             return;
+        } catch (NumberFormatException e) {
+            request.setAttribute("error", "ID không hợp lệ");
         }
-
-        request.getRequestDispatcher("SearchPackageForm.jsp").forward(request, response);
     }
+
+    request.getRequestDispatcher("SearchPackageForm.jsp").forward(request, response);
+}
+
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -130,37 +139,53 @@ public class ManageServiceServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        PackageDBContext db = new PackageDBContext();
-        try {
-            int id = request.getParameter("id") != null && !request.getParameter("id").isEmpty()
-                    ? Integer.parseInt(request.getParameter("id")) : 0;
-            String name = request.getParameter("name");
-            String description = request.getParameter("description");
-            double price = Double.parseDouble(request.getParameter("price"));
-            int duration = Integer.parseInt(request.getParameter("duration"));
-            String category = request.getParameter("category");
-            int serviceId = Integer.parseInt(request.getParameter("service_id"));
+  @Override
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    PackageDBContext db = new PackageDBContext();
+    try {
+        int id = 0, duration = 0, serviceId = 0;
+        double price = 0.0;
 
-            Package pkg = new Package(id, name, description, price, duration, category, serviceId);
-
-//            Package pkg = new Package(id, name, description, price, duration, category);
-
-            if (id == 0) {
-                db.insert(pkg); // Thêm mới
-            } else {
-                db.update(pkg); // Cập nhật
-            }
-
-            response.sendRedirect("ManageService");
-        } catch (Exception e) {
-            e.printStackTrace();
-            request.setAttribute("error", "Dữ liệu nhập vào không hợp lệ");
-            request.getRequestDispatcher("SearchPackageForm.jsp").forward(request, response);
+        if (request.getParameter("id") != null && !request.getParameter("id").isEmpty()) {
+            id = Integer.parseInt(request.getParameter("id"));
         }
+        String name = request.getParameter("name");
+        String description = request.getParameter("description");
+        String category = request.getParameter("category");
+
+        try {
+            price = Double.parseDouble(request.getParameter("price"));
+            duration = Integer.parseInt(request.getParameter("duration"));
+            serviceId = Integer.parseInt(request.getParameter("service_id"));
+        } catch (NumberFormatException e) {
+            request.setAttribute("error", "Dữ liệu không hợp lệ: " + e.getMessage());
+            request.getRequestDispatcher("SearchPackageForm.jsp").forward(request, response);
+            return;
+        }
+
+        if (name == null || name.trim().isEmpty() ) {
+            request.setAttribute("error", "Vui lòng điền đầy đủ thông tin.");
+            request.getRequestDispatcher("SearchPackageForm.jsp").forward(request, response);
+            return;
+        }
+
+        Package pkg = new Package(id, name, description, price, duration, category, serviceId);
+
+        if (id == 0) {
+            db.insert(pkg);
+        } else {
+            db.update(pkg);
+        }
+
+        response.sendRedirect("ManageService");
+    } catch (Exception e) {
+        e.printStackTrace();
+        request.setAttribute("error", "Lỗi xử lý dữ liệu: " + e.getMessage());
+        request.getRequestDispatcher("SearchPackageForm.jsp").forward(request, response);
     }
+}
+
 
     /**
      * Returns a short description of the servlet.

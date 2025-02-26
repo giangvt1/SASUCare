@@ -102,6 +102,7 @@
                 <!-- Lấy danh sách URL được phép từ session -->
                 <c:set var="allowedUrls" value="${sessionScope.allowedUrls}" />
 
+<<<<<<< Updated upstream
                 <!-- Sidebar menu -->
                 <ul class="sidebar-menu">
                     <!-- Dashboard luôn hiển thị -->
@@ -134,6 +135,38 @@
                             </a>
                         </li>
                     </c:if>
+=======
+        <!-- Sidebar menu -->
+        <ul class="sidebar-menu">
+            <li class="active">
+                <a href="${pageContext.request.contextPath}/admin/Dashboard.jsp">
+                    <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+                </a>
+            </li>
+            <c:if test="${sessionScope.allowedUrls != null && sessionScope.allowedUrls.contains('/hr/create')}">
+                <li>
+                    <a href="${pageContext.request.contextPath}/hr/create">
+                        <i class="fa fa-user-plus"></i> <span>Create Account</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/hr/accountlist">
+                        <i class="fa fa-globe"></i> <span>Account List</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="${pageContext.request.contextPath}/hr/calendarmanage">
+                        <i class="fa fa-table"></i> <span>Doctor Calendar</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../ManageService">
+                        <i class="fa fa-table"></i> <span>Add ServicePackage</span>
+                    </a>
+                </li>
+            </c:if>
+>>>>>>> Stashed changes
 
                     <!-- Nếu user có vai trò Doctor -->
                     <c:if test="${allowedUrls != null and (allowedUrls.contains('/doctor/SendApplication.jsp') or allowedUrls.contains('/doctor/ManageMedical.jsp'))}">
