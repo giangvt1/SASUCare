@@ -111,7 +111,7 @@ public class VaccinePackageDBContext extends DBContext<Vaccine>{
     }
     
     
-    public List<Vaccine> searchPackages(String keyword, String category) {
+    public List<Vaccine> searchPackages1(String keyword, String category) {
         List<Vaccine> Vaccine = new ArrayList<>();
         String sql = "SELECT * FROM VaccinePackages WHERE name LIKE ?";
 
@@ -143,19 +143,86 @@ public class VaccinePackageDBContext extends DBContext<Vaccine>{
         return Vaccine;
     }
     
-    public List<String> getAllCategories() {
-        List<String> categories = new ArrayList<>();
-        String sql = "SELECT DISTINCT category FROM VaccinePackages";
-        try (PreparedStatement ps = connection.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                categories.add(rs.getString("category"));
-            }
-        } catch (SQLException ex) {
-            LOGGER.log(java.util.logging.Level.SEVERE, "Database connection error", ex);
-        }
-        return categories;
+    public List<Vaccine> searchPackages(String keyword, String category, int pageIndex, int pageSize) {
+    List<Vaccine> Vaccine = new ArrayList<>();
+    String sql = "SELECT * FROM ServicePackage WHERE name LIKE ?";
+
+    if (category != null && !category.equals("all")) {
+        sql += " AND category = ?";
     }
+
+    sql += " ORDER BY id ASC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setString(1, "%" + (keyword != null ? keyword.trim() : "") + "%");
+
+        int paramIndex = 2;
+        if (category != null && !category.equals("all")) {
+            ps.setString(paramIndex++, category);
+        }
+        ps.setInt(paramIndex++, (pageIndex - 1) * pageSize);
+        ps.setInt(paramIndex, pageSize);
+
+        
+
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            Vaccine.add(new Vaccine(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getString("description"),
+                    rs.getDouble("price"),
+                    rs.getInt("duration_minutes"),
+                    rs.getString("category")
+            ));
+        }
+    } catch (SQLException ex) {
+        LOGGER.log(java.util.logging.Level.SEVERE, "Database connection error", ex);
+    }
+    return Vaccine;
+}
+    
+    public int countTotalPackages(String keyword, String category) {
+    String sql = "SELECT COUNT(*) FROM ServicePackage WHERE name LIKE ?";
+    if (category != null && !category.equals("all")) {
+        sql += " AND category = ?";
+    }
+
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setString(1, "%" + (keyword != null ? keyword.trim() : "") + "%");
+
+        if (category != null && !category.equals("all")) {
+            ps.setString(2, category);
+        }
+
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1);
+        }
+    } catch (SQLException ex) {
+        LOGGER.log(java.util.logging.Level.SEVERE, "Database connection error", ex);
+    }
+    return 0;
+}
+    
+    
+    
+    public List<String> getAllCategories() {
+    List<String> categories = new ArrayList<>();
+    String sql = "SELECT DISTINCT category FROM ServicePackage WHERE category = ?";
+    
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setString(1, "Vaccine");  // Chỉ lấy các category có giá trị là "Test"
+        
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            categories.add(rs.getString("category"));
+        }
+    } catch (SQLException ex) {
+        LOGGER.log(java.util.logging.Level.SEVERE, "Database connection error", ex);
+    }
+    return categories;
+}
 
 
     
