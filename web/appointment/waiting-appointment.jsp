@@ -143,7 +143,7 @@
         <jsp:include page="../admin/AdminHeader.jsp" />
         <jsp:include page="../admin/AdminLeftSideBar.jsp" />
 
-        <div class="appointments-container">
+        <div class="appointments-container right-side">
             <h2>Pending Appointments</h2>
 
             Filter Section 

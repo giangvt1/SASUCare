@@ -41,5 +41,17 @@
             <file>file:/C:/Users/admin/Downloads/backup/web/guest/GusPackage.jsp</file>
             <file>file:/C:/Users/admin/Downloads/backup/web/guest/GusTest.jsp</file>
         </group>
+        <group name="ThisForTest">
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/AppointmentDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/Doctor.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentManagementController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/appointment/waiting-appointment.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentDoctorListController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/Customer.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/doctor/appointment.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/Appointment.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/DoctorSchedule.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/WEB-INF/web.xml</file>
+        </group>
     </open-files>
 </project-private>

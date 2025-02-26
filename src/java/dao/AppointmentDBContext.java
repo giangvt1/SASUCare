@@ -17,6 +17,175 @@ public class AppointmentDBContext extends DBContext<Appointment> {
 
     private static final Logger LOGGER = Logger.getLogger(AppointmentDBContext.class.getName());
 
+    public List<Appointment> getAppointmentsByDateAndDoctor(Date date, int doctorId) {
+        List<Appointment> appointments = new ArrayList<>();
+        String sql = """
+        SELECT a.id AS appointment_id, a.status, ds.schedule_date, 
+               s.time_start, s.time_end, d.id AS doctor_id, Staff.fullname AS doctor_name,
+               c.id AS customer_id, c.fullname AS customer_name, c.phone_number
+        FROM Appointment a
+        JOIN Doctor d ON a.doctor_id = d.id
+        JOIN Staff ON d.staff_id = Staff.id
+        JOIN Doctor_Schedule ds ON a.DocSchedule_id = ds.id
+        JOIN Shift s ON ds.shift_id = s.id
+        JOIN Customer c ON a.customer_id = c.id
+        WHERE a.doctor_id = ? AND ds.schedule_date = ?
+    """;
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, doctorId);
+            stmt.setDate(2, date);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Appointment appointment = new Appointment();
+                appointment.setId(rs.getInt("appointment_id"));
+                appointment.setStatus(rs.getString("status"));
+
+                // Set Doctor
+                Doctor doctor = new Doctor();
+                doctor.setId(rs.getInt("doctor_id"));
+                doctor.setName(rs.getString("doctor_name"));
+                appointment.setDoctor(doctor);
+
+                // Set Customer
+                Customer customer = new Customer();
+                customer.setId(rs.getInt("customer_id"));
+                customer.setFullname(rs.getString("customer_name"));
+                customer.setPhone_number(rs.getString("phone_number"));
+                appointment.setCustomer(customer);
+
+                // Set Doctor Schedule
+                DoctorSchedule doctorSchedule = new DoctorSchedule();
+                doctorSchedule.setScheduleDate(rs.getDate("schedule_date"));
+
+                // Set Shift
+                Shift shift = new Shift();
+                shift.setTimeStart(rs.getTime("time_start"));
+                shift.setTimeEnd(rs.getTime("time_end"));
+                doctorSchedule.setShift(shift);
+
+                appointment.setDoctorSchedule(doctorSchedule);
+                appointments.add(appointment);
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error retrieving appointments by date and doctor", ex);
+        }
+        return appointments;
+    }
+
+    public List<Appointment> getAppointmentsByStatusAndDoctor(String status, int doctorId) {
+        List<Appointment> appointments = new ArrayList<>();
+        String sql = """
+        SELECT a.id AS appointment_id, a.status, ds.schedule_date, 
+               s.time_start, s.time_end, d.id AS doctor_id, Staff.fullname AS doctor_name,
+               c.id AS customer_id, c.fullname AS customer_name, c.phone_number
+        FROM Appointment a
+        JOIN Doctor d ON a.doctor_id = d.id
+        JOIN Staff ON d.staff_id = Staff.id
+        JOIN Doctor_Schedule ds ON a.DocSchedule_id = ds.id
+        JOIN Shift s ON ds.shift_id = s.id
+        JOIN Customer c ON a.customer_id = c.id
+        WHERE a.doctor_id = ? AND a.status = ?
+    """;
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, doctorId); // Bác sĩ ID
+            stmt.setString(2, status); // Trạng thái cuộc hẹn
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Appointment appointment = new Appointment();
+                appointment.setId(rs.getInt("appointment_id"));
+                appointment.setStatus(rs.getString("status"));
+
+                // Set Doctor
+                Doctor doctor = new Doctor();
+                doctor.setId(rs.getInt("doctor_id"));
+                doctor.setName(rs.getString("doctor_name"));
+                appointment.setDoctor(doctor);
+
+                // Set Customer
+                Customer customer = new Customer();
+                customer.setId(rs.getInt("customer_id"));
+                customer.setFullname(rs.getString("customer_name"));
+                customer.setPhone_number(rs.getString("phone_number"));
+                appointment.setCustomer(customer);
+
+                // Set Doctor Schedule
+                DoctorSchedule doctorSchedule = new DoctorSchedule();
+                doctorSchedule.setScheduleDate(rs.getDate("schedule_date"));
+
+                // Set Shift
+                Shift shift = new Shift();
+                shift.setTimeStart(rs.getTime("time_start"));
+                shift.setTimeEnd(rs.getTime("time_end"));
+                doctorSchedule.setShift(shift);
+
+                appointment.setDoctorSchedule(doctorSchedule);
+                appointments.add(appointment);
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error retrieving appointments by status and doctor", ex);
+        }
+        return appointments;
+    }
+
+    public List<Appointment> getUpcomingAppointmentsByDoctor(Date currentDate, int doctorId) {
+        List<Appointment> appointments = new ArrayList<>();
+        String sql = """
+        SELECT a.id AS appointment_id, a.status, ds.schedule_date, 
+               s.time_start, s.time_end, d.id AS doctor_id, Staff.fullname AS doctor_name,
+               c.id AS customer_id, c.fullname AS customer_name, c.phone_number
+        FROM Appointment a
+        JOIN Doctor d ON a.doctor_id = d.id
+        JOIN Staff ON d.staff_id = Staff.id
+        JOIN Doctor_Schedule ds ON a.DocSchedule_id = ds.id
+        JOIN Shift s ON ds.shift_id = s.id
+        JOIN Customer c ON a.customer_id = c.id
+        WHERE a.doctor_id = ? AND ds.schedule_date > ? 
+        ORDER BY ds.schedule_date ASC
+    """;
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, doctorId); // Bác sĩ ID
+            stmt.setDate(2, currentDate); // Ngày hiện tại
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Appointment appointment = new Appointment();
+                appointment.setId(rs.getInt("appointment_id"));
+                appointment.setStatus(rs.getString("status"));
+
+                // Set Doctor
+                Doctor doctor = new Doctor();
+                doctor.setId(rs.getInt("doctor_id"));
+                doctor.setName(rs.getString("doctor_name"));
+                appointment.setDoctor(doctor);
+
+                // Set Customer
+                Customer customer = new Customer();
+                customer.setId(rs.getInt("customer_id"));
+                customer.setFullname(rs.getString("customer_name"));
+                customer.setPhone_number(rs.getString("phone_number"));
+                appointment.setCustomer(customer);
+
+                // Set Doctor Schedule
+                DoctorSchedule doctorSchedule = new DoctorSchedule();
+                doctorSchedule.setScheduleDate(rs.getDate("schedule_date"));
+
+                // Set Shift
+                Shift shift = new Shift();
+                shift.setTimeStart(rs.getTime("time_start"));
+                shift.setTimeEnd(rs.getTime("time_end"));
+                doctorSchedule.setShift(shift);
+
+                appointment.setDoctorSchedule(doctorSchedule);
+                appointments.add(appointment);
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error retrieving upcoming appointments by doctor", ex);
+        }
+        return appointments;
+    }
+
     public int countAppointments(String customerName, String doctorName, String status) {
         String sql = """
         SELECT COUNT(*) FROM Appointment a
@@ -26,7 +195,7 @@ public class AppointmentDBContext extends DBContext<Appointment> {
         WHERE 1=1
     """;
 
-        ArrayList<Object> paramValues = new ArrayList<>();
+        List<Object> paramValues = new ArrayList<>();
 
         if (customerName != null && !customerName.trim().isEmpty()) {
             sql += " AND c.fullname LIKE ?";
@@ -44,14 +213,14 @@ public class AppointmentDBContext extends DBContext<Appointment> {
         }
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            int index = 1;
-            for (Object value : paramValues) {
-                stmt.setObject(index++, value);
+            for (int i = 0; i < paramValues.size(); i++) {
+                stmt.setObject(i + 1, paramValues.get(i));
             }
 
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
             }
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Error counting appointments", ex);
@@ -59,7 +228,7 @@ public class AppointmentDBContext extends DBContext<Appointment> {
         return 0;
     }
 
-    public List<Appointment> getAppointmentsByFilters(String customerName, String doctorName, String status, boolean sortAsc) {
+    public List<Appointment> getAppointmentsByFilters(int customerID, String doctorName, String status, boolean sortAsc) {
         List<Appointment> appointments = new ArrayList<>();
 
         String sql = """
@@ -85,9 +254,9 @@ public class AppointmentDBContext extends DBContext<Appointment> {
         ArrayList<Object> paramValues = new ArrayList<>();
 
         // Dynamically add conditions
-        if (customerName != null && !customerName.trim().isEmpty()) {
-            sql += " AND c.fullname LIKE ?";
-            paramValues.add("%" + customerName.trim().replaceAll("\\s+", "%") + "%");
+        if (customerID > 0) {
+            sql += " AND c.id LIKE ?";
+            paramValues.add("%" + customerID + "%");
         }
 
         if (doctorName != null && !doctorName.trim().isEmpty()) {
@@ -170,14 +339,14 @@ public class AppointmentDBContext extends DBContext<Appointment> {
         List<Object> paramValues = new ArrayList<>();
 
         // Filtering conditions
-        if (customerName != null && !customerName.trim().isEmpty()) {
-            sql += " AND c.fullname LIKE ?";
-            paramValues.add("%" + customerName.trim().replaceAll("\\s+", "%") + "%");
-        }
-
         if (doctorName != null && !doctorName.trim().isEmpty()) {
             sql += " AND Staff.fullname LIKE ?";
             paramValues.add("%" + doctorName.trim().replaceAll("\\s+", "%") + "%");
+        }
+
+        if (customerName != null && !customerName.trim().isEmpty()) {
+            sql += " AND c.fullname LIKE ?";
+            paramValues.add("%" + customerName.trim().replaceAll("\\s+", "%") + "%");
         }
 
         if (status != null && !status.trim().isEmpty()) {
