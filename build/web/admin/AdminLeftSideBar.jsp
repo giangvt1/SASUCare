@@ -29,8 +29,7 @@
                 </p>
                 <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
-        </div>
-
+        </div>           
         <!-- Sidebar menu -->
         <ul class="sidebar-menu">
             <li class="active">
@@ -46,13 +45,18 @@
                 </li>
                 <li>
                     <a href="${pageContext.request.contextPath}/hr/accountlist">
-                       <i class="fa fa-globe"></i> <span>Account List</span>
-                   </a>
+                        <i class="fa fa-globe"></i> <span>Account List</span>
+                    </a>
                 </li>
-
                 <li>
                     <a href="${pageContext.request.contextPath}/hr/calendarmanage">
                         <i class="fa fa-table"></i> <span>Doctor Calendar</span>
+                    </a>
+                </li>
+            </c:if>
+                <li>
+                    <a href="../ManageService">
+                        <i class="fa fa-table"></i> <span>Add ServicePackage</span>
                     </a>
                 </li>
             </c:if>
