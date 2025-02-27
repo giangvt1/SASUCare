@@ -99,6 +99,7 @@
                     </div>
                 </div>
 
+<<<<<<< Updated upstream
                 <!-- Lấy danh sách URL được phép từ session -->
                 <c:set var="allowedUrls" value="${sessionScope.allowedUrls}" />
 
@@ -136,6 +137,37 @@
                         </li>
                     </c:if>
 =======
+=======
+<aside class="left-side sidebar-offcanvas">
+    <section class="sidebar">
+        <!-- User panel -->
+        <div class="user-panel">
+            <div class="image">
+                <c:choose>
+                    <c:when test="${not empty sessionScope.staff and not empty sessionScope.staff.img}">
+                        <img src="${pageContext.request.contextPath}/${sessionScope.staff.img}" class="img-circle" alt="User Image" />
+                    </c:when>
+                    <c:otherwise>
+                        <img src="${pageContext.request.contextPath}/img/default-profile.jpg" class="img-circle" alt="User Image" />
+                    </c:otherwise>
+                </c:choose>
+            </div>
+            <div class="info">
+                <p>
+                    Hello,
+                    <c:choose>
+                        <c:when test="${not empty sessionScope.account}">
+                            ${sessionScope.account.displayname}
+                        </c:when>
+                        <c:otherwise>
+                            Guest
+                        </c:otherwise>
+                    </c:choose>
+                </p>
+                <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+            </div>
+        </div>
+>>>>>>> Stashed changes
         <!-- Sidebar menu -->
         <ul class="sidebar-menu">
             <li class="active">
