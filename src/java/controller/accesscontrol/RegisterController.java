@@ -71,11 +71,20 @@ public class RegisterController extends HttpServlet {
         
         CustomerDBContext customerDAO = new CustomerDBContext();
         
+        if(customerDAO.findByUsername(username)) {
+            response.setContentType("text/html");
+            response.getWriter().println("<script type='text/javascript'>");
+            response.getWriter().println("alert('Username has been registed!');");
+            response.getWriter().println("window.history.back()");
+            response.getWriter().println("</script>");
+            return;
+        }
+        
         if(customerDAO.isCustomerExisted(email)) {
             response.setContentType("text/html");
             response.getWriter().println("<script type='text/javascript'>");
             response.getWriter().println("alert('Email has been registed!');");
-            response.getWriter().println("window.location.href = 'Home.jsp';");
+            response.getWriter().println("window.history.back()");
             response.getWriter().println("</script>");
             return;
         }

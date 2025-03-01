@@ -31,18 +31,14 @@ public class ChatEndpoint {
         HttpSession httpSession = (HttpSession) config.getUserProperties().get("httpSession");
         if (httpSession != null) {
             String role = (String) httpSession.getAttribute("userRoles");  
-            System.out.println("🔹 HttpSession found, role: " + role);
 
             if ("HR".equals(role)) {
                 userRoles.put(session, "HR");
-                System.out.println("🔵 HR Staff connected: " + session.getId());
             } else {
                 userRoles.put(session, "guest");
-                System.out.println("🟢 Guest connected: " + session.getId());
             }
         } else {
             userRoles.put(session, "guest");
-            System.out.println("⚪ No HttpSession found, set as guest: " + session.getId());
         }
         clients.add(session);
         assignChat(session);
@@ -56,7 +52,6 @@ public class ChatEndpoint {
             if ("setRole".equals(json.optString("action"))) {
                 String role = json.optString("role");
                 userRoles.put(senderSession, role);
-                System.out.println("🆔 Cập nhật role: " + role + " cho session " + senderSession.getId());
                 return;
             }
         } 
@@ -84,7 +79,6 @@ public class ChatEndpoint {
             assignChat(pairedSession); // Tìm HR khác cho user này
         }
 
-        System.out.println("🔴 Session closed: " + session.getId());
     }
 
 

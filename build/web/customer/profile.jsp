@@ -104,9 +104,7 @@
             <!-- Account page navigation -->
             <div class="nav-borders d-flex">
                 <button class="btn btn-primary" id="btnProfile">Profile</button>
-                <c:if test="${empty sessionScope.currentGoogle}">
-                    <button class="btn btn-secondary" id="btnSecurity">Security</button>
-                </c:if>
+                <button class="btn btn-secondary" id="btnSecurity">Security</button>
                 
             </div>
             <hr class="mt-0 mb-4">
@@ -167,31 +165,62 @@
             </div>
             
             <div id="security-section">
-                <c:if test="${empty sessionScope.currentGoogle}">
+                
                     <!-- Security Content -->
                     <div class="card mb-4">
-                        <div class="card-header">Change Password</div>
                         <div class="card-body">
-                            <form action="${pageContext.request.contextPath}/changepass" method="POST">
-                                <div class="mb-3">
-                                    <label class="small mb-1" for="oldPassword">Current Password</label>
-                                    <input class="form-control" id="oldPassword" name="oldPassword" type="password" placeholder="Enter current password">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="small mb-1" for="newPassword">New Password</label>
-                                    <input class="form-control" id="newPassword" name="newPassword" type="password" placeholder="Enter new password">
-                                    <div id="password-error" class="text-danger"></div>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="small mb-1" for="confirmPassword">Confirm Password</label>
-                                    <input class="form-control" id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm new password">
-                                    <div id="confirm-password-error" class="text-danger"></div>
-                                </div>
-                                <button class="btn btn-primary" type="submit">Save</button>
-                            </form>
+                            <c:choose>
+                                <c:when test="${not hasPassword}">
+                                    <!-- Form Set Password -->
+                                    <div class="card mb-4">
+                                        <div class="card-body">
+                                            <form action="${pageContext.request.contextPath}/changepass?action=set-pass" method="POST">
+                                                <div class="mb-3">
+                                                    <label class="small mb-1" for="newPassword">Set Password</label>
+                                                    <input class="form-control" id="newPassword" name="newPassword" type="password" placeholder="Enter new password">
+                                                    <div id="password-error" class="text-danger"></div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="small mb-1" for="confirmPassword">Confirm Password</label>
+                                                    <input class="form-control" id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm new password">
+                                                    <div id="confirm-password-error" class="text-danger"></div>
+                                                </div>
+                                                <button class="btn btn-primary" type="submit">Set Password</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </c:when>
+
+                                <c:otherwise>
+                                    <!-- Form Update Password -->
+                                    <div class="card mb-4">
+                                        <div class="card-header">Change Password</div>
+                                        <div class="card-body">
+                                            <form action="${pageContext.request.contextPath}/changepass?action=update-pass" method="POST">
+                                                <div class="mb-3">
+                                                    <label class="small mb-1" for="oldPassword">Current Password</label>
+                                                    <input class="form-control" id="oldPassword" name="oldPassword" type="password" placeholder="Enter current password">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="small mb-1" for="newPassword">New Password</label>
+                                                    <input class="form-control" id="newPassword" name="newPassword" type="password" placeholder="Enter new password">
+                                                    <div id="password-error" class="text-danger"></div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="small mb-1" for="confirmPassword">Confirm Password</label>
+                                                    <input class="form-control" id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm new password">
+                                                    <div id="confirm-password-error" class="text-danger"></div>
+                                                </div>
+                                                <button class="btn btn-primary" type="submit">Save</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
+
                         </div>
                     </div>
-                </c:if>
+                
             </div>
         </div>
 
@@ -200,33 +229,33 @@
 
         <script>
             document.addEventListener("DOMContentLoaded", function () {
-    const profileForm = document.getElementById("profileForm");
-    const passwordForm = document.getElementById("passwordForm");
-    
-    const btnProfile = document.getElementById("btnProfile");
-    const btnSecurity = document.getElementById("btnSecurity");
-    const profileSection = document.getElementById("profile-section");
-    const securitySection = document.getElementById("security-section");
+            const profileForm = document.getElementById("profileForm");
+            const passwordForm = document.getElementById("passwordForm");
 
-    document.getElementById("name").oninput = validateProfileForm;
-    document.getElementById("phone").oninput = validateProfileForm;
-    document.getElementById("address").oninput = validateProfileForm;
+            const btnProfile = document.getElementById("btnProfile");
+            const btnSecurity = document.getElementById("btnSecurity");
+            const profileSection = document.getElementById("profile-section");
+            const securitySection = document.getElementById("security-section");
 
-    if (profileForm) {
-        profileForm.addEventListener("submit", function (e) {
-            if (!validateProfileForm()) {
-                e.preventDefault();
+            document.getElementById("name").oninput = validateProfileForm;
+            document.getElementById("phone").oninput = validateProfileForm;
+            document.getElementById("address").oninput = validateProfileForm;
+
+            if (profileForm) {
+                profileForm.addEventListener("submit", function (e) {
+                    if (!validateProfileForm()) {
+                        e.preventDefault();
+                    }
+                });
             }
-        });
-    }
 
-    if (passwordForm) {
-        passwordForm.addEventListener("submit", function (e) {
-            if (!validatePasswordForm()) {
-                e.preventDefault();
+            if (passwordForm) {
+                passwordForm.addEventListener("submit", function (e) {
+                    if (!validatePasswordForm()) {
+                        e.preventDefault();
+                    }
+                });
             }
-        });
-    }
 
     function validateProfileForm() {
         let isValid = true;

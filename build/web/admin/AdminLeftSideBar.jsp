@@ -29,7 +29,7 @@
                 </p>
                 <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
-        </div>           
+        </div>
         <!-- Sidebar menu -->
         <ul class="sidebar-menu">
             <li class="active">
@@ -53,7 +53,6 @@
                         <i class="fa fa-table"></i> <span>Doctor Calendar</span>
                     </a>
                 </li>
-            </c:if>
                 <li>
                     <a href="../ManageService">
                         <i class="fa fa-table"></i> <span>Add ServicePackage</span>
