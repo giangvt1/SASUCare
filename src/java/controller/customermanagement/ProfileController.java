@@ -66,9 +66,12 @@ public class ProfileController extends HttpServlet {
             return; // Dừng xử lý tiếp
         }
         
+        CustomerDBContext customerDAO = new CustomerDBContext();
         // Lấy đối tượng customer từ session
         Customer customer = (Customer) session.getAttribute("currentCustomer");
         GoogleAccount googleAccount = (GoogleAccount) session.getAttribute("currentGoogle");
+        String action = request.getParameter("action");
+        boolean hasPassword = customerDAO.hasPassword(customer);
         if (customer == null) {
             // Không tìm thấy thông tin khách hàng trong session
             response.getWriter().println("No customer information found in session.");
@@ -78,6 +81,8 @@ public class ProfileController extends HttpServlet {
             // Đặt đối tượng customer làm attribute để gửi sang JSP
         request.setAttribute("customer", customer);
         request.setAttribute("google", googleAccount);
+        request.setAttribute("action", action);
+        request.setAttribute("hasPassword", hasPassword);
 
             // Forward request sang file JSP
         request.getRequestDispatcher("./customer/profile.jsp").forward(request, response);

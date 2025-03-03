@@ -40,7 +40,7 @@
                         class="form-control"
                         type="text"
                         name="username"
-                        placeholder="Enter username"
+                        placeholder="Enter username or email"
                         required
                     />
                 </td>

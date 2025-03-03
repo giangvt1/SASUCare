@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.DoctorSchedule;
 import model.Shift;
+import model.system.Staff;
 
 /**
  *
@@ -22,7 +23,7 @@ public class DoctorDBContext extends DBContext<Doctor> {
 
     @Override
     public Doctor get(String id) {
-       return getDoctorById(Integer.parseInt(id));
+        return getDoctorById(Integer.parseInt(id));
     }
 
     public ArrayList<DoctorSchedule> getDoctorSchedules(int doctorId, Date date) {

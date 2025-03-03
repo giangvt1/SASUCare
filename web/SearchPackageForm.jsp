@@ -93,8 +93,7 @@ th {
         </style>
     </head>
     <body>
-        <jsp:include page="/admin/AdminHeader.jsp" />
-    <jsp:include page="/admin/AdminLeftSideBar.jsp" />
+        
         
             <div class="container-fluid main-content">
                 <h2>Tìm kiếm gói khám</h2>
@@ -172,7 +171,7 @@ th {
                         <ul class="pagination">
                             <c:if test="${currentPage > 1}">
                                 <li class="page-item">
-                                    <a class="page-link" href="?page=${currentPage - 1}&keyword=${param.keyword}&category=${param.category}" aria-label="Previous">
+                                    <a class="page-link" href="?page=${currentPage - 1}&keyword=${param.keyword}&category=${param.category}&view=${view}" aria-label="Previous">
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 </li>
@@ -184,7 +183,7 @@ th {
                             </c:forEach>
                             <c:if test="${currentPage < totalPages}">
                                 <li class="page-item">
-                                    <a class="page-link" href="?page=${currentPage + 1}&keyword=${param.keyword}&category=${param.category}" aria-label="Next">
+                                    <a class="page-link" href="?page=${currentPage + 1}&keyword=${param.keyword}&category=${param.category}&view=${view}" aria-label="Next">
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>
                                 </li>

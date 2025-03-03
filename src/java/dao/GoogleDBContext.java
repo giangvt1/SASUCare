@@ -55,6 +55,20 @@ public class GoogleDBContext extends DBContext<GoogleAccount> {
         }
         return null;
     }
+    
+    public boolean isGoogleExist(String email) {
+        String sql = "SELECT * FROM [Google_Authen] WHERE email = ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setString(1, email);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error finding user by email: {0}", ex.getMessage());
+        }
+        return false;
+    }
 
     @Override
     public void insert(GoogleAccount model) {

@@ -37,7 +37,7 @@ public class AppointmentListController extends HttpServlet {
 
         // Fetch filtered appointments
         List<Appointment> appointments = appointmentDB.getAppointmentsByFilters(
-                customer.getFullname(), doctorName, status, sortAsc);
+                customer.getId(), doctorName, status, sortAsc);
 
         // Send data to JSP
         request.setAttribute("appointments", appointments);
