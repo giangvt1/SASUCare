@@ -153,12 +153,8 @@
         <servlet-class>controller.HRController.ChatBoxController</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>DoctorScheduleServlet</servlet-name>
-        <servlet-class>controller.appointment.DoctorScheduleServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>HRApptManagementController</servlet-name>
-        <servlet-class>controller.HRController.HRApptManagementController</servlet-class>
+        <servlet-name>DoctorCalendarController</servlet-name>
+        <servlet-class>controller.doctor.DoctorCalendarController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
@@ -370,11 +366,7 @@
         <url-pattern>/chat-box</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>DoctorScheduleServlet</servlet-name>
-        <url-pattern>/doctor/api/appointments</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>HRApptManagementController</servlet-name>
-        <url-pattern>/hr/appointments</url-pattern>
+        <servlet-name>DoctorCalendarController</servlet-name>
+        <url-pattern>/doctor/calendar</url-pattern>
     </servlet-mapping>
 </web-app>

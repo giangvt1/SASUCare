@@ -76,6 +76,11 @@
                         <i class="fa fa-medkit"></i> <span>Appoinment</span>
                     </a>
                 </li>
+                <li>
+                    <a href="../doctor/calendar">
+                        <i class="fa fa-medkit"></i> <span>Calendar</span>
+                    </a>
+                </li>
             </c:if>
             <%-- Add other menu items as needed --%>
         </ul>

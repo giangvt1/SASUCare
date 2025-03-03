@@ -17,204 +17,6 @@ public class AppointmentDBContext extends DBContext<Appointment> {
 
     private static final Logger LOGGER = Logger.getLogger(AppointmentDBContext.class.getName());
 
-    public List<Appointment> getFilteredAppointments(String name, Date date, String status, int pageIndex, int pageSize) {
-        List<Appointment> appointments = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("""
-        SELECT a.id, a.status, ds.schedule_date, s.time_start, s.time_end,
-               d.id AS doctor_id, st.fullname AS doctor_name,
-               c.id AS customer_id, c.fullname AS customer_name, c.phone_number
-        FROM Appointment a
-        JOIN Doctor d ON a.doctor_id = d.id
-        JOIN Staff st ON d.staff_id = st.id
-        JOIN Doctor_Schedule ds ON a.DocSchedule_id = ds.id
-        JOIN Shift s ON ds.shift_id = s.id
-        JOIN Customer c ON a.customer_id = c.id
-        WHERE 1=1
-    """);
-
-        List<Object> params = new ArrayList<>();
-
-        // Adding filters
-        if (name != null && !name.trim().isEmpty()) {
-            sql.append(" AND c.fullname LIKE ?");
-            params.add("%" + name + "%");
-        }
-
-        if (date != null) {
-            sql.append(" AND ds.schedule_date = ?");
-            params.add(date);
-        }
-
-        if (status != null && !status.trim().isEmpty()) {
-            sql.append(" AND a.status = ?");
-            params.add(status);
-        }
-
-        // Add ORDER BY clause (required for SQL Server pagination)
-        sql.append(" ORDER BY a.id");
-
-        // Add pagination (SQL Server syntax)
-        int offset = (pageIndex - 1) * pageSize;
-        sql.append(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
-        params.add(offset);   // Offset comes first
-        params.add(pageSize); // Number of rows to fetch
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql.toString())) {
-            // Set parameters dynamically
-            for (int i = 0; i < params.size(); i++) {
-                stmt.setObject(i + 1, params.get(i));
-            }
-
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                Appointment appointment = new Appointment();
-                appointment.setId(rs.getInt("id"));
-                appointment.setStatus(rs.getString("status"));
-
-                // Set Doctor
-                Doctor doctor = new Doctor();
-                doctor.setId(rs.getInt("doctor_id"));
-                doctor.setName(rs.getString("doctor_name"));
-                appointment.setDoctor(doctor);
-
-                // Set Customer
-                Customer customer = new Customer();
-                customer.setId(rs.getInt("customer_id"));
-                customer.setFullname(rs.getString("customer_name"));
-                customer.setPhone_number(rs.getString("phone_number"));
-                appointment.setCustomer(customer);
-
-                // Set Doctor Schedule
-                DoctorSchedule doctorSchedule = new DoctorSchedule();
-                doctorSchedule.setScheduleDate(rs.getDate("schedule_date"));
-
-                // Set Shift
-                Shift shift = new Shift();
-                shift.setTimeStart(rs.getTime("time_start"));
-                shift.setTimeEnd(rs.getTime("time_end"));
-                doctorSchedule.setShift(shift);
-
-                appointment.setDoctorSchedule(doctorSchedule);
-                appointments.add(appointment);
-            }
-        } catch (SQLException ex) {
-            // Proper logging would be more beneficial than printStackTrace
-            ex.printStackTrace();
-        }
-        return appointments;
-    }
-
-    public List<Appointment> getFilteredAppointmentsTotals() {
-        List<Appointment> appointments = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("""
-            SELECT a.id, a.status, ds.schedule_date, s.time_start, s.time_end,
-                   d.id AS doctor_id, st.fullname AS doctor_name,
-                   c.id AS customer_id, c.fullname AS customer_name, c.phone_number
-            FROM Appointment a
-            JOIN Doctor d ON a.doctor_id = d.id
-            JOIN Staff st ON d.staff_id = st.id
-            JOIN Doctor_Schedule ds ON a.DocSchedule_id = ds.id
-            JOIN Shift s ON ds.shift_id = s.id
-            JOIN Customer c ON a.customer_id = c.id
-            WHERE 1=1
-            """);
-
-        List<Object> params = new ArrayList<>();
-
-       
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql.toString())) {
-            // Set parameters dynamically
-            for (int i = 0; i < params.size(); i++) {
-                stmt.setObject(i + 1, params.get(i));
-            }
-
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                Appointment appointment = new Appointment();
-                appointment.setId(rs.getInt("id"));
-                appointment.setStatus(rs.getString("status"));
-
-                // Set Doctor
-                Doctor doctor = new Doctor();
-                doctor.setId(rs.getInt("doctor_id"));
-                doctor.setName(rs.getString("doctor_name"));
-                appointment.setDoctor(doctor);
-
-                // Set Customer
-                Customer customer = new Customer();
-                customer.setId(rs.getInt("customer_id"));
-                customer.setFullname(rs.getString("customer_name"));
-                customer.setPhone_number(rs.getString("phone_number"));
-                appointment.setCustomer(customer);
-
-                // Set Doctor Schedule
-                DoctorSchedule doctorSchedule = new DoctorSchedule();
-                doctorSchedule.setScheduleDate(rs.getDate("schedule_date"));
-
-                // Set Shift
-                Shift shift = new Shift();
-                shift.setTimeStart(rs.getTime("time_start"));
-                shift.setTimeEnd(rs.getTime("time_end"));
-                doctorSchedule.setShift(shift);
-
-                appointment.setDoctorSchedule(doctorSchedule);
-                appointments.add(appointment);
-            }
-        } catch (SQLException ex) {
-            // Using a proper logger would be more beneficial than just printStackTrace
-            ex.printStackTrace();
-        }
-        return appointments;
-    }
-
-// Count filtered appointments
-    public int getFilteredAppointmentsCount(String name, Date date, String status) {
-        StringBuilder sql = new StringBuilder("""
-            SELECT COUNT(*) 
-            FROM Appointment a
-            JOIN Doctor d ON a.doctor_id = d.id
-            JOIN Staff st ON d.staff_id = st.id
-            JOIN Doctor_Schedule ds ON a.DocSchedule_id = ds.id
-            JOIN Shift s ON ds.shift_id = s.id
-            JOIN Customer c ON a.customer_id = c.id
-            WHERE 1=1
-            """);
-
-        List<Object> params = new ArrayList<>();
-
-        // Adding filters
-        if (name != null && !name.trim().isEmpty()) {
-            sql.append(" AND c.fullname LIKE ?");
-            params.add("%" + name + "%");
-        }
-
-        if (date != null) {
-            sql.append(" AND ds.schedule_date = ?");
-            params.add(date);
-        }
-
-        if (status != null && !status.trim().isEmpty()) {
-            sql.append(" AND a.status = ?");
-            params.add(status);
-        }
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql.toString())) {
-            // Set parameters dynamically
-            for (int i = 0; i < params.size(); i++) {
-                stmt.setObject(i + 1, params.get(i));
-            }
-
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1); // Return total count of filtered appointments
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return 0; // Return 0 if no appointments found
-    }
-
     public List<Appointment> getAppointmentsByDateAndDoctor(Date date, int doctorId) {
         List<Appointment> appointments = new ArrayList<>();
         String sql = """
@@ -430,19 +232,22 @@ public class AppointmentDBContext extends DBContext<Appointment> {
         List<Appointment> appointments = new ArrayList<>();
 
         String sql = """
-SELECT 
-                    a.id AS appointment_id, 
-                    a.status, 
-                    ds.schedule_date, 
-                    s.time_start, s.time_end,
-                    d.id AS doctor_id, Staff.fullname AS doctor_name, 
-                    c.id AS customer_id, c.fullname AS customer_name, c.phone_number
-                FROM Appointment a
-                JOIN Doctor d ON a.doctor_id = d.id
-                JOIN Staff ON d.staff_id = Staff.id
-                JOIN Doctor_Schedule ds ON a.DocSchedule_id = ds.id
-                JOIN Shift s ON ds.shift_id = s.id
-                JOIN Customer c ON a.customer_id = c.id
+        SELECT 
+            a.id AS appointment_id, 
+            a.status, 
+            ds.schedule_date, 
+            s.time_start, s.time_end,
+            d.id AS doctor_id, Staff.fullname AS doctor_name, 
+            dep.id AS department_id, dep.name AS department_name, 
+            c.id AS customer_id, c.fullname AS customer_name, c.phone_number
+        FROM Appointment a
+        JOIN Doctor d ON a.doctor_id = d.id
+        JOIN Staff ON d.staff_id = Staff.id
+        JOIN Doctor_Schedule ds ON a.DocSchedule_id = ds.id
+        JOIN Shift s ON ds.shift_id = s.id
+        JOIN Doctor_Department dd ON d.id = dd.doctor_id
+        JOIN Department dep ON dd.department_id = dep.id
+        JOIN Customer c ON a.customer_id = c.id
         WHERE 1=1
     """;
 
@@ -637,6 +442,7 @@ SELECT
             stm.setInt(2, model.getDoctor().getId());
             stm.setInt(3, model.getDoctorSchedule().getId()); // Update DocSchedule_id (Time Slot)
             stm.setString(4, model.getStatus());
+//            stm.setDate(5, model.getUpdateAt());
             stm.setInt(5, model.getId()); // WHERE condition
 
             int affectedRows = stm.executeUpdate();

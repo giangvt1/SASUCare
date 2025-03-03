@@ -2,7 +2,6 @@ package controller.appointment;
 
 import controller.systemaccesscontrol.BaseRBACController;
 import dao.AppointmentDBContext;
-import dao.DepartmentDBContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,7 +14,7 @@ import model.system.User;
  * Handles appointment approval and cancellation by doctors.
  */
 public class AppointmentActionController extends HttpServlet {
-    
+
     private final AppointmentDBContext appointmentDB = new AppointmentDBContext();
 
     @Override
@@ -41,10 +40,10 @@ public class AppointmentActionController extends HttpServlet {
 
         // Process action (approve or cancel)
         switch (action.toLowerCase()) {
-            case "confirmed":
+            case "approve":
                 appointment.setStatus("Confirmed");
                 break;
-            case "canceled":
+            case "cancel":
                 appointment.setStatus("Canceled");
                 break;
             default:
@@ -56,7 +55,7 @@ public class AppointmentActionController extends HttpServlet {
         appointmentDB.update(appointment);
 
         // Redirect back to the doctor's appointment list
-        response.sendRedirect(request.getContextPath() + "/hr/appointments");
+        response.sendRedirect(request.getContextPath() + "/doctor/waiting-appointment");
     }
 
 

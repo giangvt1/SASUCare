@@ -2,7 +2,6 @@ package controller.appointment;
 
 import java.io.IOException;
 import dao.AppointmentDBContext;
-import dao.DoctorScheduleDBContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,12 +9,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import model.Appointment;
 import java.sql.*;
 import java.time.LocalDate;
-import model.DoctorSchedule;
 
 public class AppointmentCancelController extends HttpServlet {
 
     private final AppointmentDBContext appointmentDB = new AppointmentDBContext();
-    private final DoctorScheduleDBContext dsDB = new DoctorScheduleDBContext();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -27,9 +24,7 @@ public class AppointmentCancelController extends HttpServlet {
         
         if (appointment != null) {
             appointment.setStatus("Canceled");
-            appointment.setUpdateAt(Date.valueOf(LocalDate.now())); 
-            
-            
+            appointment.setUpdateAt(Date.valueOf(LocalDate.now())); // FIXED
             
             // Update the appointment status in the database
             appointmentDB.update(appointment);
