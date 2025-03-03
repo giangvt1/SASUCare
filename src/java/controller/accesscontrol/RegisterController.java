@@ -1,6 +1,7 @@
 package controller.accesscontrol;
 
 import dao.CustomerDBContext;
+import dao.GoogleDBContext;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -10,7 +11,6 @@ import jakarta.servlet.http.HttpSession;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import model.Customer;
 
 public class RegisterController extends HttpServlet {
@@ -18,8 +18,44 @@ public class RegisterController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Hiển thị form đăng ký
-        request.getRequestDispatcher("/accesscontrol/register.jsp").forward(request, response);
+        String action = request.getParameter("action");
+        
+        if (action.equals("create-user")) {
+            Customer customer = new Customer();
+            CustomerDBContext customerDAO = new CustomerDBContext();
+            HttpSession mySession = request.getSession();
+            
+            String username = (String) mySession.getAttribute("username");
+            String password = (String) mySession.getAttribute("password");
+            String fullname = (String) mySession.getAttribute("fullname");
+            String email = (String) mySession.getAttribute("email");
+            String phoneNumber = (String) mySession.getAttribute("phoneNumber");
+            
+            String hashedPassword = hashPassword(password);
+            
+            customer.setUsername(username);
+            customer.setPassword(hashedPassword);
+            customer.setFullname(fullname);
+            customer.setGmail(email);
+            customer.setPhone_number(phoneNumber);
+            customerDAO.insert(customer);
+            
+            request.getSession().setAttribute("currentCustomer", customer);
+
+            response.setContentType("text/html");
+            response.getWriter().println("<script type='text/javascript'>");
+            response.getWriter().println("alert('Registration successful!');");
+            response.getWriter().println("window.location.href = 'Home.jsp';");
+            response.getWriter().println("</script>");
+
+            
+        } else {
+            response.setContentType("text/html");
+            response.getWriter().println("<script type='text/javascript'>");
+            response.getWriter().println("alert('Registration unsuccessful!');");
+            response.getWriter().println("window.location.href = 'Home.jsp';");
+            response.getWriter().println("</script>");
+        }
     }
 
     @Override
@@ -29,72 +65,49 @@ public class RegisterController extends HttpServlet {
         // Lấy dữ liệu từ form
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        String confirmPassword = request.getParameter("confirm-password");
         String fullname = request.getParameter("full-name");
         String email = request.getParameter("email");
         String phoneNumber = request.getParameter("phone-number");
-
-        String passwordPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>])[A-Za-z\\d!@#$%^&*(),.?\":{}|<>]{6,}$";
-        if (!password.matches(passwordPattern)) {
-            // Nếu mật khẩu không hợp lệ
-            response.setContentType("text/html");
-            response.getWriter().println("<script type='text/javascript'>");
-            response.getWriter().println("alert('Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.');");
-            response.getWriter().println("window.location.href = 'Home.jsp';");
-            response.getWriter().println("</script>");
-            return;
-        }
-
-        String phonePattern = "^[0-9]{10}$";
-        if (!phoneNumber.matches(phonePattern)) {
-            response.setContentType("text/html");
-            response.getWriter().println("<script type='text/javascript'>");
-            response.getWriter().println("alert('Phone number must be exactly 10 digits.');");
-            response.getWriter().println("window.location.href = 'Home.jsp';");
-            response.getWriter().println("</script>");
-            return;
-        }
         
-        if (!password.equals(confirmPassword)) {
-            response.setContentType("text/html");
-            response.getWriter().println("<script type='text/javascript'>");
-            response.getWriter().println("alert('Passwords do not match!');");
-            response.getWriter().println("window.location.href = 'Home.jsp';");
-            response.getWriter().println("</script>");
-            return;
-            
-            
-        }
-        
-        String hashedPassword = hashPassword(password);
-        Customer customer = new Customer();
         CustomerDBContext customerDAO = new CustomerDBContext();
         
-        if(customerDAO.isCustomerExisted(email)) {
+        if(customerDAO.findByUsername(username)) {
+            response.setContentType("text/html");
+            response.getWriter().println("<script type='text/javascript'>");
+            response.getWriter().println("alert('Username has been registed!');");
+            response.getWriter().println("window.history.back()");
+            response.getWriter().println("</script>");
+            return;
+        }
+        
+        if(customerDAO.isCustomerExistedByGmail(email)) {
             response.setContentType("text/html");
             response.getWriter().println("<script type='text/javascript'>");
             response.getWriter().println("alert('Email has been registed!');");
-            response.getWriter().println("window.location.href = 'Home.jsp';");
+            response.getWriter().println("window.history.back()");
             response.getWriter().println("</script>");
             return;
         }
         
-        customer.setUsername(username);
-        customer.setPassword(hashedPassword);
-        customer.setFullname(fullname);
-        customer.setGmail(email);
-        customer.setPhone_number(phoneNumber);
-        customerDAO.insert(customer);
+        HttpSession mySession = request.getSession();
+        GoogleDBContext googleDAO = new GoogleDBContext();
+        int otpValue = googleDAO.sendOtp(email);
+        request.setAttribute("message","OTP is sent to your email id");
+        //request.setAttribute("connection", con);
+        mySession.setAttribute("otp",otpValue); 
+        mySession.setAttribute("email",email); 
+        mySession.setAttribute("action","./register?action=create-user"); 
         
-        response.setContentType("text/html");
-        response.getWriter().println("<script type='text/javascript'>");
-        response.getWriter().println("alert('Registration successful!');");
-        response.getWriter().println("window.location.href = 'Home.jsp';");
-        response.getWriter().println("</script>");
+        mySession.setAttribute("username", username);
+        mySession.setAttribute("password", password);
+        mySession.setAttribute("fullname", fullname);
+        mySession.setAttribute("email", email);
+        mySession.setAttribute("phoneNumber", phoneNumber);
+
+
+        response.sendRedirect("./ValidateOtp");
         
-        request.getSession().setAttribute("currentCustomer", customer);
-        
-        response.sendRedirect("Home.jsp");
+
     }
     private String hashPassword(String password) {
         try {

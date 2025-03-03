@@ -1,292 +1,138 @@
-main
 package dao;
 
 import dal.DBContext;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.system.*;
+import model.system.Staff;
+import model.system.User;
 
 public class StaffDBContext extends DBContext<Staff> {
 
-    public ArrayList<Role> getRoles(String username) {
-        ArrayList<Role> roles = new ArrayList<>();
-        String sql = """
-                SELECT r.id, r.name, f.id, f.name, f.url
-                                 FROM Staff s
-                                 JOIN StaffRole sr ON sr.staff_id = s.id
-                                 JOIN [Role] r ON r.id = sr.role_id
-                                 JOIN RoleFeature rf ON rf.role_id = r.id
-                                 JOIN Feature f ON f.id = rf.feature_id
-                                 WHERE s.username = ?
-                                 ORDER BY f.id ASC""";
-
-        PreparedStatement stm = null;
-        ResultSet rs = null;
-        try {
-            stm = connection.prepareStatement(sql);
-            stm.setString(1, username);
-            rs = stm.executeQuery();
-
-            Role currentRole = null; // Initialize current role
-            while (rs.next()) {
-                int role_id = rs.getInt("r.id");
-                if (currentRole == null || role_id != currentRole.getId()) {
-                    currentRole = new Role();
-                    currentRole.setId(role_id);
-                    currentRole.setName(rs.getString("r.name"));
-                    currentRole.setFeatures(new ArrayList<>());
-                    roles.add(currentRole);
-                }
-                Feature feature = new Feature();
-                feature.setId(rs.getInt("f.id"));
-                feature.setName(rs.getString("f.name"));
-                feature.setUrl(rs.getString("url"));
-                currentRole.getFeatures().add(feature);
-            }
-        } catch (SQLException e) {
-            Logger.getLogger(StaffDBContext.class.getName()).log(Level.SEVERE, null, e);
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (stm != null) {
-                    stm.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                Logger.getLogger(StaffDBContext.class.getName()).log(Level.SEVERE, null, e);
-            }
-        }
-        return roles; // Return the list of roles
-    }
+    private static final Logger LOGGER = Logger.getLogger(StaffDBContext.class.getName());
 
     @Override
-    public void insert(Staff model) {
-        String sql_insert_staff = """
-                INSERT INTO [dbo].[Staff]
-                        ([username]
-                        ,[password]
-                        ,[gender]
-                        ,[email]
-                        ,[phone_number]
-                        ,[fullname]
-                        ,[dob]
-                        ,[address])
-                VALUES
-                        (?
-                        ,?
-                        ,?
-                        ,?
-                        ,?
-                        ,?
-                        ,?
-                        ,?)""";
+    public void insert(Staff staff) {
+        // Cập nhật câu lệnh INSERT bao gồm cột "img"
+        String sql = "INSERT INTO [Staff] (staff_username, fullname, gender, address, dob, createby, createat, img) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement stm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stm.setString(1, staff.getStaffusername().getUsername()); // Lấy username từ đối tượng User
+            stm.setString(2, staff.getFullname());
+            stm.setBoolean(3, staff.isGender());
+            stm.setString(4, staff.getAddress());
+            stm.setDate(5, staff.getDob());
+            stm.setString(6, staff.getCreateby().getUsername());
+            stm.setTimestamp(7, staff.getCreateat());
+            stm.setString(8, staff.getImg()); // Giá trị của cột img (có thể null)
 
-        String sql_insert_staff_role = """
-                INSERT INTO [dbo].[StaffRole]
-                        ([staff_id]
-                        ,[role_id])
-                VALUES
-                        (?
-                        ,?)""";
-
-        try (PreparedStatement stmStaff = connection.prepareStatement(sql_insert_staff,
-                Statement.RETURN_GENERATED_KEYS);
-                PreparedStatement stmRole = connection.prepareStatement(sql_insert_staff_role)) {
-
-            connection.setAutoCommit(false);
-
-            // Insert into Staff
-            stmStaff.setString(1, model.getUsername());
-            stmStaff.setString(2, model.getPassword());
-            stmStaff.setBoolean(3, model.isGender());
-            stmStaff.setString(4, model.getEmail());
-            stmStaff.setString(5, model.getPhonenumber());
-            stmStaff.setNString(6, model.getFullname());
-            stmStaff.setDate(7, model.getDob());
-            stmStaff.setString(8, model.getAddress());
-            stmStaff.executeUpdate();
-
-            // Get generated staff_id
-            ResultSet generatedKeys = stmStaff.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                int staffId = generatedKeys.getInt(1);
-
-                // Insert into StaffRole
-                for (Role role : model.getRole()) {
-                    stmRole.setInt(1, staffId);
-                    stmRole.setInt(2, role.getId());
-                    stmRole.executeUpdate();
+            stm.executeUpdate();
+            try (ResultSet generatedKeys = stm.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    staff.setId(generatedKeys.getInt(1));
                 }
             }
-
-            connection.commit();
         } catch (SQLException ex) {
-            Logger.getLogger(StaffDBContext.class.getName()).log(Level.SEVERE, null, ex);
-            try {
-                connection.rollback();
-            } catch (SQLException e) {
-                Logger.getLogger(StaffDBContext.class.getName()).log(Level.SEVERE, null, e);
-            }
-        } finally {
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException ex) {
-                Logger.getLogger(StaffDBContext.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            LOGGER.log(Level.SEVERE, "Database error in insert", ex);
+            throw new RuntimeException("Lỗi khi insert Staff", ex);
         }
     }
 
-    @Override
-    public void update(Staff model) {
-        String sql = """
-                UPDATE [dbo].[Staff]
-                SET [username] = ?
-                   ,[password] = ?
-                   ,[gender] = ?
-                   ,[email] = ?
-                   ,[phone_number] = ?
-                   ,[fullname] = ?
-                   ,[dob] = ?
-                   ,[address] = ?
-                WHERE [id] = ?""";
-
+    public Staff getByUsername(String username) {
+        String sql = "SELECT * FROM [Staff] WHERE staff_username = ?";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            stm.setString(1, model.getUsername());
-            stm.setString(2, model.getPassword());
-            stm.setBoolean(3, model.isGender());
-            stm.setString(4, model.getEmail());
-            stm.setString(5, model.getPhonenumber());
-            stm.setNString(6, model.getFullname());
-            stm.setDate(7, model.getDob());
-            stm.setString(8, model.getAddress());
-            stm.setInt(9, model.getId());
+            stm.setString(1, username);
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    Staff s = new Staff();
+                    s.setId(rs.getInt("id"));
+                    s.setFullname(rs.getString("fullname"));
+                    s.setGender(rs.getBoolean("gender"));
+                    s.setAddress(rs.getString("address"));
+                    s.setDob(rs.getDate("dob"));
+
+                    User createby = new User();
+                    createby.setUsername(rs.getString("createby"));
+                    s.setCreateby(createby);
+                    s.setCreateat(rs.getTimestamp("createat"));
+
+                    String updateByStr = rs.getString("updateby");
+                    if (updateByStr != null) {
+                        User updateby = new User();
+                        updateby.setUsername(updateByStr);
+                        s.setUpdateby(updateby);
+                    }
+                    s.setUpdateat(rs.getTimestamp("updateat"));
+
+                    User staffUser = new User();
+                    staffUser.setUsername(rs.getString("staff_username"));
+                    s.setStaffusername(staffUser);
+
+                    // Lấy cột img
+                    s.setImg(rs.getString("img"));
+
+                    return s;
+                }
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Database error in getByUsername", ex);
+            throw new RuntimeException("Lỗi khi lấy Staff theo username", ex);
+        }
+        return null;
+    }
+
+    @Override
+    public void update(Staff staff) {
+        String sql = "UPDATE [Staff] SET fullname = ?, gender = ?, address = ?, dob = ?, updateby = ?, updateat = ?, img = ? "
+                + "WHERE staff_username = ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setString(1, staff.getFullname());
+            stm.setBoolean(2, staff.isGender());
+            stm.setString(3, staff.getAddress());
+            stm.setDate(4, staff.getDob());
+            stm.setString(5, staff.getUpdateby().getUsername());
+            stm.setTimestamp(6, staff.getUpdateat());
+            stm.setString(7, staff.getImg()); // Cập nhật cột img
+            stm.setString(8, staff.getStaffusername().getUsername());
+
             stm.executeUpdate();
         } catch (SQLException ex) {
-            Logger.getLogger(StaffDBContext.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, "Database error in update", ex);
+            throw new RuntimeException("Lỗi khi update Staff", ex);
         }
     }
 
     @Override
     public void delete(Staff model) {
-        String sql = "DELETE FROM [dbo].[Staff] WHERE [id] = ?";
-
-        try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            stm.setInt(1, model.getId());
-            stm.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(StaffDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public ArrayList<Staff> list() {
-        ArrayList<Staff> staffList = new ArrayList<>();
-        String sql = """
-                SELECT [id]
-                      ,[username]
-                      ,[password]
-                      ,[gender]
-                      ,[email]
-                      ,[phone_number]
-                      ,[fullname]
-                      ,[dob]
-                      ,[address]
-                FROM [dbo].[Staff]""";
-
-        try (PreparedStatement stm = connection.prepareStatement(sql);
-                ResultSet rs = stm.executeQuery()) {
-
-            while (rs.next()) {
-                Staff staff = new Staff();
-                staff.setId(rs.getInt("id"));
-                staff.setUsername(rs.getString("username"));
-                staff.setPassword(rs.getString("password"));
-                staff.setGender(rs.getBoolean("gender"));
-                staff.setEmail(rs.getString("email"));
-                staff.setPhonenumber(rs.getString("phone_number"));
-                staff.setFullname(rs.getNString("fullname"));
-                staff.setDob(rs.getDate("dob"));
-                staff.setAddress(rs.getString("address"));
-                staffList.add(staff);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(StaffDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return staffList;
-    }
-
-    public Staff get(String username, String password) {
-        String sql = """
-                SELECT [id]
-                      ,[username]
-                      ,[password]
-                      ,[gender]
-                      ,[email]
-                      ,[phone_number]
-                      ,[fullname]
-                      ,[dob]
-                      ,[address]
-                  FROM [test1].[dbo].[Staff]
-                  where [username]=? and [password]=?
-                """;
-        PreparedStatement stm = null;
-        Staff staff = null;
-        try {
-            stm = connection.prepareStatement(sql);
-            stm.setString(1, username);
-            stm.setString(2, password);
-            ResultSet rs = stm.executeQuery();
-            if (rs.next()) {
-                staff = new Staff();
-                staff.setId(rs.getInt("id"));
-                staff.setUsername(username);
-                staff.setEmail(rs.getString("email"));
-                staff.setFullname(rs.getNString("fullname"));
-                staff.setAddress(rs.getString("address"));
-                staff.setDob(rs.getDate("dob"));
-                staff.setPhonenumber(rs.getString("phone_number"));
-                staff.setGender(rs.getBoolean("gender"));
-            }
-        } catch (SQLException e) {
-            Logger.getLogger(StaffDBContext.class.getName()).log(Level.SEVERE, null, e);
-        } finally {
-            try {
-                if (stm != null) {
-                    stm.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                Logger.getLogger(StaffDBContext.class.getName()).log(Level.SEVERE, null, e);
-            }
-        }
-        return staff;
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public Staff get(String id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package dao;
 
-/**
- *
- * @author acer
- */
-public class StaffDBContext {
-    
-Login,Register
+    public String getUserGmailByStaffId(int staffId) {
+        String gmail = null;
+        String sql = "SELECT u.gmail FROM Staff s JOIN [User] u ON s.staff_username = u.username WHERE s.id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, staffId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                gmail = rs.getString("gmail");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return gmail;
+    }
+
 }
