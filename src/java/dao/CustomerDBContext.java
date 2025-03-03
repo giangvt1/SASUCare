@@ -676,6 +676,20 @@ public class CustomerDBContext extends DBContext<Customer> {
         }
         return false;
     }
+    
+    public boolean isCustomerExistedByGmail(String gmail) {
+        String sql = "SELECT * FROM [Customer] WHERE gmail = ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setString(1, gmail);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error finding user by email: {0}", ex.getMessage());
+        }
+        return false;
+    }
 
     public void changePass(Customer customer, String newPassword) {
 

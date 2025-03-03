@@ -80,7 +80,7 @@ public class RegisterController extends HttpServlet {
             return;
         }
         
-        if(customerDAO.isCustomerExisted(email)) {
+        if(customerDAO.isCustomerExistedByGmail(email)) {
             response.setContentType("text/html");
             response.getWriter().println("<script type='text/javascript'>");
             response.getWriter().println("alert('Email has been registed!');");
