@@ -11,26 +11,26 @@
     <body class="skin-black"">
         <jsp:include page="../admin/AdminHeader.jsp" />
         <jsp:include page="../admin/AdminLeftSideBar.jsp" />
-            <div class="right-side">
-                <a class="back-btn" href="../doctor/SearchCustomer?page=1&sort=default&size=10">
-                    Back
-                </a>
-                <h1 class="text-center text-bold mb-4" style="margin-bottom: 30px">Medical Records Summary</h1>
-                <div class="table-data mt-4">
-                    <h3 class="title">Customer Informations</h3>
-                    <table class="table" style="width:95%">
-                        <thead>
-                            <tr>
-                                <th>Full Name</th>
-                                <th>Gender</th>
-                                <th>Date of Birth</th>
-                                <th>Phone Number</th>   
-                                <th>Address</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>${customer.fullname}</td>
+        <div class="right-side">
+            <a class="back-btn" href="../doctor/SearchCustomer?page=1&sort=default&size=10">
+                Back
+            </a>
+            <h1 class="text-center text-bold mb-4" style="margin-bottom: 30px">Medical Records Summary</h1>
+            <div class="table-data mt-4">
+                <h3 class="title">Customer Informations</h3>
+                <table class="table" style="width:95%">
+                    <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Gender</th>
+                            <th>Date of Birth</th>
+                            <th>Phone Number</th>   
+                            <th>Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>${customer.fullname}</td>
                             <td>${customer.gender?"Male":"Female"}</td>
                             <td><fmt:formatDate value="${customer.dob}" pattern="dd/MM/yyyy" /></td>
                             <td>${customer.phone_number}</td>
@@ -44,7 +44,7 @@
                 <h3 class="title">Medical History</h3>
                 <a class="add-btn" href="EditCustomerMedicalHistory.jsp?cId=${customer.id}">Add record</a>
                 <a class="export-btn" href="MedicalHistoryExportServlet?cId=${customer.id}&pageMedical=${currentMedicalPage}&sizeMedical=${param.sizeMedical}">Export to excel</a>
-
+                <a style="background-color: yellow" class="export-btn" href="MedicalHistoryExportPDFServlet?cId=${customer.id}&pageMedical=${currentMedicalPage}&sizeMedical=${param.sizeMedical}">Export to pdf</a>
                 <form style="margin: 0" action="ShowCustomerMedicalDetail" method="get" class="sidebar-form" id="searchCustomerForm">
                     <input type="hidden" name="cId" value="${customer.id}" />
                     <div style="display: flex; justify-content: start; margin-left: 2.5%; margin-top: 20px; gap: 0;" class="filter-container">
@@ -124,6 +124,7 @@
                 <h3 class="title">Visit History</h3>
                 <a class="add-btn" href="EditCustomerVisitHistory.jsp?cId=${customer.id}">Add record</a>
                 <a class="export-btn" href="VisitHistoryExportServlet?cId=${customer.id}&pageVisit=${currentVisitPage}&sizeVisit=${param.sizeVisit}">Export to excel</a>
+                <a style="background-color: yellow" class="export-btn" href="VisitHistoryExportPDFServlet?cId=${customer.id}&pageVisit=${currentVisitPage}&sizeVisit=${param.sizeVisit}">Export to pdf</a>
                 <form style="margin: 0" action="ShowCustomerMedicalDetail" method="get" class="sidebar-form" id="searchCustomerForm">
                     <input type="hidden" name="cId" value="${customer.id}" />
                     <div style="display: flex; justify-content: start; margin-left: 2.5%; margin-top: 20px; gap: 0;" class="filter-container">
@@ -206,14 +207,14 @@
             </div>
     </body>
     <script>
-                document.querySelectorAll(".sidebar-menu > li").forEach((li) => {
-                    li.classList.remove("active");
-                });
-                function doDelete(index, url, cId, id) {
-                    if (confirm("Are you sure delete index: " + index + " ?"))
-                    {
-                        window.location = url + "?cId=" + cId + "&id=" + id;
-                    }
-                }
+        document.querySelectorAll(".sidebar-menu > li").forEach((li) => {
+            li.classList.remove("active");
+        });
+        function doDelete(index, url, cId, id) {
+            if (confirm("Are you sure delete index: " + index + " ?"))
+            {
+                window.location = url + "?cId=" + cId + "&id=" + id;
+            }
+        }
     </script>
 </html>

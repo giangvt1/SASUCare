@@ -152,6 +152,14 @@
         <servlet-name>ChatBoxController</servlet-name>
         <servlet-class>controller.HRController.ChatBoxController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>MedicalHistoryExportPDFServlet</servlet-name>
+        <servlet-class>controller.doctor.MedicalHistoryExportPDFServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>VisitHistoryExportPDFServlet</servlet-name>
+        <servlet-class>controller.doctor.VisitHistoryExportPDFServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
         <url-pattern>/forgetpassword</url-pattern>
@@ -360,5 +368,13 @@
     <servlet-mapping>
         <servlet-name>ChatBoxController</servlet-name>
         <url-pattern>/chat-box</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MedicalHistoryExportPDFServlet</servlet-name>
+        <url-pattern>/doctor/MedicalHistoryExportPDFServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VisitHistoryExportPDFServlet</servlet-name>
+        <url-pattern>/doctor/VisitHistoryExportPDFServlet</url-pattern>
     </servlet-mapping>
 </web-app>

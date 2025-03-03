@@ -7,6 +7,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>List Application</title>
         <link rel="stylesheet" href="../css/doctor/doctor_style.css"/>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     </head>
     <body class="skin-black">
         <jsp:include page="../admin/AdminHeader.jsp" />
@@ -35,7 +36,7 @@
 
                         <div class="filter-item">
                             <span for="dateSend">Date Send</span>
-                            <input type="date" class="form-control" name="dateSend" id="dateSend" value="${param.dateSend}" onblur="this.form.submit()"/>
+                            <input type="date" class="form-control date" name="dateSend"  value="${param.dateSend}" onchange="this.form.submit()"/>
                         </div>
 
                         <!-- Status -->
@@ -71,7 +72,7 @@
                     </div>
                 </div>
                 <div class="submit-container">
-                    <button type="submit" class="back-btn">Submit</button>
+                    <button type="submit" class="back-btn">Search</button>
                 </div>
             </form>
             <div class="table-data mt-4">
@@ -139,18 +140,9 @@
                     </c:if>
                 </div>
             </div>
-        </div>
-
-        <script>
-            let hasNextPage = document.querySelector(".hasNextPage").textContent.trim();
-            let pre = document.querySelector("#previousBtn");
-            let next = document.querySelector("#nextBtn");
-            let p = document.querySelector(".page-num").textContent.trim();
-
-            if (p === "Page 1")
-                pre.classList.add("disabled");
-            if (hasNextPage === "false")
-                next.classList.add("disabled");
-        </script>
+        </div>  
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <script src="https://npmcdn.com/flatpickr/dist/l10n/vn.js"></script>
+        <script src="../js/doctor/doctor.js"></script>
     </body>
 </html>
