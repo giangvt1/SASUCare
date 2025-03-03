@@ -150,7 +150,8 @@ public class DoctorDBContext extends DBContext<Doctor> {
                 SELECT ds.id, ds.schedule_date, s.id AS shift_id, s.time_start, s.time_end, ds.available
                 FROM Doctor_Schedule ds
                 JOIN Shift s ON ds.shift_id = s.id
-                WHERE ds.doctor_id = ? AND ds.schedule_date = ?
+                Where ds.available = 1
+                and ds.doctor_id = ? AND ds.schedule_date = ?
                 """;
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, doctorId);
@@ -355,7 +356,8 @@ public class DoctorDBContext extends DBContext<Doctor> {
                 + "JOIN Doctor_Department dd ON d.id = dd.doctor_id "
                 + "JOIN Department dep ON dd.department_id = dep.id "
                 + "JOIN Doctor_Schedule ds ON d.id = ds.doctor_id "
-                + "WHERE ds.schedule_date = ? "; // Ensures only doctors with a schedule that day are fetched
+                + "WHERE ds.available = 1"
+                + "and ds.schedule_date = ? "; // Ensures only doctors with a schedule that day are fetched
 
         ArrayList<Object> paramValues = new ArrayList<>();
         paramValues.add(selectedDate);  // Filter by selected date

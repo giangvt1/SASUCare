@@ -30,7 +30,6 @@
                 <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
         </div>
-
         <!-- Sidebar menu -->
         <ul class="sidebar-menu">
             <li class="active">
@@ -46,34 +45,38 @@
                 </li>
                 <li>
                     <a href="${pageContext.request.contextPath}/hr/accountlist">
-                       <i class="fa fa-globe"></i> <span>Account List</span>
-                   </a>
+                        <i class="fa fa-globe"></i> <span>Account List</span>
+                    </a>
                 </li>
-
                 <li>
                     <a href="${pageContext.request.contextPath}/hr/calendarmanage">
                         <i class="fa fa-table"></i> <span>Doctor Calendar</span>
                     </a>
                 </li>
-             </c:if>
+                <li>
+                    <a href="../ManageService">
+                        <i class="fa fa-table"></i> <span>Add ServicePackage</span>
+                    </a>
+                </li>
+            </c:if>
 
             <c:if test="${allowedUrls != null and (allowedUrls.contains('/doctor/SendApplication.jsp') or allowedUrls.contains('/doctor/ManageMedical.jsp'))}">
-                        <li>
-                            <a href="../doctor/ViewApplication?did=16">
-                                <i class="fa fa-envelope"></i> <span>Manage Application</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="../doctor/SearchCustomer?page=1&sort=default&size=10">
-                                <i class="fa fa-medkit"></i> <span>Manage Medical</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="../doctor/waiting-appointment">
-                                <i class="fa fa-medkit"></i> <span>Appoinment</span>
-                            </a>
-                        </li>
-                    </c:if>
+                <li>
+                    <a href="../doctor/ViewApplication?staffId=${sessionScope.staff.id}">
+                        <i class="fa fa-envelope"></i> <span>Manage Application</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../doctor/SearchCustomer?page=1&sort=default&size=10">
+                        <i class="fa fa-medkit"></i> <span>Manage Medical</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../doctor/waiting-appointment">
+                        <i class="fa fa-medkit"></i> <span>Appoinment</span>
+                    </a>
+                </li>
+            </c:if>
             <%-- Add other menu items as needed --%>
         </ul>
     </section>
