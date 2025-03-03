@@ -7,6 +7,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Manage Medical</title>
         <link rel="stylesheet" href="../css/doctor/doctor_style.css"/>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     </head>
     <body class="skin-black">
         <jsp:include page="../admin/AdminHeader.jsp" />
@@ -23,7 +24,7 @@
                     </div>
                     <div class="filter-item">
                         <span>Date of birth</span>
-                        <input type="date" name="customerDate" id="customerDate" value="${param.customerDate}" onblur="this.form.submit()" />
+                        <input type="date" name="customerDate" class="date" value="${param.customerDate}" onchange="this.form.submit()" />
                     </div>
 
                     <div class="filter-item">
@@ -57,7 +58,7 @@
                     </div>
                 </div>
                 <div class="submit-container">
-                    <button type="submit" class="back-btn">Submit</button>
+                    <button type="submit" class="back-btn">Search</button>
                 </div>
             </form>
             <div class="table-data mt-4">
@@ -124,11 +125,8 @@
                 </div>
             </div>
         </div>
-        <!-- jQuery 2.0.2 -->
-        <script src="../js/jquery.min.js" type="text/javascript"></script>
-        <!-- Bootstrap -->
-        <script src="../js/bootstrap.min.js" type="text/javascript"></script>
-        <!-- Director App -->
-        <script src="../js/Director/app.js" type="text/javascript"></script>
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <script src="https://npmcdn.com/flatpickr/dist/l10n/vn.js"></script>
+        <script src="../js/doctor/doctor.js"></script>
     </body>
 </html>

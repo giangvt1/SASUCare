@@ -2,7 +2,6 @@ package controller.doctor;
 
 import dao.CustomerDBContext;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,7 +12,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
-@WebServlet(name = "MedicalHistoryExportServlet", urlPatterns = {"/exportMedicalHistory"})
 public class MedicalHistoryExportServlet extends HttpServlet {
 
     private static final int COLUMN_INDEX = 0;
