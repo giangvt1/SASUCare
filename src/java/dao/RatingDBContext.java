@@ -14,6 +14,7 @@ import java.util.List;
 
 public class RatingDBContext extends DBContext<Rating> {
 private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(DoctorDBContext.class.getName());
+
     @Override
     public void insert(Rating rating) {
         String sql = "INSERT INTO Rating (doctor_id, , rating, comment) VALUES (?, ?, ?, ?)";
