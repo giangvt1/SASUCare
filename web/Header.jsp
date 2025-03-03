@@ -95,7 +95,7 @@
                             </div>
                             <a href="${pageContext.request.contextPath}/contact.jsp" class="nav-item nav-link">Contact</a>
                             <c:if test="${not empty sessionScope.currentCustomer}">
-                                <a href="${pageContext.request.contextPath}/profile" class="nav-item nav-link">
+                                <a href="${pageContext.request.contextPath}/profile?action=profile" class="nav-item nav-link">
                                     Welcome, ${sessionScope.currentCustomer.fullname}
                                 </a>
                                 <form action="${pageContext.request.contextPath}/logout" method="get" style="display:inline;">

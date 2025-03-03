@@ -30,24 +30,32 @@ public class LoginController extends HttpServlet {
 
         HttpSession session = request.getSession();
 
-        if (!customerDAO.isCustomerExisted(account.getEmail())) {
-            // Nếu tài khoản chưa tồn tại, tạo user mới
-            Customer customer = new Customer();
+        if (!googleDAO.isGoogleExist(account.getEmail())) {
+            googleDAO.insert(account); // Nếu chưa có tài khoản Google thì thêm vào bảng google
+        }
+
+        // Kiểm tra xem customer có tồn tại hay chưa
+        Customer customer = customerDAO.getByGmail(account.getEmail());
+
+        if (customer == null) {
+            // Nếu không tồn tại customer -> tạo mới
+            customer = new Customer();
             customer.setGmail(account.getEmail());
             customer.setGoogle_id(account);
             customer.setFullname(account.getName());
 
-            googleDAO.insert(account);
-            customerDAO.insert(customer);
-
-            session.setAttribute("currentCustomer", customer);
-            session.setAttribute("currentGoogle", account);
+            customerDAO.insert(customer); // Thêm mới customer
         } else {
-            // Tài khoản đã tồn tại -> Đăng nhập
-            Customer customer = customerDAO.get(account.getId());
-            session.setAttribute("currentCustomer", customer);
-            session.setAttribute("currentGoogle", account);
+            // Nếu đã có customer nhưng chưa liên kết với Google, thì cập nhật liên kết
+            if (customer.getGoogle_id() == null) {
+                customer.setGoogle_id(account);
+                customerDAO.update(customer);
+            }
         }
+
+        // Lưu thông tin vào session để sử dụng sau này
+        session.setAttribute("currentCustomer", customer);
+        session.setAttribute("currentGoogle", account);
 
         // Check if there is a URL to redirect after login
         String redirectUrl = (String) session.getAttribute("redirectAfterLogin");
@@ -65,7 +73,6 @@ public class LoginController extends HttpServlet {
 
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-
         CustomerDBContext db = new CustomerDBContext();
         Customer account = db.login(username, password);
 
@@ -87,7 +94,7 @@ public class LoginController extends HttpServlet {
             response.setContentType("text/html");
             response.getWriter().println("<script type='text/javascript'>"
                     + "alert('Invalid username or password. Please try again.');"
-                    + "window.location.href='login.jsp';"
+                    + "window.history.back();"
                     + "</script>");
         }
     }

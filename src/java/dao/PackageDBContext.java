@@ -1,8 +1,5 @@
 package dao;
 
-
-
-
 import dal.DBContext;
 import model.Package;
 import java.lang.System.Logger;
@@ -12,7 +9,6 @@ import java.lang.System.Logger.Level;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-
 /**
  *
  * @author admin
@@ -46,7 +42,6 @@ public class PackageDBContext extends DBContext<Package> {
         }
     }
 
-
     // Phương thức cập nhật gói khám
     @Override
     public void update(Package pkg) {
@@ -59,7 +54,7 @@ public class PackageDBContext extends DBContext<Package> {
             ps.setString(5, pkg.getCategory());
             ps.setInt(6, pkg.getId());
             ps.executeUpdate();
-            
+
         } catch (SQLException ex) {
             LOGGER.log(java.util.logging.Level.SEVERE, "Database connection error", ex);
         }
@@ -68,11 +63,11 @@ public class PackageDBContext extends DBContext<Package> {
     // Phương thức xóa gói khám
     @Override
     public void delete(Package pkg) {
-         String sql = "DELETE FROM ServicePackage  WHERE id = ?";
+        String sql = "DELETE FROM ServicePackage  WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, pkg.getId());
             ps.executeUpdate();
-            
+
         } catch (SQLException ex) {
             LOGGER.log(java.util.logging.Level.SEVERE, "Database connection error", ex);
         }
@@ -83,16 +78,15 @@ public class PackageDBContext extends DBContext<Package> {
     public ArrayList<Package> list() {
         ArrayList<Package> packages = new ArrayList<>();
         String sql = "SELECT * FROM ServicePackage ";
-        try (PreparedStatement ps = connection.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 Package pkg = new Package(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getString("description"),
-                    rs.getDouble("price"),
-                    rs.getInt("duration_minutes"),
-                    rs.getString("category")
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getDouble("price"),
+                        rs.getInt("duration_minutes"),
+                        rs.getString("category")
                 );
                 packages.add(pkg);
             }
@@ -111,12 +105,12 @@ public class PackageDBContext extends DBContext<Package> {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return new Package(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getString("description"),
-                    rs.getDouble("price"),
-                    rs.getInt("duration_minutes"),
-                    rs.getString("category")
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getDouble("price"),
+                        rs.getInt("duration_minutes"),
+                        rs.getString("category")
                 );
             }
         } catch (SQLException ex) {
@@ -126,7 +120,7 @@ public class PackageDBContext extends DBContext<Package> {
     }
 
     // Phương thức tìm kiếm gói khám theo từ khóa và danh mục
-    public List<Package> searchPackages1(String keyword, String category,int pageIndex, int pageSize) {
+    public List<Package> searchPackages1(String keyword, String category, int pageIndex, int pageSize) {
 //        List<Package> packages = new ArrayList<>();
 //        String sql = "SELECT * FROM ServicePackage  WHERE name LIKE ?";
 //
@@ -192,77 +186,82 @@ public class PackageDBContext extends DBContext<Package> {
             LOGGER.log(java.util.logging.Level.SEVERE, "Database connection error", ex);
         }
         return packages;
-    
+
     }
+
     public List<Package> searchPackages(String keyword, String category, int pageIndex, int pageSize) {
-    List<Package> packages = new ArrayList<>();
-    String sql = "SELECT * FROM ServicePackage WHERE name LIKE ?";
+        List<Package> packages = new ArrayList<>();
+        String sql = "SELECT [id]\n"
+                + "      ,[name]\n"
+                + "      ,[description]\n"
+                + "      ,[price]\n"
+                + "      ,[duration_minutes]\n"
+                + "      ,[category] FROM ServicePackage WHERE name LIKE ?";
 
-    if (category != null && !category.equals("all")) {
-        sql += " AND category = ?";
-    }
-
-    sql += " ORDER BY id ASC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-
-    try (PreparedStatement ps = connection.prepareStatement(sql)) {
-        ps.setString(1, "%" + (keyword != null ? keyword.trim() : "") + "%");
-
-        int paramIndex = 2;
         if (category != null && !category.equals("all")) {
-            ps.setString(paramIndex++, category);
+            sql += " AND category = ?";
         }
-        ps.setInt(paramIndex++, (pageIndex - 1) * pageSize);
-        ps.setInt(paramIndex, pageSize);
 
-        // 🔥 Debug query
-        System.out.println("Executing SQL: " + ps.toString());
+        sql += " ORDER BY id ASC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            packages.add(new Package(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getString("description"),
-                    rs.getDouble("price"),
-                    rs.getInt("duration_minutes"),
-                    rs.getString("category")
-            ));
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, "%" + (keyword != null ? keyword.trim() : "") + "%");
+
+            int paramIndex = 2;
+            if (category != null && !category.equals("all")) {
+                ps.setString(paramIndex++, category);
+            }
+            ps.setInt(paramIndex++, (pageIndex - 1) * pageSize);
+            ps.setInt(paramIndex, pageSize);
+
+            // 🔥 Debug query
+            System.out.println("Executing SQL: " + ps.toString());
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                packages.add(new Package(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getDouble("price"),
+                        rs.getInt("duration_minutes"),
+                        rs.getString("category")
+                ));
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(java.util.logging.Level.SEVERE, "Database connection error", ex);
         }
-    } catch (SQLException ex) {
-        LOGGER.log(java.util.logging.Level.SEVERE, "Database connection error", ex);
+        return packages;
     }
-    return packages;
-}
-    
+
     // Đếm tổng số gói khám để tính tổng số trang
     public int countTotalPackages(String keyword, String category) {
-    String sql = "SELECT COUNT(*) FROM ServicePackage WHERE name LIKE ?";
-    if (category != null && !category.equals("all")) {
-        sql += " AND category = ?";
-    }
-
-    try (PreparedStatement ps = connection.prepareStatement(sql)) {
-        ps.setString(1, "%" + (keyword != null ? keyword.trim() : "") + "%");
-
+        String sql = "SELECT COUNT(*) FROM ServicePackage WHERE name LIKE ?";
         if (category != null && !category.equals("all")) {
-            ps.setString(2, category);
+            sql += " AND category = ?";
         }
 
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            return rs.getInt(1);
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, "%" + (keyword != null ? keyword.trim() : "") + "%");
+
+            if (category != null && !category.equals("all")) {
+                ps.setString(2, category);
+            }
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(java.util.logging.Level.SEVERE, "Database connection error", ex);
         }
-    } catch (SQLException ex) {
-        LOGGER.log(java.util.logging.Level.SEVERE, "Database connection error", ex);
+        return 0;
     }
-    return 0;
-}
-    
-public List<String> getAllCategories1() {
+
+    public List<String> getAllCategories1() {
         List<String> categories = new ArrayList<>();
         String sql = "SELECT DISTINCT category FROM ServicePackage";
-        try (PreparedStatement ps = connection.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 categories.add(rs.getString("category"));
             }
@@ -271,21 +270,22 @@ public List<String> getAllCategories1() {
         }
         return categories;
     }
+
     // Phương thức lấy tất cả danh mục để hiển thị trong bộ lọc  
     public List<String> getAllCategories() {
-    List<String> categories = new ArrayList<>();
-    String sql = "SELECT DISTINCT category FROM ServicePackage WHERE category = ?";
-    
-    try (PreparedStatement ps = connection.prepareStatement(sql)) {
-        ps.setString(1, "Packages");  // Chỉ lấy các category có giá trị là "Test"
-        
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            categories.add(rs.getString("category"));
+        List<String> categories = new ArrayList<>();
+        String sql = "SELECT DISTINCT category FROM ServicePackage WHERE category = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, "Packages");  // Chỉ lấy các category có giá trị là "Test"
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                categories.add(rs.getString("category"));
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(java.util.logging.Level.SEVERE, "Database connection error", ex);
         }
-    } catch (SQLException ex) {
-        LOGGER.log(java.util.logging.Level.SEVERE, "Database connection error", ex);
+        return categories;
     }
-    return categories;
-}
 }

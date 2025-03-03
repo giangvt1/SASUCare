@@ -6,15 +6,11 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Customer Medical Detail</title>
-        <link href="../css/admin/bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <!-- font Awesome -->
-        <link href="../css/admin/font-awesome.min.css" rel="stylesheet" type="text/css" />
-        <link href="../css/admin/styleAdmin.css" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="../css/doctor/doctor_style.css"/>
     </head>
     <body class="skin-black"">
-        <jsp:include page="../admin/AdminHeader.jsp"></jsp:include>
-        <jsp:include page="../admin/AdminLeftSideBar.jsp"></jsp:include>
+        <jsp:include page="../admin/AdminHeader.jsp" />
+        <jsp:include page="../admin/AdminLeftSideBar.jsp" />
             <div class="right-side">
                 <a class="back-btn" href="../doctor/SearchCustomer?page=1&sort=default&size=10">
                     Back
@@ -152,7 +148,6 @@
                             <th>Diagnoses</th>
                             <th>Treatment Plan</th>
                             <th>Next Appointment</th>
-                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -164,21 +159,6 @@
                                 <td>${v.diagnoses}</td>
                                 <td>${v.treatmentPlan}</td>
                                 <td><fmt:formatDate value="${v.nextAppointment}" pattern="dd/MM/yyyy HH:mm:ss" /></td>
-                                <td>
-                                    <a href="EditCustomerVisitHistory.jsp?cId=${customer.id}
-                                       &id=${v.id}
-                                       &visitDate=${URLEncoder.encode(v.visitDate.toString(), 'UTF-8')}
-                                       &reasonForVisit=${URLEncoder.encode(v.reasonForVisit, 'UTF-8')}
-                                       &diagnoses=${URLEncoder.encode(v.diagnoses, 'UTF-8')}
-                                       &treatmentPlan=${URLEncoder.encode(v.treatmentPlan, 'UTF-8')}
-                                       &nextAppointment=${URLEncoder.encode(v.nextAppointment.toString(), 'UTF-8')}">
-                                        <button type="button">Update</button>
-                                    </a> 
-                                    /
-                                    <a href="#" onclick="doDelete(${v.id}, 'DeleteCustomerVisitHistory', '${customer.id}')">
-                                        <button type="button">Delete</button>
-                                    </a>
-                                </td>
                             </tr>
                         </c:forEach>
                     </tbody>
@@ -224,40 +204,11 @@
                 </div>
 
             </div>
-            <script>
-                let hasNextPage = document.querySelector(".hasNextPage");
-                console.log(hasNextPage.textContent);
-                let pre = document.querySelector("#previousBtn");
-                let next = document.querySelector("#nextBtn");
-                let p = document.querySelector(".page-num"); // Lấy số trang
-
-                // Kiểm tra xem trang hiện tại có phải là trang đầu tiên không
-                if (p.textContent.trim() === "Page 1") {
-                    pre.classList.add("disabled");  // Vô hiệu hóa nút Previous
-                }
-                if (p.textContent.trim() === "Page") {
-                    pre.classList.add("disabled");  // Vô hiệu hóa nút Previous
-                    next.classList.add("disabled");
-                }
-                // Kiểm tra số lượng chỉ số, nếu ít hơn 10 thì vô hiệu hóa nút Next
-                if (hasNextPage.textContent.trim() === "false") {
-                    next.classList.add("disabled");  // Vô hiệu hóa nút Next
-                }
-            </script>
-            <!-- jQuery 2.0.2 -->
-            <script src="../js/jquery.min.js" type="text/javascript"></script>
-            <!-- Bootstrap -->
-            <script src="../js/bootstrap.min.js" type="text/javascript"></script>
-            <!-- Director App -->
-            <script src="../js/Director/app.js" type="text/javascript"></script>
     </body>
     <script>
                 document.querySelectorAll(".sidebar-menu > li").forEach((li) => {
                     li.classList.remove("active");
                 });
-                let manageMedical = document.querySelector(".manage-medical");
-                manageMedical.classList.add("active");
-
                 function doDelete(index, url, cId, id) {
                     if (confirm("Are you sure delete index: " + index + " ?"))
                     {

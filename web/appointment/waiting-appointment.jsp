@@ -7,13 +7,14 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Pending Appointments</title>
-        <link rel="stylesheet" href="styles.css">
-        <link href="../css/admin/bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <link href="../css/admin/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
         <link href="../css/admin/styleAdmin.css" rel="stylesheet" type="text/css"/>
 
         <style>
-            /* Filter Section Styling */
             .search-form {
                 display: flex;
                 flex-wrap: wrap;
@@ -29,74 +30,112 @@
                 width: 200px;
             }
 
-            .filter-input:focus {
-                border-color: #007bff;
-                outline: none;
-            }
-
-            .btn {
-                background-color: #007bff;
-                color: white;
-                padding: 10px 20px;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                transition: background-color 0.3s ease;
-            }
-
-            .btn:hover {
-                background-color: #0056b3;
-            }
-
             .appointments-container {
                 margin-top: 50px;
                 margin-left: 260px;
                 padding: 20px;
             }
 
-            .alert {
-                margin-top: 20px;
-            }
-
-            /* Appointment Card Styling */
             .appointment-card {
                 background-color: #f8f9fa;
                 padding: 20px;
                 margin-bottom: 15px;
                 border-radius: 10px;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                cursor: pointer;
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .appointment-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            }
+
+            .appointment-card::after {
+                /*content: '👆 Click for details';*/
+                position: absolute;
+                right: 10px;
+                bottom: 10px;
+                font-size: 0.8em;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            .appointment-card:hover::after {
+                opacity: 0.7;
+            }
+
+            .appointment-actions {
                 display: flex;
-                flex-direction: column;
                 gap: 10px;
-            }
-
-            .appointment-card h3 {
-                margin-bottom: 10px;
-                color: #007bff;
-            }
-
-            .appointment-card p {
-                margin-bottom: 8px;
-                font-size: 16px;
+                margin-top: 10px;
             }
 
             .btn-approve {
                 background-color: #28a745;
+                color: white;
             }
-
             .btn-reject {
                 background-color: #dc3545;
+                color: white;
             }
 
-            .btn-view {
-                background-color: #007bff;
+            .modal {
+                backdrop-filter: blur(5px);
             }
 
-            .no-appointments {
-                text-align: center;
-                font-size: 18px;
-                color: #888;
+            .modal-content {
+                border-radius: 15px;
+                box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+            }
+
+            .modal-body dl {
+                display: grid;
+                grid-template-columns: auto 1fr;
+                gap: 15px 30px;
+                margin: 0;
+            }
+
+            .modal-body dt {
+                font-weight: bold;
+                color: #007bff;
+                display: flex;
+                align-items: center;
+            }
+
+            .modal-body dd {
+                margin: 0;
+                padding: 8px;
+                background: #f8f9fa;
+                border-radius: 5px;
+            }
+
+            .pagination {
+                display: flex;
+                justify-content: center;
+                align-items: center;
                 margin-top: 20px;
+            }
+
+            .pagination a {
+                margin: 0 5px;
+                padding: 8px 16px;
+                text-decoration: none;
+                color: #007bff;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                transition: background-color 0.3s;
+            }
+
+            .pagination a:hover {
+                background-color: #f1f1f1;
+            }
+
+            .pagination span {
+                margin: 0 10px;
+                font-weight: bold;
             }
         </style>
     </head>
@@ -104,76 +143,147 @@
         <jsp:include page="../admin/AdminHeader.jsp" />
         <jsp:include page="../admin/AdminLeftSideBar.jsp" />
 
-        <div class="appointments-container">
+        <div class="appointments-container right-side">
             <h2>Pending Appointments</h2>
 
-            <!-- ✅ Filter Section -->
+            Filter Section 
             <form action="${pageContext.request.contextPath}/doctor/waiting-appointment" method="get" class="search-form">
-                <!-- Search by Customer Name -->
-                <input type="text" name="customerName" placeholder="Search by Customer Name" value="${param.customerName}" class="filter-input">
+                <input type="text" name="customerName" placeholder="Search by Customer Name" 
+                       value="${param.customerName}" class="filter-input">
 
-                <!-- Sort by Date -->
                 <select name="sortOrder" class="filter-input">
                     <option value="asc" ${param.sortOrder == 'asc' ? 'selected' : ''}>Sort by Date (Ascending)</option>
                     <option value="desc" ${param.sortOrder == 'desc' ? 'selected' : ''}>Sort by Date (Descending)</option>
                 </select>
 
-                <!-- Submit Filter -->
-                <button type="submit" class="btn">Filter</button>
+                <button type="submit" class="btn btn-primary">Filter</button>
             </form>
 
-            <!-- ✅ Success Message -->
-            <c:if test="${param.success == 'true'}">
-                <div class="alert alert-success">Appointment updated successfully!</div>
-            </c:if>
 
-            <!-- ✅ Pending Appointments List -->
             <div class="appointment-list">
                 <c:choose>
                     <c:when test="${not empty appointments}">
-                        <c:forEach var="appointment" items="${appointments}">
-                            <div class="appointment-card">
-                                <h3>${appointment.customer.id}</h3>
-                                <p><strong>Date:</strong> <fmt:formatDate value="${appointment.doctorSchedule.scheduleDate}" pattern="yyyy-MM-dd" /></p>
-                                <p><strong>Time Slot:</strong> ${appointment.doctorSchedule.shift.timeStart} - ${appointment.doctorSchedule.shift.timeEnd}</p>
-                                <p><strong>Department:</strong> ${appointment.doctor.staff.department.name}</p>
-                                <p><strong>Status:</strong> Pending</p>
+                        <c:set var="hasPending" value="false" />
 
-                                <!-- ✅ Approve/Reject Actions -->
-                                <form action="${pageContext.request.contextPath}/doctor/waiting-appointment" method="post">
-                                    <input type="hidden" name="appointmentId" value="${appointment.id}">
-                                    <button type="button" class="btn btn-approve"
-                                            onclick="cancelOrAcceptAppointment('${appointment.id}', 'approve')">
-                                        Approve
-                                    </button>
-                                    <button type="button" class="btn btn-approve"
-                                            onclick="cancelOrAcceptAppointment('${appointment.id}', 'cancel')">
-                                        Reject
-                                    </button>
-                                </form>
-                            </div>
+                        <c:forEach var="appointment" items="${appointments}">
+                            <c:if test="${appointment.status eq 'Pending'}">
+                                <c:set var="hasPending" value="true" />
+                                <div class="appointment-card" onclick="showAppointmentDetails(this, '${appointment.id}')">
+                                    <h3>Patient Appointment</h3>
+                                    <p><i class="fa fa-calendar"></i> <strong>Date:</strong> 
+                                        <fmt:formatDate value="${appointment.doctorSchedule.scheduleDate}" pattern="yyyy-MM-dd" />
+                                    </p>
+                                    <p><i class="fa fa-clock-o"></i> <strong>Time:</strong> 
+                                        ${appointment.doctorSchedule.shift.timeStart} - ${appointment.doctorSchedule.shift.timeEnd}
+                                    </p>
+                                    <p><i class="fa fa-user"></i> <strong>Patient Name:</strong> ${appointment.customer.fullname}</p>
+
+                                    <div class="appointment-actions" onclick="event.stopPropagation();">
+                                        <button type="button" class="btn btn-approve"
+                                                onclick="cancelOrAcceptAppointment('${appointment.id}', 'approve')">
+                                            <i class="fa fa-check"></i> Approve
+                                        </button>
+                                        <button type="button" class="btn btn-reject"
+                                                onclick="cancelOrAcceptAppointment('${appointment.id}', 'cancel')">
+                                            <i class="fa fa-times"></i> Reject
+                                        </button>
+                                    </div>
+                                </div>
+                            </c:if>
                         </c:forEach>
+
+                        <c:if test="${not hasPending}">
+                            <div class="alert alert-info">
+                                <i class="fa fa-info-circle"></i> No pending appointments found.
+                            </div>
+                        </c:if>
+
                     </c:when>
                     <c:otherwise>
-                        <p class="no-appointments">No pending appointments found.</p>
+                        <div class="alert alert-info">
+                            <i class="fa fa-info-circle"></i> No pending appointments found.
+                        </div>
                     </c:otherwise>
                 </c:choose>
             </div>
+
         </div>
+
+
+        <div class="modal fade" id="appointmentDetailsModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fa fa-calendar-check-o"></i> Appointment Details
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <dl>
+                            <dt><i class="fa fa-user"></i> Patient ID</dt>
+                            <dd id="modalCustomerId"></dd>
+
+                            <dt><i class="fa fa-calendar"></i> Date</dt>
+                            <dd id="modalDate"></dd>
+
+                            <dt><i class="fa fa-clock-o"></i> Time Slot</dt>
+                            <dd id="modalTimeSlot"></dd>
+
+                            <dt><i class="fa fa-stethoscope"></i> Specialization</dt>
+                            <dd id="modalSpecialization"></dd>
+
+                            <dt><i class="fa fa-info-circle"></i> Status</dt>
+                            <dd id="modalStatus" class="badge bg-warning">Pending</dd>
+                        </dl>
+
+                        <div class="appointment-actions mt-4">
+                            <button type="button" class="btn btn-approve" id="modalApproveBtn">
+                                <i class="fa fa-check"></i> Approve
+                            </button>
+                            <button type="button" class="btn btn-reject" id="modalRejectBtn">
+                                <i class="fa fa-times"></i> Reject
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <% int currentPage = (int) request.getAttribute("currentPage");
+   int totalPages = (int) request.getAttribute("totalPages");
+   int pageSize = (int) request.getAttribute("pageSize");
+        %>
+
+        <div class="pagination">
+            <% if (currentPage > 1) { %>
+            <a href="?page=1&pageSize=<%=pageSize%>">First</a>
+            <a href="?page=<%=currentPage - 1%>&pageSize=<%=pageSize%>">Previous</a>
+            <% } %>
+
+            <span>Page <%= currentPage %> of <%= totalPages %></span>
+
+            <% if (currentPage < totalPages) { %>
+            <a href="?page=<%=currentPage + 1%>&pageSize=<%=pageSize%>">Next</a>
+            <a href="?page=<%=totalPages%>&pageSize=<%=pageSize%>">Last</a>
+            <% } %>
+        </div>
+
+
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-            function cancelOrAcceptAppointment(appointmentId, action) {
-                let confirmationMessage = action === "cancel" ?
-                        "Are you sure you want to cancel this appointment?" :
-                        "Are you sure you want to approve this appointment?";
+                                                    function cancelOrAcceptAppointment(appointmentId, action) {
+                                                        let confirmationMessage = action === "cancel" ?
+                                                                "Are you sure you want to cancel this appointment?" :
+                                                                "Are you sure you want to approve this appointment?";
 
-                if (confirm(confirmationMessage)) {
-                    // Redirect to appropriate servlet with query parameters
-                    window.location.href = "../doctor/appointment/action?appointmentId=" + appointmentId + "&action=" + action;
-                }
-            }
-
+                                                        if (confirm(confirmationMessage)) {
+                                                            // Redirect to appropriate servlet with query parameters
+                                                            window.location.href = "../doctor/appointment/action?appointmentId=" + appointmentId + "&action=" + action;
+                                                        }
+                                                    }
 
         </script>
-
     </body>
 </html>

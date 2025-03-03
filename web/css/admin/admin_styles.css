@@ -1,0 +1,393 @@
+/* admin_styles.css */
+
+:root {
+    --primary-color: #3c8dbc; /* Bootstrap primary color */
+    --secondary-color: #222d32; /* Dark grey for sidebar */
+    --text-color: #333;
+    --text-color-light: #b8c7ce;
+    --background-color: #ecf0f5; /* Light grey background */
+    --header-height: 50px;
+    --sidebar-width: 230px; /* Slightly wider for better readability */
+    --border-color: #d2d6de;
+    --hover-color: #1e282c;
+    --font-family: 'Arial', sans-serif;
+    --badge-background-color: #00c0ef;
+    --badge-text-color: #ffffff;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* =============== Header Styles =============== */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--header-height);
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    justify-content: space-between; /* Căn đều logo và menu */
+    align-items: center;
+    padding: 0 20px;
+    z-index: 1031;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    max-width: 230px;
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-decoration: none;
+    color: white;
+    margin-right: 0;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-role {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.badge {
+    background-color: var(--badge-background-color);
+    color: var(--badge-text-color);
+    padding: 3px 7px;
+    font-size: 12px;
+    border-radius: 4px;
+    margin-right: 5px;
+}
+.badge-info {
+    background-color: #17a2b8;
+}
+
+.nav {
+    display: flex;
+    flex-wrap: wrap;
+}
+.navbar-nav {
+    margin-left: 0;
+    gap: 15px;
+}
+
+.navbar-nav > li > a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-nav > li > a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-menu {
+    white-space: nowrap;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    min-width: 200px;
+    padding: 0;
+    margin-top: 5px;
+}
+.dropdown-menu li.dropdown-header {
+    padding: 8px 15px;
+}
+
+.dropdown-menu > li > a {
+    display: block;
+    padding: 8px 15px;
+    color: #333;
+    text-decoration: none;
+    clear: both;
+}
+
+.sidebar-toggle {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-right: 15px;
+    z-index: 1032;
+    position: relative;
+}
+.sidebar-toggle::before {
+    content: "\276C";  /* Mũi tên phải */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: transform 0.3s ease;
+}
+.sidebar-toggle.active::before {
+    content: "\276D"; /* Mũi tên trái */
+}
+
+.dropdown-menu > li > a:hover {
+    background-color: #f5f5f5;
+}
+.dropdown-menu .divider {
+    height: 1px;
+    margin: 5px 0;
+    background-color: #eee;
+}
+
+.user-menu .dropdown-menu {
+    right: 0;
+    left: auto;
+}
+
+/* =============== Sidebar Styles =============== */
+.left-side {
+    position: fixed;
+    left: 0;
+    top: var(--header-height);
+    width: var(--sidebar-width);
+    height: calc(100% - var(--header-height));
+    background-color: var(--secondary-color);
+    color: var(--text-color-light);
+    overflow-y: auto;
+    padding-top: 10px;
+    transform: translateX(calc(-1 * var(--sidebar-width))); /* Ẩn ban đầu */
+    visibility: hidden;
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 1;
+}
+.left-side.sidebar-offcanvas {
+    transform: translateX(0); /* Hiển thị sidebar */
+    visibility: visible;
+    opacity: 1;
+}
+.sidebar {
+    padding: 15px;
+}
+
+.user-panel {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-panel .image img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.user-panel .info {
+    margin-left: 15px;
+}
+
+.user-panel .info p {
+    margin: 0;
+    font-weight: 600;
+    color: white;
+}
+
+.user-panel .info a {
+    color: #5cb85c;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.user-panel .info a i.fa-circle {
+    font-size: 10px;
+}
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-menu > li {
+    margin-bottom: 5px;
+}
+
+.sidebar-menu > li > a {
+    display: block;
+    padding: 12px 15px;
+    color: var(--text-color-light);
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebar-menu > li > a > i {
+    margin-right: 8px;
+    width: 20px;
+    text-align: center;
+}
+
+.sidebar-menu > li > a:hover,
+.sidebar-menu > li.active > a {
+    background-color: var(--hover-color);
+    color: white;
+}
+
+/* =============== Right Side (Main Content) =============== */
+.right-side {
+    position: relative;
+    margin-left: 0; /* Khi sidebar ẩn */
+    padding: 20px;
+    margin-top: var(--header-height);
+    min-height: calc(100vh - var(--header-height));
+    transition: margin-left 0.3s ease;
+    width: auto;
+}
+
+.right-side.strech {
+    margin-left: var(--sidebar-width); /* Đẩy nội dung sang phải khi sidebar hiển thị */
+    width: calc(100% - var(--sidebar-width));
+}
+
+/* =============== Dashboard Styles =============== */
+.dashboard-content {
+    background: whitesmoke;
+    min-height: calc(100vh - 50px);
+    padding: 20px;
+}
+
+/* Card styling */
+.card {
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    border: none;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+.card h4 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.card p {
+    margin-bottom: 0;
+    font-size: 1rem;
+}
+
+/* Chart container */
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    margin: 20px 0;
+}
+
+/* Table responsiveness */
+@media (max-width: 768px) {
+    .left-side {
+        transform: translateX(calc(-1 * var(--sidebar-width)));
+        visibility: hidden;
+        opacity: 0;
+    }
+    .left-side.sidebar-offcanvas {
+        transform: translateX(0);
+        visibility: visible;
+        opacity: 1;
+    }
+    .table-responsive {
+        overflow-x: auto;
+    }
+    .header {
+        flex-wrap: wrap;
+        height: auto;
+    }
+    .logo {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    .navbar {
+        width: 100%;
+    }
+    .navbar-right {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        margin-left: 0;
+    }
+    .navbar-nav {
+        gap: 5px;
+        flex-direction: column;
+        width: 100%;
+    }
+    .navbar-nav > li {
+        margin: 0;
+        width: 100%;
+    }
+    .dropdown .dropdown-menu {
+        width: auto;
+        min-width: 160px;
+        left: auto;
+    }
+    .right-side {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
+/* FullCalendar-specific styles */
+.main-content {
+    margin-top: auto;
+    margin-left: auto;
+    padding: 20px;
+}
+.alert {
+    margin-bottom: 1rem;
+}
+.fc .fc-toolbar.fc-header-toolbar {
+    margin-bottom: 1.5em;
+    flex-wrap: wrap;
+}
+.fc-theme-bootstrap5 .fc-toolbar button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.fc-theme-bootstrap5 .fc-toolbar button:hover {
+    background-color: #0056b3;
+    color: white;
+}
+.fc-theme-bootstrap5 .fc-toolbar .fc-button-group > * {
+    margin-right: 5px;
+}
+.fc-prev-button,
+.fc-next-button {
+    margin-right: 15px;
+}
+.fc-today-button {
+    margin-left: 15px;
+}

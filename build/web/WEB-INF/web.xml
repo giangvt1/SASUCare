@@ -93,6 +93,10 @@
         <servlet-class>controller.doctor.UpdateDoctorProfile</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>ResetPasswordController</servlet-name>
+        <servlet-class>controller.HRController.ResetPasswordController</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>ViewApplication</servlet-name>
         <servlet-class>controller.doctor.ViewApplication</servlet-class>
     </servlet>
@@ -124,8 +128,6 @@
         <servlet-name>ManageServiceServlet</servlet-name>
         <servlet-class>controller.customerService.ManageServiceServlet</servlet-class>
     </servlet>
-<<<<<<< Updated upstream
-=======
     <servlet>
         <servlet-name>PasswordController</servlet-name>
         <servlet-class>controller.accesscontrol.PasswordController</servlet-class>
@@ -134,7 +136,7 @@
         <servlet-name>UploadServlet</servlet-name>
         <servlet-class>controller.customermanagement.UploadServlet</servlet-class>
     </servlet>
-        <servlet>
+    <servlet>
         <servlet-name>AppointmentManagementController</servlet-name>
         <servlet-class>controller.appointment.AppointmentManagementController</servlet-class>
     </servlet>
@@ -146,7 +148,10 @@
         <servlet-name>AppointmentDetailsController</servlet-name>
         <servlet-class>controller.appointment.AppointmentDetailsController</servlet-class>
     </servlet>
->>>>>>> Stashed changes
+    <servlet>
+        <servlet-name>ChatBoxController</servlet-name>
+        <servlet-class>controller.HRController.ChatBoxController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
         <url-pattern>/forgetpassword</url-pattern>
@@ -328,8 +333,6 @@
         <servlet-name>ManageServiceServlet</servlet-name>
         <url-pattern>/ManageService</url-pattern>
     </servlet-mapping>
-<<<<<<< Updated upstream
-=======
     <servlet-mapping>
         <servlet-name>ResetPasswordController</servlet-name>
         <url-pattern>/system/resetpass</url-pattern>
@@ -342,7 +345,7 @@
         <servlet-name>UploadServlet</servlet-name>
         <url-pattern>/UploadServlet</url-pattern>
     </servlet-mapping>
-        <servlet-mapping>
+    <servlet-mapping>
         <servlet-name>AppointmentManagementController</servlet-name>
         <url-pattern>/doctor/appointmentmanagement</url-pattern>
     </servlet-mapping>
@@ -354,5 +357,8 @@
         <servlet-name>AppointmentDetailsController</servlet-name>
         <url-pattern>/doctor/api/appointment</url-pattern>
     </servlet-mapping>
->>>>>>> Stashed changes
+    <servlet-mapping>
+        <servlet-name>ChatBoxController</servlet-name>
+        <url-pattern>/chat-box</url-pattern>
+    </servlet-mapping>
 </web-app>

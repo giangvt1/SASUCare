@@ -14,11 +14,12 @@
         <style>
     body { 
         font-family: Arial, sans-serif; 
-        background-color: #ffffff; /* White background */
+        background-color: #ffffff;
     }
     .container { 
-        width: 60%; 
+        width: 80%; 
         margin: 0 auto; 
+        padding: 20px;
     }
     table { 
         width: 100%; 
@@ -26,16 +27,16 @@
         margin-top: 20px; 
     }
     th, td { 
-        border: 1px solid #1a75ff; /* Blue border */
-        padding: 8px; 
+        border: 1px solid #1a75ff;
+        padding: 12px; 
         text-align: left; 
     }
     th { 
-        background-color: #1a75ff; /* Blue header */
-        color: #ffffff; /* White text */
+        background-color: #1a75ff;
+        color: #ffffff;
     }
     td a {
-        color: #1a75ff; /* Blue links */
+        color: #1a75ff;
         text-decoration: none;
     }
     td a:hover {
@@ -44,117 +45,129 @@
     .error { 
         color: red; 
     }
-    .filter-container { 
-        margin-top: 10px; 
+    .search-container { 
+        margin: 20px 0;
+        display: flex;
+        gap: 10px;
     }
     input[type="text"], select, button {
-        border: 1px solid #1a75ff; /* Blue border */
-        padding: 5px;
-        border-radius: 4px;
-    }
-    button {
-        background-color: #1a75ff; /* Blue button */
-        color: #ffffff; /* White text */
-        cursor: pointer;
-        border: none;
-        padding: 8px 12px;
-        border-radius: 4px;
-    }
-    button:hover {
-        background-color: #004de6; /* Darker blue on hover */
-    }
-    .pagination a {
-        color: #1a75ff; /* Blue pagination links */
-        text-decoration: none;
         padding: 8px 12px;
         border: 1px solid #1a75ff;
         border-radius: 4px;
-        margin: 0 2px;
+    }
+    select {
+        min-width: 150px;
+    }
+    button {
+        background-color: #1a75ff;
+        color: #ffffff;
+        cursor: pointer;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+    }
+    button:hover {
+        background-color: #004de6;
+    }
+    .package-card {
+        border: 1px solid #e0e0e0;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .package-image {
+        width: 64px;
+        height: 64px;
+        margin-bottom: 10px;
+    }
+    .price {
+        color: #1a75ff;
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+    .original-price {
+        color: #999;
+        text-decoration: line-through;
+        margin-left: 8px;
+    }
+    .pagination {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+    }
+    .pagination a {
+        color: #1a75ff;
+        padding: 8px 12px;
+        text-decoration: none;
+        border: 1px solid #1a75ff;
+        border-radius: 4px;
     }
     .pagination a.active {
         background-color: #1a75ff;
-        color: #ffffff;
-    }
-    .pagination a:hover {
-        background-color: #004de6;
-        color: #ffffff;
+        color: white;
     }
 </style>
         
     </head>
     <body>
         <jsp:include page="../Header.jsp"></jsp:include>
-        <h2>Vaccine Packages</h2>
-        <div class="container">
-    
-    <form action="VaccinePackage" method="get">
-        <input type="text" name="keyword" placeholder="Nhập từ khóa..." value="${param.keyword}">
-
-    
-    <select name="category">
-        <option value="all">Tất cả danh mục</option>
-        <c:forEach var="cat" items="${categories}">
-            <option value="${cat}" ${param.category == cat ? 'selected' : ''}>${cat}</option>
-        </c:forEach>
-    </select>
-
-    <button type="submit">Tìm kiếm</button>
-    </form>
-
-    <table border="1">
-        <thead>
-            <tr>
-<!--                <th>Id</th>-->
-                <th>Name</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Duration</th>
-                <th>Category</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-        <c:forEach var="vaccine" items="${vaccines}">
-                <tr>
-<!--                    <td>${vaccine.id}</td>-->
-                    <td><a href="packageDetail.jsp?vaccineId=${vaccine.id}">${vaccine.name}</a></td>
-                    
-                    <td>${vaccine.description}</td>
-                    <td>${vaccine.price}</td>
-                    <td>${vaccine.duration_minutes}</td>
-                    <td>${vaccine.category}</td>
-                    <td>
-                        <a href="bookAppointment?vaccineId=${vaccine.id}">Đặt lịch</a>
-                    </td>
-                </tr>
-            </c:forEach>
-        </tbody>
+     <div class="container">
+        <h2>Tìm kiếm gói vaccine</h2>
         
-    </table>
-        <nav aria-label="Page navigation">
-                        <ul class="pagination">
-                            <c:if test="${currentPage > 1}">
-                                <li class="page-item">
-                                    <a class="page-link" href="?page=${currentPage - 1}&keyword=${param.keyword}&category=${param.category}" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
-                                </li>
-                            </c:if>
-                            <c:forEach var="i" begin="1" end="${totalPages}">
-                                <li class="page-item ${i == currentPage ? 'active' : ''}">
-                                    <a class="page-link" href="?page=${i}&keyword=${param.keyword}&view=${view}">${i}</a>
-                                </li>
-                            </c:forEach>
-                            <c:if test="${currentPage < totalPages}">
-                                <li class="page-item">
-                                    <a class="page-link" href="?page=${currentPage + 1}&keyword=${param.keyword}&category=${param.category}" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </a>
-                                </li>
-                            </c:if>
-                        </ul>
-                    </nav>
-        </div>
-        <jsp:include page="../Footer.jsp"></jsp:include>
+        <form action="VaccinePackage" method="get" class="search-container">
+            <input type="text" name="keyword" placeholder="Nhập từ khóa..." value="${param.keyword}">
+            
+            <select name="category">
+                
+                <c:forEach var="cat" items="${categories}">
+                    <option value="${cat}" ${param.category == cat ? 'selected' : ''}>${cat}</option>
+                </c:forEach>
+            </select>
+
+            <button type="submit">Tìm kiếm</button>
+        </form>
+
+        <c:choose>
+            <c:when test="${not empty vaccines}">
+                <div class="packages-grid">
+                    <c:forEach var="vaccine" items="${vaccines}">
+                        <div class="package-card">
+                            <h3><a href="packageDetail.jsp?vaccineId=${vaccine.id}">${vaccine.name}</a></h3>
+                            <p>${vaccine.description}</p>
+                            <div>
+                                <span class="price">${vaccine.price}đ</span>
+                            </div>
+                            <p>Thời gian: ${vaccine.duration_minutes} phút</p>
+                            <p>Danh mục: ${vaccine.category}</p>
+                            <button onclick="location.href='bookAppointment?vaccineId=${vaccine.id}'">Đặt khám ngay</button>
+                        </div>
+                    </c:forEach>
+                </div>
+                
+                <c:if test="${totalPages > 1}">
+                    <div class="pagination">
+                        <c:if test="${currentPage > 1}">
+                            <a href="?page=${currentPage - 1}&keyword=${param.keyword}&category=${param.category}">&laquo; Trước</a>
+                        </c:if>
+                        
+                        <c:forEach begin="1" end="${totalPages}" var="i">
+                            <a href="?page=${i}&keyword=${param.keyword}&category=${param.category}" 
+                               class="${i == currentPage ? 'active' : ''}">${i}</a>
+                        </c:forEach>
+                        
+                        <c:if test="${currentPage < totalPages}">
+                            <a href="?page=${currentPage + 1}&keyword=${param.keyword}&category=${param.category}">Sau &raquo;</a>
+                        </c:if>
+                    </div>
+                </c:if>
+            </c:when>
+            <c:otherwise>
+                <p>Không tìm thấy gói vaccine nào.</p>
+            </c:otherwise>
+        </c:choose>
+    </div>
+    <jsp:include page="../Footer.jsp"></jsp:include>
     </body>
 </html>

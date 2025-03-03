@@ -23,6 +23,7 @@ import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import java.security.SecureRandom;
 
 /**
  *
@@ -53,6 +54,20 @@ public class GoogleDBContext extends DBContext<GoogleAccount> {
             LOGGER.log(Level.SEVERE, "Error finding user by email: {0}", ex.getMessage());
         }
         return null;
+    }
+    
+    public boolean isGoogleExist(String email) {
+        String sql = "SELECT * FROM [Google_Authen] WHERE email = ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setString(1, email);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error finding user by email: {0}", ex.getMessage());
+        }
+        return false;
     }
 
     @Override
@@ -246,8 +261,59 @@ public class GoogleDBContext extends DBContext<GoogleAccount> {
         }
     }
 
-    public static void main(String[] args) {
-        GoogleDBContext g = new GoogleDBContext();
-        g.send("ntvippro24@gmail.com", "ttttt", "tttt");
+    public boolean sendPasswordByEmail(String recipientEmail, String password) {
+        // Kiểm tra email người nhận không null hoặc rỗng
+        if (recipientEmail == null || recipientEmail.trim().isEmpty()) {
+            System.err.println("Recipient email is null or empty.");
+            return false;
+        }
+
+
+        // Cấu hình SMTP
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.socketFactory.port", "465");
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");  // Or jakarta.net.ssl.SSLSocketFactory if needed.
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.port", "465");
+
+        // Tạo session với thông tin xác thực
+        Session session = Session.getInstance(props, new Authenticator() { // Use getInstance
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("giangvthe187264@fpt.edu.vn", "dgoalidwbptuooya");
+            }
+        });
+        session.setDebug(true);
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("giangvthe187264@fpt.edu.vn"));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
+            message.setSubject("Your New Account Password");
+            message.setText("Dear User,\n\nYour new account has been created. Your password is: "
+                    + password
+                    + "\n\nPlease change your password after logging in.\n\nBest regards,\nAdmin: Vu Truong Giang");
+
+            Transport.send(message);
+            System.out.println("Email sent successfully to " + recipientEmail);
+            return true;
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
+
+    public String generateRandomPassword(int length) {
+        // Sử dụng SecureRandom thay vì Random
+        SecureRandom secureRandom = new SecureRandom();
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int randomIndex = secureRandom.nextInt(chars.length());
+            sb.append(chars.charAt(randomIndex));
+        }
+        return sb.toString();
+    }
+
 }

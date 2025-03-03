@@ -42,7 +42,6 @@ public class PasswordController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        
     } 
 
     /** 
@@ -55,12 +54,14 @@ public class PasswordController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        String action = request.getParameter("action");
         // Lấy dữ liệu từ form
         String oldPassword = request.getParameter("oldPassword");
         String newPassword = request.getParameter("newPassword");
         String confirmPassword = request.getParameter("confirmPassword");
         HttpSession session = request.getSession();
-        
+        CustomerDBContext customerDAO = new CustomerDBContext();
+
         if (!newPassword.equals(confirmPassword)) {
             response.setContentType("text/html");
             response.getWriter().println("<script type='text/javascript'>");
@@ -82,9 +83,21 @@ public class PasswordController extends HttpServlet {
         }
         
         Customer customer = (Customer) session.getAttribute("currentCustomer");
-        String hashPassword = hashPassword(oldPassword);
+        if (action.equals("set-pass")) {
+            
+            customer.setPassword(hashPassword(newPassword));
+            
+            customerDAO.update(customer);
+            
+            response.setContentType("text/html");
+            response.getWriter().println("<script type='text/javascript'>");
+            response.getWriter().println("alert('Password update successfully!');");
+            response.getWriter().println("window.history.back();");  // Quay lại trang trước khi bấm OK
+            response.getWriter().println("</script>");
+            return;
+        }
         
-        System.out.println("terssst: " + hashPassword.equals(customer.getPassword()));
+        String hashPassword = hashPassword(oldPassword);
         
         if (hashPassword.equals(customer.getPassword())) {
             CustomerDBContext db = new CustomerDBContext();

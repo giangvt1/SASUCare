@@ -161,61 +161,76 @@
     </head>
     <body>
         
-<jsp:include page="./admin/AdminHeader.jsp" />
+    <jsp:include page="./admin/AdminHeader.jsp" />
     <jsp:include page="./admin/AdminLeftSideBar.jsp" />
-        <div class="container-fluid main-content">
-            <h2>Tìm kiếm gói khám</h2>
+    
+        <div class="container-fluid main-content right-side">
+            
+        <h2>Tìm kiếm gói khám</h2>
 
-            <form action="ManageService" method="get">
-                <input type="text" name="keyword" placeholder="Nhập từ khóa..." value="${param.keyword}">
+        <!-- Form tìm kiếm gói khám -->
+        <form action="ManageService" method="get">
+            <input type="text" name="keyword" placeholder="Nhập từ khóa..." value="${param.keyword}">
 
-                <!-- Bộ lọc danh mục -->
-                <select name="category">
-                    <option value="all">Tất cả danh mục</option>
-                    <c:forEach var="cat" items="${categories}">
-                        <option value="${cat}" ${param.category == cat ? 'selected' : ''}>${cat}</option>
-                    </c:forEach>
-                </select>
+            <!-- Bộ lọc danh mục -->
+            <select name="category">
+                <option value="all">Tất cả danh mục</option>
+                <c:forEach var="cat" items="${categories}">
+                    <option value="${cat}" ${category == cat ? 'selected' : ''}>${cat}</option>
+                </c:forEach>
+            </select>
 
-                <button type="submit">Tìm kiếm</button>
-            </form>
+            <button type="submit">Tìm kiếm</button>
+        </form>
 
-            <h3> </h3>
+        <h3> </h3>
 
-            <form action="ManageService" method="post">
-                <input type="hidden" name="id" value="${editPackage.id}">
-                <label>Name:</label>
-                <input type="text" name="name" value="${editPackage.name}" required>
-                <label>Description:</label>
-                <input type="text" name="description" value="${editPackage.description}" required>
-                <label>Price:</label>
-                <input type="number" step="0.01" name="price" value="${editPackage.price}" required>
-                <label>Duration:</label>
-                <input type="number" name="duration" value="${editPackage.durationMinutes}" required>
+        <!-- Form thêm hoặc sửa gói khám -->
+        <form action="ManageService" method="post">
+            <input type="hidden" name="id" value="${editPackage.id}">
+            
+            <label for="name">Tên gói:</label>
+            <input type="text" name="name" value="${editPackage.name}" required>
+            
+            <label for="description">Mô tả:</label>
+            <input type="text" name="description" value="${editPackage.description}" required>
+            
+            <label for="price">Giá:</label>
+            <input type="number" step="0.01" name="price" value="${editPackage.price}" required>
+            
+            <label for="duration">Thời gian (phút):</label>
+            <input type="number" name="duration" value="${editPackage.durationMinutes}" required>
 
+            <label for="category">Danh mục:</label>
+<select name="category" required>
+    <option value="">Chọn danh mục</option>
+    <c:forEach var="cat" items="${categories}">
+        <option value="${cat}" ${cat == editPackage.category ? 'selected' : ''}>${cat}</option>
+    </c:forEach>
+</select>
+            <div style="display: none">
+                <label for="service_id">Dịch vụ:</label>
+            <select name="service_id">
+                <option value="4" ${editPackage.serviceId == 4 ? 'selected' : ''}>Test</option>
+                <option value="5" ${editPackage.serviceId == 5 ? 'selected' : ''}>Package</option>
+                <option value="6" ${editPackage.serviceId == 6 ? 'selected' : ''}>Vaccine</option>
+            </select>
+            </div>
+            
 
+            <button type="submit">${editPackage.id == null ? 'Add' : 'Update'}</button>
+        </form>
 
-                <label>Service:</label>
-                <select name="service_id">
-                    <option value="4" ${editPackage.serviceId == 4 ? 'selected' : ''}>Test</option>
-                    <option value="5" ${editPackage.serviceId == 5 ? 'selected' : ''}>Package</option>
-                    <option value="6" ${editPackage.serviceId == 6 ? 'selected' : ''}>Vaccine</option>
-                </select>
+        <!-- Hiển thị lỗi nếu có -->
+        <c:if test="${not empty error}">
+            <p class="error">${error}</p>
+        </c:if>
 
-                <button type="submit">${editPackage.id == null ? 'Add' : 'Update'}</button>
-            </form>
-
-
-            <!-- Hiển thị lỗi nếu có -->
-            <c:if test="${not empty error}">
-                <p class="error">${error}</p>
-            </c:if>
-
-            <!-- Danh sách gói khám -->
-
-            <table>
+        <!-- Danh sách gói khám -->
+        <table>
+            <thead>
                 <tr>
-                    <th>ID</th>
+<!--                    <th>ID</th>-->
                     <th>Tên gói</th>
                     <th>Mô tả</th>
                     <th>Giá (VNĐ)</th>
@@ -223,51 +238,56 @@
                     <th>Danh mục</th>
                     <th>Action</th>
                 </tr>
+            </thead>
+            <tbody>
                 <c:forEach var="pkg" items="${packages}">
                     <tr>
-                        <td>${pkg.id}</td>
+                        
                         <td><a href="packageDetail.jsp?id=${pkg.id}">${pkg.name}</a></td>
                         <td>${pkg.description}</td>
                         <td>${pkg.price}</td>
                         <td>${pkg.durationMinutes}</td>
                         <td>${pkg.category}</td>
                         <td>
-                            <a href="ManageService?page=${param.page}&action=edit&id=${pkg.id}" class="edit-btn">Edit</a> |
-                            <a href="ManageService?action=delete&id=${pkg.id}" class="delete-btn" onclick="return confirm('Bạn có chắc muốn xóa?')">Delete</a>
-                        </td>                            
+                            <!-- Sửa gói khám -->
+                            <a href="ManageService?page=${param.page}&action=edit&id=${pkg.id}" class="edit-btn">Sửa</a> |
+                            <!-- Xóa gói khám -->
+                            <a href="ManageService?action=delete&id=${pkg.id}" class="delete-btn" onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</a>
+                        </td>
                     </tr>
                 </c:forEach>
-            </table>
+            </tbody>
+        </table>
 
-            <!-- Phân trang -->
-            <nav aria-label="Page navigation">
-                <ul class="pagination">
-                    <c:if test="${currentPage > 1}">
-                        <li class="page-item">
-                            <a class="page-link" href="ManageService?page=${currentPage - 1}&keyword=${param.keyword}&category=${param.category}&view=${view}" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                    </c:if>
+        <!-- Phân trang -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <c:if test="${currentPage > 1}">
+                    <li class="page-item">
+                        <a class="page-link" href="ManageService?page=${currentPage - 1}&keyword=${param.keyword}&category=${category}&view=${view}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                </c:if>
 
-                    <c:forEach var="i" begin="1" end="${totalPages}">
-                        <li class="page-item ${i == currentPage ? 'active' : ''}">
-                            <a class="page-link" href="ManageService?page=${i}&keyword=${param.keyword}&category=${param.category}&view=${view}">${i}</a>
-                        </li>
-                    </c:forEach>
+                <c:forEach var="i" begin="1" end="${totalPages}">
+                    <li class="page-item ${i == currentPage ? 'active' : ''}">
+                        <a class="page-link" href="ManageService?page=${i}&keyword=${param.keyword}&category=${category}&view=${view}">${i}</a>
+                    </li>
+                </c:forEach>
 
-                    <c:if test="${currentPage < totalPages}">
-                        <li class="page-item">
-                            <a class="page-link" href="ManageService?page=${currentPage + 1}&keyword=${param.keyword}&category=${param.category}&view=${view}" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </c:if>
-                </ul>
-            </nav>
+                <c:if test="${currentPage < totalPages}">
+                    <li class="page-item">
+                        <a class="page-link" href="ManageService?page=${currentPage + 1}&keyword=${param.keyword}&category=${category}&view=${view}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </c:if>
+            </ul>
+        </nav>
 
+    </div>
 
-        </div>
         <script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
         <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
         <script src="../js/main.js"></script>

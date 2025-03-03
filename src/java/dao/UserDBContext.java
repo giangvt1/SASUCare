@@ -23,6 +23,36 @@ import model.system.UserAccountDTO;
  */
 public class UserDBContext extends DBContext<User> {
 
+    public boolean isEmailExists(String email) {
+        String sql = "SELECT COUNT(*) FROM [User] WHERE gmail = ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setString(1, email);
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // Nếu count > 0 nghĩa là email đã tồn tại
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    public boolean resetPassword(String username, String newPassword) {
+        String sql = "UPDATE [User] SET password = ? WHERE username = ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            // Hash mật khẩu mới sử dụng hàm hashPassword đã có trong class
+            String hashedPassword = hashPassword(newPassword);
+            stm.setString(1, hashedPassword);
+            stm.setString(2, username);
+            int rowsAffected = stm.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
     public ArrayList<User> listPaginated(int pageIndex, int pageSize) {
         ArrayList<User> users = new ArrayList<>();
         String sql = "SELECT * FROM [User] ORDER BY username OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
@@ -157,60 +187,52 @@ public class UserDBContext extends DBContext<User> {
         return false;
     }
 
-    public void deleteUser(String username) {
-        try {
-            connection.setAutoCommit(false); // Bắt đầu transaction
+        
 
-            // 0. Kiểm tra xem user có là Doctor hay không trong bảng Staff
-            boolean isDoctor = false;
-            String sqlCheck = "SELECT isDoctor FROM [Staff] WHERE staff_username = ?";
-            try (PreparedStatement psCheck = connection.prepareStatement(sqlCheck)) {
-                psCheck.setString(1, username);
-                try (ResultSet rs = psCheck.executeQuery()) {
-                    if (rs.next()) {
-                        isDoctor = rs.getBoolean("isDoctor");
+    public void deleteUser(String username) {
+        String sqlCheckDoctor = "SELECT isDoctor FROM Staff WHERE staff_username = ?";
+        String sqlDeleteDoctorDepartment = "DELETE FROM Doctor_Department WHERE doctor_id IN (SELECT id FROM Doctor WHERE staff_id = (SELECT id FROM Staff WHERE staff_username = ?))";
+        String sqlDeleteDoctorSchedule = "DELETE FROM Doctor_Schedule WHERE doctor_id IN (SELECT id FROM Doctor WHERE staff_id = (SELECT id FROM Staff WHERE staff_username = ?))";
+        String sqlDeleteDoctor = "DELETE FROM Doctor WHERE staff_id = (SELECT id FROM Staff WHERE staff_username = ?)";
+        String sqlDeleteStaff = "DELETE FROM Staff WHERE staff_username = ?";
+        String sqlDeleteUserRole = "DELETE FROM UserRole WHERE username = ?";
+        String sqlDeleteUser = "DELETE FROM [User] WHERE username = ?";
+
+        try {
+            connection.setAutoCommit(false); // Start transaction
+
+            try (PreparedStatement psCheckDoctor = connection.prepareStatement(sqlCheckDoctor); PreparedStatement psDeleteDoctorDepartment = connection.prepareStatement(sqlDeleteDoctorDepartment); PreparedStatement psDeleteDoctorSchedule = connection.prepareStatement(sqlDeleteDoctorSchedule); PreparedStatement psDeleteDoctor = connection.prepareStatement(sqlDeleteDoctor); PreparedStatement psDeleteStaff = connection.prepareStatement(sqlDeleteStaff); PreparedStatement psDeleteUserRole = connection.prepareStatement(sqlDeleteUserRole); PreparedStatement psDeleteUser = connection.prepareStatement(sqlDeleteUser)) {
+
+                // Check if the user is a doctor
+                psCheckDoctor.setString(1, username);
+                try (ResultSet rs = psCheckDoctor.executeQuery()) {
+                    if (rs.next() && rs.getBoolean("isDoctor")) {
+                        // Delete related doctor records first due to foreign key constraints
+                        psDeleteDoctorDepartment.setString(1, username);
+                        psDeleteDoctorDepartment.executeUpdate();
+
+                        psDeleteDoctorSchedule.setString(1, username);
+                        psDeleteDoctorSchedule.executeUpdate();
+
+                        psDeleteDoctor.setString(1, username);
+                        psDeleteDoctor.executeUpdate();
                     }
                 }
-            }
-            System.out.println("isDoctor = " + isDoctor);
 
-            // 1. Nếu user là Doctor, xóa các bản ghi trong bảng Doctor
-            int rowsDoctor = 0;
-            if (isDoctor) {
-                String sql_delete_doctor = "DELETE FROM [Doctor] WHERE staff_id IN (SELECT id FROM [Staff] WHERE staff_username = ?)";
-                try (PreparedStatement stmDoctor = connection.prepareStatement(sql_delete_doctor)) {
-                    stmDoctor.setString(1, username);
-                    rowsDoctor = stmDoctor.executeUpdate();
-                }
-            }
-            System.out.println("Rows deleted from Doctor: " + rowsDoctor);
+                // Delete the staff record
+                psDeleteStaff.setString(1, username);
+                psDeleteStaff.executeUpdate();
 
-            // 2. Xóa từ bảng Staff
-            int rowsStaff = 0;
-            try (PreparedStatement stmStaff = connection.prepareStatement("DELETE FROM [Staff] WHERE staff_username = ?")) {
-                stmStaff.setString(1, username);
-                rowsStaff = stmStaff.executeUpdate();
-            }
-            System.out.println("Rows deleted from Staff: " + rowsStaff);
+                // Delete from UserRole and User tables
+                psDeleteUserRole.setString(1, username);
+                psDeleteUserRole.executeUpdate();
 
-            // 3. Xóa từ bảng UserRole
-            int rowsUserRole = 0;
-            try (PreparedStatement stmUserRole = connection.prepareStatement("DELETE FROM [UserRole] WHERE username = ?")) {
-                stmUserRole.setString(1, username);
-                rowsUserRole = stmUserRole.executeUpdate();
-            }
-            System.out.println("Rows deleted from UserRole: " + rowsUserRole);
+                psDeleteUser.setString(1, username);
+                psDeleteUser.executeUpdate();
 
-            // 4. Xóa từ bảng User
-            int rowsUser = 0;
-            try (PreparedStatement stmUser = connection.prepareStatement("DELETE FROM [User] WHERE username = ?")) {
-                stmUser.setString(1, username);
-                rowsUser = stmUser.executeUpdate();
+                connection.commit(); // Commit if all deletes were successful
+                System.out.println("User '" + username + "' deleted successfully.");
             }
-            System.out.println("Rows deleted from User: " + rowsUser);
-
-            connection.commit(); // Commit transaction nếu tất cả thành công
-            System.out.println("User '" + username + "' deleted successfully.");
 
         } catch (SQLException ex) {
             System.err.println("Error deleting user '" + username + "': " + ex.getMessage());
@@ -239,7 +261,8 @@ public class UserDBContext extends DBContext<User> {
     }
 
     @Override
-    public void insert(User model) {
+    public void insert(User model
+    ) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
