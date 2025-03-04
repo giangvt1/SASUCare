@@ -30,43 +30,36 @@ public class AppointmentConfirmServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         doPost(req, resp);
     }
-
+    
+   
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        HttpSession session = request.getSession();
+        if (session.getAttribute("currentCustomer") == null) {
+            response.sendRedirect(request.getContextPath() + "/Home.jsp");
+            return;
+        }
+
         PrintWriter out = response.getWriter();
-
         try {
-            HttpSession session = request.getSession();
-            if (session == null || session.getAttribute("currentCustomer") == null) {
-                String currentUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
-                session.setAttribute("redirectAfterLogin", currentUrl); // Store the URL in session
+            Customer customer = (Customer) session.getAttribute("currentCustomer");
 
-                // Send JavaScript to show alert and redirect
-                response.setContentType("text/html");
-                out.println("<script type='text/javascript'>");
-                out.println("alert('You are not logged in. Please login to continue.');");
-                out.println("window.location.href='" + request.getContextPath() + "/Home.jsp';");
-                out.println("</script>");
-                out.close();
+            String doctorId = request.getParameter("doctor");
+            String scheduleId = request.getParameter("schedule");
+
+            Doctor doctor = doctorDB.get(doctorId);
+            DoctorSchedule doctorSchedule = doctorScheduleDB.get(scheduleId);
+
+            if (doctor == null || doctorSchedule == null || customer == null) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                out.write("{\"status\":\"error\", \"message\":\"Invalid appointment details.\"}");
                 return;
             }
 
-            //  Get customer from session
-            Customer customer = (Customer) session.getAttribute("currentCustomer");
-//          
-            //  Get doctor & schedule IDs from request
-            int doctorId = Integer.parseInt(request.getParameter("doctor"));
-            int scheduleId = Integer.parseInt(request.getParameter("schedule"));
-
-            //  Retrieve data from DB
-            Doctor doctor = doctorDB.get(String.valueOf(doctorId));
-            DoctorSchedule doctorSchedule = doctorScheduleDB.get(String.valueOf(scheduleId));
-
-//              Validate that all objects exist
-            if (customer == null || doctor == null || doctorSchedule == null) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                out.write("{\"status\":\"error\", \"message\":\"Invalid appointment details.\"}" +"hello"+ customer + "D" + doctor + "DS" + doctorSchedule);
+            if (!doctorSchedule.isAvailable()) {
+                response.sendRedirect(request.getContextPath() + "/appointment/doctor?date=" + doctorSchedule.getScheduleDate());
                 return;
             }
 
@@ -77,14 +70,12 @@ public class AppointmentConfirmServlet extends HttpServlet {
             appointment.setDoctorSchedule(doctorSchedule);
             appointment.setStatus("Pending");
 
-            //  Insert appointment into DB
-            appointmentDB.insert(appointment);
-
             //  Mark doctor schedule as booked
             doctorSchedule.setAvailable(false);
             doctorScheduleDB.update(doctorSchedule);
+            appointmentDB.insert(appointment);
 
-            out.write(customer.getId() + " successfully");
+            response.sendRedirect(request.getContextPath() + "/appointment/list");
 
         } catch (NumberFormatException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -92,9 +83,6 @@ public class AppointmentConfirmServlet extends HttpServlet {
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.write("{\"status\":\"error\", \"message\":\"An error occurred while booking.\"}");
-
         }
-        // Redirect back to the appointment list page
-        response.sendRedirect(request.getContextPath() + "/appointment/list");
     }
 }
