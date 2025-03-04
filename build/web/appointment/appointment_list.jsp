@@ -11,12 +11,6 @@
     </head>
 
     <body>
-            <%@ page import="java.util.Date" %>
-        <%
-            long currentTime = new Date().getTime(); // Get current timestamp (milliseconds)
-            request.setAttribute("currentTime", currentTime); // Set it as a request attribute
-        %>
-
         <jsp:include page="../Header.jsp"/>
 
         <div class="appointments-container">
@@ -42,7 +36,7 @@
                 <div class="event-list">
                     <c:set var="hasConfirmedAppointments" value="false" />
                     <c:forEach var="appointment" items="${appointments}">
-                        <c:if test="${appointment.status == 'Confirmed' and appointment.doctorSchedule.scheduleDate.time >= currentTime}">
+                        <c:if test="${appointment.status == 'Confirmed'}">
                             <c:set var="hasConfirmedAppointments" value="true" />
                             <div class="event-card">
                                 <div class="event-details">
@@ -72,7 +66,7 @@
                 <div class="event-list">
                     <c:set var="hasPendingAppointments" value="false" />
                     <c:forEach var="appointment" items="${appointments}">
-                        <c:if test="${appointment.status == 'Pending' and appointment.doctorSchedule.scheduleDate.time >= currentTime}">
+                        <c:if test="${appointment.status == 'Pending'}">
                             <c:set var="hasPendingAppointments" value="true" />
                             <div class="event-card">
                                 <div class="event-details">
@@ -104,7 +98,7 @@
                 <div class="event-list">
                     <c:set var="hasCanceledAppointments" value="false" />
                     <c:forEach var="appointment" items="${appointments}">
-                        <c:if test="${appointment.status == 'Canceled' }">
+                        <c:if test="${appointment.status == 'Canceled'}">
                             <c:set var="hasCanceledAppointments" value="true" />
                             <div class="event-card">
                                 <div class="event-details">

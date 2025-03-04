@@ -137,14 +137,6 @@
         <servlet-class>controller.customermanagement.UploadServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>AppointmentManagementController</servlet-name>
-        <servlet-class>controller.appointment.AppointmentManagementController</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>AppointmentsManagementController</servlet-name>
-        <servlet-class>controller.appointment.AppointmentManagementController</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>AppointmentDetailsController</servlet-name>
         <servlet-class>controller.appointment.AppointmentDetailsController</servlet-class>
     </servlet>
@@ -153,8 +145,20 @@
         <servlet-class>controller.HRController.ChatBoxController</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>DoctorScheduleServlet</servlet-name>
-        <servlet-class>controller.appointment.DoctorScheduleServlet</servlet-class>
+        <servlet-name>DoctorCalendarController</servlet-name>
+        <servlet-class>controller.doctor.DoctorCalendarController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>MedicalHistoryExportPDFServlet</servlet-name>
+        <servlet-class>controller.doctor.MedicalHistoryExportPDFServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>VisitHistoryExportPDFServlet</servlet-name>
+        <servlet-class>controller.doctor.VisitHistoryExportPDFServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AppointmentsManagementController</servlet-name>
+        <servlet-class>controller.appointment.AppointmentsManagementController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>HRApptManagementController</servlet-name>
@@ -354,14 +358,6 @@
         <url-pattern>/UploadServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>AppointmentManagementController</servlet-name>
-        <url-pattern>/doctor/appointmentmanagement</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>AppointmentsManagementController</servlet-name>
-        <url-pattern>/doctor/appointmentsmanagement</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>AppointmentDetailsController</servlet-name>
         <url-pattern>/doctor/api/appointment</url-pattern>
     </servlet-mapping>
@@ -370,8 +366,20 @@
         <url-pattern>/chat-box</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>DoctorScheduleServlet</servlet-name>
-        <url-pattern>/doctor/api/appointments</url-pattern>
+        <servlet-name>DoctorCalendarController</servlet-name>
+        <url-pattern>/doctor/calendar</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MedicalHistoryExportPDFServlet</servlet-name>
+        <url-pattern>/doctor/MedicalHistoryExportPDFServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VisitHistoryExportPDFServlet</servlet-name>
+        <url-pattern>/doctor/VisitHistoryExportPDFServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AppointmentsManagementController</servlet-name>
+        <url-pattern>/doctor/appointmentsmanagement</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>HRApptManagementController</servlet-name>

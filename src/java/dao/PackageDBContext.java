@@ -59,6 +59,33 @@ public class PackageDBContext extends DBContext<Package> {
             LOGGER.log(java.util.logging.Level.SEVERE, "Database connection error", ex);
         }
     }
+    public void save(Package pkg) {
+    String sql;
+    if (pkg.getId() == 0) {  // Nếu id là 0, tức là gói khám chưa tồn tại, thực hiện insert
+        sql = "INSERT INTO ServicePackage (name, description, price, duration_minutes, category, service_id) VALUES (?, ?, ?, ?, ?, ?)";
+    } else {  // Nếu id khác 0, thực hiện update
+        sql = "UPDATE ServicePackage SET name = ?, description = ?, price = ?, duration_minutes = ?, category = ? WHERE id = ?";
+    }
+
+    try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        ps.setString(1, pkg.getName());
+        ps.setString(2, pkg.getDescription());
+        ps.setDouble(3, pkg.getPrice());
+        ps.setInt(4, pkg.getDurationMinutes());
+        ps.setString(5, pkg.getCategory());
+
+        if (pkg.getId() != 0) {
+            ps.setInt(6, pkg.getId());  // Thêm id vào câu lệnh update
+        } else {
+            ps.setInt(6, pkg.getServiceId()); // Thêm service_id vào câu lệnh insert
+        }
+
+        ps.executeUpdate();
+    } catch (SQLException ex) {
+        LOGGER.log(java.util.logging.Level.SEVERE, "Database connection error", ex);
+    }
+}
+    
 
     // Phương thức xóa gói khám
     @Override

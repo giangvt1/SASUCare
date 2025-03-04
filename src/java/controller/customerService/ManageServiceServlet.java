@@ -177,12 +177,12 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
             Package pkg = new Package(id, name, description, price, duration, category, serviceId);
 
             // Insert or update based on ID
-            if (id == 0) {
-                db.insert(pkg);
-            } else {
-                db.update(pkg);
-            }
-
+//            if (id == 0) {
+//                db.insert(pkg);
+//            } else {
+//                db.update(pkg);
+//            }
+            db.save(pkg);
             response.sendRedirect("ManageService");
 
         } catch (Exception e) {

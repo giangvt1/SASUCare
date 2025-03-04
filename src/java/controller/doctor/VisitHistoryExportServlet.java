@@ -2,7 +2,6 @@ package controller.doctor;
 
 import dao.CustomerDBContext;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,11 +10,9 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-@WebServlet(name = "VisitHistoryExportServlet", urlPatterns = {"/exportVisitHistory"})
 public class VisitHistoryExportServlet extends HttpServlet {
 
     private static final int COLUMN_INDEX = 0;

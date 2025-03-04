@@ -58,6 +58,11 @@
                         <i class="fa fa-table"></i> <span>Add ServicePackage</span>
                     </a>
                 </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/hr/appointments">
+                        <i class="fa fa-table"></i> <span>Approve Appointment</span>
+                    </a>
+                </li>
             </c:if>
 
             <c:if test="${allowedUrls != null and (allowedUrls.contains('/doctor/SendApplication.jsp') or allowedUrls.contains('/doctor/ManageMedical.jsp'))}">
@@ -74,6 +79,11 @@
                 <li>
                     <a href="../doctor/waiting-appointment">
                         <i class="fa fa-medkit"></i> <span>Appoinment</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../doctor/calendar">
+                        <i class="fa fa-medkit"></i> <span>Calendar</span>
                     </a>
                 </li>
             </c:if>

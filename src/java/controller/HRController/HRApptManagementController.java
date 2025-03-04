@@ -7,8 +7,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Appointment;
 import com.google.gson.Gson;
-import controller.systemaccesscontrol.BaseRBACController;
 import dao.DepartmentDBContext;
+import jakarta.servlet.annotation.WebServlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,16 +16,16 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import model.Department;
-import model.system.User;
 
-public class HRApptManagementController extends BaseRBACController {
+public class HRApptManagementController extends HttpServlet {
 
     private final DepartmentDBContext departmentDB = new DepartmentDBContext();
 
     private final AppointmentDBContext appointmentDB = new AppointmentDBContext();
 
     @Override
-    protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         // Get filter parameters
         String name = request.getParameter("name");
@@ -64,8 +64,8 @@ public class HRApptManagementController extends BaseRBACController {
     }
 
     @Override
-   protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
-   
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 //        response.setContentType("application/json");
 //        response.setCharacterEncoding("UTF-8");
 //
@@ -93,8 +93,6 @@ public class HRApptManagementController extends BaseRBACController {
 //
 //        out.flush();
     }
-
-    
 
     private static class ApiResponse {
 
