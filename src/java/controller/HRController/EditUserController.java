@@ -1,72 +1,117 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller.HRController;
 
-import controller.systemaccesscontrol.BaseRequiredAuthentication;
+import controller.systemaccesscontrol.BaseRBACController;
 import dao.UserDBContext;
-import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.system.User;
+import java.io.IOException;
 
-/**
- *
- * @author acer giangvt
- */
-public class EditUserController extends BaseRequiredAuthentication {
+public class EditUserController extends BaseRBACController {
 
     @Override
-    protected void doAuthenGet(HttpServletRequest req, HttpServletResponse resp, User logged) throws ServletException, IOException {
-        String username = req.getParameter("username");
-        if (username == null || username.isEmpty()) {
-            resp.sendRedirect(req.getContextPath() + "/hr/accountlist");
+    protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged)
+            throws ServletException, IOException {
+        String username = request.getParameter("username");
+        if (username == null || username.trim().isEmpty()) {
+            response.sendRedirect(request.getContextPath() + "/hr/accountlist");
             return;
         }
-
+        
         UserDBContext userDB = new UserDBContext();
         User user = userDB.getUserByUsername(username); // Lấy user theo username
         if (user == null) {
-            resp.sendRedirect(req.getContextPath() + "/hr/accountlist");
+            response.sendRedirect(request.getContextPath() + "/hr/accountlist");
             return;
         }
-
-        req.setAttribute("user", user);
-        req.getRequestDispatcher("/hr/EditUser.jsp").forward(req, resp);
+        
+        request.setAttribute("user", user);
+        request.getRequestDispatcher("/hr/EditUser.jsp").forward(request, response);
     }
 
     @Override
-    protected void doAuthenPost(HttpServletRequest req, HttpServletResponse resp, User logged) throws ServletException, IOException {
-        String username = req.getParameter("username");
-        String displayname = req.getParameter("displayname");
-        String gmail = req.getParameter("gmail");
-        String phone = req.getParameter("phone");
+    protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged)
+            throws ServletException, IOException {
+        // Lấy và trim các giá trị đầu vào
+        String username = request.getParameter("username");
+        String newDisplayname = request.getParameter("displayname") != null ? request.getParameter("displayname").trim() : "";
+        String newGmail = request.getParameter("gmail") != null ? request.getParameter("gmail").trim() : "";
+        String newPhone = request.getParameter("phone") != null ? request.getParameter("phone").trim() : "";
 
-        if (username == null || username.isEmpty()) {
-            req.setAttribute("error", "Invalid user data");
-            req.getRequestDispatcher("/hr/EditUser.jsp").forward(req, resp);
+        // Kiểm tra username
+        if (username == null || username.trim().isEmpty()) {
+            request.setAttribute("error", "Invalid user data.");
+            request.getRequestDispatcher("/hr/EditUser.jsp").forward(request, response);
             return;
         }
-
+        
         UserDBContext userDB = new UserDBContext();
-        User user = new User();
-        user.setUsername(username);
-        user.setDisplayname(displayname);
-        user.setGmail(gmail);
-        user.setPhone(phone);
-
-        boolean success = userDB.updateUser(user);
-        if (success) {
-            req.setAttribute("success", "User updated successfully!");
-        } else {
-            req.setAttribute("error", "Failed to update user.");
+        // Lấy user hiện tại từ DB
+        User existingUser = userDB.getUserByUsername(username);
+        if (existingUser == null) {
+            request.setAttribute("error", "User not found.");
+            request.getRequestDispatcher("/hr/EditUser.jsp").forward(request, response);
+            return;
         }
-
-        req.setAttribute("user", user);
-        req.getRequestDispatcher("/hr/EditUser.jsp").forward(req, resp);
+        
+        // Validate Display Name: nếu đã tồn tại (không null) thì không cho phép cập nhật thành chuỗi rỗng
+        if (existingUser.getDisplayname() != null && newDisplayname.isEmpty()) {
+            request.setAttribute("error", "Display Name cannot be set to empty since it already exists.");
+            request.setAttribute("user", existingUser);
+            request.getRequestDispatcher("/hr/EditUser.jsp").forward(request, response);
+            return;
+        }
+        // Chuẩn hóa display name: thay thế nhiều khoảng trắng liên tiếp bằng một khoảng trắng
+        String normalizedDisplayname = newDisplayname.replaceAll("\\s+", " ");
+        if (!newDisplayname.equals(normalizedDisplayname)) {
+            request.setAttribute("error", "Display Name must not contain multiple consecutive spaces.");
+            request.setAttribute("user", existingUser);
+            request.getRequestDispatcher("/hr/EditUser.jsp").forward(request, response);
+            return;
+        }
+        
+        // Validate Email: nếu đã có, không cho phép cập nhật thành rỗng.
+        if (existingUser.getGmail() != null && newGmail.isEmpty()) {
+            request.setAttribute("error", "Email cannot be set to empty since it already exists.");
+            request.setAttribute("user", existingUser);
+            request.getRequestDispatcher("/hr/EditUser.jsp").forward(request, response);
+            return;
+        }
+        // (Bạn có thể thêm validate định dạng email bằng regex nếu cần)
+        
+        // Validate Phone Number: nếu đã có dữ liệu, không cho phép cập nhật thành rỗng;
+        // và nếu có dữ liệu mới, chỉ cho phép 10 chữ số, bắt đầu bằng 0
+        if (existingUser.getPhone() != null && newPhone.isEmpty()) {
+            request.setAttribute("error", "Phone Number cannot be set to empty since it already exists.");
+            request.setAttribute("user", existingUser);
+            request.getRequestDispatcher("/hr/EditUser.jsp").forward(request, response);
+            return;
+        }
+        if (!newPhone.isEmpty() && !newPhone.matches("^0\\d{9}$")) {
+            request.setAttribute("error", "Phone Number must be exactly 10 digits, start with 0, and contain only digits.");
+            request.setAttribute("user", existingUser);
+            request.getRequestDispatcher("/hr/EditUser.jsp").forward(request, response);
+            return;
+        }
+        
+        // Tạo đối tượng User mới dùng cho update
+        User userToUpdate = new User();
+        userToUpdate.setUsername(username);
+        userToUpdate.setDisplayname(newDisplayname);
+        userToUpdate.setGmail(newGmail);
+        userToUpdate.setPhone(newPhone);
+        
+        boolean success = userDB.updateUser(userToUpdate);
+        if (success) {
+            request.setAttribute("success", "User updated successfully!");
+        } else {
+            request.setAttribute("error", "Failed to update user.");
+        }
+        
+        // Lấy lại thông tin user sau khi update và set vào request
+        User updatedUser = userDB.getUserByUsername(username);
+        request.setAttribute("user", updatedUser);
+        request.getRequestDispatcher("/hr/EditUser.jsp").forward(request, response);
     }
-
 }

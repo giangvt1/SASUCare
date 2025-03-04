@@ -4,12 +4,30 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import model.system.User;
 
 public abstract class BaseRequiredAuthentication extends HttpServlet {
 
-    // Kiểm tra xem user đã đăng nhập chưa (session attribute "account")
+    private static final int SESSION_TIMEOUT = 30 * 60; // 30 minutes
+
+    private void ensureSecureSession(HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        session.setMaxInactiveInterval(SESSION_TIMEOUT);
+
+        // Check if session is expired
+        Long lastAccess = (Long) session.getAttribute("lastAccessTime");
+        long currentTime = System.currentTimeMillis();
+
+        if (lastAccess != null && (currentTime - lastAccess) > (SESSION_TIMEOUT * 1000)) {
+            session.invalidate();
+            return;
+        }
+
+        session.setAttribute("lastAccessTime", currentTime);
+    }
+
     private boolean isAuthenticated(HttpServletRequest req) {
         return req.getSession().getAttribute("account") != null;
     }
@@ -35,6 +53,7 @@ public abstract class BaseRequiredAuthentication extends HttpServlet {
     }
 
     // Các phương thức mà các controller con cần triển khai để xử lý logic sau khi đã xác thực
-    protected abstract void doAuthenGet(HttpServletRequest req, HttpServletResponse resp, User logged) throws ServletException, IOException;
-    protected abstract void doAuthenPost(HttpServletRequest req, HttpServletResponse resp, User logged) throws ServletException, IOException;
+    protected abstract void doAuthenGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException;
+
+    protected abstract void doAuthenPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException;
 }

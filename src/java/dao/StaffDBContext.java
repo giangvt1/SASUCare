@@ -14,17 +14,18 @@ public class StaffDBContext extends DBContext<Staff> {
 
     @Override
     public void insert(Staff staff) {
-        String sql = "INSERT INTO [Staff] (staff_username, fullname, gender, address, dob, createby, createat) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (
-             PreparedStatement stm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
-            stm.setString(1, staff.getStaffusername().getUsername()); // staffusername được gán ở đây
+        // Cập nhật câu lệnh INSERT bao gồm cột "img"
+        String sql = "INSERT INTO [Staff] (staff_username, fullname, gender, address, dob, createby, createat, img) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement stm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stm.setString(1, staff.getStaffusername().getUsername()); // Lấy username từ đối tượng User
             stm.setString(2, staff.getFullname());
             stm.setBoolean(3, staff.isGender());
             stm.setString(4, staff.getAddress());
             stm.setDate(5, staff.getDob());
             stm.setString(6, staff.getCreateby().getUsername());
             stm.setTimestamp(7, staff.getCreateat());
+            stm.setString(8, staff.getImg()); // Giá trị của cột img (có thể null)
 
             stm.executeUpdate();
             try (ResultSet generatedKeys = stm.getGeneratedKeys()) {
@@ -40,9 +41,7 @@ public class StaffDBContext extends DBContext<Staff> {
 
     public Staff getByUsername(String username) {
         String sql = "SELECT * FROM [Staff] WHERE staff_username = ?";
-        try (
-             PreparedStatement stm = connection.prepareStatement(sql)) {
-
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setString(1, username);
             try (ResultSet rs = stm.executeQuery()) {
                 if (rs.next()) {
@@ -70,6 +69,9 @@ public class StaffDBContext extends DBContext<Staff> {
                     staffUser.setUsername(rs.getString("staff_username"));
                     s.setStaffusername(staffUser);
 
+                    // Lấy cột img
+                    s.setImg(rs.getString("img"));
+
                     return s;
                 }
             }
@@ -82,17 +84,17 @@ public class StaffDBContext extends DBContext<Staff> {
 
     @Override
     public void update(Staff staff) {
-        String sql = "UPDATE [Staff] SET fullname = ?, gender = ?, address = ?, dob = ?, updateby = ?, updateat = ? WHERE staff_username = ?";
-        try (
-             PreparedStatement stm = connection.prepareStatement(sql)) {
-
+        String sql = "UPDATE [Staff] SET fullname = ?, gender = ?, address = ?, dob = ?, updateby = ?, updateat = ?, img = ? "
+                + "WHERE staff_username = ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setString(1, staff.getFullname());
             stm.setBoolean(2, staff.isGender());
             stm.setString(3, staff.getAddress());
             stm.setDate(4, staff.getDob());
             stm.setString(5, staff.getUpdateby().getUsername());
             stm.setTimestamp(6, staff.getUpdateat());
-            stm.setString(7, staff.getStaffusername().getUsername());
+            stm.setString(7, staff.getImg()); // Cập nhật cột img
+            stm.setString(8, staff.getStaffusername().getUsername());
 
             stm.executeUpdate();
         } catch (SQLException ex) {
@@ -114,6 +116,23 @@ public class StaffDBContext extends DBContext<Staff> {
     @Override
     public Staff get(String id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public String getUserGmailByStaffId(int staffId) {
+        String gmail = null;
+        String sql = "SELECT u.gmail FROM Staff s JOIN [User] u ON s.staff_username = u.username WHERE s.id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, staffId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                gmail = rs.getString("gmail");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return gmail;
     }
 
 }

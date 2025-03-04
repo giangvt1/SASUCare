@@ -40,7 +40,7 @@
                         class="form-control"
                         type="text"
                         name="username"
-                        placeholder="Enter username"
+                        placeholder="Enter username or email"
                         required
                     />
                 </td>
@@ -61,7 +61,7 @@
             </tr>
             <tr>
                 <td class="text-end pt-2">
-                    <a href="#!">Forgot Password</a>
+                    <a href="./forgotPassword">Forgot Password</a>
                 </td>
             </tr>
             <tr>
@@ -73,11 +73,11 @@
                 <td class="text-center pt-3">
                     <a href="https://accounts.google.com/o/oauth2/auth?scope=email profile openid
 
-&redirect_uri=
+&redirect_uri=http://localhost:9999/SWP391_GR6/login
 
 &response_type=code
 
-&client_id=
+&client_id=370292122542-oqm0o2t9bsc5i2mmeovgnd85nch6fgb4.apps.googleusercontent.com
 
 &approval_prompt=force" class="btn btn-light w-100 d-flex align-items-center justify-content-center border">
                         <img
