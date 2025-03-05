@@ -14,12 +14,12 @@ public class Application {
     private String reply;
     private Timestamp dateSend;
     private Timestamp dateReply;
+    private String staffName;
 
     public Application() {
     }
 
-    public Application(int id, int typeId, String typeName, int staffSendId, int staffProgressId,
-            String reason, String status, String reply, Timestamp dateSend, Timestamp dateReply) {
+    public Application(int id, int typeId, String typeName, int staffSendId, int staffProgressId, String reason, String status, String reply, Timestamp dateSend, Timestamp dateReply, String staffName) {
         this.id = id;
         this.typeId = typeId;
         this.typeName = typeName;
@@ -30,6 +30,7 @@ public class Application {
         this.reply = reply;
         this.dateSend = dateSend;
         this.dateReply = dateReply;
+        this.staffName = staffName;
     }
 
     public int getId() {
@@ -111,4 +112,13 @@ public class Application {
     public void setDateReply(Timestamp dateReply) {
         this.dateReply = dateReply;
     }
+
+    public String getStaffName() {
+        return staffName;
+    }
+
+    public void setStaffName(String staffName) {
+        this.staffName = staffName;
+    }
+
 }

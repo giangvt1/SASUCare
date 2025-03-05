@@ -6,7 +6,6 @@ package controller.doctor;
 
 import controller.systemaccesscontrol.BaseRBACController;
 import dao.ApplicationDBContext;
-import dao.DoctorDBContext;
 import dao.GoogleDBContext;
 import dao.StaffDBContext;
 import java.io.IOException;
@@ -35,6 +34,7 @@ public class SendApplication extends BaseRBACController {
     @Override
     protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
         int staffId = Integer.parseInt(request.getParameter("staffId"));
+        String staffName = request.getParameter("staffName");
         int typeId = Integer.parseInt(request.getParameter("typeId"));
         String reason = request.getParameter("reason");
         Application a = new Application();
@@ -51,8 +51,8 @@ public class SendApplication extends BaseRBACController {
 
         if (isCreated) {
             request.setAttribute("message", "Application sent successfully!");
-            String title = "Notification";
-            String mess = "You have an Application from Doctor";
+            String title = "Bạn có đơn từ bác sỹ:" + staffName;
+            String mess = "Lời nhắn: " + reason;
             g.send(gmail, title, mess);
 
         } else {

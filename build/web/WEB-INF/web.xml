@@ -155,14 +155,30 @@
     <servlet>
         <servlet-name>DoctorCalendarController</servlet-name>
         <servlet-class>controller.doctor.DoctorCalendarController</servlet-class>
-        </servlet>
-        <servlet>
+    </servlet>
+    <servlet>
         <servlet-name>MedicalHistoryExportPDFServlet</servlet-name>
         <servlet-class>controller.doctor.MedicalHistoryExportPDFServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>VisitHistoryExportPDFServlet</servlet-name>
         <servlet-class>controller.doctor.VisitHistoryExportPDFServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ViewStaffApplication</servlet-name>
+        <servlet-class>controller.HRController.ViewStaffApplication</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditStaffApplication</servlet-name>
+        <servlet-class>controller.HRController.EditStaffApplication</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ManageTypeApplication</servlet-name>
+        <servlet-class>controller.AdminController.ManageTypeApplication</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditTypeApplication</servlet-name>
+        <servlet-class>controller.AdminController.EditTypeApplication</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
@@ -376,13 +392,29 @@
     <servlet-mapping>
         <servlet-name>DoctorCalendarController</servlet-name>
         <url-pattern>/doctor/calendar</url-pattern>
-        </servlet-mapping>
-        <servlet-mapping>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>MedicalHistoryExportPDFServlet</servlet-name>
         <url-pattern>/doctor/MedicalHistoryExportPDFServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>VisitHistoryExportPDFServlet</servlet-name>
         <url-pattern>/doctor/VisitHistoryExportPDFServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewStaffApplication</servlet-name>
+        <url-pattern>/hr/ViewStaffApplication</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditStaffApplication</servlet-name>
+        <url-pattern>/hr/EditStaffApplication</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ManageTypeApplication</servlet-name>
+        <url-pattern>/admin/ManageTypeApplication</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditTypeApplication</servlet-name>
+        <url-pattern>/admin/EditTypeApplication</url-pattern>
     </servlet-mapping>
 </web-app>

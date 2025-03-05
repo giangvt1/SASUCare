@@ -12,6 +12,7 @@ import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -42,7 +43,7 @@ public class MedicalHistoryExportPDFServlet extends HttpServlet {
             document.open();
 
             // Tiêu đề
-            Font titleFont = new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD);
+            Font titleFont = new Font(BaseFont.createFont("D:\\Ky 5\\SWP\\DoctorSide\\SWP391_GROUP6\\libs\\arialuni.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED), 16, Font.BOLD);
             Paragraph title = new Paragraph("Medical Histories", titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
