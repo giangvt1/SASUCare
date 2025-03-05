@@ -54,7 +54,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../ManageService">
+                    <a href="${pageContext.request.contextPath}/ManageService">
                         <i class="fa fa-table"></i> <span>Add ServicePackage</span>
                     </a>
                 </li>

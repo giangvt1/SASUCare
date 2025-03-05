@@ -52,17 +52,13 @@ public class RatingServlet extends HttpServlet {
         String customerUsername = customer.getUsername();
         RatingDBContext ratingDB = new RatingDBContext();
 
-//        if ("delete".equals(action)) {
-//            ratingDB.deleteRating(customer.getId(), doctorId);
-//        } else {
         int rate = Integer.parseInt(request.getParameter("rate"));
         String comment = request.getParameter("comment");
-        request.setAttribute("doctor", doctor);
+        
         Rating rating = new Rating(doctorId, customerUsername, rate, comment);
         ratingDB.saveOrUpdateRating(rating);
 
-
-        request.getRequestDispatcher("/guest/doctorDetails.jsp").forward(request, response);
+        response.sendRedirect(request.getContextPath() + "/DoctorDetailsServlet?id="+doctorId);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

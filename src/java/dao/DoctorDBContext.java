@@ -6,7 +6,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.DoctorSchedule;
@@ -21,11 +23,6 @@ import model.system.Staff;
 public class DoctorDBContext extends DBContext<Doctor> {
 
     private static final Logger LOGGER = Logger.getLogger(DoctorDBContext.class.getName());
-
-    @Override
-    public Doctor get(String id) {
-        return getDoctorById(Integer.parseInt(id));
-    }
     public int getDoctorIdByStaffUsername(String username) {
     int doctorId = -1;
     String sql = "SELECT d.id FROM Doctor d JOIN Staff s ON d.staff_id = s.id WHERE s.staff_username = ?";
@@ -61,6 +58,11 @@ public class DoctorDBContext extends DBContext<Doctor> {
         return doctor;
     }
 
+    @Override
+    public Doctor get(String id) {
+        return getDoctorById(Integer.parseInt(id));
+    }
+
     public ArrayList<DoctorSchedule> getDoctorSchedules(int doctorId, Date date) {
         ArrayList<DoctorSchedule> schedules = new ArrayList<>();
         String sql = """
@@ -90,11 +92,6 @@ public class DoctorDBContext extends DBContext<Doctor> {
             LOGGER.log(Level.SEVERE, "Error retrieving doctor schedules", ex);
         }
         return schedules;
-    }
-
-    public static void main(String[] args) {
-        DoctorDBContext db = new DoctorDBContext();
-        System.out.println(db.getDoctorById(1).getRatings());
     }
 
     public Doctor getDoctorById(int doctorId) {
@@ -152,10 +149,6 @@ public class DoctorDBContext extends DBContext<Doctor> {
         return doctor;
     }
 
-//    public static void main(String[] args) {
-//        DoctorDBContext db = new DoctorDBContext();
-//        System.out.println(db.list());
-//    }
     @Override
     public ArrayList<Doctor> list() {
         HashMap<Integer, Doctor> doctorMap = new HashMap<>();
@@ -311,6 +304,35 @@ public class DoctorDBContext extends DBContext<Doctor> {
     @Override
     public void delete(Doctor model) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public List<Doctor> getAllDoctors() {
+        HashMap<Integer, Doctor> doctorMap = new HashMap<>();
+        String sql = """
+                SELECT d.id, s.fullname, dep.name AS specialty
+                FROM Doctor d
+                JOIN Staff s ON d.staff_id = s.id
+                LEFT JOIN Doctor_Department dd ON d.id = dd.doctor_id
+                LEFT JOIN Department dep ON dd.department_id = dep.id
+                ORDER BY d.id
+                """;
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                int doctorId = rs.getInt("id");
+
+                // Nếu bác sĩ chưa có trong danh sách, tạo mới
+                doctorMap.putIfAbsent(doctorId, new Doctor(doctorId, rs.getString("fullname"), new ArrayList<>()));
+
+                // Thêm chuyên khoa vào danh sách
+                if (rs.getString("specialty") != null) {
+                    doctorMap.get(doctorId).getSpecialties().add(rs.getString("specialty"));
+                }
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error retrieving doctor list", ex);
+        }
+        return new ArrayList<>(doctorMap.values());
     }
 
 }

@@ -128,7 +128,7 @@ public class ManageServiceServlet extends HttpServlet {
             }
         }
 
-        request.getRequestDispatcher("SearchPackageForm.jsp").forward(request, response);
+        request.getRequestDispatcher("/hr/SearchPackageForm.jsp").forward(request, response);
     }
 
 
@@ -157,19 +157,34 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
             String category = request.getParameter("category");
 
             try {
-                price = Double.parseDouble(request.getParameter("price"));
-                duration = Integer.parseInt(request.getParameter("duration"));
+                // Kiểm tra price có phải là số hợp lệ không và không âm
+            String priceStr = request.getParameter("price");
+            price = Double.parseDouble(priceStr);
+            if (price < 0 || price > 1000000000) { // Giới hạn max có thể điều chỉnh
+                request.setAttribute("error", "Giá phải là số dương và không quá lớn.");
+                request.getRequestDispatcher("/hr/SearchPackageForm.jsp").forward(request, response);
+                return;
+            }
+
+            // Kiểm tra duration có phải là số hợp lệ không và không âm
+            String durationStr = request.getParameter("duration");
+            duration = Integer.parseInt(durationStr);
+            if (duration < 0 || duration > 1440) { // Giới hạn max có thể điều chỉnh
+                request.setAttribute("error", "Thời gian phải là số dương và không quá lớn.");
+                request.getRequestDispatcher("/hr/SearchPackageForm.jsp").forward(request, response);
+                return;
+            }
                 serviceId = Integer.parseInt(request.getParameter("service_id"));
             } catch (NumberFormatException e) {
                 request.setAttribute("error", "Dữ liệu không hợp lệ: " + e.getMessage());
-                request.getRequestDispatcher("SearchPackageForm.jsp").forward(request, response);
+                request.getRequestDispatcher("/hr/SearchPackageForm.jsp").forward(request, response);
                 return;
             }
 
             // Validation
             if (name == null || name.trim().isEmpty()) {
                 request.setAttribute("error", "Vui lòng điền đầy đủ thông tin.");
-                request.getRequestDispatcher("SearchPackageForm.jsp").forward(request, response);
+                request.getRequestDispatcher("/hr/SearchPackageForm.jsp").forward(request, response);
                 return;
             }
 
@@ -188,7 +203,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Lỗi xử lý dữ liệu: " + e.getMessage());
-            request.getRequestDispatcher("SearchPackageForm.jsp").forward(request, response);
+            request.getRequestDispatcher("/hr/SearchPackageForm.jsp").forward(request, response);
         }
     
 }

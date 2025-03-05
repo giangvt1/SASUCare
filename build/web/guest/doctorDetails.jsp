@@ -158,7 +158,7 @@
         <div id="ratingPopup" class="popup">
 
             <h3>Đánh giá Bác sĩ</h3>
-            <form action="RatingServlet" method="get">
+            <form action="RatingServlet" method="post">
                 <input type="hidden" name="doctorId" value="${doctor.id}">
 
                 <div class="stars">
