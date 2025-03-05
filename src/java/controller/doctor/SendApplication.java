@@ -6,7 +6,6 @@ package controller.doctor;
 
 import controller.systemaccesscontrol.BaseRBACController;
 import dao.ApplicationDBContext;
-import dao.DoctorDBContext;
 import dao.GoogleDBContext;
 import dao.StaffDBContext;
 import java.io.IOException;

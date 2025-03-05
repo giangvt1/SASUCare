@@ -12,6 +12,7 @@ import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -40,28 +41,29 @@ public class MedicalHistoryExportPDFServlet extends HttpServlet {
             Document document = new Document();
             PdfWriter.getInstance(document, response.getOutputStream());
             document.open();
+            String fontPath = getServletContext().getRealPath("/fonts/vuArial.ttf");
+            BaseFont baseFont = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
-            // Tiêu đề
-            Font titleFont = new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD);
+            Font titleFont = new Font(baseFont, 16, Font.BOLD);
+            Font headerFont = new Font(baseFont, 12, Font.BOLD);
+            Font contentFont = new Font(baseFont, 10, Font.NORMAL);
             Paragraph title = new Paragraph("Medical Histories", titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
             document.add(new Paragraph("\n"));
-            // Tạo bảng
             PdfPTable table = new PdfPTable(3);
             table.setWidthPercentage(100);
             table.setWidths(new float[]{1, 3, 6});
 
-            Font headerFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
             table.addCell(new PdfPCell(new Phrase("#", headerFont)));
             table.addCell(new PdfPCell(new Phrase("Name", headerFont)));
             table.addCell(new PdfPCell(new Phrase("Detail", headerFont)));
 
             int index = 1;
             for (MedicalHistory history : medicalHistory) {
-                table.addCell(String.valueOf(index++));
-                table.addCell(history.getName());
-                table.addCell(history.getDetail());
+                table.addCell(new PdfPCell(new Phrase(String.valueOf(index++), contentFont)));
+                table.addCell(new PdfPCell(new Phrase(history.getName(), contentFont)));
+                table.addCell(new PdfPCell(new Phrase(history.getDetail(), contentFont)));
             }
 
             document.add(table);
