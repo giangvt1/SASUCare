@@ -137,14 +137,6 @@
         <servlet-class>controller.customermanagement.UploadServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>AppointmentManagementController</servlet-name>
-        <servlet-class>controller.appointment.AppointmentManagementController</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>AppointmentsManagementController</servlet-name>
-        <servlet-class>controller.appointment.AppointmentManagementController</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>AppointmentDetailsController</servlet-name>
         <servlet-class>controller.appointment.AppointmentDetailsController</servlet-class>
     </servlet>
@@ -179,6 +171,12 @@
     <servlet>
         <servlet-name>EditTypeApplication</servlet-name>
         <servlet-class>controller.AdminController.EditTypeApplication</servlet-class>
+        <servlet-name>AppointmentsManagementController</servlet-name>
+        <servlet-class>controller.appointment.AppointmentsManagementController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>HRApptManagementController</servlet-name>
+        <servlet-class>controller.HRController.HRApptManagementController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
@@ -374,14 +372,6 @@
         <url-pattern>/UploadServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>AppointmentManagementController</servlet-name>
-        <url-pattern>/doctor/appointmentmanagement</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>AppointmentsManagementController</servlet-name>
-        <url-pattern>/doctor/appointmentsmanagement</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>AppointmentDetailsController</servlet-name>
         <url-pattern>/doctor/api/appointment</url-pattern>
     </servlet-mapping>
@@ -416,5 +406,11 @@
     <servlet-mapping>
         <servlet-name>EditTypeApplication</servlet-name>
         <url-pattern>/admin/EditTypeApplication</url-pattern>
+        <servlet-name>AppointmentsManagementController</servlet-name>
+        <url-pattern>/doctor/appointmentsmanagement</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>HRApptManagementController</servlet-name>
+        <url-pattern>/hr/appointments</url-pattern>
     </servlet-mapping>
 </web-app>

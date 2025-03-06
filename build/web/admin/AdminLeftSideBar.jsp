@@ -66,6 +66,11 @@
                         <i class="fa fa-table"></i> <span>Add ServicePackage</span>
                     </a>
                 </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/hr/appointments">
+                        <i class="fa fa-table"></i> <span>Approve Appointment</span>
+                    </a>
+                </li>
             </c:if>
 
             <c:if test="${allowedUrls != null and (allowedUrls.contains('/doctor/SendApplication.jsp') or allowedUrls.contains('/doctor/ManageMedical.jsp'))}">
