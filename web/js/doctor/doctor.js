@@ -72,3 +72,16 @@ document.querySelector("form").addEventListener("submit", function (event) {
         event.preventDefault();
     }
 });
+
+document.querySelector("form").addEventListener("submit", function (event) {
+    let reason = document.getElementById("reason").value.trim();
+    let mess = "";
+    if (reason === "") {
+        mess += "Reason not null\n";
+
+    }
+    if (mess !== "") {
+        alert(mess);
+        event.preventDefault();
+    }
+});  

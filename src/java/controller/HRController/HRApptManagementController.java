@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Appointment;
 import com.google.gson.Gson;
+import controller.systemaccesscontrol.BaseRBACController;
 import dao.DepartmentDBContext;
 import jakarta.servlet.annotation.WebServlet;
 
@@ -18,6 +19,9 @@ import java.util.List;
 import model.Department;
 import model.system.User;
 public class HRApptManagementController extends BaseRBACController {
+    AppointmentDBContext appointmentDB = new AppointmentDBContext();
+    DepartmentDBContext departmentDB = new DepartmentDBContext();
+    
     @Override
     protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
 
