@@ -27,6 +27,7 @@
             <a class="back-btn" href="ViewApplication?staffId=${sessionScope.staff.id}">View Application</a>
             <form action="SendApplication" method="POST" class="mt-4">
                 <input type="text" hidden id="staffId" name="staffId" value="${sessionScope.staff.id}" required><br>
+                <input type="text" hidden name="staffName" value="${sessionScope.staff.fullname}" required><br>
                 <div class="form-group">
                     <label for="typeId">Loại đơn</label>
                     <select style="width: 15%" class="form-control" name="typeId" id="typeId" required="">
@@ -41,38 +42,9 @@
                     <textarea class="form-control" id="reason" name="reason" placeholder="Enter your reason" rows="10" required></textarea>
                 </div>
                 <div>${message}</div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary">Send</button>
             </form>
         </div>
-        <script>
-            document.querySelector("form").addEventListener("submit", function (event) {
-                let reason = document.getElementById("reason").value.trim();
-                let mess = "";
-                if (reason === "") {
-                    mess += "Reason not null\n";
-
-                }
-                if (mess !== "") {
-                    alert(mess);
-                    event.preventDefault();
-                }
-            });
-        </script>
-        <!-- jQuery 2.0.2 -->
-        <script src="../js/jquery.min.js" type="text/javascript"></script>
-        <!-- Bootstrap -->
-        <script src="../js/bootstrap.min.js" type="text/javascript"></script>
-        <!-- Director App -->
-        <script src="../js/Director/app.js" type="text/javascript"></script>
-
-        <!-- Director dashboard demo (This is only for demo purposes) -->
-        <script src="../js/Director/dashboard.js" type="text/javascript"></script>
-        <script>
-            document.querySelectorAll(".sidebar-menu > li").forEach((li) => {
-                li.classList.remove("active");
-            });
-            let manageApplication = document.querySelector(".manage-application");
-            manageApplication.classList.add("active");
-        </script>
+        <script src="../js/doctor/doctor.js"></script>
     </body>
 </html>

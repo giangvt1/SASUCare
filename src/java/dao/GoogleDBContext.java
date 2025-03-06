@@ -55,7 +55,7 @@ public class GoogleDBContext extends DBContext<GoogleAccount> {
         }
         return null;
     }
-    
+
     public boolean isGoogleExist(String email) {
         String sql = "SELECT * FROM [Google_Authen] WHERE email = ?";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
@@ -193,39 +193,9 @@ public class GoogleDBContext extends DBContext<GoogleAccount> {
     public int sendOtp(String gmail) {
         Random rand = new Random();
         int otpvalue = 100000 + rand.nextInt(900000);
-
-        String to = gmail;
-
-        Properties props = new Properties();
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.socketFactory.port", "465");
-        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");  // Or jakarta.net.ssl.SSLSocketFactory if needed.
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.port", "465");
-
-        Session session = Session.getInstance(props, new Authenticator() { // Use getInstance
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("hailnhe181075@fpt.edu.vn", "mjpxokkwmtgkxqro");
-            }
-        });
-
-        try {
-            MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("hailnhe181075@fpt.edu.vn")); // Use your actual "from" email.
-            message.setRecipients(Message.RecipientType.TO, to);  // Use setRecipients if sending to one address
-            message.setSubject("Your OTP"); // More descriptive subject
-            message.setText("Your OTP is: " + otpvalue);
-
-            Transport.send(message);
-            System.out.println("Message sent successfully");
-            return otpvalue; // Return OTP on success
-
-        } catch (MessagingException e) {
-            LOGGER.log(Level.SEVERE, "Error sending OTP email", e); // Log the exception
-            e.printStackTrace(); // Print the stack trace for debugging.
-            return -1; // Return -1 to indicate failure.  Don't throw a RuntimeException.
-        }
+        String otp = "Your OTP: " + otpvalue;
+        send(gmail, "OTP", otp);
+        return otpvalue;
     }
 
     public void send(String gmail, String title, String messageContent) {
@@ -234,11 +204,11 @@ public class GoogleDBContext extends DBContext<GoogleAccount> {
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.socketFactory.port", "465");
-        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");  // Or jakarta.net.ssl.SSLSocketFactory if needed.
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.port", "465");
 
-        Session session = Session.getInstance(props, new Authenticator() { // Use getInstance
+        Session session = Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication("hailnhe181075@fpt.edu.vn", "mjpxokkwmtgkxqro");
@@ -249,8 +219,8 @@ public class GoogleDBContext extends DBContext<GoogleAccount> {
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress("hailnhe181075@fpt.edu.vn"));
             message.setRecipients(Message.RecipientType.TO, to);
-            message.setSubject(" " + title);
-            message.setText(" " + messageContent);
+            message.setSubject(title, "UTF-8");
+            message.setText(messageContent, "UTF-8");
 
             Transport.send(message);
             System.out.println("Message sent successfully");
@@ -267,7 +237,6 @@ public class GoogleDBContext extends DBContext<GoogleAccount> {
             System.err.println("Recipient email is null or empty.");
             return false;
         }
-
 
         // Cấu hình SMTP
         Properties props = new Properties();
