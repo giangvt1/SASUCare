@@ -28,7 +28,7 @@ public class VisitHistoryExportPDFServlet extends HttpServlet {
         // Lấy các tham số từ request
         int cId = Integer.parseInt(request.getParameter("cId"));
         String currentPageStr = request.getParameter("pageVisit");
-        String sizeOfEachTableStr = request.getParameter("sizevisit");
+        String sizeOfEachTableStr = request.getParameter("sizeVisit");
 
         // Xử lý các tham số phân trang
         int currentPage = (currentPageStr != null && !currentPageStr.isEmpty()) ? Integer.parseInt(currentPageStr) : 1;
@@ -46,9 +46,6 @@ public class VisitHistoryExportPDFServlet extends HttpServlet {
             Document document = new Document();
             PdfWriter.getInstance(document, response.getOutputStream());
             document.open();
-            String fontPath = getServletContext().getRealPath("/fonts/vuArial.ttf");
-            BaseFont baseFont = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-
             String fontPath = getServletContext().getRealPath("/fonts/vuArial.ttf");
             BaseFont baseFont = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             Font titleFont = new Font(baseFont, 16, Font.BOLD);
@@ -77,9 +74,6 @@ public class VisitHistoryExportPDFServlet extends HttpServlet {
 
             int index = 1;
             for (VisitHistory history : visitHistory) {
-                table.addCell(String.valueOf(index++));
-                // Kiểm tra và định dạng ngày tháng
-
                 table.addCell(new PdfPCell(new Phrase(String.valueOf(index++), contentFont)));
                 table.addCell(new PdfPCell(new Phrase(history.getVisitDate() != null ? dateFormat.format(history.getVisitDate()) : "Invalid Date", contentFont)));
                 table.addCell(new PdfPCell(new Phrase(history.getReasonForVisit() != null ? history.getReasonForVisit() : "", contentFont)));

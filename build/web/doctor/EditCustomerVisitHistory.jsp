@@ -35,7 +35,7 @@
                 <div class="date-container">
                     <div class="date-item">
                         <label for="visitDate">Visit Date:</label>
-                        <input type="text" id="visitDate" class="dateTime" readonly="" name="visitDate" value="${param.visitDate}">
+                        <input type="text" id="visitDate" class="dateTime" name="visitDate" value="${param.visitDate}">
                     </div>
                     <div class="date-item">
                         <label for="nextAppointment">Next Appointment:</label>

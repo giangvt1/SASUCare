@@ -10,8 +10,6 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener('DOMContentLoaded', function () {
     let visitDateInput = document.getElementById("visitDate");
     let nextAppointmentInput = document.getElementById("nextAppointment");
-    let dateSendInput = document.getElementById("dateSend");
-    let dateReplyInput = document.getElementById("dateReply");
     flatpickr("#visitDate", {
         enableTime: true,
         dateFormat: "Y-m-d H:i",
@@ -30,26 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
         locale: "vn",
         defaultDate: nextAppointmentInput.value || ""
     });
-    flatpickr("#dateSend", {
-        enableTime: true,
-        dateFormat: "Y-m-d H:i",
-        altInput: true,
-        time_24hr: true,
-        altFormat: "d/m/Y H:i",
-        locale: "vn",
-        defaultDate: dateSendInput.value || ""
-    });
-    flatpickr("#dateReply", {
-        enableTime: true,
-        dateFormat: "Y-m-d H:i",
-        altInput: true,
-        time_24hr: true,
-        altFormat: "d/m/Y H:i",
-        locale: "vn",
-        defaultDate: dateReplyInput.value || new Date()
-    });
 });
-
 document.addEventListener('DOMContentLoaded', function () {
     let dateSendInput = document.getElementById("dateSend");
     let dateReplyInput = document.getElementById("dateReply");

@@ -171,6 +171,8 @@
     <servlet>
         <servlet-name>EditTypeApplication</servlet-name>
         <servlet-class>controller.AdminController.EditTypeApplication</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>AppointmentsManagementController</servlet-name>
         <servlet-class>controller.appointment.AppointmentsManagementController</servlet-class>
     </servlet>
@@ -406,6 +408,8 @@
     <servlet-mapping>
         <servlet-name>EditTypeApplication</servlet-name>
         <url-pattern>/admin/EditTypeApplication</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>AppointmentsManagementController</servlet-name>
         <url-pattern>/doctor/appointmentsmanagement</url-pattern>
     </servlet-mapping>

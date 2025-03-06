@@ -36,9 +36,11 @@
                 <a href="${pageContext.request.contextPath}/admin/Dashboard.jsp">
                     <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                 </a>
+                <c:if test="${sessionScope.allowedUrls != null && sessionScope.allowedUrls.contains('/admin/ManageTypeApplication')}">
                     <a href="${pageContext.request.contextPath}/admin/ManageTypeApplication">
-                    <i class="fa fa-globe"></i> <span>Manage Type Application</span>
-                </a>
+                        <i class="fa fa-globe"></i> <span>Manage Type Application</span>
+                    </a>
+                </c:if> 
             </li>
             <c:if test="${sessionScope.allowedUrls != null && sessionScope.allowedUrls.contains('/hr/create')}">
                 <li>
