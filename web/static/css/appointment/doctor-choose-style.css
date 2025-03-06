@@ -248,6 +248,31 @@ li {
   background-color: var(--light-gray);
   margin-left: var(--spacing-md);
 }
+
+/* Style the modal content */
+.modal-content {
+    width: 400px;
+    padding: 20px;
+    background-color: white;
+    position: relative;
+}
+
+/* Add scroll for the checkbox list */
+.checkbox-container {
+    max-height: 300px; /* Adjust this height as needed */
+    overflow-y: auto;  /* Show scrollbar if the content exceeds the max height */
+    margin-bottom: 20px;
+}
+
+/* Style for close button */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 30px;
+    cursor: pointer;
+}
+
 /* 
 #confirmBooking:hover {
   background-color: var(--primary-dark);

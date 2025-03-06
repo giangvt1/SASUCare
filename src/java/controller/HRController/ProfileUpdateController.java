@@ -1,5 +1,6 @@
 package controller.HRController;
 
+import dal.DBContext;
 import controller.systemaccesscontrol.BaseRBACController;
 import dao.StaffDBContext;
 import java.io.File;
@@ -15,9 +16,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
+import java.nio.file.Paths;
 import model.system.Staff;
 import model.system.User;
-import java.nio.file.Paths;
 
 @MultipartConfig // Cho phép xử lý multipart/form-data
 public class ProfileUpdateController extends BaseRBACController {
@@ -61,15 +62,18 @@ public class ProfileUpdateController extends BaseRBACController {
                 request.getRequestDispatcher("/admin/AdminProfile.jsp").forward(request, response);
                 return;
             }
-            String uploadPath = request.getServletContext().getRealPath("") + File.separator + "uploads";
+            // Sử dụng getRealPath("/uploads") thay vì getRealPath("") + File.separator + "uploads"
+            String uploadPath = request.getServletContext().getRealPath("/uploads");
             File uploadDir = new File(uploadPath);
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
+            // Sử dụng "/" cho URL ảnh
             String newFileName = System.currentTimeMillis() + "_" + fileName;
             String filePath = uploadPath + File.separator + newFileName;
             filePart.write(filePath);
-            staff.setImg("uploads" + File.separator + newFileName);
+            // Lưu URL ảnh với dấu "/" thay vì File.separator
+            staff.setImg("uploads/" + newFileName);
         }
 
         String fullname = request.getParameter("fullname") != null ? request.getParameter("fullname").trim() : "";

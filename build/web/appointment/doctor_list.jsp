@@ -22,7 +22,7 @@
                 <input type="hidden" id="selectedDate" name="date" value="${selectedDate}" required>
 
             <!-- Search by doctor name -->
-            <input type="text" id="doctorName" name="name" placeholder="Search by name or specialty" value="${param.name}">
+            <input type="text" id="doctorName" name="name" placeholder="Search by doctor's name" value="${param.name}">
 
             <!-- Button to open the multi-select department modal -->
             <button type="button" onclick="openDepartmentModal()">Select Departments</button>
@@ -34,26 +34,28 @@
             <button type="button" onclick="resetFilters()">Reset</button>
         </form>
 
-        <!-- Multi-Select Modal for Departments -->
-        <div id="departmentModal" class="modal" style="display: none;">
-            <div class="modal-content">
-                <span class="close" onclick="closeDepartmentModal()">&times;</span>
-                <h3>Select Specialties</h3>
+       <!-- Multi-Select Modal for Departments -->
+<div id="departmentModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeDepartmentModal()">&times;</span>
+        <h3>Select Specialties</h3>
 
-                <!-- Department List with Checkboxes -->
-                <div class="checkbox-container">
-                    <c:forEach var="specialty" items="${departments}">
-                        <label>
-                            <input type="checkbox" class="specialty-checkbox" value="${specialty.id}" 
-                                   <c:if test="${fn:contains(param.specialties, specialty.id)}">checked</c:if>> 
-                            ${specialty.name}
-                        </label><br>
-                    </c:forEach>
-                </div>
-
-                <button onclick="applySelectedSpecialties()">Apply</button>
-            </div>
+        <!-- Department List with Checkboxes -->
+        <div class="checkbox-container" style="max-height: 300px; overflow-y: auto; padding-right: 10px;">
+            <c:forEach var="specialty" items="${departments}">
+                <label>
+                    <input type="checkbox" class="specialty-checkbox" value="${specialty.id}" 
+                           <c:if test="${fn:contains(param.specialties, specialty.id)}">checked</c:if>> 
+                    ${specialty.name}
+                </label><br>
+            </c:forEach>
         </div>
+
+        <button onclick="applySelectedSpecialties()">Apply</button>
+    </div>
+</div>
+
+
 
         <!-- Doctor List Table -->
         <table border="1">

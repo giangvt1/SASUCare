@@ -6,7 +6,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.DoctorSchedule;
@@ -20,6 +22,56 @@ import model.system.Staff;
 public class DoctorDBContext extends DBContext<Doctor> {
 
     private static final Logger LOGGER = Logger.getLogger(DoctorDBContext.class.getName());
+    public int getDoctorIdByStaffUsername(String username) {
+    int doctorId = -1;
+    String sql = "SELECT d.id FROM Doctor d JOIN Staff s ON d.staff_id = s.id WHERE s.staff_username = ?";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setString(1, username);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            doctorId = rs.getInt("id");
+        }
+    } catch (SQLException ex) {
+        LOGGER.log(Level.SEVERE, "Error getting doctor ID by staff username", ex);
+    }
+    return doctorId;
+}
+
+
+    public Doctor getDoctorByUsername(String username) {
+        Doctor doctor = null;
+        String sql = """
+        SELECT d.id AS doctor_id, Staff.fullname AS doctor_name, Staff.fullname AS staff_name, 
+                        staff.address, staff.gender
+                FROM Doctor d
+                JOIN Staff ON d.staff_id = Staff.id
+        WHERE Staff.staff_username = ?
+    """;
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, username); // Set the username in the query
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                doctor = new Doctor();
+                doctor.setId(rs.getInt("doctor_id"));
+                doctor.setName(rs.getString("doctor_name"));
+
+                // Set the Staff object related to the Doctor
+                Staff staff = new Staff();
+                staff.setFullname(rs.getString("staff_name"));
+//                staff.getStaff_username().setUsername(username);
+                doctor.setStaff(staff);
+
+                doctor.setAddress(rs.getString("address"));
+                doctor.setGender(rs.getBoolean("gender"));
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error retrieving doctor by username", ex);
+        }
+
+        return doctor;
+    }
 
     @Override
     public Doctor get(String id) {
@@ -32,7 +84,8 @@ public class DoctorDBContext extends DBContext<Doctor> {
                 SELECT ds.id, ds.schedule_date, s.id AS shift_id, s.time_start, s.time_end, ds.available
                 FROM Doctor_Schedule ds
                 JOIN Shift s ON ds.shift_id = s.id
-                WHERE ds.doctor_id = ? AND ds.schedule_date = ?
+                Where ds.available = 1
+                and ds.doctor_id = ? AND ds.schedule_date = ?
                 """;
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, doctorId);
@@ -59,33 +112,34 @@ public class DoctorDBContext extends DBContext<Doctor> {
 
     public Doctor getDoctorById(int doctorId) {
         String sql = """
-                SELECT d.id, s.fullname, dep.name AS specialty
-                FROM Doctor d
-                JOIN Staff s ON d.staff_id = s.id
-                LEFT JOIN Doctor_Department dd ON d.id = dd.doctor_id
-                LEFT JOIN Department dep ON dd.department_id = dep.id
-                WHERE d.id = ?
-                """;
+            SELECT d.id, s.fullname, dep.name AS specialty
+            FROM Doctor d
+            JOIN Staff s ON d.staff_id = s.id
+            LEFT JOIN Doctor_Department dd ON d.id = dd.doctor_id
+            LEFT JOIN Department dep ON dd.department_id = dep.id
+            WHERE d.id = ?
+            """;
 
         Doctor doctor = null;
+        // Dùng LinkedHashSet để đảm bảo không trùng và giữ thứ tự
+        Set<String> specialties = new LinkedHashSet<>();
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, doctorId);
             ResultSet rs = ps.executeQuery();
-
-            List<String> specialties = new ArrayList<>();
             while (rs.next()) {
                 if (doctor == null) {
                     doctor = new Doctor();
                     doctor.setId(rs.getInt("id"));
-                    doctor.setName(rs.getString("fullname"));
+                    // Nếu fullname bị null, bạn có thể set giá trị mặc định
+                    doctor.setName(rs.getString("fullname") != null ? rs.getString("fullname") : "N/A");
                 }
-                if (rs.getString("specialty") != null) {
-                    specialties.add(rs.getString("specialty"));
+                String specialty = rs.getString("specialty");
+                if (specialty != null) {
+                    specialties.add(specialty);
                 }
             }
-
             if (doctor != null) {
-                doctor.setSpecialties(specialties);
+                doctor.setSpecialties(new ArrayList<>(specialties));
             }
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Error getting doctor by ID", ex);
@@ -152,7 +206,8 @@ public class DoctorDBContext extends DBContext<Doctor> {
                 + "JOIN Doctor_Department dd ON d.id = dd.doctor_id "
                 + "JOIN Department dep ON dd.department_id = dep.id "
                 + "JOIN Doctor_Schedule ds ON d.id = ds.doctor_id "
-                + "WHERE ds.schedule_date = ? "; // Ensures only doctors with a schedule that day are fetched
+                + "WHERE ds.available = 1"
+                + "and ds.schedule_date = ? "; // Ensures only doctors with a schedule that day are fetched
 
         ArrayList<Object> paramValues = new ArrayList<>();
         paramValues.add(selectedDate);  // Filter by selected date
@@ -229,6 +284,35 @@ public class DoctorDBContext extends DBContext<Doctor> {
     @Override
     public void delete(Doctor model) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public List<Doctor> getAllDoctors() {
+        HashMap<Integer, Doctor> doctorMap = new HashMap<>();
+        String sql = """
+                SELECT d.id, s.fullname, dep.name AS specialty
+                FROM Doctor d
+                JOIN Staff s ON d.staff_id = s.id
+                LEFT JOIN Doctor_Department dd ON d.id = dd.doctor_id
+                LEFT JOIN Department dep ON dd.department_id = dep.id
+                ORDER BY d.id
+                """;
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                int doctorId = rs.getInt("id");
+
+                // Nếu bác sĩ chưa có trong danh sách, tạo mới
+                doctorMap.putIfAbsent(doctorId, new Doctor(doctorId, rs.getString("fullname"), new ArrayList<>()));
+
+                // Thêm chuyên khoa vào danh sách
+                if (rs.getString("specialty") != null) {
+                    doctorMap.get(doctorId).getSpecialties().add(rs.getString("specialty"));
+                }
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error retrieving doctor list", ex);
+        }
+        return new ArrayList<>(doctorMap.values());
     }
 
 }
