@@ -8,6 +8,7 @@ import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -45,9 +46,12 @@ public class VisitHistoryExportPDFServlet extends HttpServlet {
             Document document = new Document();
             PdfWriter.getInstance(document, response.getOutputStream());
             document.open();
+            String fontPath = getServletContext().getRealPath("/fonts/vuArial.ttf");
+            BaseFont baseFont = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
-            // Tiêu đề
-            Font titleFont = new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD);
+            Font titleFont = new Font(baseFont, 16, Font.BOLD);
+            Font headerFont = new Font(baseFont, 12, Font.BOLD);
+            Font contentFont = new Font(baseFont, 10, Font.NORMAL);
             Paragraph title = new Paragraph("Visit Histories", titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
@@ -59,7 +63,6 @@ public class VisitHistoryExportPDFServlet extends HttpServlet {
             table.setWidths(new float[]{1, 2, 2, 2, 2, 2});
 
             // Font cho tiêu đề các cột
-            Font headerFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
             table.addCell(new PdfPCell(new Phrase("#", headerFont)));
             table.addCell(new PdfPCell(new Phrase("Visit Date", headerFont)));
             table.addCell(new PdfPCell(new Phrase("Reason For Visit", headerFont)));
@@ -74,12 +77,13 @@ public class VisitHistoryExportPDFServlet extends HttpServlet {
             for (VisitHistory history : visitHistory) {
                 table.addCell(String.valueOf(index++));
 
-                // Kiểm tra và định dạng ngày tháng
-                table.addCell(history.getVisitDate() != null ? dateFormat.format(history.getVisitDate()) : "Invalid Date");
-                table.addCell(history.getReasonForVisit() != null ? history.getReasonForVisit() : "");
-                table.addCell(history.getDiagnoses() != null ? history.getDiagnoses() : "");
-                table.addCell(history.getTreatmentPlan() != null ? history.getTreatmentPlan() : "");
-                table.addCell(history.getNextAppointment() != null ? dateFormat.format(history.getNextAppointment()) : "No Appointment");
+                table.addCell(new PdfPCell(new Phrase(String.valueOf(index++), contentFont)));
+                table.addCell(new PdfPCell(new Phrase(history.getVisitDate() != null ? dateFormat.format(history.getVisitDate()) : "Invalid Date", contentFont)));
+                table.addCell(new PdfPCell(new Phrase(history.getReasonForVisit() != null ? history.getReasonForVisit() : "", contentFont)));
+                table.addCell(new PdfPCell(new Phrase(history.getDiagnoses() != null ? history.getDiagnoses() : "", contentFont)));
+                table.addCell(new PdfPCell(new Phrase(history.getTreatmentPlan() != null ? history.getTreatmentPlan() : "", contentFont)));
+                table.addCell(new PdfPCell(new Phrase(history.getNextAppointment() != null ? dateFormat.format(history.getNextAppointment()) : "No Appointment", contentFont)));
+
             }
 
             // Thêm bảng vào tài liệu PDF

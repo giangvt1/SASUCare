@@ -84,7 +84,12 @@
             <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/doctor/DoctorLeftSideBar.jsp</file>
             <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/HRController/CalendarDoctorManageController.java</file>
         </group>
+        <group/>
         <group>
+            <file>file:/D:/Ky%205/SWP/HRSide/SWP391_GROUP6/src/java/controller/doctor/MedicalHistoryExportPDFServlet.java</file>
+        </group>
+        <group>
+            <file>file:/D:/Ky%205/SWP/HRSide/SWP391_GROUP6/src/java/controller/doctor/MedicalHistoryExportPDFServlet.java</file>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/WEB-INF/web.xml</file>
         </group>
     </open-files>

@@ -35,7 +35,7 @@
                 <div class="date-container">
                     <div class="date-item">
                         <label for="visitDate">Visit Date:</label>
-                        <input type="text" id="visitDate" class="dateTime" readonly="" name="visitDate" value="${param.visitDate}" required>
+                        <input type="text" id="visitDate" class="dateTime" readonly="" name="visitDate" value="${param.visitDate}">
                     </div>
                     <div class="date-item">
                         <label for="nextAppointment">Next Appointment:</label>
@@ -53,8 +53,6 @@
                     <button type="submit" class="back-btn" value="${empty param.id ? "Create" : "Update"}">Submit</button>
                 </div>
             </form>
-
-
         </div>
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
         <script src="https://npmcdn.com/flatpickr/dist/l10n/vn.js"></script>
