@@ -219,15 +219,16 @@ public class AppointmentDBContext extends DBContext<Appointment> {
         List<Appointment> appointments = new ArrayList<>();
         String sql = """
         SELECT a.id AS appointment_id, a.status, ds.schedule_date, 
-               s.time_start, s.time_end, d.id AS doctor_id, Staff.fullname AS doctor_name,
-               c.id AS customer_id, c.fullname AS customer_name, c.phone_number
-        FROM Appointment a
-        JOIN Doctor d ON a.doctor_id = d.id
-        JOIN Staff ON d.staff_id = Staff.id
-        JOIN Doctor_Schedule ds ON a.DocSchedule_id = ds.id
-        JOIN Shift s ON ds.shift_id = s.id
-        JOIN Customer c ON a.customer_id = c.id
-        WHERE a.doctor_id = ? AND ds.schedule_date = ?
+                                       s.time_start, s.time_end, d.id AS doctor_id, Staff.fullname AS doctor_name,
+                                       c.id AS customer_id, c.fullname AS customer_name, c.phone_number, Shift.time_start, Shift.time_end, c.phone_number
+                                FROM Appointment a
+                                JOIN Doctor d ON a.doctor_id = d.id
+                                JOIN Staff ON d.staff_id = Staff.id
+                                JOIN Doctor_Schedule ds ON a.DocSchedule_id = ds.id
+                                JOIN Shift s ON ds.shift_id = s.id
+                                JOIN Customer c ON a.customer_id = c.id
+                                join Shift on Shift.id = ds.shift_id
+                WHERE a.doctor_id = ? AND ds.schedule_date = ? 
     """;
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {

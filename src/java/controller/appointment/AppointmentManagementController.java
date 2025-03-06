@@ -52,7 +52,7 @@ public class AppointmentManagementController extends BaseRBACController {
         request.setAttribute("currentDate", currentDate);
 
         // Forward dữ liệu sang JSP
-        request.getRequestDispatcher("/doctor/Appointments.jsp").forward(request, response);
+        request.getRequestDispatcher("/doctor/appointments.jsp").forward(request, response);
     }
 
     @Override
