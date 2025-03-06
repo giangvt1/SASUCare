@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener('DOMContentLoaded', function () {
     let visitDateInput = document.getElementById("visitDate");
     let nextAppointmentInput = document.getElementById("nextAppointment");
-
+    let dateSendInput = document.getElementById("dateSend");
+    let dateReplyInput = document.getElementById("dateReply");
     flatpickr("#visitDate", {
         enableTime: true,
         dateFormat: "Y-m-d H:i",
@@ -18,9 +19,8 @@ document.addEventListener('DOMContentLoaded', function () {
         time_24hr: true,
         altFormat: "d/m/Y H:i",
         locale: "vn",
-        defaultDate: visitDateInput.value || new Date() // Nếu có giá trị thì dùng, nếu không thì lấy ngày hiện tại
+        defaultDate: visitDateInput.value || new Date()
     });
-
     flatpickr("#nextAppointment", {
         enableTime: true,
         dateFormat: "Y-m-d H:i",
@@ -28,27 +28,51 @@ document.addEventListener('DOMContentLoaded', function () {
         time_24hr: true,
         altFormat: "d/m/Y H:i",
         locale: "vn",
-        defaultDate: nextAppointmentInput.value || "" // Chỉ gán nếu có giá trị
+        defaultDate: nextAppointmentInput.value || ""
+    });
+    flatpickr("#dateSend", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        altInput: true,
+        time_24hr: true,
+        altFormat: "d/m/Y H:i",
+        locale: "vn",
+        defaultDate: dateSendInput.value || ""
+    });
+    flatpickr("#dateReply", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        altInput: true,
+        time_24hr: true,
+        altFormat: "d/m/Y H:i",
+        locale: "vn",
+        defaultDate: dateReplyInput.value || new Date()
     });
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-    let now = new Date();
-    let vietnamTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
-
-    function formatDateTime(date) {
-        let offset = date.getTimezoneOffset();
-        let localISOTime = new Date(date.getTime() - offset).toISOString().slice(0, 16);
-        return localISOTime;
-    }
-
-    let visitDateInput = document.getElementById("visitDate");
-    visitDateInput.value = formatDateTime(vietnamTime);
-
-    let nextAppointmentInput = document.getElementById("nextAppointment");
-    if (!nextAppointmentInput.value) {
-        nextAppointmentInput.value = "";
-    }
+document.addEventListener('DOMContentLoaded', function () {
+    let dateSendInput = document.getElementById("dateSend");
+    let dateReplyInput = document.getElementById("dateReply");
+    flatpickr("#dateSend", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        altInput: true,
+        time_24hr: true,
+        altFormat: "d/m/Y H:i",
+        locale: "vn",
+        clickOpens: false,
+        defaultDate: dateSendInput.value || ""
+    });
+    flatpickr("#dateReply", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        altInput: true,
+        time_24hr: true,
+        altFormat: "d/m/Y H:i",
+        locale: "vn",
+        clickOpens: false,
+        defaultDate: dateReplyInput.value || new Date()
+    });
 });
 
 document.querySelector("form").addEventListener("submit", function (event) {
