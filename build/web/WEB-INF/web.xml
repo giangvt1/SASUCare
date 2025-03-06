@@ -164,6 +164,14 @@
         <servlet-name>HRApptManagementController</servlet-name>
         <servlet-class>controller.HRController.HRApptManagementController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DoctorScheduleServlet</servlet-name>
+        <servlet-class>controller.appointment.DoctorScheduleServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>HRApptManagementController</servlet-name>
+        <servlet-class>controller.HRController.HRApptManagementController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
         <url-pattern>/forgetpassword</url-pattern>
@@ -380,6 +388,14 @@
     <servlet-mapping>
         <servlet-name>AppointmentsManagementController</servlet-name>
         <url-pattern>/doctor/appointmentsmanagement</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>HRApptManagementController</servlet-name>
+        <url-pattern>/hr/appointments</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DoctorScheduleServlet</servlet-name>
+        <url-pattern>/doctor/api/appointments</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>HRApptManagementController</servlet-name>

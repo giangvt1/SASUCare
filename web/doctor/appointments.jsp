@@ -198,27 +198,36 @@
                             <p id="modalPatientId"></p>
                         </div>
                     </div>
-                    <div class="appointment-info">
-                        <div class="info-group">
-                            <label>Date & Time</label>
-                            <p id="modalDateTime"></p>
+                    <div class="modal-body">
+                        <div class="patient-header">
+                            <img src="" alt="Patient" id="modalPatientImage" class="patient-avatar large">
+                            <div class="patient-info">
+                                <h3 id="modalPatientName"></h3>
+                                <p id="modalPatientId"></p>
+                            </div>
                         </div>
-                        <div class="info-group">
-                            <label>Reason for Visit</label>
-                            <p id="modalReason"></p>
+                        <div class="appointment-info">
+                            <div class="info-group">
+                                <label>Date & Time</label>
+                                <p id="modalDateTime"></p>
+                            </div>
+                            <div class="info-group">
+                                <label>Reason for Visit</label>
+                                <p id="modalReason"></p>
+                            </div>
+                            <div class="info-group">
+                                <label>Medical History</label>
+                                <p id="modalHistory"></p>
+                            </div>
+                            <div class="info-group">
+                                <label>Notes</label>
+                                <textarea id="modalNotes" placeholder="Add appointment notes..."></textarea>
+                            </div>
                         </div>
-                        <div class="info-group">
-                            <label>Medical History</label>
-                            <p id="modalHistory"></p>
+                        <div class="modal-actions">
+                            <button class="btn-secondary" onclick="closeModal()">Close</button>
+                            <button class="btn-primary" onclick="saveNotes()">Save Notes</button>
                         </div>
-                        <div class="info-group">
-                            <label>Notes</label>
-                            <textarea id="modalNotes" placeholder="Add appointment notes..."></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-actions">
-                        <button class="btn-secondary" onclick="closeModal()">Close</button>
-                        <button class="btn-primary" onclick="saveNotes()">Save Notes</button>
                     </div>
                 </div>
             </div>

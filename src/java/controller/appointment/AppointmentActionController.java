@@ -17,7 +17,7 @@ import model.system.User;
  * Handles appointment approval and cancellation by doctors.
  */
 public class AppointmentActionController extends HttpServlet {
-
+    
     private final AppointmentDBContext appointmentDB = new AppointmentDBContext();
     private final DoctorScheduleDBContext dsDB = new DoctorScheduleDBContext();
 

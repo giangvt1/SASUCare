@@ -16,16 +16,10 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import model.Department;
-
-public class HRApptManagementController extends HttpServlet {
-
-    private final DepartmentDBContext departmentDB = new DepartmentDBContext();
-
-    private final AppointmentDBContext appointmentDB = new AppointmentDBContext();
-
+import model.system.User;
+public class HRApptManagementController extends BaseRBACController {
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
 
         // Get filter parameters
         String name = request.getParameter("name");
@@ -64,8 +58,46 @@ public class HRApptManagementController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        return;
+   protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
+   
+//        response.setContentType("application/json");
+//        response.setCharacterEncoding("UTF-8");
+//
+//        // Get appointment ID and new status from the request
+//        String appointmentId = request.getParameter("appointmentId");
+//        String newStatus = request.getParameter("status");
+//
+//        PrintWriter out = response.getWriter();
+//        Gson gson = new Gson();
+//
+//        Appointment appointment = appointmentDB.get(appointmentId);
+//
+//        if (appointment != null) {
+//            appointment.setStatus("Canceled");
+//            appointment.setUpdateAt(Date.valueOf(LocalDate.now()));
+//
+//            // Update the appointment status in the database
+//            appointmentDB.update(appointment);
+//            boolean isUpdated = true;
+//            // Send JSON response
+//            out.print(gson.toJson(new ApiResponse(isUpdated, isUpdated ? "Status updated successfully" : "Failed to update status")));
+//        } else {
+//            out.print(gson.toJson(new ApiResponse(false, "Invalid parameters")));
+//        }
+//
+//        out.flush();
+    }
+
+    
+
+    private static class ApiResponse {
+
+        boolean success;
+        String message;
+
+        public ApiResponse(boolean success, String message) {
+            this.success = success;
+            this.message = message;
+        }
     }
 }
