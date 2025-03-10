@@ -63,17 +63,17 @@ public class ProfileUpdateController extends BaseRBACController {
                 return;
             }
             // Sử dụng getRealPath("/uploads") thay vì getRealPath("") + File.separator + "uploads"
-            String uploadPath = request.getServletContext().getRealPath("/uploads");
+            String uploadPath = request.getServletContext().getRealPath("/img");
             File uploadDir = new File(uploadPath);
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
             // Sử dụng "/" cho URL ảnh
-            String newFileName = System.currentTimeMillis() + "_" + fileName;
+            String newFileName = fileName;
             String filePath = uploadPath + File.separator + newFileName;
             filePart.write(filePath);
             // Lưu URL ảnh với dấu "/" thay vì File.separator
-            staff.setImg("uploads/" + newFileName);
+            staff.setImg("img/" + newFileName);
         }
 
         String fullname = request.getParameter("fullname") != null ? request.getParameter("fullname").trim() : "";
