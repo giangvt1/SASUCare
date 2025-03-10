@@ -5,7 +5,7 @@
 <html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Manage Medical</title>
+        <title>Search Customer</title>
         <link rel="stylesheet" href="../css/doctor/doctor_style.css"/>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     </head>

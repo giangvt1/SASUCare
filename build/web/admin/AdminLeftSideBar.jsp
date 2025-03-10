@@ -82,6 +82,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="../doctor/ManageCertificates?staffId=${sessionScope.staff.id}">
+                        <i class="fa fa-envelope"></i> <span>Manage Certificate</span>
+                    </a>
+                </li>
+                <li>
                     <a href="../doctor/SearchCustomer?page=1&sort=default&size=10">
                         <i class="fa fa-medkit"></i> <span>Manage Medical</span>
                     </a>

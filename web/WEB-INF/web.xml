@@ -180,6 +180,10 @@
         <servlet-name>HRApptManagementController</servlet-name>
         <servlet-class>controller.HRController.HRApptManagementController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ManageCertificates</servlet-name>
+        <servlet-class>controller.doctor.ManageCertificates</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
         <url-pattern>/forgetpassword</url-pattern>
@@ -416,5 +420,9 @@
     <servlet-mapping>
         <servlet-name>HRApptManagementController</servlet-name>
         <url-pattern>/hr/appointments</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ManageCertificates</servlet-name>
+        <url-pattern>/doctor/ManageCertificates</url-pattern>
     </servlet-mapping>
 </web-app>
