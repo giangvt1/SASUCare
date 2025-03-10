@@ -36,6 +36,11 @@
                 <a href="${pageContext.request.contextPath}/admin/Dashboard.jsp">
                     <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                 </a>
+                <c:if test="${sessionScope.allowedUrls != null && sessionScope.allowedUrls.contains('/admin/ManageTypeApplication')}">
+                    <a href="${pageContext.request.contextPath}/admin/ManageTypeApplication">
+                        <i class="fa fa-globe"></i> <span>Manage Type Application</span>
+                    </a>
+                </c:if> 
             </li>
             <c:if test="${sessionScope.allowedUrls != null && sessionScope.allowedUrls.contains('/hr/create')}">
                 <li>
@@ -49,6 +54,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="${pageContext.request.contextPath}/hr/ViewStaffApplication?staffId=${sessionScope.staff.id}">
+                        <i class="fa fa-globe"></i> <span>Staff Application</span>
+                    </a>
+                </li>
+                <li>
                     <a href="${pageContext.request.contextPath}/hr/calendarmanage">
                         <i class="fa fa-table"></i> <span>Doctor Calendar</span>
                     </a>
@@ -56,6 +66,11 @@
                 <li>
                     <a href="../ManageService">
                         <i class="fa fa-table"></i> <span>Add ServicePackage</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/hr/appointments">
+                        <i class="fa fa-table"></i> <span>Approve Appointment</span>
                     </a>
                 </li>
             </c:if>
@@ -74,6 +89,11 @@
                 <li>
                     <a href="../doctor/waiting-appointment">
                         <i class="fa fa-medkit"></i> <span>Appoinment</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../doctor/calendar">
+                        <i class="fa fa-medkit"></i> <span>Calendar</span>
                     </a>
                 </li>
             </c:if>

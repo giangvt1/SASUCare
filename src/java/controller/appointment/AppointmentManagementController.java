@@ -7,6 +7,7 @@ import dao.UserDBContext;
 import model.Appointment;
 import model.Doctor;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

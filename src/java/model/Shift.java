@@ -7,14 +7,17 @@ public class Shift {
     private Time timeStart;
     private Time timeEnd;
 
-    public Shift() {}
-
+    // Constructor
     public Shift(int id, Time timeStart, Time timeEnd) {
         this.id = id;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
     }
 
+    public Shift() {
+    }
+
+    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -37,14 +40,5 @@ public class Shift {
 
     public void setTimeEnd(Time timeEnd) {
         this.timeEnd = timeEnd;
-    }
-
-    @Override
-    public String toString() {
-        return "Shift{" +
-                "id=" + id +
-                ", timeStart=" + timeStart +
-                ", timeEnd=" + timeEnd +
-                '}';
     }
 }
