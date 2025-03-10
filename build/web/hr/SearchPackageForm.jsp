@@ -12,9 +12,8 @@
 <html>
     <head>
         <title>Tìm kiếm gói khám</title>
-        <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-        <link href="${pageContext.request.contextPath}/css/fonts/font-awesome.min.css" rel="stylesheet" type="text/css"/>
-        <link href="${pageContext.request.contextPath}/css/admin/admin_styles.css" rel="stylesheet" type="text/css"/>
+    
+        
         <style>
             :root {
                 --primary-blue: #3498db;

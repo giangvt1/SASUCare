@@ -11,6 +11,7 @@ public class Rating {
     private float rating;
     private String comment;
     private Date createdAt;
+    private boolean visible;
 
     public Rating(int doctorId, String customerUsername, float rating, String comment, Date createdAt) {
         this.doctorId = doctorId;
@@ -18,6 +19,23 @@ public class Rating {
         this.rating = rating;
         this.comment = comment;
         this.createdAt = createdAt;
+    }
+
+    public Rating(int doctorId, String customerUsername, float rating, String comment, Date createdAt, boolean visible) {
+        this.doctorId = doctorId;
+        this.customerUsername = customerUsername;
+        this.rating = rating;
+        this.comment = comment;
+        this.createdAt = createdAt;
+        this.visible = visible;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
     
     

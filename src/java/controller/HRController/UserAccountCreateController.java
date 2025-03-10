@@ -1,15 +1,18 @@
 package controller.HRController;
 
 import controller.systemaccesscontrol.BaseRBACController;
+import dao.DepartmentDBContext;
 import dao.GoogleDBContext;
 import dao.UserDBContext;
 import dao.RoleDBContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Department;
 import model.system.Role;
 import model.system.User;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.regex.Pattern;
@@ -25,8 +28,11 @@ public class UserAccountCreateController extends BaseRBACController {
     @Override
     protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged)
             throws ServletException, IOException {
-        RoleDBContext db = new RoleDBContext();
-        request.setAttribute("role", db.list());
+        RoleDBContext roleDB = new RoleDBContext();
+        DepartmentDBContext depDB = new DepartmentDBContext();
+        ArrayList<Department> deps = depDB.list();
+        request.setAttribute("role", roleDB.list());
+        request.setAttribute("department", deps);
         request.getRequestDispatcher("../hr/HRCreate.jsp").forward(request, response);
     }
 
@@ -35,23 +41,21 @@ public class UserAccountCreateController extends BaseRBACController {
             throws ServletException, IOException {
         GoogleDBContext gg = new GoogleDBContext();
         UserDBContext userDB = new UserDBContext();
-        
+
         // Lấy dữ liệu từ form và trim các giá trị đầu vào
         String username = request.getParameter("username") != null ? request.getParameter("username").trim() : "";
-        // Bỏ qua mật khẩu nhập từ form, vì chúng ta sẽ tạo mật khẩu ngẫu nhiên
-        // String password = request.getParameter("password") != null ? request.getParameter("password").trim() : "";
         String displayname = request.getParameter("displayname") != null ? request.getParameter("displayname").trim() : "";
         String gmail = request.getParameter("gmail") != null ? request.getParameter("gmail").trim() : "";
         String phone = request.getParameter("phone") != null ? request.getParameter("phone").trim() : "";
         String[] roleIds = request.getParameterValues("roles");
 
-        // Validate username: không được null và không rỗng
+        // Validate username
         if (username.isEmpty()) {
             request.setAttribute("errorMessage", "Username is required and must not be blank.");
             request.getRequestDispatcher("../hr/HRCreate.jsp").forward(request, response);
             return;
         }
-        // Validate displayname: không được rỗng
+        // Validate displayname
         if (displayname.isEmpty()) {
             request.setAttribute("errorMessage", "Display Name is required and must not be blank.");
             request.getRequestDispatcher("../hr/HRCreate.jsp").forward(request, response);
@@ -65,7 +69,7 @@ public class UserAccountCreateController extends BaseRBACController {
             request.getRequestDispatcher("../hr/HRCreate.jsp").forward(request, response);
             return;
         }
-        // Validate phone number: phải có đúng 10 chữ số và bắt đầu bằng 0
+        // Validate phone number
         Pattern phonePattern = Pattern.compile(PHONE_PATTERN);
         Matcher phoneMatcher = phonePattern.matcher(phone);
         if (phone.isEmpty() || !phoneMatcher.matches()) {
@@ -79,27 +83,27 @@ public class UserAccountCreateController extends BaseRBACController {
             request.getRequestDispatcher("../hr/HRCreate.jsp").forward(request, response);
             return;
         }
-        
+
         // Kiểm tra email đã tồn tại trước
         if (userDB.isEmailExists(gmail)) {
             request.setAttribute("errorMessage", "Email already exists. Please use a different email.");
             request.getRequestDispatcher("../hr/HRCreate.jsp").forward(request, response);
             return;
         }
-        
-        // Tạo mật khẩu ngẫu nhiên (ví dụ: 6 ký tự, bạn có thể điều chỉnh số ký tự)
+
+        // Tạo mật khẩu ngẫu nhiên (ví dụ: 6 ký tự)
         String generatedPassword = gg.generateRandomPassword(6);
         System.out.println("Generated password: " + generatedPassword);
-        
-        // Gửi mật khẩu đến email của user (hàm sendPasswordByEmail cần tích hợp JavaMail)
+
+        // Gửi mật khẩu đến email của user
         boolean emailSent = gg.sendPasswordByEmail(gmail, generatedPassword);
         if (!emailSent) {
             request.setAttribute("errorMessage", "Failed to send password email. Please try again.");
             request.getRequestDispatcher("../hr/HRCreate.jsp").forward(request, response);
             return;
         }
-        
-        // Tạo đối tượng User mới, sử dụng mật khẩu generated (sẽ được mã hóa bên DAO)
+
+        // Tạo đối tượng User mới
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setPassword(generatedPassword);
@@ -119,7 +123,27 @@ public class UserAccountCreateController extends BaseRBACController {
             }
         }
         newUser.setRoles(roles);
-        
+
+        // Nếu role là Doctor, lấy thông tin phòng ban từ form
+        // Giả sử chỉ cho chọn 1 phòng ban
+        String[] departmentParams = request.getParameterValues("departments");
+        if (departmentParams != null && departmentParams.length > 0) {
+            ArrayList<Department> depList = new ArrayList<>();
+            for (String depParam : departmentParams) {
+                try {
+                    int depId = Integer.parseInt(depParam);
+                    Department dep = new Department();
+                    dep.setId(depId);
+                    depList.add(dep);
+                } catch (NumberFormatException ex) {
+                    // Nếu parse thất bại, bỏ qua giá trị này
+                }
+            }
+            if (!depList.isEmpty()) {
+                newUser.setDep(depList);
+            }
+        }
+
         // Gọi hàm insert trong UserDBContext (mật khẩu sẽ được mã hóa bên DAO)
         try {
             userDB.insert(newUser, logged);
