@@ -43,16 +43,52 @@
         <group>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/WEB-INF/web.xml</file>
         </group>
-        <group name="ThisForTest">
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentDoctorListController.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/nbproject/build-impl.xml</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/DoctorDBContext.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentConfirmServlet.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dal/DBContext.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/accesscontrol/LoginController.java</file>
-        </group>
         <group>
             <file>file:/D:/Ky%205/SWP/DoctorSide/SWP391_GROUP6/web/WEB-INF/web.xml</file>
+        </group>
+        <group name="ThisForTest">
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentDoctorListController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentCalendarServlet.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/Shift.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/static/css/doctor/appointments.css</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/DoctorScheduleServlet.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/com/vnpay/common/vnpayQuery.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/AppointmentDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentDetailsController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/com/vnpay/common/ajaxServlet.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/static/css/appointment/doctor-choose-style.css</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/admin/AdminLogin.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/vnpay/vnpay_refund.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentConfirmServlet.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/HRController/HRApptManagementController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/Appointment.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dal/DBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/accesscontrol/LoginController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/WEB-INF/web.xml</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/appointment/doctor_list.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/appointment/appointment-calendar.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/appointment/waiting-appointment.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/vnpay/vnpay_pay.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/Customer.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/DoctorDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/doctor/DoctorCalendar.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentCancelController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentActionController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/DoctorScheduleDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/admin/AdminLeftSideBar.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentManagementController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentRescheduleController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/nbproject/build-impl.xml</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentListController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/vnpay/vnpay_ipn.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/hr/hr_appointments.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/HRController/ResetPasswordController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/HRController/ChatBoxController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/appointment/appointment_list.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/DoctorSchedule.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/com/vnpay/common/Config.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/doctor/appointments.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/vnpay/vnpay_return.jsp</file>
         </group>
     </open-files>
 </project-private>
