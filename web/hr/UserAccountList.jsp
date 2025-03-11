@@ -72,18 +72,18 @@
                                     <c:if test="${view eq 'extended'}">
                                         <td>
                                             <c:if test="${not empty user.dob}">
-                                                <fmt:formatDate value="${user.dob}" pattern="yyyy-MM-dd" />
+                                                <fmt:formatDate value="${user.dob}" pattern="dd-MM-yyyy" />
                                             </c:if>
                                         </td>
                                         <td>
                                             <c:if test="${not empty user.createat}">
-                                                <fmt:formatDate value="${user.createat}" pattern="yyyy-MM-dd HH:mm:ss" />
+                                                <fmt:formatDate value="${user.createat}" pattern="dd-MM-yyyy HH:mm:ss" />
                                             </c:if>
                                         </td>
                                         <td>${user.createby}</td>
                                         <td>
                                             <c:if test="${not empty user.updateat}">
-                                                <fmt:formatDate value="${user.updateat}" pattern="yyyy-MM-dd HH:mm:ss" />
+                                                <fmt:formatDate value="${user.updateat}" pattern="dd-MM-yyyy HH:mm:ss" />
                                             </c:if>
                                         </td>
                                         <td>${user.updateby}</td>

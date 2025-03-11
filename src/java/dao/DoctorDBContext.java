@@ -121,7 +121,7 @@ public class DoctorDBContext extends DBContext<Doctor> {
 
         Doctor doctor = null;
         // Dùng LinkedHashSet để đảm bảo không trùng và giữ thứ tự
-        Set<String> specialties = new LinkedHashSet<>();
+        List<String> specialties = new ArrayList<>();
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, doctorId);
             ResultSet rs = ps.executeQuery();
