@@ -15,11 +15,12 @@
     <style>
     body { 
         font-family: Arial, sans-serif; 
-        background-color: #ffffff; /* White background */
+        background-color: #ffffff;
     }
     .container { 
-        width: 60%; 
+        width: 80%; 
         margin: 0 auto; 
+        padding: 20px;
     }
     table { 
         width: 100%; 
@@ -27,16 +28,16 @@
         margin-top: 20px; 
     }
     th, td { 
-        border: 1px solid #1a75ff; /* Blue border */
-        padding: 8px; 
+        border: 1px solid #1a75ff;
+        padding: 12px; 
         text-align: left; 
     }
     th { 
-        background-color: #1a75ff; /* Blue header */
-        color: #ffffff; /* White text */
+        background-color: #1a75ff;
+        color: #ffffff;
     }
     td a {
-        color: #1a75ff; /* Blue links */
+        color: #1a75ff;
         text-decoration: none;
     }
     td a:hover {
@@ -45,126 +46,133 @@
     .error { 
         color: red; 
     }
-    .filter-container { 
-        margin-top: 10px; 
+    .search-container { 
+        margin: 20px 0;
+        display: flex;
+        gap: 10px;
     }
     input[type="text"], select, button {
-        border: 1px solid #1a75ff; /* Blue border */
-        padding: 5px;
-        border-radius: 4px;
-    }
-    button {
-        background-color: #1a75ff; /* Blue button */
-        color: #ffffff; /* White text */
-        cursor: pointer;
-        border: none;
-        padding: 8px 12px;
-        border-radius: 4px;
-    }
-    button:hover {
-        background-color: #004de6; /* Darker blue on hover */
-    }
-    .pagination a {
-        color: #1a75ff; /* Blue pagination links */
-        text-decoration: none;
         padding: 8px 12px;
         border: 1px solid #1a75ff;
         border-radius: 4px;
-        margin: 0 2px;
+    }
+    select {
+        min-width: 150px;
+    }
+    button {
+        background-color: #1a75ff;
+        color: #ffffff;
+        cursor: pointer;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+    }
+    button:hover {
+        background-color: #004de6;
+    }
+    .package-card {
+        border: 1px solid #e0e0e0;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .package-image {
+        width: 64px;
+        height: 64px;
+        margin-bottom: 10px;
+    }
+    .price {
+        color: #1a75ff;
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+    .original-price {
+        color: #999;
+        text-decoration: line-through;
+        margin-left: 8px;
+    }
+    .pagination {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+    }
+    .pagination a {
+        color: #1a75ff;
+        padding: 8px 12px;
+        text-decoration: none;
+        border: 1px solid #1a75ff;
+        border-radius: 4px;
     }
     .pagination a.active {
         background-color: #1a75ff;
-        color: #ffffff;
+        color: white;
     }
-    .pagination a:hover {
-        background-color: #004de6;
-        color: #ffffff;
-    }
-</style>
+    </style>
 </head>
 <body>
-    <jsp:include page="../Header.jsp"/>
-    <div class="container">
+    <jsp:include page="../Header.jsp"></jsp:include>
+     <div class="container">
         <h2>Tìm kiếm gói khám</h2>
         
-        <form action="SearchPackage" method="get">
-    <input type="text" name="keyword" placeholder="Nhập từ khóa..." value="${param.keyword}">
+        <form action="SearchPackage" method="get" class="search-container">
+            <input type="text" name="keyword" placeholder="Nhập từ khóa..." value="${param.keyword}">
+            
+            <select name="category">
+                
+                <c:forEach var="cat" items="${categories}">
+                    <option value="${cat}" ${param.category == cat ? 'selected' : ''}>${cat}</option>
+                </c:forEach>
+            </select>
 
-    <!-- Bộ lọc danh mục -->
-    <select name="category">
-        <option value="all">Tất cả danh mục</option>
-        <c:forEach var="cat" items="${categories}">
-            <option value="${cat}" ${param.category == cat ? 'selected' : ''}>${cat}</option>
-        </c:forEach>
-    </select>
+            <button type="submit">Tìm kiếm</button>
+        </form>
 
-    <button type="submit">Tìm kiếm</button>
-</form>
-
-<!-- Hiển thị lỗi nếu có -->
-<c:if test="${not empty error}">
-    <p class="error">${error}</p>
-</c:if>
-
-<!-- Danh sách gói khám -->
-<c:choose>
-    <c:when test="${not empty packages}">
-        <table>
-            <tr>
-<!--                <th>ID</th>-->
-                <th>Tên gói</th>
-                <th>Mô tả</th>
-                <th>Giá (VNĐ)</th>
-                <th>Thời gian (phút)</th>
-                <th>Danh mục</th>
-                <th>Action</th>
-            </tr>
-            <c:forEach var="pkg" items="${packages}">
-                <tr>
-<!--                    <td>${pkg.id}</td>-->
-                    <td><a href="packageDetail.jsp?id=${pkg.id}">${pkg.name}</a></td>
-                    <td>${pkg.description}</td>
-                    <td>${pkg.price}</td>
-                    <td>${pkg.durationMinutes}</td>
-                    <td>${pkg.category}</td>
-                    <td>
-                        <a href="./appointment">Đặt lịch</a>
-                    </td>
-                </tr>
-            </c:forEach>
-        </table>
-        
-        <nav aria-label="Page navigation">
-                        <ul class="pagination">
-                            <c:if test="${currentPage > 1}">
-                                <li class="page-item">
-                                    <a class="page-link" href="?page=${currentPage - 1}&keyword=${param.keyword}&category=${param.category}" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
-                                </li>
-                            </c:if>
-                            <c:forEach var="i" begin="1" end="${totalPages}">
-                                <li class="page-item ${i == currentPage ? 'active' : ''}">
-                                    <a class="page-link" href="?page=${i}&keyword=${param.keyword}&view=${view}">${i}</a>
-                                </li>
-                            </c:forEach>
-                            <c:if test="${currentPage < totalPages}">
-                                <li class="page-item">
-                                    <a class="page-link" href="?page=${currentPage + 1}&keyword=${param.keyword}&category=${param.category}" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </a>
-                                </li>
-                            </c:if>
-                        </ul>
-                    </nav>
-        
-    </c:when>
-    <c:otherwise>
-        <c:if test="${not empty param.keyword}">
-            <p>Không tìm thấy kết quả nào.</p>
+        <c:if test="${not empty error}">
+            <p class="error">${error}</p>
         </c:if>
-    </c:otherwise>
-</c:choose>
+
+        <c:choose>
+            <c:when test="${not empty packages}">
+                <div class="packages-grid">
+                    <c:forEach var="pkg" items="${packages}">
+                        <div class="package-card">
+<!--                            <img src="" alt="${pkg.name}" class="package-image">-->
+                            <h3><a href="packageDetail?id=${pkg.id}">${pkg.name}</a></h3>
+                            <p>${pkg.description}</p>
+                            <div>
+                                <span class="price">${pkg.price}đ</span>
+
+                            </div>
+                            <p>Thời gian: ${pkg.durationMinutes} phút</p>
+                            <p>Danh mục: ${pkg.category}</p>
+                            <button onclick="location.href='appointment?id=${pkg.id}'">Đặt khám ngay</button>
+                        </div>
+                    </c:forEach>
+                </div>
+                
+                <c:if test="${totalPages > 1}">
+                    <div class="pagination">
+                        <c:if test="${currentPage > 1}">
+                            <a href="?page=${currentPage - 1}&keyword=${param.keyword}&category=${param.category}">&laquo; Trước</a>
+                        </c:if>
+                        
+                        <c:forEach begin="1" end="${totalPages}" var="i">
+                            <a href="?page=${i}&keyword=${param.keyword}&category=${param.category}" 
+                               class="${i == currentPage ? 'active' : ''}">${i}</a>
+                        </c:forEach>
+                        
+                        <c:if test="${currentPage < totalPages}">
+                            <a href="?page=${currentPage + 1}&keyword=${param.keyword}&category=${param.category}">Sau &raquo;</a>
+                        </c:if>
+                    </div>
+                </c:if>
+            </c:when>
+            <c:otherwise>
+                <p>Không tìm thấy gói khám nào.</p>
+            </c:otherwise>
+        </c:choose>
     </div>
     <jsp:include page="../Footer.jsp"></jsp:include>
     </body>
