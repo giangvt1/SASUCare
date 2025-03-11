@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.DoctorSchedule;
+import model.Rating;
 import model.Shift;
 import model.system.Staff;
 
@@ -95,13 +96,13 @@ public class DoctorDBContext extends DBContext<Doctor> {
 
     public Doctor getDoctorById(int doctorId) {
         String sql = """
-            SELECT d.id, s.fullname, dep.name AS specialty
-            FROM Doctor d
-            JOIN Staff s ON d.staff_id = s.id
-            LEFT JOIN Doctor_Department dd ON d.id = dd.doctor_id
-            LEFT JOIN Department dep ON dd.department_id = dep.id
-            WHERE d.id = ?
-            """;
+                SELECT d.id, s.fullname, dep.name AS specialty, s.img, d.price, d.info
+                FROM Doctor d
+                JOIN Staff s ON d.staff_id = s.id
+                LEFT JOIN Doctor_Department dd ON d.id = dd.doctor_id
+                LEFT JOIN Department dep ON dd.department_id = dep.id
+                WHERE d.id = ?
+                """;
 
         Doctor doctor = null;
         // Dùng LinkedHashSet để đảm bảo không trùng và giữ thứ tự
@@ -113,16 +114,34 @@ public class DoctorDBContext extends DBContext<Doctor> {
                 if (doctor == null) {
                     doctor = new Doctor();
                     doctor.setId(rs.getInt("id"));
-                    // Nếu fullname bị null, bạn có thể set giá trị mặc định
-                    doctor.setName(rs.getString("fullname") != null ? rs.getString("fullname") : "N/A");
+                    doctor.setName(rs.getString("fullname"));
+                    doctor.setPrice(rs.getString("price"));
+                    doctor.setInfo(rs.getString("info"));
+                }
+                // Thêm img vào danh sách
+                if (rs.getString("img") != null) {
+                    doctor.setImg(rs.getString("img"));
                 }
                 String specialty = rs.getString("specialty");
                 if (specialty != null) {
                     specialties.add(specialty);
                 }
+
             }
             if (doctor != null) {
-                doctor.setSpecialties(new ArrayList<>(specialties));
+                doctor.setSpecialties(specialties);
+                doctor.setRatings(new RatingDBContext().getRatingsByDoctorId(doctorId));
+
+// Tính toán và lưu trữ average_rating
+                if (!doctor.getRatings().isEmpty()) {
+                    double totalRating = doctor.getRatings().stream()
+                            .mapToDouble(Rating::getRating)
+                            .sum();
+                    double averageRating = totalRating / doctor.getRatings().size();
+                    doctor.setAverage_rating(averageRating);
+                } else {
+                    doctor.setAverage_rating(0.0);
+                }
             }
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Error getting doctor by ID", ex);
@@ -134,7 +153,7 @@ public class DoctorDBContext extends DBContext<Doctor> {
     public ArrayList<Doctor> list() {
         HashMap<Integer, Doctor> doctorMap = new HashMap<>();
         String sql = """
-                SELECT d.id, s.fullname, dep.name AS specialty
+                SELECT d.id, s.fullname, dep.name AS specialty, s.img, d.price, d.info
                 FROM Doctor d
                 JOIN Staff s ON d.staff_id = s.id
                 LEFT JOIN Doctor_Department dd ON d.id = dd.doctor_id
@@ -149,9 +168,28 @@ public class DoctorDBContext extends DBContext<Doctor> {
                 // Nếu bác sĩ chưa có trong danh sách, tạo mới
                 doctorMap.putIfAbsent(doctorId, new Doctor(doctorId, rs.getString("fullname"), new ArrayList<>()));
 
+                // Thêm img vào danh sách
+                if (rs.getString("img") != null) {
+                    doctorMap.get(doctorId).setImg(rs.getString("img"));
+                }
+
                 // Thêm chuyên khoa vào danh sách
                 if (rs.getString("specialty") != null) {
                     doctorMap.get(doctorId).getSpecialties().add(rs.getString("specialty"));
+                }
+                
+              
+                 doctorMap.get(doctorId).setRatings(new RatingDBContext().getRatingsByDoctorId(doctorId));
+
+// Tính toán và lưu trữ average_rating
+                if (!doctorMap.get(doctorId).getRatings().isEmpty()) {
+                    double totalRating = doctorMap.get(doctorId).getRatings().stream()
+                            .mapToDouble(Rating::getRating)
+                            .sum();
+                    double averageRating = totalRating / doctorMap.get(doctorId).getRatings().size();
+                    doctorMap.get(doctorId).setAverage_rating(averageRating);
+                } else {
+                    doctorMap.get(doctorId).setAverage_rating(0.0);
                 }
             }
         } catch (SQLException ex) {
