@@ -5,8 +5,10 @@
  */
 package com.vnpay.common;
 
+import model.Invoice;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import dao.InvoiceDbContext;
 import java.io.IOException;import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -22,6 +24,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.sql.Date;
 
 /**
  *
@@ -97,7 +100,7 @@ public class ajaxServlet extends HttpServlet {
                     hashData.append('&');
                 }
             }
-        }
+        }       
         String queryUrl = query.toString();
         String vnp_SecureHash = Config.hmacSHA512(Config.secretKey, hashData.toString());
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
