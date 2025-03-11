@@ -22,7 +22,7 @@
                 <input type="hidden" id="selectedDate" name="date" value="${selectedDate}" required>
 
             <!-- Search by doctor name -->
-            <input type="text" id="doctorName" name="name" placeholder="Search by name or specialty" value="${param.name}">
+            <input type="text" id="doctorName" name="name" placeholder="Search by doctor'sname" value="${param.name}">
 
             <!-- Button to open the multi-select department modal -->
             <button type="button" onclick="openDepartmentModal()">Select Departments</button>
@@ -114,6 +114,7 @@
         </div>
 
         <script>
+            
 
             function openDepartmentModal() {
                 document.getElementById("departmentModal").style.display = "block";
@@ -180,6 +181,8 @@
 
                 let scheduleId = selectedSchedule.value;
                 document.getElementById("confirmBooking").onclick = function () {
+                    
+                    
                     window.location.href = "../appointment/confirm?doctor=" + doctorId + "&schedule=" + scheduleId;
                 };
 

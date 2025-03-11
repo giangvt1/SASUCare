@@ -87,7 +87,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../doctor/waiting-appointment">
+                    <a href="../doctor/appointmentsmanagement">
                         <i class="fa fa-medkit"></i> <span>Appoinment</span>
                     </a>
                 </li>

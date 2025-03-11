@@ -1,7 +1,6 @@
 package dao;
 
 import dal.DBContext;
-import model.Doctor;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Doctor;
 import model.DoctorSchedule;
 import model.Shift;
 import model.system.Staff;
@@ -40,16 +40,31 @@ public class DoctorDBContext extends DBContext<Doctor> {
 
     public Doctor getDoctorByUsername(String username) {
         Doctor doctor = null;
-        String sql = "SELECT * FROM Doctor WHERE username = ?";
+        String sql = """
+        SELECT d.id AS doctor_id, Staff.fullname AS doctor_name, Staff.fullname AS staff_name, 
+                        staff.address, staff.gender
+                FROM Doctor d
+                JOIN Staff ON d.staff_id = Staff.id
+        WHERE Staff.staff_username = ?
+    """;
+
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, username);
+            stmt.setString(1, username); // Set the username in the query
             ResultSet rs = stmt.executeQuery();
+
             if (rs.next()) {
                 doctor = new Doctor();
-                // Set properties of doctor from result set
-                doctor.setId(rs.getInt("id"));
-                doctor.setName(rs.getString("name"));
-                // Add other properties as needed
+                doctor.setId(rs.getInt("doctor_id"));
+                doctor.setName(rs.getString("doctor_name"));
+
+                // Set the Staff object related to the Doctor
+                Staff staff = new Staff();
+                staff.setFullname(rs.getString("staff_name"));
+//                staff.getStaff_username().setUsername(username);
+                doctor.setStaff(staff);
+
+                doctor.setAddress(rs.getString("address"));
+                doctor.setGender(rs.getBoolean("gender"));
             }
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Error retrieving doctor by username", ex);
