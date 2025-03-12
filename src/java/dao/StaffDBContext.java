@@ -3,7 +3,6 @@ package dao;
 import dal.DBContext;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.system.Staff;
@@ -12,7 +11,6 @@ import model.system.User;
 public class StaffDBContext extends DBContext<Staff> {
 
     private static final Logger LOGGER = Logger.getLogger(StaffDBContext.class.getName());
-    
 
     @Override
     public void insert(Staff staff) {
@@ -135,31 +133,6 @@ public class StaffDBContext extends DBContext<Staff> {
         }
 
         return gmail;
-    }
-
-    public List<Staff> getStaffByRole(int roleId) {
-        List<Staff> staffList = new ArrayList<>();
-        String sql = "SELECT s.id, s.fullname "
-                + "FROM [Staff] s "
-                + "JOIN [UserRole] ur ON s.staff_username = ur.username "
-                + "WHERE ur.role_id = ?";
-
-        try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            stm.setInt(1, roleId);
-            try (ResultSet rs = stm.executeQuery()) {
-                while (rs.next()) {
-                    Staff s = new Staff();
-                    s.setId(rs.getInt("id"));
-                    s.setFullname(rs.getString("fullname"));
-                    staffList.add(s);  // Thêm staff vào danh sách
-                }
-            }
-        } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "Database error in getStaffByRole", ex);
-            throw new RuntimeException("Error retrieving staff by role", ex);
-        }
-
-        return staffList;
     }
 
 }

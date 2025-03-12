@@ -5,7 +5,6 @@
 package model.system;
 
 import java.util.ArrayList;
-import model.Department;
 
 /**
  *
@@ -18,16 +17,7 @@ public class User {
     private String gmail;
     private String phone;
     private ArrayList<Role> roles=new ArrayList<>();
-    private ArrayList<Department> dep=new ArrayList<>();
 
-    public ArrayList<Department> getDep() {
-        return dep;
-    }
-
-    public void setDep(ArrayList<Department> dep) {
-        this.dep = dep;
-    }
-    
     public User(String username, String password, String displayname, String gmail, String phone) {
         this.username = username;
         this.password = password;

@@ -15,20 +15,6 @@ public class Doctor {
     private String address;
     private List<String> specialties;
     private ArrayList<DoctorSchedule> doctorSchedules;
-    private List<Department> departments;
-
-    public List<Department> getDepartments() {
-        return departments;
-    }
-
-    public void setDepartments(List<Department> departments) {
-        this.departments = departments;
-    }
-
-    public Doctor(int id, List<Department> departments) {
-        this.id = id;
-        this.departments = departments;
-    }
 
     public Doctor() {
     }

@@ -2,7 +2,6 @@ package controller.HRController;
 
 import dal.DBContext;
 import controller.systemaccesscontrol.BaseRBACController;
-import dao.DepartmentDBContext;
 import dao.StaffDBContext;
 import java.io.File;
 import java.io.IOException;
@@ -18,8 +17,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import model.Department;
 import model.system.Staff;
 import model.system.User;
 
@@ -31,7 +28,6 @@ public class ProfileUpdateController extends BaseRBACController {
     @Override
     protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged)
             throws ServletException, IOException {
-        DepartmentDBContext dep = new DepartmentDBContext();
         StaffDBContext staffDB = new StaffDBContext();
         Staff staff = staffDB.getByUsername(logged.getUsername());
         request.setAttribute("staff", staff);
@@ -41,6 +37,7 @@ public class ProfileUpdateController extends BaseRBACController {
     @Override
     protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged)
             throws ServletException, IOException {
+
         HttpSession session = request.getSession();
         StaffDBContext staffDB = new StaffDBContext();
         Staff staff = staffDB.getByUsername(logged.getUsername());
@@ -66,15 +63,17 @@ public class ProfileUpdateController extends BaseRBACController {
                 return;
             }
             // Sử dụng getRealPath("/uploads") thay vì getRealPath("") + File.separator + "uploads"
-            String uploadPath = request.getServletContext().getRealPath("/img");
+            String uploadPath = request.getServletContext().getRealPath("/uploads");
             File uploadDir = new File(uploadPath);
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
-            String newFileName = fileName;
+            // Sử dụng "/" cho URL ảnh
+            String newFileName = System.currentTimeMillis() + "_" + fileName;
             String filePath = uploadPath + File.separator + newFileName;
             filePart.write(filePath);
-            staff.setImg("img/" + newFileName);
+            // Lưu URL ảnh với dấu "/" thay vì File.separator
+            staff.setImg("uploads/" + newFileName);
         }
 
         String fullname = request.getParameter("fullname") != null ? request.getParameter("fullname").trim() : "";
