@@ -289,7 +289,7 @@ public void insert(User model, User createdBy) {
     
     // Hash mật khẩu sử dụng BCrypt
     String hashedPassword = BCrypt.hashpw(model.getPassword(), BCrypt.gensalt(12));
-    
+
     try (PreparedStatement stmUser = connection.prepareStatement(sql_insert_user);
          PreparedStatement stmUserRole = connection.prepareStatement(sql_insert_user_role);
          // Dùng RETURN_GENERATED_KEYS để lấy id của Staff
@@ -297,9 +297,9 @@ public void insert(User model, User createdBy) {
          // Dùng RETURN_GENERATED_KEYS để lấy id của Doctor
          PreparedStatement stmDoctor = connection.prepareStatement(sql_insert_doctor, Statement.RETURN_GENERATED_KEYS);
          PreparedStatement stmDoctorDept = connection.prepareStatement(sql_insert_doctor_department)) {
-        
+
         connection.setAutoCommit(false);
-        
+
         // 1. Insert vào bảng [User]
         stmUser.setString(1, model.getUsername());
         stmUser.setString(2, hashedPassword);
@@ -307,7 +307,7 @@ public void insert(User model, User createdBy) {
         stmUser.setString(4, model.getGmail());
         stmUser.setString(5, model.getPhone());
         stmUser.executeUpdate();
-        
+
         // 2. Insert vào bảng [UserRole]
         if (model.getRoles() != null) {
             for (Role role : model.getRoles()) {
@@ -316,56 +316,56 @@ public void insert(User model, User createdBy) {
                 stmUserRole.executeUpdate();
             }
         }
-        
+
         // 3. Insert vào bảng [Staff]
         Timestamp createAt = new Timestamp(System.currentTimeMillis());
         stmStaff.setString(1, model.getUsername());
         stmStaff.setString(2, createdBy.getUsername());
         stmStaff.setTimestamp(3, createAt);
         stmStaff.executeUpdate();
-        
+
         int generatedStaffId = -1;
         try (ResultSet rs = stmStaff.getGeneratedKeys()) {
             if (rs.next()) {
                 generatedStaffId = rs.getInt(1);
             }
         }
-        
+
         // 4. Kiểm tra nếu user có role là Doctor
-        // Giả sử với hệ thống của bạn, nếu role.getId() == 0 thì đó là Doctor
         boolean isDoctor = false;
         if (model.getRoles() != null) {
             for (Role role : model.getRoles()) {
-                if (role.getId() == 0) {
+                // Giả sử role_id = 5 là Doctor
+                if (role.getId() == 5) {
                     isDoctor = true;
                     break;
                 }
             }
         }
-        
+
         int generatedDoctorId = -1;
         if (isDoctor && generatedStaffId != -1) {
             stmDoctor.setInt(1, generatedStaffId);
             stmDoctor.executeUpdate();
-            
+
             try (ResultSet rs = stmDoctor.getGeneratedKeys()) {
                 if (rs.next()) {
                     generatedDoctorId = rs.getInt(1);
                 }
             }
         }
-        
-        // 5. Nếu là Doctor và có thông tin phòng ban (model.getDep() != null và không rỗng),
-        //    duyệt qua danh sách và insert vào bảng Doctor_Department
+
+        // 5. Nếu là Doctor và có thông tin phòng ban (departments) được set,
+        //    duyệt qua danh sách phòng ban và insert vào bảng Doctor_Department
         if (isDoctor && generatedDoctorId != -1 
-                && model.getDep() != null && !model.getDep().isEmpty()) {
+            && model.getDep()!= null && !model.getDep().isEmpty()) {
             for (model.Department dept : model.getDep()) {
                 stmDoctorDept.setInt(1, generatedDoctorId);
                 stmDoctorDept.setInt(2, dept.getId());
                 stmDoctorDept.executeUpdate();
             }
         }
-        
+
         connection.commit();
     } catch (SQLException ex) {
         try {
@@ -386,6 +386,7 @@ public void insert(User model, User createdBy) {
         }
     }
 }
+
 
     public String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt(12)); // Độ mạnh 12
