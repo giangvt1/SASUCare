@@ -33,6 +33,7 @@ public class UserLoginController extends HttpServlet {
         String password = request.getParameter("password");
         UserDBContext db = new UserDBContext();
         User account = db.login(username, password);
+        System.out.println("account email: " + account.getGmail());
         StaffDBContext staffDao = new StaffDBContext();
         if (account != null) {
             request.getSession().setAttribute("account", account);
