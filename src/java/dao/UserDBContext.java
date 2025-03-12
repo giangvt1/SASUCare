@@ -29,7 +29,7 @@ public class UserDBContext extends DBContext<User> {
             stm.setString(1, email);
             try (ResultSet rs = stm.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt(1) > 0; // Nếu count > 0 nghĩa là email đã tồn tại
+                    return rs.getInt(1) > 0;
                 }
             }
         } catch (SQLException ex) {
@@ -45,6 +45,20 @@ public class UserDBContext extends DBContext<User> {
             String hashedPassword = hashPassword(newPassword);
             stm.setString(1, hashedPassword);
             stm.setString(2, username);
+            int rowsAffected = stm.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    public boolean resetPasswordwithgmail(String gmail, String newPassword) {
+        String sql = "UPDATE [User] SET password = ? WHERE gmail = ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            // Hash mật khẩu mới sử dụng hàm hashPassword đã có trong class
+            String hashedPassword = hashPassword(newPassword);
+            stm.setString(1, hashedPassword);
+            stm.setString(2, gmail);
             int rowsAffected = stm.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException ex) {
@@ -260,83 +274,118 @@ public class UserDBContext extends DBContext<User> {
         }
     }
 
-    @Override
-    public void insert(User model
-    ) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+   @Override
+public void insert(User model) {
+    throw new UnsupportedOperationException("Not supported yet.");
+}
 
-    public void insert(User model, User createdBy) {
-        // SQL cho các bảng
-        String sql_insert_user = "INSERT INTO [User](username, password, displayname, gmail, phone) VALUES (?,?,?,?,?)";
-        String sql_insert_user_role = "INSERT INTO [UserRole](username, role_id) VALUES (?,?)";
-        String sql_insert_staff = "INSERT INTO [Staff](staff_username, createby, createat) VALUES (?,?,?)";
-        String sql_insert_doctor = "INSERT INTO [Doctor](staff_id) VALUES (?)";
-        String hashedPassword = BCrypt.hashpw(model.getPassword(), BCrypt.gensalt(12));
-
-        try (PreparedStatement stmUser = connection.prepareStatement(sql_insert_user); PreparedStatement stmUserRole = connection.prepareStatement(sql_insert_user_role); // Dùng RETURN_GENERATED_KEYS để lấy id của Staff
-                 PreparedStatement stmStaff = connection.prepareStatement(sql_insert_staff, Statement.RETURN_GENERATED_KEYS); PreparedStatement stmDoctor = connection.prepareStatement(sql_insert_doctor)) {
-
-            connection.setAutoCommit(false);
-            stmUser.setString(1, model.getUsername());
-            stmUser.setString(2, hashedPassword);
-            stmUser.setString(3, model.getDisplayname());
-            stmUser.setString(4, model.getGmail());
-            stmUser.setString(5, model.getPhone());
-            stmUser.executeUpdate();
-            if (model.getRoles() != null) {
-                for (Role role : model.getRoles()) {
-                    stmUserRole.setString(1, model.getUsername());
-                    stmUserRole.setInt(2, role.getId());
-                    stmUserRole.executeUpdate();
-                }
-            }
-            Timestamp createAt = new Timestamp(System.currentTimeMillis());
-            stmStaff.setString(1, model.getUsername());
-            stmStaff.setString(2, createdBy.getUsername());
-            stmStaff.setTimestamp(3, createAt);
-            stmStaff.executeUpdate();
-            int generatedStaffId = -1;
-            try (ResultSet rs = stmStaff.getGeneratedKeys()) {
-                if (rs.next()) {
-                    generatedStaffId = rs.getInt(1);
-                }
-            }
-            boolean isDoctor = false;
-            if (model.getRoles() != null) {
-                for (Role role : model.getRoles()) {
-                    if (role.getId() == 5) {
-                        isDoctor = true;
-                        break;
-                    }
-                }
-            }
-
-            if (isDoctor && generatedStaffId != -1) {
-                stmDoctor.setInt(1, generatedStaffId);
-                stmDoctor.executeUpdate();
-            }
-
-            connection.commit();
-        } catch (SQLException ex) {
-            try {
-                connection.rollback();
-            } catch (SQLException e) {
-                Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, "Rollback failed", e);
-            }
-            if (ex.getMessage().contains("Violation of PRIMARY KEY constraint")) {
-                throw new RuntimeException("Username is duplicated", ex);
-            } else {
-                throw new RuntimeException("Error inserting user: " + ex.getMessage(), ex);
-            }
-        } finally {
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException ex) {
-                Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, "Failed to reset auto-commit", ex);
+public void insert(User model, User createdBy) {
+    // SQL cho các bảng
+    String sql_insert_user = "INSERT INTO [User](username, password, displayname, gmail, phone) VALUES (?,?,?,?,?)";
+    String sql_insert_user_role = "INSERT INTO [UserRole](username, role_id) VALUES (?,?)";
+    String sql_insert_staff = "INSERT INTO [Staff](staff_username, createby, createat) VALUES (?,?,?)";
+    String sql_insert_doctor = "INSERT INTO [Doctor](staff_id) VALUES (?)";
+    String sql_insert_doctor_department = "INSERT INTO [Doctor_Department](doctor_id, department_id) VALUES (?, ?)";
+    
+    // Hash mật khẩu sử dụng BCrypt
+    String hashedPassword = BCrypt.hashpw(model.getPassword(), BCrypt.gensalt(12));
+    
+    try (PreparedStatement stmUser = connection.prepareStatement(sql_insert_user);
+         PreparedStatement stmUserRole = connection.prepareStatement(sql_insert_user_role);
+         // Dùng RETURN_GENERATED_KEYS để lấy id của Staff
+         PreparedStatement stmStaff = connection.prepareStatement(sql_insert_staff, Statement.RETURN_GENERATED_KEYS);
+         // Dùng RETURN_GENERATED_KEYS để lấy id của Doctor
+         PreparedStatement stmDoctor = connection.prepareStatement(sql_insert_doctor, Statement.RETURN_GENERATED_KEYS);
+         PreparedStatement stmDoctorDept = connection.prepareStatement(sql_insert_doctor_department)) {
+        
+        connection.setAutoCommit(false);
+        
+        // 1. Insert vào bảng [User]
+        stmUser.setString(1, model.getUsername());
+        stmUser.setString(2, hashedPassword);
+        stmUser.setString(3, model.getDisplayname());
+        stmUser.setString(4, model.getGmail());
+        stmUser.setString(5, model.getPhone());
+        stmUser.executeUpdate();
+        
+        // 2. Insert vào bảng [UserRole]
+        if (model.getRoles() != null) {
+            for (Role role : model.getRoles()) {
+                stmUserRole.setString(1, model.getUsername());
+                stmUserRole.setInt(2, role.getId());
+                stmUserRole.executeUpdate();
             }
         }
+        
+        // 3. Insert vào bảng [Staff]
+        Timestamp createAt = new Timestamp(System.currentTimeMillis());
+        stmStaff.setString(1, model.getUsername());
+        stmStaff.setString(2, createdBy.getUsername());
+        stmStaff.setTimestamp(3, createAt);
+        stmStaff.executeUpdate();
+        
+        int generatedStaffId = -1;
+        try (ResultSet rs = stmStaff.getGeneratedKeys()) {
+            if (rs.next()) {
+                generatedStaffId = rs.getInt(1);
+            }
+        }
+        
+        // 4. Kiểm tra nếu user có role là Doctor
+        // Giả sử với hệ thống của bạn, nếu role.getId() == 0 thì đó là Doctor
+        boolean isDoctor = false;
+        if (model.getRoles() != null) {
+            for (Role role : model.getRoles()) {
+                if (role.getId() == 0) {
+                    isDoctor = true;
+                    break;
+                }
+            }
+        }
+        
+        int generatedDoctorId = -1;
+        if (isDoctor && generatedStaffId != -1) {
+            stmDoctor.setInt(1, generatedStaffId);
+            stmDoctor.executeUpdate();
+            
+            try (ResultSet rs = stmDoctor.getGeneratedKeys()) {
+                if (rs.next()) {
+                    generatedDoctorId = rs.getInt(1);
+                }
+            }
+        }
+        
+        // 5. Nếu là Doctor và có thông tin phòng ban (model.getDep() != null và không rỗng),
+        //    duyệt qua danh sách và insert vào bảng Doctor_Department
+        if (isDoctor && generatedDoctorId != -1 
+                && model.getDep() != null && !model.getDep().isEmpty()) {
+            for (model.Department dept : model.getDep()) {
+                stmDoctorDept.setInt(1, generatedDoctorId);
+                stmDoctorDept.setInt(2, dept.getId());
+                stmDoctorDept.executeUpdate();
+            }
+        }
+        
+        connection.commit();
+    } catch (SQLException ex) {
+        try {
+            connection.rollback();
+        } catch (SQLException e) {
+            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, "Rollback failed", e);
+        }
+        if (ex.getMessage().contains("Violation of PRIMARY KEY constraint")) {
+            throw new RuntimeException("Username is duplicated", ex);
+        } else {
+            throw new RuntimeException("Error inserting user: " + ex.getMessage(), ex);
+        }
+    } finally {
+        try {
+            connection.setAutoCommit(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, "Failed to reset auto-commit", ex);
+        }
     }
+}
 
     public String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt(12)); // Độ mạnh 12

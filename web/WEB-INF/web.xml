@@ -199,6 +199,16 @@
     <servlet>
         <servlet-name>EditDoctorCertificate</servlet-name>
         <servlet-class>controller.HRController.EditDoctorCertificate</servlet-class>
+        <servlet-name>HomepageController</servlet-name>
+        <servlet-class>controller.Homepage.HomepageController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ForgetPassword</servlet-name>
+        <servlet-class>controller.systemaccesscontrol.ForgetPassword</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ResetPassword</servlet-name>
+        <servlet-class>controller.systemaccesscontrol.ResetPassword</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
@@ -456,5 +466,15 @@
     <servlet-mapping>
         <servlet-name>EditDoctorCertificate</servlet-name>
         <url-pattern>/hr/EditDoctorCertificate</url-pattern>
+        <servlet-name>HomepageController</servlet-name>
+        <url-pattern>/home</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ForgetPassword</servlet-name>
+        <url-pattern>/system/forgetpassword</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ResetPassword</servlet-name>
+        <url-pattern>/system/resetpassword</url-pattern>
     </servlet-mapping>
 </web-app>
