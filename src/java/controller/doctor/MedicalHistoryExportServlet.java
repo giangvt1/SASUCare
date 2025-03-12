@@ -63,11 +63,11 @@ public class MedicalHistoryExportServlet extends HttpServlet {
             }
 
             // Ghi dữ liệu
-            int rowIndex = 0;
+            int rowIndex = 1;
             for (MedicalHistory history : medicalHistory) {
                 Row row = sheet.createRow(rowIndex++);
                 Cell cellId = row.createCell(COLUMN_INDEX);
-                cellId.setCellValue(rowIndex);
+                cellId.setCellValue(rowIndex - 1);
                 cellId.setCellStyle(dataStyle);
 
                 Cell cellName = row.createCell(COLUMN_NAME);

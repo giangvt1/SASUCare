@@ -29,6 +29,8 @@ public class EditCustomerVisitHistory extends BaseRBACController {
 
     @Override
     protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8"); // Đảm bảo encoding đúng
+
         String id = request.getParameter("id");
         int staffId = Integer.parseInt(request.getParameter("sId"));
         String customerId = request.getParameter("cId");
@@ -38,13 +40,17 @@ public class EditCustomerVisitHistory extends BaseRBACController {
         String treatmentPlan = request.getParameter("treatmentPlan");
         String nextAppointmentStr = request.getParameter("nextAppointment");
 
+        System.out.println("Received visitDateStr: " + visitDateStr);
+        System.out.println("Received nextAppointmentStr: " + nextAppointmentStr);
+
         DoctorDBContext doctorDB = new DoctorDBContext();
         int doctorId = doctorDB.getDoctorIdByStaffId(staffId);
         Timestamp visitDate = null;
         Timestamp nextAppointment = null;
-
         String error = "";
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
         try {
             if (visitDateStr != null && !visitDateStr.isEmpty()) {
                 visitDate = new Timestamp(format.parse(visitDateStr).getTime());
@@ -52,10 +58,9 @@ public class EditCustomerVisitHistory extends BaseRBACController {
             if (nextAppointmentStr != null && !nextAppointmentStr.isEmpty()) {
                 nextAppointment = new Timestamp(format.parse(nextAppointmentStr).getTime());
             }
-        } catch (IllegalArgumentException e) {
-            error = "Date not valid";
         } catch (ParseException ex) {
-            Logger.getLogger(EditCustomerVisitHistory.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+            error = "Date format is incorrect.";
         }
 
         VisitHistory visitHistory = new VisitHistory();

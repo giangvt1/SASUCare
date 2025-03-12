@@ -32,8 +32,6 @@ public class AppointmentCancelController extends HttpServlet {
             DoctorSchedule doctorSchedule = dsDB.get(String.valueOf(appointment.getDoctorSchedule().getId()));
 
             // Update the appointment status in the database
-            doctorSchedule.setAvailable(true);
-            dsDB.update(doctorSchedule);
             appointmentDB.update(appointment);
         }
 

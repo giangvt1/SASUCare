@@ -83,7 +83,7 @@
                     <div class="statistics row">
                         <div class="col-md-3">
                             <h5>Total Appointments</h5>
-                            <h2>${appointmentsTotal.size()}</h2>
+                            <h2>${total}</h2>
                         </div>
                         <div class="col-md-3">
                             <h5>Pending</h5>
