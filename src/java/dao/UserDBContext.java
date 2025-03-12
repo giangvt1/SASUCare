@@ -29,7 +29,7 @@ public class UserDBContext extends DBContext<User> {
             stm.setString(1, email);
             try (ResultSet rs = stm.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt(1) > 0; // Nếu count > 0 nghĩa là email đã tồn tại
+                    return rs.getInt(1) > 0;
                 }
             }
         } catch (SQLException ex) {
@@ -45,6 +45,20 @@ public class UserDBContext extends DBContext<User> {
             String hashedPassword = hashPassword(newPassword);
             stm.setString(1, hashedPassword);
             stm.setString(2, username);
+            int rowsAffected = stm.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    public boolean resetPasswordwithgmail(String gmail, String newPassword) {
+        String sql = "UPDATE [User] SET password = ? WHERE gmail = ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            // Hash mật khẩu mới sử dụng hàm hashPassword đã có trong class
+            String hashedPassword = hashPassword(newPassword);
+            stm.setString(1, hashedPassword);
+            stm.setString(2, gmail);
             int rowsAffected = stm.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException ex) {

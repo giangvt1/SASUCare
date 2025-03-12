@@ -184,6 +184,14 @@
         <servlet-name>HomepageController</servlet-name>
         <servlet-class>controller.Homepage.HomepageController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ForgetPassword</servlet-name>
+        <servlet-class>controller.systemaccesscontrol.ForgetPassword</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ResetPassword</servlet-name>
+        <servlet-class>controller.systemaccesscontrol.ResetPassword</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
         <url-pattern>/forgetpassword</url-pattern>
@@ -424,5 +432,13 @@
     <servlet-mapping>
         <servlet-name>HomepageController</servlet-name>
         <url-pattern>/home</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ForgetPassword</servlet-name>
+        <url-pattern>/system/forgetpassword</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ResetPassword</servlet-name>
+        <url-pattern>/system/resetpassword</url-pattern>
     </servlet-mapping>
 </web-app>
