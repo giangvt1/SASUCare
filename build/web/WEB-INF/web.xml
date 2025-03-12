@@ -448,6 +448,24 @@
         <url-pattern>/hr/appointments</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>ManageCertificates</servlet-name>
+        <url-pattern>/doctor/ManageCertificates</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CertificateCheckDate</servlet-name>
+        <url-pattern>/CertificateCheckDate</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditCertificate</servlet-name>
+        <url-pattern>/doctor/EditCertificate</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ManageDoctorCertificates</servlet-name>
+        <url-pattern>/hr/ManageDoctorCertificates</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditDoctorCertificate</servlet-name>
+        <url-pattern>/hr/EditDoctorCertificate</url-pattern>
         <servlet-name>HomepageController</servlet-name>
         <url-pattern>/home</url-pattern>
     </servlet-mapping>
