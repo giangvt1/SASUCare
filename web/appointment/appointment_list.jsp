@@ -83,7 +83,7 @@
                 <div class="event-list">
                     <c:set var="hasPendingAppointments" value="false" />
                     <c:forEach var="appointment" items="${appointments}">
-                        <c:if test="${appointment.status == 'Pending'}">
+                        <c:if test="${appointment.status == 'Pending' and appointment.doctorSchedule.scheduleDate.time >= currentTime}">
                             <c:set var="hasPendingAppointments" value="true" />
                             <div class="event-card">
                                 <div class="event-details">
@@ -115,7 +115,7 @@
                 <div class="event-list">
                     <c:set var="hasCanceledAppointments" value="false" />
                     <c:forEach var="appointment" items="${appointments}">
-                        <c:if test="${appointment.status == 'Canceled'}">
+                        <c:if test="${appointment.status == 'Canceled' }">
                             <c:set var="hasCanceledAppointments" value="true" />
                             <div class="event-card">
                                 <div class="event-details">

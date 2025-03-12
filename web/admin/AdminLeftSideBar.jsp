@@ -32,19 +32,10 @@
         </div>
         <!-- Sidebar menu -->
         <ul class="sidebar-menu">
-
             <li class="active">
                 <a href="${pageContext.request.contextPath}/admin/Dashboard.jsp">
                     <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                 </a>
-                <c:if test="${sessionScope.allowedUrls != null && sessionScope.allowedUrls.contains('/admin/EditTypeApplication')}">
-                    <a href="${pageContext.request.contextPath}/admin/ManageTypeApplication">
-                        <i class="fa fa-globe"></i> <span>Manage Type Application</span>
-                    </a>
-                    <a href="${pageContext.request.contextPath}/admin/EditTypeApplication   ">
-                        <i class="fa fa-globe"></i> <span>Manage Type Application</span>
-                    </a>
-                </c:if> 
             </li>
             <c:if test="${sessionScope.allowedUrls != null && sessionScope.allowedUrls.contains('/hr/create')}">
                 <li>
@@ -55,11 +46,6 @@
                 <li>
                     <a href="${pageContext.request.contextPath}/hr/accountlist">
                         <i class="fa fa-globe"></i> <span>Account List</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="${pageContext.request.contextPath}/hr/ViewStaffApplication?staffId=${sessionScope.staff.id}">
-                        <i class="fa fa-globe"></i> <span>Staff Application</span>
                     </a>
                 </li>
                 <li>
@@ -91,7 +77,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../doctor/waiting-appointment">
+                    <a href="../doctor/appointmentsmanagement">
                         <i class="fa fa-medkit"></i> <span>Appoinment</span>
                     </a>
                 </li>
