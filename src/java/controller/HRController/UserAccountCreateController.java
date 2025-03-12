@@ -126,17 +126,21 @@ public class UserAccountCreateController extends BaseRBACController {
 
         // Nếu role là Doctor, lấy thông tin phòng ban từ form
         // Giả sử chỉ cho chọn 1 phòng ban
-        String departmentParam = request.getParameter("departments");
-        if (departmentParam != null && !departmentParam.isEmpty()) {
-            try {
-                int depId = Integer.parseInt(departmentParam);
-                Department dep = new Department();
-                dep.setId(depId);
-                ArrayList<Department> depList = new ArrayList<>();
-                depList.add(dep);
+        String[] departmentParams = request.getParameterValues("departments");
+        if (departmentParams != null && departmentParams.length > 0) {
+            ArrayList<Department> depList = new ArrayList<>();
+            for (String depParam : departmentParams) {
+                try {
+                    int depId = Integer.parseInt(depParam);
+                    Department dep = new Department();
+                    dep.setId(depId);
+                    depList.add(dep);
+                } catch (NumberFormatException ex) {
+                    // Nếu parse thất bại, bỏ qua giá trị này
+                }
+            }
+            if (!depList.isEmpty()) {
                 newUser.setDep(depList);
-            } catch (NumberFormatException ex) {
-                // Nếu parse thất bại, không set phòng ban
             }
         }
 

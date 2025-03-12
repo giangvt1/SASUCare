@@ -46,7 +46,7 @@
                 }
             }
         </style>
-
+        
         <!-- Scripts -->
         <script>
             // Regex pattern cho số điện thoại: 10 chữ số, bắt đầu bằng 0
@@ -66,7 +66,7 @@
                 // Lấy text hiển thị của option được chọn
                 const selectedRoleText = roleSelect.options[roleSelect.selectedIndex].text;
                 const deptDiv = document.getElementById("departmentDiv");
-
+                
                 // Kiểm tra chuỗi "Doctor" (có thể dùng toLowerCase() nếu cần)
                 if (selectedRoleText === "Doctor") {
                     deptDiv.style.display = "table-row";
@@ -81,7 +81,7 @@
                 const displayname = document.getElementById("displayname").value.trim();
                 const email = document.getElementById("gmail").value.trim();
                 const phone = document.getElementById("phone").value.trim();
-
+                
                 if (!username) {
                     alert("Username is required.");
                     return false;
@@ -98,25 +98,15 @@
                     alert("Phone number must be exactly 10 digits and start with 0.");
                     return false;
                 }
-
+                
                 const rolesSelect = document.getElementById("roles");
                 if (!rolesSelect.value) {
                     alert("Please select at least one role.");
                     return false;
                 }
-
+                
                 return true; // Hợp lệ
             }
-            setTimeout(function () {
-                var successMsg = document.querySelector('.alert-success');
-                if (successMsg) {
-                    successMsg.style.display = 'none';
-                }
-                var errorMsg = document.querySelector('.alert-danger');
-                if (errorMsg) {
-                    errorMsg.style.display = 'none';
-                }
-            }, 2000);
         </script>
     </head>
     <body>
@@ -187,7 +177,7 @@
                             <tr id="departmentDiv" style="display:none;">
                                 <th><label for="departments">Department</label></th>
                                 <td>
-                                    <select name="departments" id="departments">
+                                    <select name="departments" id="departments" multiple="">
                                         <option value="">--Select Department--</option>
                                         <c:forEach var="de" items="${department}">
                                             <option value="${de.id}">${de.name}</option>
