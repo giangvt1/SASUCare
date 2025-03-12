@@ -199,6 +199,8 @@
     <servlet>
         <servlet-name>EditDoctorCertificate</servlet-name>
         <servlet-class>controller.HRController.EditDoctorCertificate</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>HomepageController</servlet-name>
         <servlet-class>controller.Homepage.HomepageController</servlet-class>
     </servlet>
@@ -466,6 +468,8 @@
     <servlet-mapping>
         <servlet-name>EditDoctorCertificate</servlet-name>
         <url-pattern>/hr/EditDoctorCertificate</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>HomepageController</servlet-name>
         <url-pattern>/home</url-pattern>
     </servlet-mapping>
