@@ -23,8 +23,34 @@ public class Doctor {
 
     public Doctor() {
     }
+<<<<<<< Updated upstream
 
     public Doctor(int id, String name, Staff staff, String email, String phoneNumber, boolean gender, String address, String img, List<Rating> ratings, List<String> specialties, ArrayList<DoctorSchedule> doctorSchedules) {
+=======
+    
+    public Doctor(int id, String name, Staff staff, String email, String phoneNumber, boolean gender, String address, String img, List<Rating> ratings, List<String> specialties, ArrayList<DoctorSchedule> doctorSchedules) {
+        this.id = id;
+        this.name = name;
+        this.staff = staff;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.gender = gender;
+        this.address = address;
+        this.img = img;
+        this.ratings = ratings;
+        this.specialties = specialties;
+        this.doctorSchedules = doctorSchedules;
+    }
+    public Doctor(int id, String name, List<String> specialties, String price, String info) {
+        this.id = id;
+        this.name = name;
+        this.specialties = specialties;
+        this.price = price;
+        this.info = info;
+    }
+    
+    public Doctor(int id, String name, Staff staff, String email, String phoneNumber, boolean gender, String address, List<String> specialties, ArrayList<DoctorSchedule> doctorSchedules) {
+>>>>>>> Stashed changes
         this.id = id;
         this.name = name;
         this.staff = staff;
@@ -132,6 +158,7 @@ public class Doctor {
         this.img = img;
     }
 
+<<<<<<< Updated upstream
     public List<Rating> getRatings() {
         return ratings;
     }
@@ -140,6 +167,8 @@ public class Doctor {
         this.ratings = ratings;
     }
 
+=======
+>>>>>>> Stashed changes
     public String getPrice() {
         return price;
     }
@@ -163,7 +192,20 @@ public class Doctor {
     public void setAverage_rating(double average_rating) {
         this.average_rating = average_rating;
     }
+<<<<<<< Updated upstream
     
     
     
+=======
+
+    public List<Rating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<Rating> ratings) {
+        this.ratings = ratings;
+    }
+    
+
+>>>>>>> Stashed changes
 }

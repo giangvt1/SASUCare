@@ -4,7 +4,11 @@
  */
 package controller.customerService;
 
+<<<<<<< Updated upstream
 import dao.DoctorDBContext;
+=======
+import dao.DoctorRatingDBContext;
+>>>>>>> Stashed changes
 import dao.RatingDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -46,7 +50,11 @@ public class RatingServlet extends HttpServlet {
         }
 
         int doctorId = Integer.parseInt(request.getParameter("doctorId"));
+<<<<<<< Updated upstream
         DoctorDBContext doctorDAO = new DoctorDBContext();
+=======
+        DoctorRatingDBContext doctorDAO = new DoctorRatingDBContext();
+>>>>>>> Stashed changes
         Doctor doctor = doctorDAO.getDoctorById(doctorId);
         String action = request.getParameter("action");
         String customerUsername = customer.getUsername();

@@ -1,6 +1,10 @@
 package controller.guest;
 
+<<<<<<< Updated upstream
 import dao.DoctorDBContext;
+=======
+import dao.DoctorRatingDBContext;
+>>>>>>> Stashed changes
 import dao.RatingDBContext;
 import model.Doctor;
 import model.Rating;
@@ -29,7 +33,11 @@ public class DoctorDetailsServlet extends HttpServlet {
 
         try {
             int doctorId = Integer.parseInt(doctorIdStr);
+<<<<<<< Updated upstream
             DoctorDBContext doctorDAO = new DoctorDBContext();
+=======
+            DoctorRatingDBContext doctorDAO = new DoctorRatingDBContext();
+>>>>>>> Stashed changes
             Doctor doctor = doctorDAO.getDoctorById(doctorId);
 
             if (doctor != null) {
