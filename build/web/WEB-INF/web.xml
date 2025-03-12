@@ -157,6 +157,26 @@
         <servlet-class>controller.doctor.VisitHistoryExportPDFServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>ViewStaffApplication</servlet-name>
+        <servlet-class>controller.HRController.ViewStaffApplication</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditStaffApplication</servlet-name>
+        <servlet-class>controller.HRController.EditStaffApplication</servlet-class>
+    </servlet>
+        <servlet-name>ChatHistoryController</servlet-name>
+        <servlet-class>controller.ChatController.ChatHistoryController</servlet-class>
+        <servlet-name>SessionServlet</servlet-name>
+        <servlet-class>controller.ChatController.SessionServlet</servlet-class>
+    <servlet>
+        <servlet-name>ManageTypeApplication</servlet-name>
+        <servlet-class>controller.AdminController.ManageTypeApplication</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditTypeApplication</servlet-name>
+        <servlet-class>controller.AdminController.EditTypeApplication</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>AppointmentsManagementController</servlet-name>
         <servlet-class>controller.appointment.AppointmentManagementController</servlet-class>
     </servlet>
@@ -366,10 +386,6 @@
         <url-pattern>/doctor/api/appointment</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>ChatBoxController</servlet-name>
-        <url-pattern>/chat-box</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>DoctorCalendarController</servlet-name>
         <url-pattern>/doctor/calendar</url-pattern>
     </servlet-mapping>
@@ -417,4 +433,8 @@
         <servlet-name>vnpayRefund</servlet-name>
         <url-pattern>/vnpayrefund/*</url-pattern>
     </servlet-mapping>
+    
+    <url-pattern>/ChatHistoryController</url-pattern>
+        <servlet-name>SessionServlet</servlet-name>
+    <url-pattern>/getSessionId</url-pattern>
 </web-app>
