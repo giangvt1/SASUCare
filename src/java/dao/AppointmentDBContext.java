@@ -17,6 +17,18 @@ public class AppointmentDBContext extends DBContext<Appointment> {
 
     private static final Logger LOGGER = Logger.getLogger(AppointmentDBContext.class.getName());
 
+    public void cancelExpiredAppointments() {
+        String sql = "UPDATE Appointment SET status = 'Canceled', updateAt = GETDATE() WHERE status = 'Pending' AND DocSchedule_id IN \n" +
+"                (SELECT id FROM Doctor_Schedule WHERE schedule_date < CONVERT(DATE, GETDATE()))";
+
+        try ( PreparedStatement stmt = connection.prepareStatement(sql)) {
+            int affectedRows = stmt.executeUpdate();
+            System.out.println("Expired appointments canceled: " + affectedRows);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public List<Appointment> getFilteredAppointments(String name, Date date, String status, int pageIndex, int pageSize) {
         List<Appointment> appointments = new ArrayList<>();
         StringBuilder sql = new StringBuilder("""
@@ -120,8 +132,6 @@ public class AppointmentDBContext extends DBContext<Appointment> {
             """);
 
         List<Object> params = new ArrayList<>();
-
-       
 
         try (PreparedStatement stmt = connection.prepareStatement(sql.toString())) {
             // Set parameters dynamically
