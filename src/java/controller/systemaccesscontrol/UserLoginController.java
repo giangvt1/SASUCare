@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
 import model.system.*;
 
 /**
@@ -33,40 +32,45 @@ public class UserLoginController extends HttpServlet {
         String password = request.getParameter("password");
         UserDBContext db = new UserDBContext();
         User account = db.login(username, password);
+        
+        // Kiểm tra account trước khi gọi getGmail()
+        if (account == null) {
+            request.setAttribute("errorMessage", "Invalid username or password.");
+            request.getRequestDispatcher("../admin/AdminLogin.jsp").forward(request, response);
+            return;
+        }
+        
         System.out.println("account email: " + account.getGmail());
         StaffDBContext staffDao = new StaffDBContext();
-        if (account != null) {
-            request.getSession().setAttribute("account", account);
-            ArrayList<Role> roles = db.getRoles(username);
-            account.setRoles(roles);
+        
+        // Nếu account tồn tại, thực hiện các bước đăng nhập
+        HttpSession session = request.getSession();
+        session.setAttribute("account", account);
+        ArrayList<Role> roles = db.getRoles(username);
+        account.setRoles(roles);
 
-            // Lấy đối tượng Staff từ cơ sở dữ liệu dựa vào username
-            Staff staffObj = staffDao.getByUsername(username);
-            // Sau đó set vào session
-            request.getSession().setAttribute("staff", staffObj);
+        // Lấy đối tượng Staff từ cơ sở dữ liệu dựa vào username
+        Staff staffObj = staffDao.getByUsername(username);
+        session.setAttribute("staff", staffObj);
 
-            // Collect role names for display
-            StringBuilder roleNames = new StringBuilder();
-            for (Role role : roles) {
-                if (roleNames.length() > 0) {
-                    roleNames.append(", ");
-                }
-                roleNames.append(role.getName());
+        // Collect role names for display
+        StringBuilder roleNames = new StringBuilder();
+        for (Role role : roles) {
+            if (roleNames.length() > 0) {
+                roleNames.append(", ");
             }
-            request.getSession().setAttribute("userRoles", roleNames.toString());
-            System.out.println("userRoles: " + roleNames.toString());
-            ArrayList<Feature> features = new ArrayList<>();
-            for (Role role : roles) {
-                features.addAll(role.getFeatures());
-            }
-            request.getSession().setAttribute("allowedUrls", getAllowedUrls(features));
-            request.getRequestDispatcher("../admin/Dashboard.jsp").forward(request, response);
-        } else {
-            request.setAttribute("errorMessage", "Invalid username or password.");
-            
-            request.getRequestDispatcher("../admin/AdminLogin.jsp").forward(request, response);
+            roleNames.append(role.getName());
         }
-
+        session.setAttribute("userRoles", roleNames.toString());
+        System.out.println("userRoles: " + roleNames.toString());
+        
+        ArrayList<Feature> features = new ArrayList<>();
+        for (Role role : roles) {
+            features.addAll(role.getFeatures());
+        }
+        session.setAttribute("allowedUrls", getAllowedUrls(features));
+        
+        request.getRequestDispatcher("../admin/Dashboard.jsp").forward(request, response);
     }
 
     private Set<String> getAllowedUrls(ArrayList<Feature> features) {
