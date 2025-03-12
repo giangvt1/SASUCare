@@ -12,6 +12,7 @@ import model.system.User;
 public class StaffDBContext extends DBContext<Staff> {
 
     private static final Logger LOGGER = Logger.getLogger(StaffDBContext.class.getName());
+    
 
     @Override
     public void insert(Staff staff) {

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller.doctor;
 
 import controller.systemaccesscontrol.BaseRBACController;
@@ -43,7 +39,7 @@ public class EditCustomerMedicalHistory extends BaseRBACController {
             isCreated = customerDB.createMedicalHistory(medicalH);
         } else {
             medicalH.setId(Integer.parseInt(id));
-            isCreated = customerDB.updateMedicalHistory(medicalH);
+//            isCreated = customerDB.updateMedicalHistory(medicalH);
         }
 
         String message = isCreated ? "Medical history edited successfully!" : "Failed to edit medical history.";

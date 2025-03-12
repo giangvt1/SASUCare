@@ -16,7 +16,7 @@
                     <h3 class="text-center mt-4">Register</h3>
                     <span class="d-flex justify-content-center">
                         Already have an account? 
-                        <a href="#!" class="change-login">Sign In</a>
+                        <a href="#!" class="change-login">Login</a>
                     </span>
                     <table class="mt-4 mb-4">
                         <tbody>

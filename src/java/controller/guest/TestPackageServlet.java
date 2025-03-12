@@ -89,7 +89,7 @@ try {
     pageIndex = 1;
 }
 
-int totalRecords = db.countTotalPackages(keyword, "Test");
+int totalRecords = db.countTotalPackages(keyword, category);
 int totalPages = (int) Math.ceil((double) totalRecords / PAGE_SIZE);
 if (pageIndex > totalPages) {
     pageIndex = totalPages;

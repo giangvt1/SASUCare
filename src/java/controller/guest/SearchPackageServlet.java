@@ -1,9 +1,15 @@
 package controller.guest;
 
+
+
+
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
+
+
 import dao.PackageDBContext;
 import model.Package;
 import java.io.IOException;
@@ -20,43 +26,41 @@ import java.util.List;
  *
  * @author admin
  */
-@WebServlet(urlPatterns = {"/SearchPackage"})
+@WebServlet(urlPatterns={"/SearchPackage"})
 public class SearchPackageServlet extends HttpServlet {
-
-    private final PackageDBContext db = new PackageDBContext();
-    private static final int PAGE_SIZE = 10;
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
+   private final PackageDBContext db = new PackageDBContext();
+   private static final int PAGE_SIZE = 10;
+    
+    
+    
+    /** 
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet SearchPackageServlet</title>");
+            out.println("<title>Servlet SearchPackageServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet SearchPackageServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet SearchPackageServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
-
+            
         }
-    }
+    } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
+    /** 
      * Handles the HTTP <code>GET</code> method.
-     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -64,8 +68,8 @@ public class SearchPackageServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        PackageDBContext db = new PackageDBContext();
+    throws ServletException, IOException {
+         PackageDBContext db = new PackageDBContext();
 
         String action = request.getParameter("action");
         String idStr = request.getParameter("id");
@@ -84,17 +88,17 @@ public class SearchPackageServlet extends HttpServlet {
 
         // Xử lý số trang, mặc định là 1
         int pageIndex = 1; // Mặc định là trang 1
-        try {
-            String pageParam = request.getParameter("page");
-            if (pageParam != null && !pageParam.trim().isEmpty()) {
-                pageIndex = Integer.parseInt(pageParam);
-            }
-        } catch (NumberFormatException ex) {
-            pageIndex = 1; // Nếu lỗi thì giữ nguyên trang 1
-        }
+try {
+    String pageParam = request.getParameter("page");
+    if (pageParam != null && !pageParam.trim().isEmpty()) {
+        pageIndex = Integer.parseInt(pageParam);
+    }
+} catch (NumberFormatException ex) {
+    pageIndex = 1; // Nếu lỗi thì giữ nguyên trang 1
+}
 
-        int totalRecords = db.countTotalPackages(keyword,"Packages" );
-        int totalPages = (int) Math.ceil((double) totalRecords / PAGE_SIZE);
+int totalRecords = db.countTotalPackages(keyword, category);
+int totalPages = (int) Math.ceil((double) totalRecords / PAGE_SIZE);
         // Lấy danh sách gói khám và danh mục
         ArrayList<Package> packages = (ArrayList<Package>) db.searchPackages(keyword, "Packages", pageIndex, PAGE_SIZE);
         List<String> categories = db.getAllCategories();
@@ -103,8 +107,9 @@ public class SearchPackageServlet extends HttpServlet {
         request.setAttribute("keyword", keyword);
         request.setAttribute("selectedCategory", category);
         request.setAttribute("currentPage", pageIndex);
-        request.setAttribute("totalPages", totalPages);
-        request.setAttribute("view", view);
+request.setAttribute("totalPages", totalPages);
+request.setAttribute("view", view);
+        
 
 //        if ("edit".equals(action) && idStr != null) {
 //            int id = Integer.parseInt(idStr);
@@ -116,13 +121,14 @@ public class SearchPackageServlet extends HttpServlet {
 //            response.sendRedirect("SearchPackageServlet"); // Quay lại trang chính
 //            return;
 //        }
+
         request.getRequestDispatcher("./guest/GusPackage.jsp").forward(request, response);
 
-    }
+            
+    } 
 
-    /**
+    /** 
      * Handles the HTTP <code>POST</code> method.
-     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -130,9 +136,9 @@ public class SearchPackageServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        int id = request.getParameter("id") != null && !request.getParameter("id").isEmpty() ? Integer.parseInt(request.getParameter("id")) : 0;
+    throws ServletException, IOException {
+          
+int id = request.getParameter("id") != null && !request.getParameter("id").isEmpty() ? Integer.parseInt(request.getParameter("id")) : 0;
         String name = request.getParameter("name");
         String description = request.getParameter("description");
         double price = Double.parseDouble(request.getParameter("price"));
@@ -150,9 +156,8 @@ public class SearchPackageServlet extends HttpServlet {
         response.sendRedirect("SearchPackageServlet");
     }
 
-    /**
+    /** 
      * Returns a short description of the servlet.
-     *
      * @return a String containing servlet description
      */
     @Override

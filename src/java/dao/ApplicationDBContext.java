@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dao;
 
 import dal.DBContext;
@@ -324,7 +320,7 @@ public class ApplicationDBContext extends DBContext<Application> {
             stm.setInt(2, application.getTypeId());
             stm.setString(3, application.getReason());
             stm.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
-            stm.setString(5, "pending");
+            stm.setString(5, "Pending");
 
             int rowsInserted = stm.executeUpdate();
             return rowsInserted > 0;

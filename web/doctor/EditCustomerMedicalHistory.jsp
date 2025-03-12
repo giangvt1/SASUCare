@@ -31,15 +31,6 @@
             </form>
         </div>
     </body>
-    <!-- jQuery 2.0.2 -->
-    <script src="../js/jquery.min.js" type="text/javascript"></script>
-    <!-- Bootstrap -->
-    <script src="../js/bootstrap.min.js" type="text/javascript"></script>
-    <!-- Director App -->
-    <script src="../js/Director/app.js" type="text/javascript"></script>
-
-    <!-- Director dashboard demo (This is only for demo purposes) -->
-    <script src="../js/Director/dashboard.js" type="text/javascript"></script>
     <script>
         document.querySelector("form").addEventListener("submit", function (event) {
             let name = document.getElementById("name").value.trim();

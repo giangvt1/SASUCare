@@ -90,7 +90,7 @@ public class VaccinePackageServlet extends HttpServlet {
             pageIndex = 1;
         }
 
-        int totalRecords = db.countTotalPackages(keyword, "Vaccine");
+        int totalRecords = db.countTotalPackages(keyword, category);
         int totalPages = (int) Math.ceil((double) totalRecords / PAGE_SIZE);
         if (pageIndex > totalPages) {
             pageIndex = totalPages;

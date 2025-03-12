@@ -49,7 +49,7 @@
                             <a class="text-body px-2" href="">
                                 <i class="fab fa-twitter"></i>
                             </a>
-                            <a class="text-body px-2" href="">
+                            <a class="text-body px-2" href="${pageContext.request.contextPath}/system/login">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
                             <a class="text-body px-2" href="">

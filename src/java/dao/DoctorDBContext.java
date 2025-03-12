@@ -1,6 +1,7 @@
 package dao;
 
 import dal.DBContext;
+import model.Doctor;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,11 +11,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.Doctor;
 import model.DoctorSchedule;
-import model.Rating;
 import model.Shift;
-import model.system.Staff;
 
 /**
  *
@@ -23,49 +21,34 @@ import model.system.Staff;
 public class DoctorDBContext extends DBContext<Doctor> {
 
     private static final Logger LOGGER = Logger.getLogger(DoctorDBContext.class.getName());
-    public int getDoctorIdByStaffUsername(String username) {
-    int doctorId = -1;
-    String sql = "SELECT d.id FROM Doctor d JOIN Staff s ON d.staff_id = s.id WHERE s.staff_username = ?";
-    try (PreparedStatement ps = connection.prepareStatement(sql)) {
-        ps.setString(1, username);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            doctorId = rs.getInt("id");
-        }
-    } catch (SQLException ex) {
-        LOGGER.log(Level.SEVERE, "Error getting doctor ID by staff username", ex);
-    }
-    return doctorId;
-}
 
+    public int getDoctorIdByStaffUsername(String username) {
+        int doctorId = -1;
+        String sql = "SELECT d.id FROM Doctor d JOIN Staff s ON d.staff_id = s.id WHERE s.staff_username = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                doctorId = rs.getInt("id");
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error getting doctor ID by staff username", ex);
+        }
+        return doctorId;
+    }
 
     public Doctor getDoctorByUsername(String username) {
         Doctor doctor = null;
-        String sql = """
-        SELECT d.id AS doctor_id, Staff.fullname AS doctor_name, Staff.fullname AS staff_name, 
-                        staff.address, staff.gender
-                FROM Doctor d
-                JOIN Staff ON d.staff_id = Staff.id
-        WHERE Staff.staff_username = ?
-    """;
-
+        String sql = "SELECT * FROM Doctor WHERE username = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, username); // Set the username in the query
+            stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
-
             if (rs.next()) {
                 doctor = new Doctor();
-                doctor.setId(rs.getInt("doctor_id"));
-                doctor.setName(rs.getString("doctor_name"));
-
-                // Set the Staff object related to the Doctor
-                Staff staff = new Staff();
-                staff.setFullname(rs.getString("staff_name"));
-//                staff.getStaff_username().setUsername(username);
-                doctor.setStaff(staff);
-
-                doctor.setAddress(rs.getString("address"));
-                doctor.setGender(rs.getBoolean("gender"));
+                // Set properties of doctor from result set
+                doctor.setId(rs.getInt("id"));
+                doctor.setName(rs.getString("name"));
+                // Add other properties as needed
             }
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Error retrieving doctor by username", ex);
@@ -111,17 +94,17 @@ public class DoctorDBContext extends DBContext<Doctor> {
 
     public Doctor getDoctorById(int doctorId) {
         String sql = """
-                SELECT d.id, s.fullname, dep.name AS specialty, s.img, d.price, d.info
-                FROM Doctor d
-                JOIN Staff s ON d.staff_id = s.id
-                LEFT JOIN Doctor_Department dd ON d.id = dd.doctor_id
-                LEFT JOIN Department dep ON dd.department_id = dep.id
-                WHERE d.id = ?
-                """;
+            SELECT d.id, s.fullname, dep.name AS specialty
+            FROM Doctor d
+            JOIN Staff s ON d.staff_id = s.id
+            LEFT JOIN Doctor_Department dd ON d.id = dd.doctor_id
+            LEFT JOIN Department dep ON dd.department_id = dep.id
+            WHERE d.id = ?
+            """;
 
         Doctor doctor = null;
         // Dùng LinkedHashSet để đảm bảo không trùng và giữ thứ tự
-        List<String> specialties = new ArrayList<>();
+        Set<String> specialties = new LinkedHashSet<>();
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, doctorId);
             ResultSet rs = ps.executeQuery();
@@ -129,34 +112,16 @@ public class DoctorDBContext extends DBContext<Doctor> {
                 if (doctor == null) {
                     doctor = new Doctor();
                     doctor.setId(rs.getInt("id"));
-                    doctor.setName(rs.getString("fullname"));
-                    doctor.setPrice(rs.getString("price"));
-                    doctor.setInfo(rs.getString("info"));
-                }
-                // Thêm img vào danh sách
-                if (rs.getString("img") != null) {
-                    doctor.setImg(rs.getString("img"));
+                    // Nếu fullname bị null, bạn có thể set giá trị mặc định
+                    doctor.setName(rs.getString("fullname") != null ? rs.getString("fullname") : "N/A");
                 }
                 String specialty = rs.getString("specialty");
                 if (specialty != null) {
                     specialties.add(specialty);
                 }
-
             }
             if (doctor != null) {
-                doctor.setSpecialties(specialties);
-                doctor.setRatings(new RatingDBContext().getRatingsByDoctorId(doctorId));
-
-// Tính toán và lưu trữ average_rating
-                if (!doctor.getRatings().isEmpty()) {
-                    double totalRating = doctor.getRatings().stream()
-                            .mapToDouble(Rating::getRating)
-                            .sum();
-                    double averageRating = totalRating / doctor.getRatings().size();
-                    doctor.setAverage_rating(averageRating);
-                } else {
-                    doctor.setAverage_rating(0.0);
-                }
+                doctor.setSpecialties(new ArrayList<>(specialties));
             }
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Error getting doctor by ID", ex);
@@ -168,7 +133,7 @@ public class DoctorDBContext extends DBContext<Doctor> {
     public ArrayList<Doctor> list() {
         HashMap<Integer, Doctor> doctorMap = new HashMap<>();
         String sql = """
-                SELECT d.id, s.fullname, dep.name AS specialty, s.img, d.price, d.info
+                SELECT d.id, s.fullname, dep.name AS specialty
                 FROM Doctor d
                 JOIN Staff s ON d.staff_id = s.id
                 LEFT JOIN Doctor_Department dd ON d.id = dd.doctor_id
@@ -183,28 +148,9 @@ public class DoctorDBContext extends DBContext<Doctor> {
                 // Nếu bác sĩ chưa có trong danh sách, tạo mới
                 doctorMap.putIfAbsent(doctorId, new Doctor(doctorId, rs.getString("fullname"), new ArrayList<>()));
 
-                // Thêm img vào danh sách
-                if (rs.getString("img") != null) {
-                    doctorMap.get(doctorId).setImg(rs.getString("img"));
-                }
-
                 // Thêm chuyên khoa vào danh sách
                 if (rs.getString("specialty") != null) {
                     doctorMap.get(doctorId).getSpecialties().add(rs.getString("specialty"));
-                }
-                
-              
-                 doctorMap.get(doctorId).setRatings(new RatingDBContext().getRatingsByDoctorId(doctorId));
-
-// Tính toán và lưu trữ average_rating
-                if (!doctorMap.get(doctorId).getRatings().isEmpty()) {
-                    double totalRating = doctorMap.get(doctorId).getRatings().stream()
-                            .mapToDouble(Rating::getRating)
-                            .sum();
-                    double averageRating = totalRating / doctorMap.get(doctorId).getRatings().size();
-                    doctorMap.get(doctorId).setAverage_rating(averageRating);
-                } else {
-                    doctorMap.get(doctorId).setAverage_rating(0.0);
                 }
             }
         } catch (SQLException ex) {
@@ -304,6 +250,24 @@ public class DoctorDBContext extends DBContext<Doctor> {
         }
 
         return doctorId;
+    }
+
+    public Integer getStaffIdByDoctorId(int doctorId) {
+        String sql = "SELECT staff_id FROM Doctor WHERE id = ?";
+        Integer staffId = null;
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, doctorId);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                staffId = rs.getInt("staff_id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return staffId;
     }
 
     @Override
