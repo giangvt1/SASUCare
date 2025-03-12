@@ -49,7 +49,7 @@
                             <a class="text-body px-2" href="">
                                 <i class="fab fa-twitter"></i>
                             </a>
-                            <a class="text-body px-2" href="${pageContext.request.contextPath}/system/login">
+                            <a class="text-body px-2" href="">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
                             <a class="text-body px-2" href="">
@@ -71,7 +71,7 @@
             <div class="container">
                 <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0">
                     <a href="${pageContext.request.contextPath}/Home.jsp" class="navbar-brand">
-                        <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-clinic-medical me-2"></i>Medinova</h1>
+                        <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-clinic-medical me-2"></i>sasucare</h1>
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                         <span class="navbar-toggler-icon"></span>

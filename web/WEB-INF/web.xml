@@ -178,23 +178,15 @@
     </servlet>
     <servlet>
         <servlet-name>AppointmentsManagementController</servlet-name>
-        <servlet-class>controller.appointment.AppointmentsManagementController</servlet-class>
+        <servlet-class>controller.appointment.AppointmentManagementController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DoctorScheduleServlet</servlet-name>
+        <servlet-class>controller.appointment.DoctorScheduleServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>HRApptManagementController</servlet-name>
         <servlet-class>controller.HRController.HRApptManagementController</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>HomepageController</servlet-name>
-        <servlet-class>controller.Homepage.HomepageController</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ForgetPassword</servlet-name>
-        <servlet-class>controller.systemaccesscontrol.ForgetPassword</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ResetPassword</servlet-name>
-        <servlet-class>controller.systemaccesscontrol.ResetPassword</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
@@ -406,22 +398,6 @@
         <url-pattern>/doctor/VisitHistoryExportPDFServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>ViewStaffApplication</servlet-name>
-        <url-pattern>/hr/ViewStaffApplication</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>EditStaffApplication</servlet-name>
-        <url-pattern>/hr/EditStaffApplication</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ManageTypeApplication</servlet-name>
-        <url-pattern>/admin/ManageTypeApplication</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>EditTypeApplication</servlet-name>
-        <url-pattern>/admin/EditTypeApplication</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>AppointmentsManagementController</servlet-name>
         <url-pattern>/doctor/appointmentsmanagement</url-pattern>
     </servlet-mapping>
@@ -430,16 +406,32 @@
         <url-pattern>/hr/appointments</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>HomepageController</servlet-name>
-        <url-pattern>/home</url-pattern>
+        <servlet-name>DoctorScheduleServlet</servlet-name>
+        <url-pattern>/doctor/api/appointments</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ajaxServlet</servlet-name>
+        <servlet-class>com.vnpay.common.ajaxServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>vnpayQuery</servlet-name>
+        <servlet-class>com.vnpay.common.vnpayQuery</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>vnpayRefund</servlet-name>
+        <servlet-class>com.vnpay.common.vnpayRefund</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ajaxServlet</servlet-name>
+        <url-pattern>/vnpayajax/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>ForgetPassword</servlet-name>
-        <url-pattern>/system/forgetpassword</url-pattern>
+        <servlet-name>vnpayQuery</servlet-name>
+        <url-pattern>/vnpayquery/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>ResetPassword</servlet-name>
-        <url-pattern>/system/resetpassword</url-pattern>
+        <servlet-name>vnpayRefund</servlet-name>
+        <url-pattern>/vnpayrefund/*</url-pattern>
     </servlet-mapping>
     
     <url-pattern>/ChatHistoryController</url-pattern>

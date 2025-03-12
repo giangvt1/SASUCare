@@ -1,13 +1,16 @@
 package controller.appointment;
 
+import com.vnpay.common.Config;
 import dao.AppointmentDBContext;
 import dao.CustomerDBContext;
 import dao.DoctorDBContext;
 import dao.DoctorScheduleDBContext;
+import dao.InvoiceDBContext; // New import for invoice handling
 import model.Appointment;
 import model.Customer;
 import model.Doctor;
 import model.DoctorSchedule;
+import model.Invoice; // Invoice model
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,26 +22,31 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+//@WebServlet("/appointment/confirm")
 public class AppointmentConfirmServlet extends HttpServlet {
 
     private final AppointmentDBContext appointmentDB = new AppointmentDBContext();
     private final CustomerDBContext customerDB = new CustomerDBContext();
     private final DoctorDBContext doctorDB = new DoctorDBContext();
     private final DoctorScheduleDBContext doctorScheduleDB = new DoctorScheduleDBContext();
+    private final InvoiceDBContext invoiceDB = new InvoiceDBContext();  // New invoice DB context
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         doPost(req, resp);
     }
-    
-   
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
         if (session.getAttribute("currentCustomer") == null) {
-            response.sendRedirect(request.getContextPath() + "/Home.jsp");
+            response.setContentType("text/html");
+            response.getWriter().println("<script>"
+                    + "alert('The user is not logged in. Please login.');"
+                    + "window.history.back();"
+                    + "</script>");
             return;
         }
 
@@ -48,6 +56,7 @@ public class AppointmentConfirmServlet extends HttpServlet {
 
             String doctorId = request.getParameter("doctor");
             String scheduleId = request.getParameter("schedule");
+            String action = request.getParameter("action"); // New action parameter for Create Invoice
 
             Doctor doctor = doctorDB.get(doctorId);
             DoctorSchedule doctorSchedule = doctorScheduleDB.get(scheduleId);
@@ -63,19 +72,30 @@ public class AppointmentConfirmServlet extends HttpServlet {
                 return;
             }
 
-            //  Create appointment object
+            // Create appointment object
             Appointment appointment = new Appointment();
             appointment.setCustomer(customer);
             appointment.setDoctor(doctor);
             appointment.setDoctorSchedule(doctorSchedule);
-            appointment.setStatus("Pending");
+            appointment.setStatus("Pending");  // Set initial status to "Pending"
 
-            //  Mark doctor schedule as booked
+            // Mark doctor schedule as booked
             doctorSchedule.setAvailable(false);
             doctorScheduleDB.update(doctorSchedule);
-            appointmentDB.insert(appointment);
+            appointmentDB.insert(appointment); // Insert appointment into the database
+            // Handle invoice creation based on the action parameter
+            if ("createInvoice".equals(action)) {
+                // Create the invoice after booking
+                Invoice invoice = createInvoice(appointment); // Reuse the invoice creation logic
 
-            response.sendRedirect(request.getContextPath() + "/appointment/list");
+                // Redirect to the invoice list or payment page
+                response.sendRedirect(request.getContextPath() + "/appointment/list");  // Redirect to invoice list page
+//out.write("{\"status\":\"error\", \"message\":\"Invalid input format.\"}" + invoice);
+
+            } else {
+                // If no invoice, just confirm the appointment (pay at hospital)
+                response.sendRedirect(request.getContextPath() + "/appointment/list");  // Redirect to appointment list
+            }
 
         } catch (NumberFormatException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -85,4 +105,24 @@ public class AppointmentConfirmServlet extends HttpServlet {
             out.write("{\"status\":\"error\", \"message\":\"An error occurred while booking.\"}");
         }
     }
+
+    private Invoice createInvoice(Appointment appointment) {
+        Invoice invoice = new Invoice();
+        invoice.setAmount(10000);  // Example amount (adjust as per your logic)
+        invoice.setOrderInfo("Payment for appointment with Doctor " + appointment.getDoctor().getName());
+        invoice.setOrderType("Appointment");
+        invoice.setCustomerId(appointment.getCustomer().getId());
+        invoice.setCreatedDate(new java.sql.Date(System.currentTimeMillis()));
+        invoice.setExpireDate(new java.sql.Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24))); // Example expiration of 1 day
+        invoice.setTxnRef(Config.getRandomNumber(8));  // Generate a random txnRef for VNPAY
+        invoice.setStatus("Pending");
+        // Set the generated appointmentId to link the invoice to the appointment
+        invoice.setAppointmentId(appointment.getId());
+
+        // Save the invoice in the database
+        invoiceDB.insert(invoice);
+
+        return invoice;
+    }
+
 }
