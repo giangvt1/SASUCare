@@ -24,23 +24,18 @@ public class AppointmentCancelController extends HttpServlet {
         // Get appointment ID from the request
         String appointmentId = request.getParameter("appointmentId");
         Appointment appointment = appointmentDB.get(appointmentId);
-
+        
         if (appointment != null) {
             appointment.setStatus("Canceled");
-            appointment.setUpdateAt(Date.valueOf(LocalDate.now()));
-
-            DoctorSchedule doctorSchedule = dsDB.get(String.valueOf(appointment.getDoctorSchedule().getId()));
-
+            appointment.setUpdateAt(Date.valueOf(LocalDate.now())); 
+            
+            
+            
             // Update the appointment status in the database
-            doctorSchedule.setAvailable(true);
-            dsDB.update(doctorSchedule);
             appointmentDB.update(appointment);
         }
 
         // Redirect back to the appointment list page
         response.sendRedirect(request.getContextPath() + "/appointment/list");
     }
-
-   
-
 }

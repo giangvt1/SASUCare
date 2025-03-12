@@ -50,7 +50,7 @@
                                 </tr>
                                 <tr>
                                     <td class="text-end pt-2">
-                                        <a href="#!">Forgot Password</a>
+                                        <a href="${pageContext.request.contextPath}/system/forgetpassword">Forgot Password</a>
                                     </td>
                                 </tr>
                                 <tr>

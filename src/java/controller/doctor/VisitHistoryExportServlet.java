@@ -26,7 +26,7 @@ public class VisitHistoryExportServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int cId = Integer.parseInt(request.getParameter("cId"));
         String currentPageStr = request.getParameter("pageVisit");
-        String sizeOfEachTableStr = request.getParameter("sizevisit");
+        String sizeOfEachTableStr = request.getParameter("sizeVisit");
 
         int currentPage = (currentPageStr != null && !currentPageStr.isEmpty()) ? Integer.parseInt(currentPageStr) : 1;
         int sizeOfEachTable = (sizeOfEachTableStr != null && !sizeOfEachTableStr.isEmpty()) ? Integer.parseInt(sizeOfEachTableStr) : 10;
@@ -70,11 +70,11 @@ public class VisitHistoryExportServlet extends HttpServlet {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
             // Ghi dữ liệu
-            int rowIndex = 1; // Bắt đầu từ dòng 1 vì dòng 0 là tiêu đề
+            int rowIndex = 1;
             for (VisitHistory history : visitHistory) {
                 Row row = sheet.createRow(rowIndex++);
                 Cell cellId = row.createCell(COLUMN_INDEX);
-                cellId.setCellValue(rowIndex - 1); // Đặt giá trị index đúng
+                cellId.setCellValue(rowIndex - 1); 
                 cellId.setCellStyle(dataStyle);
 
                 Cell cellVisitDate = row.createCell(COLUMN_VISIT_DATE);

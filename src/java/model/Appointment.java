@@ -10,18 +10,7 @@ public class Appointment {
     private String status;
     private Date createAt;
     private Date updateAt;
-    private Invoice invoice;
 
-    public Invoice getInvoice() {
-        return invoice;
-    }
-
-    public void setInvoice(Invoice invoice) {
-        this.invoice = invoice;
-    }
-    
-    
-    
     public Appointment() {}
 
     public Appointment(int id, Customer customer, Doctor doctor, DoctorSchedule doctorSchedule, String status, Date createAt, Date updateAt) {
