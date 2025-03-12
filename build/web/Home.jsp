@@ -970,113 +970,101 @@
         </div>
         <!-- Blog End -->
         
-        <section>
-            <div id="chat-box" class="chat-container">
-              <div class="chat-header" id="chat-toggle">
-                <h5 class="mb-0">Chat</h5>
-                <button id="toggle-chat" class="btn btn-primary btn-sm">&#x25B2;</button>
-              </div>
-              <div class="chat-body">
-                <div class="chat-messages">
-                  <div class="message received">
-                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp" alt="avatar">
-                    <p>Hi, How are you?</p>
-                  </div>
-                  <div class="message sent">
-                    <p>I'm good. How about you?</p>
-                  </div>
-                </div>
-              </div>
-              <div class="chat-footer">
-                <input type="text" class="form-control" placeholder="Type a message">
-                <button class="btn btn-primary">Send</button>
-              </div>
-            </div>
-            <button id="chat-icon" class="chat-icon">
-              <i class="fas fa-comment"></i>
-            </button>
-          </section>
+            <section>
+  <!-- Form nhập thông tin -->
+  <div id="info-form" class="info-form" style="display: none;">
+    <div class="form-header">
+      <h5>Nhập thông tin của bạn</h5>
+      <button id="close-btn" class="close-btn">×</button>
+    </div>
+    <div class="form-group">
+      <label for="fullName">Họ và tên:</label>
+      <input type="text" id="fullName" class="form-control" placeholder="Nhập họ và tên" required>
+    </div>
+    <div class="form-group">
+      <label for="email">Gmail:</label>
+      <input type="email" id="email-1" class="form-control" placeholder="Nhập Gmail" required>
+    </div>
+    <button id="submit-info" class="btn btn-primary">Xác nhận</button>
+  </div>
 
-        <jsp:include page="Footer.jsp"></jsp:include>
-        <!-- JavaScript Libraries -->
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="lib/easing/easing.min.js"></script>
-        <script src="lib/waypoints/waypoints.min.js"></script>
-        <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-        <script src="lib/tempusdominus/js/moment.min.js"></script>
-        <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-        <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+<!-- HTML của bạn (giữ nguyên) -->
+<div id="chat-box" class="chat-container" style="display: none;">
+  <div class="chat-header" id="chat-toggle">
+    <h5 class="mb-0">Chat</h5>
+    <button id="toggle-chat" class="btn btn-primary btn-sm">▲</button>
+  </div>
+  <div class="chat-body">
+    <div class="chat-messages">
+      <div class="message received">
+        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp" alt="avatar">
+        <p>Hi, What can we help you?</p>
+      </div>
+    </div>
+  </div>
+  <div class="chat-footer">
+    <input type="text" class="form-control" placeholder="Type a message">
+    <button class="btn btn-primary">Send</button>
+  </div>
+</div>
+<button id="chat-icon" class="chat-icon">
+  <i class="fas fa-comment"></i>
+</button>
 
-        <!-- Template Javascript -->
-        <script src="js/main.js"></script>
-        <script>
-            document.getElementById("toggle-chat").addEventListener("click", function() {
-              document.getElementById("chat-box").style.display = "none";
-              document.getElementById("chat-icon").style.display = "flex";
-            });
-            document.getElementById("chat-icon").addEventListener("click", function() {
-              document.getElementById("chat-box").style.display = "block";
-              document.getElementById("chat-icon").style.display = "none";
-            });
-            
-            var socket = new WebSocket("ws://localhost:9999/SWP391_GR6/chat");
-
-            socket.onopen = function() {
-                if (!localStorage.getItem("userRole")) {
-                    localStorage.setItem("userRole", "guest");  // Đặt mặc định là guest nếu chưa có
-                    
-                }
-                console.log("WebSocket Connected.");
-                
-                 let userRole = localStorage.getItem("userRole");
-
-                // Gửi role sau khi WebSocket đã kết nối
-                socket.send(JSON.stringify({ action: "setRole", role: userRole }));
-                console.log("📤 Sent role:", userRole);
-            };
-            
-           
-            
-            socket.onmessage = function(event) {
-                let chatBody = document.querySelector(".chat-messages");
-                let receivedMessage = document.createElement("div");
-                receivedMessage.classList.add("message", "received");
-                receivedMessage.innerHTML = `
-                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp" alt="avatar">
-                    <p>`+ event.data + `</p>
-                `;
-                
-                chatBody.appendChild(receivedMessage);
-                chatBody.scrollTop = chatBody.scrollHeight;
-            };
-
-            socket.onerror = function(error) {
-                console.log("WebSocket Error: " + error);
-            };
-
-            function sendMessage() {
-                let inputField = document.querySelector(".chat-footer input");
-                let message = inputField.value.trim();
-                if (message !== "") {
-                    let chatBody = document.querySelector(".chat-messages");
-                    let sentMessage = document.createElement("div");
-                    sentMessage.classList.add("message", "sent");
-                    sentMessage.innerHTML = `<p>`+ message + `</p>`;
-                    chatBody.appendChild(sentMessage);
-                    chatBody.scrollTop = chatBody.scrollHeight;
-
-                    socket.send(message); // Gửi tin nhắn qua WebSocket
-                    inputField.value = "";
-                }
-            }
-
-            document.querySelector(".chat-footer button").addEventListener("click", sendMessage);
-            document.querySelector(".chat-footer input").addEventListener("keypress", function(event) {
-                if (event.key === "Enter") {
-                    sendMessage();
-                }
-            });
-          </script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<<script src="./js/chat/customer_chat.js"></script>
+<style>
+  .info-form {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 300px;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+  .form-group {
+    margin-bottom: 15px;
+  }
+  .chat-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  .form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #000;
+    padding: 0;
+    line-height: 1;
+  }
+  .close-btn:hover {
+    color: #ff0000;
+  }
+</style>
     </body>
 </html>

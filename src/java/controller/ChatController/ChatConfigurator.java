@@ -11,10 +11,7 @@ public class ChatConfigurator extends ServerEndpointConfig.Configurator {
         HttpSession httpSession = (HttpSession) request.getHttpSession();
 
         if (httpSession != null) {
-            System.out.println("🔹 HttpSession found in Handshake: " + httpSession.getId());
             config.getUserProperties().put("httpSession", httpSession);
-        } else {
-            System.out.println("⚠️ No HttpSession found in HandshakeRequest!");
         }
     }
 

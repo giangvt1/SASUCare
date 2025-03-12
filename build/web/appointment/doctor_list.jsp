@@ -22,7 +22,7 @@
                 <input type="hidden" id="selectedDate" name="date" value="${selectedDate}" required>
 
             <!-- Search by doctor name -->
-            <input type="text" id="doctorName" name="name" placeholder="Search by name or specialty" value="${param.name}">
+            <input type="text" id="doctorName" name="name" placeholder="Search by doctor'sname" value="${param.name}">
 
             <!-- Button to open the multi-select department modal -->
             <button type="button" onclick="openDepartmentModal()">Select Departments</button>
@@ -108,12 +108,23 @@
                 <p><strong>Doctor Name:</strong> <span id="modalDoctorName"></span></p>
                 <p><strong>Specialties:</strong> <span id="modalSpecialties"></span></p>
                 <p><strong>Time Slot:</strong> <span id="modalShiftTime"></span></p>
+
+                <!-- Radio buttons for choosing action -->
+                <label>
+                    <input type="radio" name="action" value="createInvoice" id="createInvoiceRadio"> Create Invoice
+                </label>
+                <label>
+                    <input type="radio" name="action" value="payAtHospital" id="payAtHospitalRadio"> Pay at Hospital
+                </label><br>
+
                 <button onclick="closeModal()">Close</button>
-                <button id="confirmBooking">Confirm Booking</button>
+                <button id="confirmBooking" onclick="confirmBooking()">Confirm Booking</button> <!-- Confirm Booking Button -->
             </div>
         </div>
 
+
         <script>
+
 
             function openDepartmentModal() {
                 document.getElementById("departmentModal").style.display = "block";
@@ -174,17 +185,34 @@
                     return;
                 }
 
+                // Set modal content dynamically
                 document.getElementById("modalDoctorName").innerText = selectedSchedule.getAttribute("data-doctor-name");
                 document.getElementById("modalSpecialties").innerText = selectedSchedule.getAttribute("data-specialties");
                 document.getElementById("modalShiftTime").innerText = selectedSchedule.getAttribute("data-shift-time");
 
-                let scheduleId = selectedSchedule.value;
-                document.getElementById("confirmBooking").onclick = function () {
-                    window.location.href = "../appointment/confirm?doctor=" + doctorId + "&schedule=" + scheduleId;
-                };
-
+                // Show the modal
                 document.getElementById("bookingModal").style.display = "block";
+
+                // Attach the confirm booking logic to the button
+                document.getElementById("confirmBooking").onclick = function () {
+                    // Get selected action
+                    const selectedAction = document.querySelector('input[name="action"]:checked');
+
+                    if (!selectedAction) {
+                        alert("Please select an action (Create Invoice or Pay at Hospital).");
+                        return;
+                    }
+
+                    const action = selectedAction.value; // Get the selected action ('createInvoice' or 'payAtHospital')
+
+                    // Get the schedule ID
+                    let scheduleId = selectedSchedule.value;
+
+                    // Redirect to the appropriate URL with the selected action
+                    window.location.href = "../appointment/confirm?doctor=" + doctorId + "&schedule=" + scheduleId + "&action=" + action;
+                };
             }
+
 
             function closeModal() {
                 document.getElementById("bookingModal").style.display = "none";

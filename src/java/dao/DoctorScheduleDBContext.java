@@ -16,8 +16,6 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
 
     private static final Logger LOGGER = Logger.getLogger(DoctorScheduleDBContext.class.getName());
 
-    
-
     public List<DoctorSchedule> getSchedulesByDoctorBetweenDates(int doctorId, Date startDate, Date endDate) {
         List<DoctorSchedule> schedules = new ArrayList<>();
         String sql = "SELECT ds.id, ds.doctor_id, ds.schedule_date, ds.shift_id, s.time_start, s.time_end, ds.available "
@@ -25,29 +23,32 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
                 + "JOIN Shift s ON ds.shift_id = s.id "
                 + "WHERE ds.doctor_id = ? AND ds.schedule_date BETWEEN ? AND ? "
                 + "ORDER BY ds.schedule_date, s.time_start";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, doctorId);
-            stmt.setDate(2, startDate);
-            stmt.setDate(3, endDate);
-            ResultSet rs = stmt.executeQuery();
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setInt(1, doctorId);
+            stm.setDate(2, startDate);
+            stm.setDate(3, endDate);
+            ResultSet rs = stm.executeQuery();
             while (rs.next()) {
-                DoctorSchedule ds = new DoctorSchedule();
-                ds.setId(rs.getInt("id"));
-                ds.setScheduleDate(rs.getDate("schedule_date"));
-                // Tạo đối tượng Shift
-                Shift shift = new Shift(rs.getInt("shift_id"), rs.getTime("time_start"), rs.getTime("time_end"));
-                ds.setShift(shift);
-                // Nếu đối tượng Doctor không được join đầy đủ, bạn có thể gọi DoctorDAO.getDoctorById(doctorId)
+                // Khởi tạo đối tượng Shift từ dữ liệu trả về
+                Shift shift = new Shift(
+                        rs.getInt("shift_id"),
+                        rs.getTime("time_start"),
+                        rs.getTime("time_end")
+                );
+                // Tạo đối tượng Doctor (nếu bạn cần thêm thông tin, có thể gọi hàm getDoctorById)
                 Doctor doctor = new Doctor();
                 doctor.setId(rs.getInt("doctor_id"));
-                // Giả sử bạn đã set các thông tin khác cho doctor (hoặc có thể load từ DAO riêng)
-                ds.setDoctor(doctor);
-                ds.setAvailable(rs.getInt("available") == 1);
-                schedules.add(ds);
+                // Tạo đối tượng DoctorSchedule và gán các trường
+                DoctorSchedule schedule = new DoctorSchedule();
+                schedule.setId(rs.getInt("id"));
+                schedule.setDoctor(doctor);
+                schedule.setScheduleDate(rs.getDate("schedule_date"));
+                schedule.setShift(shift);
+                schedule.setAvailable(rs.getInt("available") == 1);
+                schedules.add(schedule);
             }
         } catch (SQLException ex) {
-            // Log lỗi
-            ex.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error fetching schedules for doctor between dates: {0}", ex.getMessage());
         }
         return schedules;
     }

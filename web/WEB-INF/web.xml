@@ -164,6 +164,10 @@
         <servlet-name>EditStaffApplication</servlet-name>
         <servlet-class>controller.HRController.EditStaffApplication</servlet-class>
     </servlet>
+        <servlet-name>ChatHistoryController</servlet-name>
+        <servlet-class>controller.ChatController.ChatHistoryController</servlet-class>
+        <servlet-name>SessionServlet</servlet-name>
+        <servlet-class>controller.ChatController.SessionServlet</servlet-class>
     <servlet>
         <servlet-name>ManageTypeApplication</servlet-name>
         <servlet-class>controller.AdminController.ManageTypeApplication</servlet-class>
@@ -410,10 +414,6 @@
         <url-pattern>/doctor/api/appointment</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>ChatBoxController</servlet-name>
-        <url-pattern>/chat-box</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>DoctorCalendarController</servlet-name>
         <url-pattern>/doctor/calendar</url-pattern>
     </servlet-mapping>
@@ -481,4 +481,31 @@
         <servlet-name>ResetPassword</servlet-name>
         <url-pattern>/system/resetpassword</url-pattern>
     </servlet-mapping>
+        <servlet>
+        <servlet-name>ajaxServlet</servlet-name>
+        <servlet-class>com.vnpay.common.ajaxServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>vnpayQuery</servlet-name>
+        <servlet-class>com.vnpay.common.vnpayQuery</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>vnpayRefund</servlet-name>
+        <servlet-class>com.vnpay.common.vnpayRefund</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ajaxServlet</servlet-name>
+        <url-pattern>/vnpayajax/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>vnpayQuery</servlet-name>
+        <url-pattern>/vnpayquery/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>vnpayRefund</servlet-name>
+        <url-pattern>/vnpayrefund/*</url-pattern>
+    </servlet-mapping>
+    <url-pattern>/ChatHistoryController</url-pattern>
+        <servlet-name>SessionServlet</servlet-name>
+    <url-pattern>/getSessionId</url-pattern>
 </web-app>
