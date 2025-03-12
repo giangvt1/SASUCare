@@ -13,7 +13,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.DoctorSchedule;
 import model.Shift;
-import model.system.Staff;
 
 /**
  *
@@ -22,21 +21,21 @@ import model.system.Staff;
 public class DoctorDBContext extends DBContext<Doctor> {
 
     private static final Logger LOGGER = Logger.getLogger(DoctorDBContext.class.getName());
-    public int getDoctorIdByStaffUsername(String username) {
-    int doctorId = -1;
-    String sql = "SELECT d.id FROM Doctor d JOIN Staff s ON d.staff_id = s.id WHERE s.staff_username = ?";
-    try (PreparedStatement ps = connection.prepareStatement(sql)) {
-        ps.setString(1, username);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            doctorId = rs.getInt("id");
-        }
-    } catch (SQLException ex) {
-        LOGGER.log(Level.SEVERE, "Error getting doctor ID by staff username", ex);
-    }
-    return doctorId;
-}
 
+    public int getDoctorIdByStaffUsername(String username) {
+        int doctorId = -1;
+        String sql = "SELECT d.id FROM Doctor d JOIN Staff s ON d.staff_id = s.id WHERE s.staff_username = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                doctorId = rs.getInt("id");
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error getting doctor ID by staff username", ex);
+        }
+        return doctorId;
+    }
 
     public Doctor getDoctorByUsername(String username) {
         Doctor doctor = null;
@@ -251,6 +250,24 @@ public class DoctorDBContext extends DBContext<Doctor> {
         }
 
         return doctorId;
+    }
+
+    public Integer getStaffIdByDoctorId(int doctorId) {
+        String sql = "SELECT staff_id FROM Doctor WHERE id = ?";
+        Integer staffId = null;
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, doctorId);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                staffId = rs.getInt("staff_id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return staffId;
     }
 
     @Override

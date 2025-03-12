@@ -2,10 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.doctor;
+package controller.HRController;
 
 import dao.CertificateDBContext;
-import dao.DoctorDBContext;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -15,11 +14,22 @@ import java.util.List;
 import model.Certificate;
 import model.TypeCertificate;
 
-public class ManageCertificates extends HttpServlet {
+/**
+ *
+ * @author TRUNG
+ */
+public class ManageDoctorCertificates extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String doctorNameStr = request.getParameter("doctorName");
+        String doctorName = null;
+        if (doctorNameStr != null) {
+            doctorNameStr = doctorNameStr.trim().replaceAll("\\s+", " ");
+            doctorNameStr = doctorNameStr.replace(" ", "%");
+            doctorName = doctorNameStr;
+        }
         String certificateNameStr = request.getParameter("certificateName");
         String certificateName = null;
         if (certificateNameStr != null) {
@@ -29,44 +39,43 @@ public class ManageCertificates extends HttpServlet {
         }
         String typeName = request.getParameter("typeName");
         String status = request.getParameter("status");
-        DoctorDBContext doctorDB = new DoctorDBContext();
-        int staffId = Integer.parseInt(request.getParameter("staffId"));
-        int doctorId = doctorDB.getDoctorIdByStaffId(staffId);
         String pageStr = request.getParameter("page");
         String sortStr = request.getParameter("sort");
         String sizeStr = request.getParameter("size");
         String sort = "default";
         int sizeOfEachTable = 10;
+        int staffId = Integer.parseInt(request.getParameter("staffId"));
         int page = 1;
         if (pageStr != null && !pageStr.isEmpty()) {
             try {
                 page = Integer.parseInt(pageStr);
+
             } catch (NumberFormatException e) {
                 page = 1;
             }
         }
-
         if (sortStr != null) {
             sort = sortStr;
         }
-        if (sizeStr != null) {
+        if (sizeStr != null && !sizeStr.isEmpty()) {
             sizeOfEachTable = Integer.parseInt(sizeStr);
         }
-        CertificateDBContext certificateDB = new CertificateDBContext();
-        List<TypeCertificate> typeList = certificateDB.getAllTypes();
-        List<Certificate> resultLists = certificateDB.getCertificatesByDoctorID(certificateName, typeName, status, doctorId, page, sort, sizeOfEachTable);
-        int totalCertificates = certificateDB.getCertificateCountByDoctorID(certificateName, typeName, status, doctorId);
-        int totalPages = (int) Math.ceil((double) totalCertificates / sizeOfEachTable);
+        CertificateDBContext cerDAO = new CertificateDBContext();
+        List<TypeCertificate> typeList = cerDAO.getAllTypes();
+
+        List<Certificate> certificates = cerDAO.getCertificatesByStaffManageID(certificateName, doctorName, typeName, status, staffId, page, sort, sizeOfEachTable);
+
+        int totalApplications = cerDAO.getCertificateCountByStaffManageID(certificateName, doctorName, typeName, status, staffId);
+        int totalPages = (int) Math.ceil((double) totalApplications / sizeOfEachTable);
         request.setAttribute("typeList", typeList);
-        request.setAttribute("totalPages", totalPages);
-        request.setAttribute("certificates", resultLists);
+        request.setAttribute("certificates", certificates);
         request.setAttribute("currentPage", page);
-        request.getRequestDispatcher("ManageCertificates.jsp").forward(request, response);
+        request.setAttribute("totalPages", totalPages);
+        request.getRequestDispatcher("ManageDoctorCertificates.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
     }
 }

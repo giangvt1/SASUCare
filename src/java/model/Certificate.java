@@ -6,7 +6,7 @@ public class Certificate {
 
     private int certificateId, doctorId, checkedByStaffId, typeId;
     private String certificateName, issuingAuthority, documentPath, status, checkNote, doctorName, typeName;
-    private Date issueDate, ExpirationDate, checkedDate;
+    private Date issueDate, expirationDate, checkedDate;
 
     public Certificate() {
     }
@@ -108,11 +108,11 @@ public class Certificate {
     }
 
     public Date getExpirationDate() {
-        return ExpirationDate;
+        return expirationDate;
     }
 
-    public void setExpirationDate(Date ExpirationDate) {
-        this.ExpirationDate = ExpirationDate;
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
     }
 
     public Date getCheckedDate() {

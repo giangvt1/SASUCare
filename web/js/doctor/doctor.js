@@ -8,6 +8,18 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
+    let issueDateInput = document.getElementById("issueDate");
+    flatpickr("#issueDate", {
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "d/m/Y",
+        clickOpens: false,
+        locale: "vn",
+        defaultDate: issueDateInput.value || ""
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
     let visitDateInput = document.getElementById("visitDate");
     let nextAppointmentInput = document.getElementById("nextAppointment");
     flatpickr("#visitDate", {
@@ -70,6 +82,24 @@ document.querySelector("form").addEventListener("submit", function (event) {
     if (!treatmentPlan)
         mess += "Treatment Plan cannot be empty\\n";
 
+    if (mess) {
+        alert(mess);
+        event.preventDefault();
+    }
+});
+
+document.querySelector("form").addEventListener("submit", function (event) {
+    let certificateName = document.getElementById("certificateName").value.trim();
+    let issueDate = document.getElementById("issueDate").value.trim();
+    let documentPath = document.getElementById("documentPath").value.trim();
+    let mess = "";
+
+    if (!certificateName)
+        mess += "Certificate name cannot be empty\n";
+    if (!issueDate)
+        mess += "Issue date cannot be empty\n";
+    if (!documentPath)
+        mess += "Document path cannot be empty\n";
     if (mess) {
         alert(mess);
         event.preventDefault();

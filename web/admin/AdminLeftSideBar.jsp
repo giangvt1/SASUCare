@@ -53,9 +53,14 @@
                         <i class="fa fa-globe"></i> <span>Account List</span>
                     </a>
                 </li>
-                <li>
+                <li> 
                     <a href="${pageContext.request.contextPath}/hr/ViewStaffApplication?staffId=${sessionScope.staff.id}">
-                        <i class="fa fa-globe"></i> <span>Staff Application</span>
+                        <i class="fa fa-globe"></i> <span>Staff Applications</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/hr/ManageDoctorCertificates?staffId=${sessionScope.staff.id}">
+                        <i class="fa fa-globe"></i> <span>Doctor Certificates</span>
                     </a>
                 </li>
                 <li>
