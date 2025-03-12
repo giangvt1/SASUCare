@@ -16,8 +16,16 @@
         }
     </style>
     <script>
-        // JavaScript validation (unchanged)
-          // ... (validation functions)
+        setTimeout(function () {
+                var successMsg = document.querySelector('.alert-success');
+                if (successMsg) {
+                    successMsg.style.display = 'none';
+                }
+                var errorMsg = document.querySelector('.alert-danger');
+                if (errorMsg) {
+                    errorMsg.style.display = 'none';
+                }
+            }, 2000);
     </script>
 </head>
 <body>
