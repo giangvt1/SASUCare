@@ -59,9 +59,6 @@
             <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/HRController/CalendarDoctorManageController.java</file>
         </group>
         <group>
-            <file>file:/D:/Ky%205/SWP/DoctorSide/SWP391_GROUP6/web/WEB-INF/web.xml</file>
-        </group>
-        <group>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/admin/AdminProfile.jsp</file>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/ProfileUpdateController.java</file>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/hr/HRCreate.jsp</file>
@@ -98,6 +95,9 @@
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/src/java/dao/UserDBContext.java</file>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/src/java/controller/systemaccesscontrol/ForgetPassword.java</file>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/web/admin/forgetpassword.jsp</file>
+        </group>
+        <group>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/inter2-3/SWP391_GROUP6/nbproject/build-impl.xml</file>
         </group>
     </open-files>
 </project-private>
