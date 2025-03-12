@@ -38,11 +38,7 @@ public class AppointmentConfirmServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
         if (session.getAttribute("currentCustomer") == null) {
-            response.setContentType("text/html");
-            response.getWriter().println("<script>"
-                    + "alert('The user does not logged yet. Please login.');"
-                    + "window.history.back();"
-                    + "</script>");
+            response.sendRedirect(request.getContextPath() + "/Home.jsp");
             return;
         }
 

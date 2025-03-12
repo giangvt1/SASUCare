@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Appointment;
 import com.google.gson.Gson;
-import controller.systemaccesscontrol.BaseRBACController;
 import dao.DepartmentDBContext;
 import jakarta.servlet.annotation.WebServlet;
 
@@ -17,11 +16,13 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import model.Department;
-import model.system.User;
-public class HRApptManagementController extends BaseRBACController {
-    AppointmentDBContext appointmentDB = new AppointmentDBContext();
-    DepartmentDBContext departmentDB = new DepartmentDBContext();
-    
+
+public class HRApptManagementController extends HttpServlet {
+
+    private final DepartmentDBContext departmentDB = new DepartmentDBContext();
+
+    private final AppointmentDBContext appointmentDB = new AppointmentDBContext();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -91,16 +92,6 @@ public class HRApptManagementController extends BaseRBACController {
 //        }
 //
 //        out.flush();
-    }
-
-    @Override
-    protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     private static class ApiResponse {

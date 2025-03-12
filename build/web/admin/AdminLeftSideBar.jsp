@@ -64,7 +64,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="${pageContext.request.contextPath}/ManageService">
+                    <a href="../ManageService">
                         <i class="fa fa-table"></i> <span>Add ServicePackage</span>
                     </a>
                 </li>
@@ -87,7 +87,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../doctor/appointmentsmanagement">
+                    <a href="../doctor/waiting-appointment">
                         <i class="fa fa-medkit"></i> <span>Appoinment</span>
                     </a>
                 </li>
