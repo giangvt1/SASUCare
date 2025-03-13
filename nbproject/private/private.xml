@@ -14,6 +14,22 @@
             <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/web/accesscontrol/Register.jsp</file>
         </group>
         <group name="PRJ301"/>
+        <group>
+            <file>file:/C:/Users/admin/Downloads/backup/web/admin/AdminHeader.jsp</file>
+            <file>file:/C:/Users/admin/Downloads/backup/src/java/controller/customerService/ManageServiceServlet.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup/web/SearchPackageForm.jsp</file>
+            <file>file:/C:/Users/admin/Downloads/backup/src/java/controller/guest/TestPackageServlet.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup/web/VaccinePackages.jsp</file>
+        </group>
+        <group>
+            <file>file:/C:/Users/admin/Downloads/backup/src/java/controller/customerService/ManageServiceServlet.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup/src/java/controller/guest/SearchPackageServlet.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup/web/SearchPackageForm.jsp</file>
+            <file>file:/C:/Users/admin/Downloads/backup/src/java/dao/TestPackageDBContext.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup/src/java/controller/guest/TestPackageServlet.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup/web/guest/GusPackage.jsp</file>
+            <file>file:/C:/Users/admin/Downloads/backup/web/guest/GusTest.jsp</file>
+        </group>
         <group name="ThisForTest">
             <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentDoctorListController.java</file>
             <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentCalendarServlet.java</file>
@@ -57,6 +73,36 @@
             <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/DoctorSchedule.java</file>
             <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/doctor/DoctorLeftSideBar.jsp</file>
             <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/HRController/CalendarDoctorManageController.java</file>
+        </group>
+        <group>
+            <file>file:/D:/Ky%205/SWP/HRSide/SWP391_GROUP6/src/java/controller/doctor/MedicalHistoryExportPDFServlet.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/WEB-INF/web.xml</file>
+        </group>
+        <group>
+            <file>file:/D:/Ky%205/SWP/DoctorSide/SWP391_GROUP6/web/WEB-INF/web.xml</file>
+        </group>
+        <group>
+            <file>file:/D:/Ky%205/SWP/DoctorSide/SWP391_GROUP6/src/java/model/TypeApplication.java</file>
+            <file>file:/D:/Ky%205/SWP/DoctorSide/SWP391_GROUP6/src/java/controller/HRController/ViewStaffApplication.java</file>
+            <file>file:/D:/Ky%205/SWP/DoctorSide/SWP391_GROUP6/web/Home.jsp</file>
+            <file>file:/D:/Ky%205/SWP/DoctorSide/SWP391_GROUP6/web/accesscontrol/Login.jsp</file>
+            <file>file:/D:/Ky%205/SWP/DoctorSide/SWP391_GROUP6/web/hr/ViewStaffApplication.jsp</file>
+            <file>file:/D:/Ky%205/SWP/DoctorSide/SWP391_GROUP6/src/java/dao/CertificateDBContext.java</file>
+            <file>file:/D:/Ky%205/SWP/DoctorSide/SWP391_GROUP6/src/java/model/TypeCertificate.java</file>
+            <file>file:/D:/Ky%205/SWP/DoctorSide/SWP391_GROUP6/src/java/controller/doctor/ManageCertificates.java</file>
+            <file>file:/D:/Ky%205/SWP/DoctorSide/SWP391_GROUP6/src/java/controller/accesscontrol/LoginController.java</file>
+            <file>file:/D:/Ky%205/SWP/DoctorSide/SWP391_GROUP6/web/accesscontrol/Register.jsp</file>
+            <file>file:/D:/Ky%205/SWP/DoctorSide/SWP391_GROUP6/web/doctor/ManageCertificates.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/admin/AdminProfile.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/ProfileUpdateController.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/hr/HRCreate.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/DepartmentDBContext.java</file>
+        </group>
+        <group>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/admin/AdminProfile.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/ProfileUpdateController.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/hr/HRCreate.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/DepartmentDBContext.java</file>
         </group>
         <group>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/admin/AdminProfile.jsp</file>

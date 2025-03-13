@@ -57,9 +57,14 @@
                         <i class="fa fa-globe"></i> <span>Account List</span>
                     </a>
                 </li>
-                <li>
+                <li> 
                     <a href="${pageContext.request.contextPath}/hr/ViewStaffApplication?staffId=${sessionScope.staff.id}">
-                        <i class="fa fa-globe"></i> <span>Staff Application</span>
+                        <i class="fa fa-globe"></i> <span>Staff Applications</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/hr/ManageDoctorCertificates?staffId=${sessionScope.staff.id}">
+                        <i class="fa fa-globe"></i> <span>Doctor Certificates</span>
                     </a>
                 </li>
                 <li>
@@ -83,6 +88,11 @@
                 <li>
                     <a href="../doctor/ViewApplication?staffId=${sessionScope.staff.id}">
                         <i class="fa fa-envelope"></i> <span>Manage Application</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../doctor/ManageCertificates?staffId=${sessionScope.staff.id}">
+                        <i class="fa fa-envelope"></i> <span>Manage Certificate</span>
                     </a>
                 </li>
                 <li>

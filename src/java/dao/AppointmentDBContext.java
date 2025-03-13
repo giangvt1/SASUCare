@@ -8,7 +8,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Appointment;
 import model.Customer;
-import model.Department;
 import model.Doctor;
 import model.DoctorSchedule;
 import model.Shift;

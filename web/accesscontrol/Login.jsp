@@ -85,7 +85,7 @@
                             alt="Google Logo"
                             style="width: 20px; height: 20px; margin-right: 10px;"
                         />
-                        Sign in with Google
+                        Login with Google
                     </a>
                 </td>
             </tr>
