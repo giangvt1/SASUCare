@@ -37,7 +37,7 @@
                 <a href="${pageContext.request.contextPath}/admin/Dashboard.jsp">
                     <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                 </a>
-                <c:if test="${sessionScope.allowedUrls != null && sessionScope.allowedUrls.contains('/admin/ManageTypeApplication')}">
+                <c:if test="${sessionScope.allowedUrls != null && sessionScope.allowedUrls.contains('/admin/ManageTypeCertificate')}">
 
                     <a href="${pageContext.request.contextPath}/admin/ManageTypeApplication">
                         <i class="fa fa-globe"></i> <span>Manage Type Application</span>
@@ -88,6 +88,11 @@
                         <i class="fa fa-table"></i> <span>Approve Appointment</span>
                     </a>
                 </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/chatbox">
+                        <i class="fa fa-table"></i> <span>Chat</span>
+                    </a>
+                </li>
             </c:if>
 
             <c:if test="${allowedUrls != null and (allowedUrls.contains('/doctor/SendApplication.jsp') or allowedUrls.contains('/doctor/ManageMedical.jsp'))}">
@@ -107,13 +112,13 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../doctor/waiting-appointment">
-                        <i class="fa fa-medkit"></i> <span>Appoinment</span>
+                    <a href="../doctor/calendar">
+                        <i class="fa fa-medkit"></i> <span>Calendar</span>
                     </a>
                 </li>
                 <li>
-                    <a href="../doctor/calendar">
-                        <i class="fa fa-medkit"></i> <span>Calendar</span>
+                    <a href="${pageContext.request.contextPath}/chatbox">
+                        <i class="fa fa-table"></i> <span>Chat</span>
                     </a>
                 </li>
             </c:if>

@@ -11,7 +11,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Tìm kiếm gói khám</title>
+        <title></title>
     
         
         <style>
@@ -267,8 +267,6 @@
         <jsp:include page="../admin/AdminLeftSideBar.jsp" />
 
         <div class="container-fluid main-content right-side">
-
-            <h2>Tìm kiếm gói khám</h2>
 
             <!-- Form tìm kiếm gói khám -->
             <form action="${pageContext.request.contextPath}/ManageService" method="get">

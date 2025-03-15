@@ -92,11 +92,24 @@ public class CalendarDoctorManageController extends BaseRBACController {
             Map<String, Object> event = new HashMap<>();
             event.put("id", ds.getId());
 
-            String shiftTime = ds.getShift().getTimeStart().toString()
-                    + " - " + ds.getShift().getTimeEnd().toString();
-            event.put("title", shiftTime);
-            event.put("start", ds.getScheduleDate().toString());
+            // Lấy giờ bắt đầu/giờ kết thúc từ shift
+            // (Giả sử getTimeStart()/getTimeEnd() trả về kiểu java.sql.Time)
+            String timeStart = ds.getShift().getTimeStart().toString(); // ví dụ "07:00:00"
+            String timeEnd = ds.getShift().getTimeEnd().toString();   // ví dụ "11:00:00"
 
+            // Ghép với ngày => "2025-03-15T07:00:00"
+            String startStr = ds.getScheduleDate().toString() + "T" + timeStart;
+            String endStr = ds.getScheduleDate().toString() + "T" + timeEnd;
+
+            event.put("start", startStr);
+            event.put("end", endStr);
+            event.put("allDay", false); // Bắt buộc để hiển thị theo block giờ
+
+            // Title (tùy bạn hiển thị gì)
+            String shiftTime = timeStart + " - " + timeEnd;
+            event.put("title", shiftTime);
+
+            // extendedProps
             Map<String, Object> ext = new HashMap<>();
             ext.put("doctor", ds.getDoctor());
             ext.put("shiftTime", shiftTime);

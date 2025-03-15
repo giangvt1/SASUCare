@@ -5,16 +5,16 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Admin Dashboard</title>
-        <link href="../css/admin/admin_styles.css" rel="stylesheet" type="text/css"/>
+        <link href="${pageContext.request.contextPath}/css/admin/admin_styles.css" rel="stylesheet" type="text/css"/>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
         <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-         <script src="../js/admin_scripts.js" type="text/javascript"></script>
+        <script src="${pageContext.request.contextPath}/js/admin_scripts.js"></script>
     </head>
     <body>
         <header class="header">
-            <a href="${pageContext.request.contextPath}/admin/Dashboard.jsp" class="logo">Director</a> <%-- Corrected path --%>
+            <a href="${pageContext.request.contextPath}/admin/Dashboard.jsp" class="logo">Dashboard</a> <%-- Corrected path --%>
             <nav class="navbar navbar-static-top" role="navigation">
                 <a href="#" class="navbar-btn sidebar-toggle" data-bs-toggle="offcanvas" role="button">
                     <i class="fas fa-bars"></i>
@@ -75,6 +75,6 @@
             </nav>
         </header>
 
-       
+
     </body>
 </html>
