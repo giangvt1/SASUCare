@@ -160,10 +160,10 @@
         <servlet-name>EditStaffApplication</servlet-name>
         <servlet-class>controller.HRController.EditStaffApplication</servlet-class>
     </servlet>
-    <servlet-name>ChatHistoryController</servlet-name>
-    <servlet-class>controller.ChatController.ChatHistoryController</servlet-class>
-    <servlet-name>SessionServlet</servlet-name>
-    <servlet-class>controller.ChatController.SessionServlet</servlet-class>
+    <servlet>
+        <servlet-name>SessionServlet</servlet-name>
+        <servlet-class>controller.ChatController.SessionServlet</servlet-class>
+    </servlet>
     <servlet>
         <servlet-name>ManageTypeApplication</servlet-name>
         <servlet-class>controller.AdminController.ManageTypeApplication</servlet-class>
@@ -219,6 +219,14 @@
     <servlet>
         <servlet-name>ManageTypeCertificate</servlet-name>
         <servlet-class>controller.AdminController.ManageTypeCertificate</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ListDoctorController</servlet-name>
+        <servlet-class>controller.ChatController.ListDoctorController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>MedicalRecordController</servlet-name>
+        <servlet-class>controller.customermanagement.MedicalRecordController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
@@ -505,9 +513,10 @@
         <servlet-name>vnpayRefund</servlet-name>
         <url-pattern>/vnpayrefund/*</url-pattern>
     </servlet-mapping>
-    <url-pattern>/ChatHistoryController</url-pattern>
-    <servlet-name>SessionServlet</servlet-name>
-    <url-pattern>/getSessionId</url-pattern>
+    <servlet-mapping>
+        <servlet-name>SessionServlet</servlet-name>
+        <url-pattern>/getSessionId</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>EditTypeCertificate</servlet-name>
         <url-pattern>/admin/EditTypeCertificate</url-pattern>
@@ -515,5 +524,20 @@
     <servlet-mapping>
         <servlet-name>ManageTypeCertificate</servlet-name>
         <url-pattern>/admin/ManageTypeCertificate</url-pattern>
+    </servlet-mapping>
+    <servlet-name>SessionServlet</servlet-name>
+    <servlet-class>controller.ChatController.SessionServlet</servlet-class>
+    <servlet-name>ChatHistoryController</servlet-name>
+    <servlet-class>controller.ChatController.ChatHistoryController</servlet-class>
+    <url-pattern>/getSessionId</url-pattern>
+    <servlet-name>SessionServlet</servlet-name>
+    <url-pattern>/ChatHistoryController</url-pattern>
+    <servlet-mapping>
+        <servlet-name>ListDoctorController</servlet-name>
+        <url-pattern>/getdoctor</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MedicalRecordController</servlet-name>
+        <url-pattern>/record</url-pattern>
     </servlet-mapping>
 </web-app>

@@ -20,6 +20,8 @@ public class SessionServlet extends HttpServlet {
         HttpSession session = request.getSession(true);
         String sessionId = session.getId();
         
+        System.out.println("session: " + sessionId);
+        
         // Thiết lập kiểu dữ liệu trả về là text/plain
         response.setContentType("text/plain");
         response.getWriter().write(sessionId);

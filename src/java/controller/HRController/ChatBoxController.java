@@ -4,9 +4,9 @@ import controller.ChatController.ChatEndpoint;
 import controller.systemaccesscontrol.BaseRBACController;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.websocket.Session;
 import model.UserInfo;
 
@@ -19,12 +19,10 @@ public class ChatBoxController extends BaseRBACController {
 
     @Override
     protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
-        Map<String, UserInfo> onlineUsers = ChatEndpoint.getOnlineUsers();
-        request.setAttribute("onlineUsers", onlineUsers.values());
+        HttpSession session = request.getSession();
         Map<Session, UserInfo> onlineDoctors = ChatEndpoint.getOnlineDoctors();
-        
-        System.out.println("onlineUsers: " + onlineUsers);
-        request.setAttribute("onlineDoctors", onlineDoctors.values());
+        session.setAttribute("onlineDoctors", onlineDoctors.values());
+        System.out.println("onlineDoctors: " + onlineDoctors);
         request.getRequestDispatcher("./hr/chatbox.jsp").forward(request, response);
     }
 

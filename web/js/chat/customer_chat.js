@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
   fetch('/SWP391_GR6/getSessionId')
     .then(response => response.text())
     .then(sessionId => {
+        console.log(sessionId);
       // Save sessionId in localStorage
       localStorage.setItem("sessionId", sessionId);
       // Check and restore chat if session matches

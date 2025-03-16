@@ -124,7 +124,7 @@
                                >Find Doctor</a
                             >
                             <a
-                                href="${pageContext.request.contextPath}/appointment"
+                                href="${pageContext.request.contextPath}/listrecord"
                                 class="btn btn-outline-light rounded-pill py-md-3 px-md-5 mx-2"
                                 >Appointment</a
                             >

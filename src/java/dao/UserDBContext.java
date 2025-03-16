@@ -393,7 +393,7 @@ public void insert(User model, User createdBy) {
     }
 
     public User login(String username, String password) {
-        String sql = "SELECT username, password, displayname FROM [User] WHERE username = ?";
+        String sql = "SELECT username, password, displayname, gmail FROM [User] WHERE username = ?";
 
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setString(1, username);
@@ -407,6 +407,7 @@ public void insert(User model, User createdBy) {
                     User user = new User();
                     user.setUsername(rs.getString("username"));
                     user.setDisplayname(rs.getString("displayname"));
+                    user.setGmail(rs.getString("gmail"));
                     return user;
                 }
             }
