@@ -1,6 +1,5 @@
 package controller.HRController;
 
-import controller.systemaccesscontrol.BaseRBACController;
 import dao.CertificateDBContext;
 import dao.DoctorDBContext;
 import dao.GoogleDBContext;
@@ -12,17 +11,16 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Certificate;
-import model.system.User;
 
 /**
  *
  * @author TRUNG
  */
-public class EditDoctorCertificate extends BaseRBACController {
-
+public class EditDoctorCertificate extends HttpServlet {
 
     @Override
-    protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         String certificateId = request.getParameter("certificateId");
         String status = request.getParameter("status");
         CertificateDBContext cerDAO = new CertificateDBContext();
@@ -33,7 +31,8 @@ public class EditDoctorCertificate extends BaseRBACController {
     }
 
     @Override
-    protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         int staffId = Integer.parseInt(request.getParameter("staffId"));
         int doctorId = Integer.parseInt(request.getParameter("doctorId"));
         int certificateId = Integer.parseInt(request.getParameter("certificateId"));

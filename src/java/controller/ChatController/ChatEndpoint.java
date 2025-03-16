@@ -58,6 +58,11 @@ public class ChatEndpoint {
                     notifyDoctorOfRemoval(doctorEmail, userEmail);
                 } else {
                     onlineUsers.remove(userEmail);
+                    // Gửi thông báo "clearChat" cho HR khi người dùng ngắt kết nối hoàn toàn
+                    JSONObject clearChatMsg = new JSONObject();
+                    clearChatMsg.put("action", "clearChat");
+                    clearChatMsg.put("userEmail", userEmail);
+                    broadcastToHRs(clearChatMsg);
                 }
             }
         }
@@ -86,6 +91,10 @@ public class ChatEndpoint {
             case "assignDoctor":
                 handleAssignDoctor(json, session);
                 break;
+            case "deleteUser":
+                System.out.println("action deleteUser");
+                handleDeleteUser(json, session);
+                break;
             default:
                 System.out.println("Unrecognized action: " + action);
         }
@@ -105,9 +114,11 @@ public class ChatEndpoint {
             sendAssignedUsersToDoctor(email, session);
         } else {
             userSessions.computeIfAbsent(email, k -> new HashSet<>()).add(session);
+            // Chỉ thêm vào onlineUsers nếu email chưa tồn tại ở bất kỳ đâu
             if (!onlineUsers.containsKey(email) && !assignedToDoctor.containsKey(email)) {
                 onlineUsers.put(email, user);
             }
+            // Nếu email đã tồn tại, chỉ cập nhật danh sách phiên, không thêm mới
         }
         broadcastOnlineUsers();
         broadcastOnlineDoctors();
@@ -135,9 +146,15 @@ public class ChatEndpoint {
             } else {
                 // Send to HR
                 Session hrSession = userToHR.get(session);
-                if (hrSession == null && !onlineHRs.isEmpty()) {
-                    hrSession = onlineHRs.keySet().iterator().next();
-                    userToHR.put(session, hrSession);
+                // Check if hrSession is null or closed
+                if (hrSession == null || !hrSession.isOpen()) {
+                    if (!onlineHRs.isEmpty()) {
+                        // Assign a new HR from online HRs
+                        hrSession = onlineHRs.keySet().iterator().next();
+                        userToHR.put(session, hrSession);
+                    } else {
+                        hrSession = null;
+                    }
                 }
                 if (hrSession != null && hrSession.isOpen()) {
                     sendMessage(hrSession, senderEmail, msg);
@@ -173,6 +190,16 @@ public class ChatEndpoint {
         } else {
             sendError(session, "exportError", "Only HR can export chat history.");
         }
+    }
+    
+    private void handleDeleteUser(JSONObject json, Session session) {
+        String email = json.getString("email");
+        System.out.println("email: delete: " + email);
+        onlineUsers.remove(email);
+        
+        System.out.println("email account: " + onlineUsers.get(email));
+        
+        broadcastOnlineUsers();
     }
 
     private void exportToFile(String email, String fullName, String chatContent, Session session) {
@@ -451,6 +478,8 @@ public class ChatEndpoint {
             }
         }
     }
+    
+    
 
     public static Map<String, UserInfo> getOnlineUsers() {
         return onlineUsers;

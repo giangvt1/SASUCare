@@ -140,6 +140,20 @@
             if (data.action === "updateOnlineUsers" && role === "HR") {
                 chatBody.innerHTML = "";
                 updateOnlineUsers(data.onlineUsers);
+            } else if (data.action === "clearChat" && role === "HR") {
+                let userEmail = data.userEmail;
+                if (chatHistory[userEmail]) {
+                    delete chatHistory[userEmail];
+                    saveChatHistory();
+                    if (selectedUserEmail === userEmail) {
+                        chatBody.innerHTML = "";
+                    }
+                }
+                // Xóa người dùng khỏi danh sách giao diện
+                const userElement = document.querySelector(`.user-item[data-email="${userEmail}"]`);
+                if (userElement) {
+                    userElement.remove();
+                }
             } else if (data.action === "updateAssignedUsers" && role === "Doctor") {
                 chatBody.innerHTML = "";
                 updateAssignedUsers(data.assignedUsers);
@@ -197,8 +211,8 @@
                             <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp" alt="avatar"
                                  class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
                             <div class="pt-1">
-                                <p class="fw-bold mb-0">`+ user.fullName +`</p>
-                                <p class="small text-muted">`+ user.email +`</p>
+                                <p class="fw-bold mb-0">${user.fullName}</p>
+                                <p class="small text-muted">${user.email}</p>
                             </div>
                         </div>
                         <div class="pt-1">
@@ -229,8 +243,8 @@
                             <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp" alt="avatar"
                                  class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
                             <div class="pt-1">
-                                <p class="fw-bold mb-0">`+ user.fullName +`</p>
-                                <p class="small text-muted">`+ user.email +`</p>
+                                <p class="fw-bold mb-0">${user.fullName}</p>
+                                <p class="small text-muted">${user.email}</p>
                             </div>
                         </div>
                         <div class="pt-1">
@@ -287,7 +301,7 @@
                 messageElement.innerHTML = `
                     <div class="d-flex justify-content-end mb-2">
                         <div class="card-body p-2 px-3 bg-primary text-white" style="border-radius: 20px;">
-                            <p class="mb-0">`+ message +`</p>
+                            <p class="mb-0">${message}</p>
                         </div>
                     </div>
                 `;
@@ -297,7 +311,7 @@
                     <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp" alt="avatar" class="me-3 rounded-circle d-flex align-self-center shadow-1-strong" width="60">
                     <div class="d-flex justify-content-start mb-2">
                         <div class="card-body p-2 px-3 bg-light text-dark" style="border-radius: 20px;">
-                            <p class="mb-0">`+ message +`</p>
+                            <p class="mb-0">${message}</p>
                         </div>
                     </div>
                 `;
