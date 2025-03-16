@@ -1,7 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="java.util.*, model.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,10 +10,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FullCalendar CSS -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css" rel="stylesheet" />
-    <!-- Custom Admin CSS -->
-    <link href="${pageContext.request.contextPath}/css/admin_styles.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="${pageContext.request.contextPath}/css/doctor_styles.css" rel="stylesheet">
     <style>
-        /* Các style riêng cho trang DoctorCalendar.jsp */
         .schedule-table {
             margin-top: 20px;
         }
@@ -22,17 +20,10 @@
             text-align: center;
             vertical-align: middle;
         }
-        /* Nếu cần custom thêm cho FullCalendar events */
-        .fc-event-custom-style {
-            padding: 2px 4px;
-            border-radius: 4px;
-            white-space: normal;
-            font-size: 0.85rem;
-        }
     </style>
 </head>
 <body>
-    <!-- Include Header và Sidebar -->
+    <!-- Include Header và Sidebar (nếu có giao diện riêng cho bác sĩ) -->
     <jsp:include page="../admin/AdminHeader.jsp" />
     <jsp:include page="../admin/AdminLeftSideBar.jsp" />
 
@@ -41,23 +32,12 @@
         window.contextPath = '${pageContext.request.contextPath}';
     </script>
 
-    <!-- Hiển thị alert nếu có success/error -->
-    <c:if test="${param.success == '1'}">
-        <script>alert('Assign Shift successfully!');</script>
-    </c:if>
-    <c:if test="${param.error == '1'}">
-        <script>alert('Assign Shift failed!');</script>
-    </c:if>
-    <c:if test="${param.error == 'Exception'}">
-        <script>alert('Assign Shift failed!');</script>
-    </c:if>
-
     <div class="right-side">
         <main class="main-content">
             <div class="container-fluid p-0">
                 <!-- Tiêu đề -->
                 <div class="mb-4">
-                    <h2>Weekly Schedule for Dr. ${doctor.name}</h2>
+                    <h2>Weekly Schedule</h2>
                     <p>Week: <strong>${weekStart}</strong> to <strong>${weekEnd}</strong></p>
                 </div>
                 <!-- Tab navigation -->
@@ -117,93 +97,38 @@
         </main>
     </div>
 
-    <!-- Modal Edit/Delete Shift -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
+    <!-- Modal hiển thị chi tiết ca khi bấm vào sự kiện -->
+    <div class="modal fade" id="shiftDetailModal" tabindex="-1" aria-labelledby="shiftDetailModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="editModalLabel">Edit or Delete Shift</h5>
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="shiftDetailModalLabel">Shift Details</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <!-- Hiển thị thông tin bác sĩ (read-only) -->
-            <div class="mb-3">
-                <label for="editDoctorName" class="form-label">Doctor</label>
-                <input type="text" class="form-control" id="editDoctorName" readonly>
-            </div>
-            <form id="editShiftForm">
-              <input type="hidden" id="editScheduleId">
-              <div class="mb-3">
-                <label for="editShiftDate" class="form-label">Select Date</label>
-                <input type="date" class="form-control" id="editShiftDate">
-              </div>
-              <div class="mb-3">
-                <label for="editShiftType" class="form-label">Shift Type</label>
-                <select class="form-select" id="editShiftType">
-                  <c:forEach items="${shifts}" var="shift">
-                    <option value="${shift.id}">
-                      ${shift.timeStart} - ${shift.timeEnd}
-                    </option>
-                  </c:forEach>
-                </select>
-              </div>
-            </form>
+              <p id="shiftTimeDetail" class="mb-0"></p>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-danger" id="deleteBtn">Delete</button>
-            <button type="button" class="btn btn-primary" id="saveEditBtn">Save</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
     </div>
-    <!-- End Modal -->
 
-    <!-- Chuyển weeklySchedules sang JSON và gán vào biến JavaScript -->
+    <!-- In JSON events từ attribute của servlet -->
     <script>
-        var doctorEvents = [
-        <%
-            List<DoctorSchedule> weeklySchedules = (List<DoctorSchedule>) request.getAttribute("weeklySchedules");
-            if(weeklySchedules != null){
-                for (int i = 0; i < weeklySchedules.size(); i++){
-                    DoctorSchedule schedule = weeklySchedules.get(i);
-                    String id = schedule.getId() + "";
-                    String timeStart = schedule.getShift().getTimeStart().toString();
-                    String timeEnd = schedule.getShift().getTimeEnd().toString();
-                    String title = timeStart + " - " + timeEnd;
-                    String start = schedule.getScheduleDate().toString();
-                    String doctorName = schedule.getDoctor().getName();
-                    String shiftId = schedule.getShift().getId() + "";
-                    String shiftTime = title;
-                    out.print("{");
-                    out.print("\"id\": \"" + id + "\",");
-                    out.print("\"title\": \"" + title + "\",");
-                    out.print("\"start\": \"" + start + "\",");
-                    out.print("\"extendedProps\": {");
-                    out.print("\"doctor\": { \"name\": \"" + doctorName + "\" },");
-                    out.print("\"shiftId\": \"" + shiftId + "\",");
-                    out.print("\"shiftTime\": \"" + shiftTime + "\"");
-                    out.print("}");
-                    out.print("}");
-                    if(i < weeklySchedules.size() - 1) {
-                        out.print(",");
-                    }
-                }
-            }
-        %>
-        ];
+        var doctorEvents = ${doctorEventsJson};
     </script>
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <!-- FullCalendar JS -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
     <script>
         var calendar;
         $(document).ready(function () {
-            // Khởi tạo FullCalendar khi tab Calendar được kích hoạt
-            $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+            $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
                 if ($(e.target).attr("id") === "calendar-tab") {
                     if (!calendar) {
                         initCalendar();
@@ -226,102 +151,19 @@
                     dayMaxEventRows: 3,
                     moreLinkClick: 'popover',
                     expandRows: true,
-                    selectable: true,
-                    eventClick: function (info) {
-                        var scheduleId = info.event.id;
-                        var eventDate = info.event.startStr;
-                        var shiftId = info.event.extendedProps.shiftId;
-                        var doctor = info.event.extendedProps.doctor || {};
-                        var doctorName = doctor.name || 'N/A';
-                        $('#editScheduleId').val(scheduleId);
-                        $('#editShiftDate').val(eventDate);
-                        $('#editShiftType').val(shiftId);
-                        $('#editDoctorName').val(doctorName);
-                        $('#editModal').modal('show');
-                    },
-                    // Gán class custom style cho sự kiện
-                    eventClassNames: function(arg) {
-                        return ['fc-event-custom-style'];
-                    },
-                    // Tùy chỉnh nội dung hiển thị sự kiện với màu sắc phân biệt cho từng ca
-                    eventContent: function(info) {
-                        var doctor = info.event.extendedProps.doctor || {},
-                            doctorName = doctor.name || 'N/A',
-                            shiftId = info.event.extendedProps.shiftId || '',
-                            shiftLabel = shiftId ? 'K' + shiftId : '',
-                            shiftTime = info.event.extendedProps.shiftTime || info.event.title || '';
-                        // Mapping màu cho 4 shift
-                        var shiftColors = {
-                            '1': '#0d6efd',  // Blue
-                            '2': '#198754',  // Green
-                            '3': '#dc3545',  // Red
-                            '4': '#ffc107'   // Yellow
-                        };
-                        var bgColor = shiftColors[shiftId] || '#0d6efd';
-                        var html = '<div style="background-color: ' + bgColor + '; color: #fff; padding: 2px 4px; border-radius: 4px; white-space: normal;">' +
-                                   '<div><strong>' + doctorName + ' - ' + shiftLabel + '</strong></div>' +
-                                   '<div>' + shiftTime + '</div>' +
-                                   '</div>';
-                        return { html: html };
+                    selectable: false,
+                    eventClick: function(info) {
+                        var shiftTime = info.event.extendedProps.shiftTime || "No details available";
+                        $("#shiftTimeDetail").text("Shift Time: " + shiftTime);
+                        var modal = new bootstrap.Modal(document.getElementById('shiftDetailModal'));
+                        modal.show();
                     },
                     events: doctorEvents
                 });
                 calendar.render();
             }
-
-            // Xử lý nút Save (Update) trong modal
-            $('#saveEditBtn').off('click').on('click', function () {
-                var scheduleId = $('#editScheduleId').val();
-                var shiftDate = $('#editShiftDate').val();
-                var shiftType = $('#editShiftType').val();
-                $.ajax({
-                    url: window.contextPath + '/hr/calendarmanage?action=updateShift',
-                    type: 'POST',
-                    data: {
-                        scheduleId: scheduleId,
-                        shiftDate: shiftDate,
-                        shiftType: shiftType
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            alert('Update successfully!');
-                            $('#editModal').modal('hide');
-                            if (calendar) calendar.refetchEvents();
-                        } else {
-                            alert('Update failed!');
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error occurred:', status, error);
-                        alert('An error occurred while updating shift.');
-                    }
-                });
-            });
-
-            // Xử lý nút Delete
-            $('#deleteBtn').off('click').on('click', function () {
-                if (!confirm('Are you sure you want to delete this shift?')) return;
-                var scheduleId = $('#editScheduleId').val();
-                $.ajax({
-                    url: window.contextPath + '/hr/calendarmanage?action=deleteShift',
-                    type: 'POST',
-                    data: { scheduleId: scheduleId },
-                    success: function (response) {
-                        if (response.success) {
-                            alert('Deleted successfully!');
-                            $('#editModal').modal('hide');
-                            if (calendar) calendar.refetchEvents();
-                        } else {
-                            alert('Delete failed!');
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error occurred:', status, error);
-                        alert('An error occurred while deleting shift.');
-                    }
-                });
-            });
         });
+        
     </script>
 </body>
 </html>

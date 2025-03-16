@@ -245,39 +245,57 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public List<DoctorSchedule> getSchedulesBetweenDates(Date startDate, Date endDate) {
-        List<DoctorSchedule> schedules = new ArrayList<>();
-        DoctorDBContext docDB = new DoctorDBContext();
+    public List<DoctorSchedule> getSchedulesBetweenDates(Date start, Date end) {
+        List<DoctorSchedule> list = new ArrayList<>();
         String sql = """
-            SELECT ds.id, ds.doctor_id, ds.schedule_date, ds.shift_id, s.time_start, s.time_end, ds.available
+            SELECT ds.id AS dsid,
+                   ds.schedule_date,
+                   ds.doctor_id,
+                   ds.shift_id,
+                   ds.available,
+                   s.time_start,
+                   s.time_end,
+                   d.id AS docId,
+                   st.fullname AS doctor_name
             FROM Doctor_Schedule ds
             JOIN Shift s ON ds.shift_id = s.id
+            JOIN Doctor d ON ds.doctor_id = d.id
+            JOIN Staff st ON d.staff_id = st.id
             WHERE ds.schedule_date BETWEEN ? AND ?
             ORDER BY ds.schedule_date, s.time_start
-        """;
+            """;
 
-        try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            stm.setDate(1, startDate);
-            stm.setDate(2, endDate);
-            ResultSet rs = stm.executeQuery();
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setDate(1, start);
+            ps.setDate(2, end);
 
-            while (rs.next()) {
-                Doctor doctor = docDB.getDoctorById(rs.getInt("doctor_id"));
-                Shift shift = new Shift(rs.getInt("shift_id"), rs.getTime("time_start"), rs.getTime("time_end"));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    DoctorSchedule dsObj = new DoctorSchedule();
+                    dsObj.setId(rs.getInt("dsid"));
+                    dsObj.setScheduleDate(rs.getDate("schedule_date"));
+                    dsObj.setAvailable(rs.getInt("available") == 1);
 
-                DoctorSchedule schedule = new DoctorSchedule(
-                        rs.getInt("id"),
-                        doctor,
-                        rs.getDate("schedule_date"),
-                        shift,
-                        rs.getInt("available") == 1
-                );
-                schedules.add(schedule);
+                    // Tạo Shift
+                    Shift shift = new Shift();
+                    shift.setId(rs.getInt("shift_id"));
+                    shift.setTimeStart(rs.getTime("time_start"));
+                    shift.setTimeEnd(rs.getTime("time_end"));
+                    dsObj.setShift(shift);
+
+                    // Tạo Doctor
+                    Doctor doc = new Doctor();
+                    doc.setId(rs.getInt("docId"));
+                    doc.setName(rs.getString("doctor_name"));  // QUAN TRỌNG: setName
+                    dsObj.setDoctor(doc);
+
+                    list.add(dsObj);
+                }
             }
-        } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "Error fetching schedules between dates: {0}", ex.getMessage());
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return schedules;
+        return list;
     }
 
     public boolean assignShift(int doctorId, Date shiftDate, int shiftId) {
