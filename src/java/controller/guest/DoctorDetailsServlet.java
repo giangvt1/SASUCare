@@ -1,6 +1,6 @@
 package controller.guest;
 
-import dao.DoctorDBContext;
+import dao.DoctorRatingDBContext;
 import dao.RatingDBContext;
 import model.Doctor;
 import model.Rating;
@@ -29,7 +29,7 @@ public class DoctorDetailsServlet extends HttpServlet {
 
         try {
             int doctorId = Integer.parseInt(doctorIdStr);
-            DoctorDBContext doctorDAO = new DoctorDBContext();
+            DoctorRatingDBContext doctorDAO = new DoctorRatingDBContext();
             Doctor doctor = doctorDAO.getDoctorById(doctorId);
 
             if (doctor != null) {

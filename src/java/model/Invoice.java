@@ -13,6 +13,12 @@ public class Invoice {
     private Date createdDate;
     private Date expireDate;
     private String txnRef;
+    private int appointmentId; // Added appointmentId field
+    private String status;
+
+   
+    
+    
 
     // Default constructor
     public Invoice() {}
@@ -89,4 +95,37 @@ public class Invoice {
     public void setTxnRef(String txnRef) {
         this.txnRef = txnRef;
     }
+
+    // Getter and setter for appointmentId
+    public int getAppointmentId() {
+        return appointmentId;
+    }
+
+    public void setAppointmentId(int appointmentId) {
+        this.appointmentId = appointmentId;
+    }
+    
+     public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    @Override
+public String toString() {
+    return "Invoice{" +
+            "id=" + id +
+            ", amount=" + amount +
+            ", orderInfo='" + orderInfo + '\'' +
+            ", orderType='" + orderType + '\'' +
+            ", customerId=" + customerId +
+            ", serviceId=" + serviceId +
+            ", createdDate=" + createdDate +
+            ", expireDate=" + expireDate +
+            ", txnRef='" + txnRef + '\'' +
+            ", appointmentId=" + appointmentId +
+            ", status='" + status + '\'' +
+            '}';
+}
 }

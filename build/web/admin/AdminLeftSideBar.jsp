@@ -32,16 +32,26 @@
         </div>
         <!-- Sidebar menu -->
         <ul class="sidebar-menu">
+
             <li class="active">
                 <a href="${pageContext.request.contextPath}/admin/Dashboard.jsp">
                     <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                 </a>
-                <c:if test="${sessionScope.allowedUrls != null && sessionScope.allowedUrls.contains('/admin/ManageTypeApplication')}">
+                <c:if test="${sessionScope.allowedUrls != null && sessionScope.allowedUrls.contains('/admin/ManageTypeCertificate')}">
+
                     <a href="${pageContext.request.contextPath}/admin/ManageTypeApplication">
                         <i class="fa fa-globe"></i> <span>Manage Type Application</span>
                     </a>
+
+
+                    <a href="${pageContext.request.contextPath}/admin/ManageTypeCertificate">
+                        <i class="fa fa-globe"></i> <span>Manage Type Certificate</span>
+                    </a>
+
                 </c:if> 
             </li>
+
+
             <c:if test="${sessionScope.allowedUrls != null && sessionScope.allowedUrls.contains('/hr/create')}">
                 <li>
                     <a href="${pageContext.request.contextPath}/hr/create">
@@ -53,9 +63,14 @@
                         <i class="fa fa-globe"></i> <span>Account List</span>
                     </a>
                 </li>
-                <li>
+                <li> 
                     <a href="${pageContext.request.contextPath}/hr/ViewStaffApplication?staffId=${sessionScope.staff.id}">
-                        <i class="fa fa-globe"></i> <span>Staff Application</span>
+                        <i class="fa fa-globe"></i> <span>Staff Applications</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/hr/ManageDoctorCertificates?staffId=${sessionScope.staff.id}">
+                        <i class="fa fa-globe"></i> <span>Doctor Certificates</span>
                     </a>
                 </li>
                 <li>
@@ -73,6 +88,11 @@
                         <i class="fa fa-table"></i> <span>Approve Appointment</span>
                     </a>
                 </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/chatbox">
+                        <i class="fa fa-table"></i> <span>Chat</span>
+                    </a>
+                </li>
             </c:if>
 
             <c:if test="${allowedUrls != null and (allowedUrls.contains('/doctor/SendApplication.jsp') or allowedUrls.contains('/doctor/ManageMedical.jsp'))}">
@@ -82,18 +102,28 @@
                     </a>
                 </li>
                 <li>
+                    <a href="../doctor/ManageCertificates?staffId=${sessionScope.staff.id}">
+                        <i class="fa fa-envelope"></i> <span>Manage Certificate</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../doctor/appointmentsmanagement">
+                        <i class="fa fa-envelope"></i> <span>Appointments</span>
+                    </a>
+                </li>
+                <li>
                     <a href="../doctor/SearchCustomer?page=1&sort=default&size=10">
                         <i class="fa fa-medkit"></i> <span>Manage Medical</span>
                     </a>
                 </li>
                 <li>
-                    <a href="../doctor/appointmentsmanagement">
-                        <i class="fa fa-medkit"></i> <span>Appoinment</span>
+                    <a href="../doctor/calendar">
+                        <i class="fa fa-medkit"></i> <span>Calendar</span>
                     </a>
                 </li>
                 <li>
-                    <a href="../doctor/calendar">
-                        <i class="fa fa-medkit"></i> <span>Calendar</span>
+                    <a href="${pageContext.request.contextPath}/chatbox">
+                        <i class="fa fa-table"></i> <span>Chat</span>
                     </a>
                 </li>
             </c:if>

@@ -1,56 +1,266 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dao;
 
 import dal.DBContext;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.logging.Level;
 import model.Invoice;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.sql.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- *
- * @author Golden Lightning
- */
-public class InvoiceDbContext extends DBContext<Invoice>{
+public class InvoiceDBContext extends DBContext<Invoice> {
 
-    @Override
-    public void insert(Invoice model) {
-              String sql = "INSERT INTO Invoices (vnp_TxnRef, order_info, created_date, customer_id, service_id) " +
-                     "VALUES (?, ?, GETDATE(), ?, ?)";
+    public List<Invoice> getInvoicesByCustomerId(int customerId, String status, String startDate, String endDate,
+            String sortBy, String sortDirection, int currentPage, int pageSize) {
+        List<Invoice> invoices = new ArrayList<>();
+        StringBuilder sql = new StringBuilder(
+                "SELECT [id], [order_info], [created_date], [expire_date], [customer_id], "
+                + "[service_id], [vnp_TxnRef], [status], [appointment_id] "
+                + "FROM [Invoices] WHERE customer_id = ?");
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            // Set the values for the SQL query
-            stmt.setString(1, model.getTxnRef());  // vnp_TxnRef
-            stmt.setString(2, model.getOrderInfo());  // order_info
-            stmt.setInt(3, model.getCustomerId());    // customer_id
-            stmt.setInt(4, model.getServiceId());     // service_id
-
-            // Execute the update (insert)
-            int rowsAffected = stmt.executeUpdate();  // Returns the number of rows affected
-
-            int affectedRows = stmt.executeUpdate();
-
-            if (affectedRows > 0) {
-                ResultSet generatedKeys = stmt.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    model.setId(generatedKeys.getInt(1));
-                    System.out.println("Appointment inserted with ID: " + model.getId());
-                }
-            } else {
-                System.out.println("Failed to insert appointment.");
-            }
-        } catch (SQLException ex) {
-//            LOGGER.log(Level.SEVERE, "Error inserting appointment: {0}", ex.getMessage());
-            ex.printStackTrace();
+        if (status != null && !status.isEmpty()) {
+            sql.append(" AND status = ?");
+        }
+        if (startDate != null && !startDate.isEmpty()) {
+            sql.append(" AND created_date >= ?");
+        }
+        if (endDate != null && !endDate.isEmpty()) {
+            sql.append(" AND created_date <= DATEADD(day, 1, ?)");
         }
 
+        sql.append(" ORDER BY ");
+        switch (sortBy != null ? sortBy.toLowerCase() : "") {
+            case "amount":
+                sql.append("[amount]");
+                break; // Note: amount column is missing in your schema
+            case "duedate":
+                sql.append("[expire_date]");
+                break;
+            default:
+                sql.append("[created_date]");
+        }
+        sql.append(sortDirection != null && "asc".equalsIgnoreCase(sortDirection) ? " ASC" : " DESC");
+
+        sql.append(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+
+        try (PreparedStatement ps = connection.prepareStatement(sql.toString())) {
+            int paramIndex = 1;
+            ps.setInt(paramIndex++, customerId);
+
+            if (status != null && !status.isEmpty()) {
+                ps.setString(paramIndex++, status);
+            }
+            if (startDate != null && !startDate.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(startDate));
+            }
+            if (endDate != null && !endDate.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(endDate));
+            }
+
+            ps.setInt(paramIndex++, (currentPage - 1) * pageSize);
+            ps.setInt(paramIndex++, pageSize);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Invoice invoice = new Invoice();
+                    invoice.setId(rs.getInt("id"));
+                    invoice.setOrderInfo(rs.getString("order_info"));
+                    invoice.setCustomerId(rs.getInt("customer_id"));
+                    invoice.setServiceId(rs.getInt("service_id"));
+                    invoice.setCreatedDate(rs.getTimestamp("created_date"));
+                    invoice.setExpireDate(rs.getTimestamp("expire_date"));
+                    invoice.setTxnRef(rs.getString("vnp_TxnRef"));
+                    invoice.setStatus(rs.getString("status"));
+                    invoice.setAppointmentId(rs.getInt("appointment_id"));
+                    invoices.add(invoice);
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return invoices;
+    }
+
+    public int getInvoiceCountByCustomerId(int customerId, String status, String startDate, String endDate) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM [Invoices] WHERE customer_id = ?");
+
+        if (status != null && !status.isEmpty()) {
+            sql.append(" AND status = ?");
+        }
+        if (startDate != null && !startDate.isEmpty()) {
+            sql.append(" AND created_date >= ?");
+        }
+        if (endDate != null && !endDate.isEmpty()) {
+            sql.append(" AND created_date <= DATEADD(day, 1, ?)");
+        }
+
+        try (PreparedStatement ps = connection.prepareStatement(sql.toString())) {
+            int paramIndex = 1;
+            ps.setInt(paramIndex++, customerId);
+
+            if (status != null && !status.isEmpty()) {
+                ps.setString(paramIndex++, status);
+            }
+            if (startDate != null && !startDate.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(startDate));
+            }
+            if (endDate != null && !endDate.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(endDate));
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
+
+    // Get a specific invoice by its ID
+    public Invoice getInvoiceById(int id) {
+        Invoice invoice = null;
+        String sql = "SELECT * FROM Invoices WHERE id = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);  // Set invoice ID
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                invoice = new Invoice();
+                invoice.setId(rs.getInt("id"));
+                invoice.setOrderInfo(rs.getString("order_info"));
+                invoice.setOrderType(rs.getString("order_type"));
+                invoice.setCustomerId(rs.getInt("customer_id"));
+                invoice.setServiceId(rs.getInt("service_id"));
+                invoice.setCreatedDate(rs.getTimestamp("created_date"));
+                invoice.setExpireDate(rs.getTimestamp("expire_date"));
+                invoice.setTxnRef(rs.getString("vnp_TxnRef"));
+                invoice.setStatus(rs.getString("status"));
+                invoice.setAppointmentId(rs.getInt("appointment_id"));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return invoice;
+    }
+
+    // Method to get invoice by appointment ID
+    public Invoice getInvoiceByAppointmentId(int appointmentId) {
+        String sql = "SELECT * FROM Invoices WHERE appointment_id = ?";
+        Invoice invoice = null;
+
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setInt(1, appointmentId); // Set appointmentId parameter
+
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                invoice = new Invoice();
+                invoice.setId(rs.getInt("id"));
+                invoice.setOrderInfo(rs.getString("order_info"));
+                invoice.setOrderType(rs.getString("order_type"));
+                invoice.setCustomerId(rs.getInt("customer_id"));
+                invoice.setServiceId(rs.getInt("service_id"));
+                invoice.setCreatedDate(rs.getTimestamp("created_date"));
+                invoice.setExpireDate(rs.getTimestamp("expire_date"));
+                invoice.setTxnRef(rs.getString("vnp_TxnRef"));
+                invoice.setStatus(rs.getString("status"));
+                invoice.setAppointmentId(rs.getInt("appointment_id"));
+            }
+        } catch (SQLException ex) {
+            System.err.println("Error while retrieving invoice by appointment ID: " + ex.getMessage());
+        }
+
+        return invoice;
+    }
+
+    // Method to insert a new invoice into the database
+    public void insert(Invoice invoice) {
+        String sql = "INSERT INTO Invoices (order_info, created_date, expire_date, customer_id, vnp_TxnRef, status, appointment_id) "
+                + "VALUES (?, GETDATE(), ?, ?, ?, ?, ?)";  // Service ID is removed
+
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setString(1, invoice.getOrderInfo());
+            stm.setTimestamp(2, new Timestamp(invoice.getExpireDate().getTime())); // Expiry date
+            stm.setInt(3, invoice.getCustomerId());
+            stm.setString(4, invoice.getTxnRef());
+            stm.setString(5, invoice.getStatus());
+            stm.setInt(6, invoice.getAppointmentId());
+
+            int affectedRows = stm.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("Invoice created successfully.");
+            } else {
+                System.out.println("Invoice creation failed.");
+            }
+        } catch (SQLException ex) {
+            System.err.println("Error while inserting invoice: " + ex.getMessage());
+        }
+    }
+
+    public Invoice get(int id) {
+        String sql = "SELECT [id], "
+                + "[order_info], "
+                + "[created_date], "
+                + "[expire_date], "
+                + "[customer_id], "
+                + "[service_id], "
+                + "[vnp_TxnRef], "
+                + "[status], "
+                + "[appointment_id] "
+                + "FROM [Invoices] WHERE id = ?";
+        Invoice invoice = null;
+
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setInt(1, id); // Set the invoice ID parameter
+
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                invoice = new Invoice();
+                invoice.setId(rs.getInt("id"));
+                invoice.setOrderInfo(rs.getString("order_info"));  // Corrected column name
+                invoice.setCreatedDate(rs.getDate("created_date")); // Corrected column name
+                invoice.setExpireDate(rs.getDate("expire_date"));  // Corrected column name
+                invoice.setCustomerId(rs.getInt("customer_id"));   // Corrected column name
+                invoice.setServiceId(rs.getInt("service_id"));     // Corrected column name
+                invoice.setTxnRef(rs.getString("vnp_TxnRef"));
+                invoice.setStatus(rs.getString("status"));         // Corrected column name
+                invoice.setAppointmentId(rs.getInt("appointment_id")); // Corrected column name
+            }
+        } catch (SQLException ex) {
+            System.err.println("Error while retrieving invoice: " + ex.getMessage());
+        }
+
+        return invoice;
+    }
+
+    // Optional: Method to retrieve a list of invoices for a customer
+    public List<Invoice> getInvoicesByCustomerId(int customerId) {
+        String sql = "SELECT * FROM Invoice sWHERE customerId = ?";
+        List<Invoice> invoices = new ArrayList<>();
+
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setInt(1, customerId);
+
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                Invoice invoice = new Invoice();
+                invoice.setId(rs.getInt("id"));
+//                invoice.setAmount(rs.getLong("amount"));
+                invoice.setOrderInfo(rs.getString("orderInfo"));
+                invoice.setOrderType(rs.getString("orderType"));
+                invoice.setCustomerId(rs.getInt("customerId"));
+                invoice.setServiceId(rs.getInt("serviceId"));
+                invoice.setCreatedDate(rs.getDate("createdDate"));
+                invoice.setExpireDate(rs.getDate("expireDate"));
+                invoice.setTxnRef(rs.getString("txnRef"));
+                invoices.add(invoice);
+            }
+        } catch (SQLException ex) {
+            System.err.println("Error while retrieving invoices by customer ID: " + ex.getMessage());
+        }
+
+        return invoices;
     }
 
     @Override
@@ -72,5 +282,76 @@ public class InvoiceDbContext extends DBContext<Invoice>{
     public Invoice get(String id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
+
+    // Method to retrieve a list of invoices for a customer with pagination and filtering
+    public List<Invoice> getInvoicesByCustomerId(int customerId, String statusFilter, int currentPage, int pageSize) {
+        List<Invoice> invoices = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM Invoices WHERE customer_id = ?");
+
+        if (statusFilter != null && !statusFilter.isEmpty()) {
+            sql.append(" AND status = ?");
+        }
+
+        sql.append(" ORDER BY created_date DESC LIMIT ?, ?");
+
+        try (PreparedStatement stm = connection.prepareStatement(sql.toString())) {
+            int paramIndex = 1;
+            stm.setInt(paramIndex++, customerId);
+
+            if (statusFilter != null && !statusFilter.isEmpty()) {
+                stm.setString(paramIndex++, statusFilter);
+            }
+
+            stm.setInt(paramIndex++, (currentPage - 1) * pageSize);
+            stm.setInt(paramIndex++, pageSize);
+
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                Invoice invoice = new Invoice();
+                invoice.setId(rs.getInt("id"));
+                invoice.setOrderInfo(rs.getString("order_info"));
+                invoice.setOrderType(rs.getString("order_type"));
+                invoice.setCustomerId(rs.getInt("customer_id"));
+                invoice.setServiceId(rs.getInt("service_id"));
+                invoice.setCreatedDate(rs.getTimestamp("created_date"));
+                invoice.setExpireDate(rs.getTimestamp("expire_date"));
+                invoice.setTxnRef(rs.getString("vnp_TxnRef"));
+                invoice.setStatus(rs.getString("status"));
+                invoice.setAppointmentId(rs.getInt("appointment_id"));
+
+                invoices.add(invoice);
+            }
+        } catch (SQLException ex) {
+            System.err.println("Error while retrieving invoices by customer ID: " + ex.getMessage());
+        }
+
+        return invoices;
+    }
+
+    // Method to get the total number of invoices for a customer (for pagination)
+    public int getInvoiceCountByCustomerId(int customerId, String statusFilter) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM Invoices WHERE customer_id = ?");
+
+        if (statusFilter != null && !statusFilter.isEmpty()) {
+            sql.append(" AND status = ?");
+        }
+
+        try (PreparedStatement stm = connection.prepareStatement(sql.toString())) {
+            int paramIndex = 1;
+            stm.setInt(paramIndex++, customerId);
+
+            if (statusFilter != null && !statusFilter.isEmpty()) {
+                stm.setString(paramIndex++, statusFilter);
+            }
+
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            System.err.println("Error while retrieving invoice count: " + ex.getMessage());
+        }
+
+        return 0;
+    }
 }

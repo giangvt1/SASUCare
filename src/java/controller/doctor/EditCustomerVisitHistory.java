@@ -39,10 +39,6 @@ public class EditCustomerVisitHistory extends BaseRBACController {
         String diagnoses = request.getParameter("diagnoses");
         String treatmentPlan = request.getParameter("treatmentPlan");
         String nextAppointmentStr = request.getParameter("nextAppointment");
-
-        System.out.println("Received visitDateStr: " + visitDateStr);
-        System.out.println("Received nextAppointmentStr: " + nextAppointmentStr);
-
         DoctorDBContext doctorDB = new DoctorDBContext();
         int doctorId = doctorDB.getDoctorIdByStaffId(staffId);
         Timestamp visitDate = null;

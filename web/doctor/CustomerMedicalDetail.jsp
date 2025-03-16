@@ -155,11 +155,11 @@
                         <c:forEach var="v" items="${visitHistoryList}" varStatus="status">
                             <tr>
                                 <td class="index">${status.index + 1}</td>
-                                <td><fmt:formatDate value="${v.visitDate}" pattern="dd/MM/yyyy HH:mm" /></td>
+                                <td><fmt:formatDate value="${v.visitDate}" pattern="dd/MM/yyyy HH:mm:ss" /></td>
                                 <td>${v.reasonForVisit}</td>
                                 <td>${v.diagnoses}</td>
                                 <td>${v.treatmentPlan}</td>
-                                <td><fmt:formatDate value="${v.nextAppointment}" pattern="dd/MM/yyyy HH:mm" /></td>
+                                <td><fmt:formatDate value="${v.nextAppointment}" pattern="dd/MM/yyyy HH:mm:ss" /></td>
                             </tr>
                         </c:forEach>
                     </tbody>

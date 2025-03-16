@@ -11,7 +11,7 @@ public abstract class DBContext<T> {
 
     private static final Logger LOGGER = Logger.getLogger(DBContext.class.getName());
 
-    protected Connection connection;
+    public Connection connection;
 
     public DBContext() {
         try {

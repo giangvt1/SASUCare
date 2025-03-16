@@ -8,17 +8,50 @@ import dal.DBContext;
 import java.util.ArrayList;
 import model.Transaction;
 import java.sql.*;
+import java.util.List;
 
 /**
  *
  * @author Golden Lightning
  */
-public class TransactionDBContext extends DBContext<Transaction>{
+public class TransactionDBContext extends DBContext<Transaction> {
+
+    // Method to get transactions for a specific invoice
+    public List<Transaction> getTransactionsByInvoiceId(int invoiceId) {
+        List<Transaction> transactions = new ArrayList<>();
+        String sql = "SELECT * FROM [Transaction] WHERE invoice_id = ?";  // Assuming the relation is by invoice_id
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, invoiceId);  // Set the invoice ID parameter
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Transaction transaction = new Transaction();
+                transaction.setId(rs.getInt("id"));
+                transaction.setVnpTxnRef(rs.getString("vnp_TxnRef"));
+                transaction.setBankCode(rs.getString("bankCode"));
+                transaction.setPaymentMethod(rs.getString("paymentMethod"));
+                transaction.setPaymentUrl(rs.getString("paymentUrl"));
+                transaction.setStatus(rs.getString("status"));
+                transaction.setTransactionDate(rs.getTimestamp("transactionDate"));
+
+                // Set the associated invoice
+                // If you need to load the related Invoice, you can also query the invoice here
+                // For simplicity, we assume that the Transaction object already has a reference to the Invoice
+                transactions.add(transaction);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.err.println("Error while fetching transactions for invoice ID " + invoiceId + ": " + ex.getMessage());
+        }
+
+        return transactions;
+    }
 
     @Override
     public void insert(Transaction transaction) {
-        String sql = "INSERT INTO [Transaction] (invoice_id, vnp_TxnRef, bank_code, payment_method, payment_url, status, transaction_date) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, GETDATE())";
+        String sql = "INSERT INTO [Transaction] (invoice_id, vnp_TxnRef, bank_code, payment_method, payment_url, status, transaction_date) "
+                + "VALUES (?, ?, ?, ?, ?, ?, GETDATE())";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, transaction.getInvoice().getId());
@@ -39,7 +72,8 @@ public class TransactionDBContext extends DBContext<Transaction>{
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }}
+        }
+    }
 
     @Override
     public void update(Transaction model) {
@@ -60,5 +94,5 @@ public class TransactionDBContext extends DBContext<Transaction>{
     public Transaction get(String id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
+
 }

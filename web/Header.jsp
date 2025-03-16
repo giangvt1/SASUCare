@@ -21,13 +21,13 @@
             />
 
         <!-- Libraries Stylesheet -->
-        <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+        <link href="${pageContext.request.contextPath}/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
         <link
-            href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css"
+            href="${pageContext.request.contextPath}/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css"
             rel="stylesheet"
             />
-        <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-        <link href="css/style.css" rel="stylesheet" type="text/css"/>
+        <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
         <!-- Topbar Start -->
@@ -49,7 +49,7 @@
                             <a class="text-body px-2" href="">
                                 <i class="fab fa-twitter"></i>
                             </a>
-                            <a class="text-body px-2" href="">
+                            <a class="text-body px-2" href="${pageContext.request.contextPath}/system/login">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
                             <a class="text-body px-2" href="">
@@ -71,7 +71,7 @@
             <div class="container">
                 <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0">
                     <a href="${pageContext.request.contextPath}/Home.jsp" class="navbar-brand">
-                        <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-clinic-medical me-2"></i>Medinova</h1>
+                        <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-clinic-medical me-2"></i>SASUCare</h1>
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                         <span class="navbar-toggler-icon"></span>
@@ -88,9 +88,9 @@
                                     <a href="blog.html" class="dropdown-item">Blog Grid</a>
                                     <a href="detail.html" class="dropdown-item">Blog Detail</a>
                                     <a href="team.html" class="dropdown-item">The Team</a>
-                                    <a href="testimonial.html" class="dropdown-item">Testimonial</a>
-                                    <a href="appointment.html" class="dropdown-item">Appointment</a>
-                                    <a href="search.html" class="dropdown-item">Search</a>
+                                    <a href="${pageContext.request.contextPath}/customer/medical-history" class="dropdown-item">Medical Visit History</a>
+                                    <a href="${pageContext.request.contextPath}/appointment/list" class="dropdown-item">My Appointments</a>
+                                    <a href="${pageContext.request.contextPath}/customer/invoices" class="dropdown-item">Invoice</a>
                                 </div>
                             </div>
                             <a href="${pageContext.request.contextPath}/contact.jsp" class="nav-item nav-link">Contact</a>

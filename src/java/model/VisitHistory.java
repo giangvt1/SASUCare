@@ -12,8 +12,28 @@ public class VisitHistory {
     private Timestamp visitDate;
     private String reasonForVisit, diagnoses, treatmentPlan;
     private Timestamp nextAppointment;
+    private Appointment appointment;
 
     public VisitHistory() {
+    }
+
+    public VisitHistory(int id, int doctorId, int customerId, Timestamp visitDate, String reasonForVisit, String diagnoses, String treatmentPlan, Appointment appointment) {
+        this.id = id;
+        this.doctorId = doctorId;
+        this.customerId = customerId;
+        this.visitDate = visitDate;
+        this.reasonForVisit = reasonForVisit;
+        this.diagnoses = diagnoses;
+        this.treatmentPlan = treatmentPlan;
+        this.appointment = appointment;
+    }
+
+    public Appointment getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
     }
 
     public VisitHistory(int id, int doctorId, int customerId, Timestamp visitDate, String reasonForVisit, String diagnoses, String treatmentPlan, Timestamp nextAppointment) {

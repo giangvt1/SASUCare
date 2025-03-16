@@ -21,6 +21,16 @@ public class Doctor {
     private List<String> specialties;
     private ArrayList<DoctorSchedule> doctorSchedules;
     private List<Department> departments;
+    private List<String> certificates;  // Stores certificate names
+
+    public List<String> getCertificates() {
+        return certificates;
+    }
+
+    public void setCertificates(List<String> certificates) {
+        this.certificates = certificates;
+    }
+
 
     public List<Department> getDepartments() {
         return departments;
@@ -37,7 +47,6 @@ public class Doctor {
 
     public Doctor() {
     }
-
     public Doctor(int id, String name, Staff staff, String email, String phoneNumber, boolean gender, String address, String img, List<Rating> ratings, List<String> specialties, ArrayList<DoctorSchedule> doctorSchedules) {
         this.id = id;
         this.name = name;
@@ -51,19 +60,30 @@ public class Doctor {
         this.specialties = specialties;
         this.doctorSchedules = doctorSchedules;
     }
-
-    public Doctor(int id, String name, List<String> specialties) {
-        this.id = id;
-        this.name = name;
-        this.specialties = specialties;
-    }
-    
     public Doctor(int id, String name, List<String> specialties, String price, String info) {
         this.id = id;
         this.name = name;
         this.specialties = specialties;
         this.price = price;
         this.info = info;
+    }
+
+    public Doctor(int id, String name, Staff staff, String email, String phoneNumber, boolean gender, String address, List<String> specialties, ArrayList<DoctorSchedule> doctorSchedules) {
+        this.id = id;
+        this.name = name;
+        this.staff = staff;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.gender = gender;
+        this.address = address;
+        this.specialties = specialties;
+        this.doctorSchedules = doctorSchedules;
+    }
+
+    public Doctor(int id, String name, List<String> specialties) {
+        this.id = id;
+        this.name = name;
+        this.specialties = specialties;
     }
 
     public Staff getStaff() {
@@ -146,14 +166,6 @@ public class Doctor {
         this.img = img;
     }
 
-    public List<Rating> getRatings() {
-        return ratings;
-    }
-
-    public void setRatings(List<Rating> ratings) {
-        this.ratings = ratings;
-    }
-
     public String getPrice() {
         return price;
     }
@@ -177,7 +189,14 @@ public class Doctor {
     public void setAverage_rating(double average_rating) {
         this.average_rating = average_rating;
     }
+
+    public List<Rating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<Rating> ratings) {
+        this.ratings = ratings;
+    }
     
-    
-    
+
 }

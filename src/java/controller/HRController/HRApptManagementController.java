@@ -23,8 +23,7 @@ public class HRApptManagementController extends BaseRBACController {
     DepartmentDBContext departmentDB = new DepartmentDBContext();
     
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
 
         // Get filter parameters
         String name = request.getParameter("name");
@@ -63,8 +62,8 @@ public class HRApptManagementController extends BaseRBACController {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+   protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
+   
 //        response.setContentType("application/json");
 //        response.setCharacterEncoding("UTF-8");
 //
@@ -93,15 +92,7 @@ public class HRApptManagementController extends BaseRBACController {
 //        out.flush();
     }
 
-    @Override
-    protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    
 
     private static class ApiResponse {
 

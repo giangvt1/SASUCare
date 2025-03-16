@@ -215,38 +215,38 @@ public class CustomerDBContext extends DBContext<Customer> {
         }
         return false;
     }
-
-    public boolean updateMedicalHistory(MedicalHistory m) {
-        String sql = "UPDATE MedicalHistory SET Name = ?, Detail = ? WHERE id = ?";
-        try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            // Gán các giá trị vào PreparedStatement
-            stm.setString(1, m.getName());
-            stm.setString(2, m.getDetail());
-            stm.setInt(3, m.getId()); // Thêm id vào điều kiện WHERE
-
-            // Thực thi câu lệnh và kiểm tra số dòng bị ảnh hưởng
-            int rowsUpdated = stm.executeUpdate();
-            return rowsUpdated > 0; // Nếu số dòng bị ảnh hưởng > 0 thì trả về true
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return false; // Trả về false nếu gặp lỗi
-    }
-
-    public boolean deleteMedicalHistory(int id) {
-        String sql = "DELETE FROM MedicalHistory WHERE id = ?";
-        try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            // Gán giá trị id vào PreparedStatement
-            stm.setInt(1, id);
-
-            // Thực thi câu lệnh và kiểm tra số dòng bị ảnh hưởng
-            int rowsDeleted = stm.executeUpdate();
-            return rowsDeleted > 0; // Nếu số dòng bị ảnh hưởng > 0 thì trả về true
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return false; // Trả về false nếu gặp lỗi
-    }
+//
+//    public boolean updateMedicalHistory(MedicalHistory m) {
+//        String sql = "UPDATE MedicalHistory SET Name = ?, Detail = ? WHERE id = ?";
+//        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+//            // Gán các giá trị vào PreparedStatement
+//            stm.setString(1, m.getName());
+//            stm.setString(2, m.getDetail());
+//            stm.setInt(3, m.getId()); // Thêm id vào điều kiện WHERE
+//
+//            // Thực thi câu lệnh và kiểm tra số dòng bị ảnh hưởng
+//            int rowsUpdated = stm.executeUpdate();
+//            return rowsUpdated > 0; // Nếu số dòng bị ảnh hưởng > 0 thì trả về true
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
+//        return false; // Trả về false nếu gặp lỗi
+//    }
+//
+//    public boolean deleteMedicalHistory(int id) {
+//        String sql = "DELETE FROM MedicalHistory WHERE id = ?";
+//        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+//            // Gán giá trị id vào PreparedStatement
+//            stm.setInt(1, id);
+//
+//            // Thực thi câu lệnh và kiểm tra số dòng bị ảnh hưởng
+//            int rowsDeleted = stm.executeUpdate();
+//            return rowsDeleted > 0; // Nếu số dòng bị ảnh hưởng > 0 thì trả về true
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
+//        return false; // Trả về false nếu gặp lỗi
+//    }
 
     public Customer getCustomerById(int id) {
         Customer customer = null;

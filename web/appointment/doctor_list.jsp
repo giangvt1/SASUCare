@@ -7,6 +7,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Book Your Appointment</title>
+        <link rel="stylesheet" href="../static/css/appointment/appointments.css">
         <link rel="stylesheet" href="../static/css/appointment/doctor-choose-style.css">
     </head>
 
@@ -56,49 +57,86 @@
         </div>
 
         <!-- Doctor List Table -->
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Specialties</th>
-                    <th>Time Slot</th>
-                    <th>Book</th>
-                </tr>
-            </thead>
-            <tbody>
-                <c:forEach var="entry" items="${doctorMap}">
-                    <c:set var="doctor" value="${entry.key}" />
-                    <c:set var="schedules" value="${entry.value}" />
-                    <tr>
-                        <td>${doctor.name}</td> <!-- Ensure 'doctor' object is correctly referenced -->
-                        <td>
-                            <ul>
-                                <c:forEach var="specialty" items="${doctor.specialties}">
-                                    <li>${specialty}</li>
-                                    </c:forEach>
-                            </ul>
-                        </td>
-                        <td>
-                            <c:forEach var="schedule" items="${schedules}">
-                                <label>
-                                    <input type="radio" name="selectedSchedule_${doctor.id}" value="${schedule.id}"
-                                           data-doctor-name="${doctor.name}" 
-                                           data-specialties="<c:forEach var='sp' items='${doctor.specialties}' varStatus='status'>${sp}${!status.last ? ', ' : ''}</c:forEach>" 
-                                           data-shift-time="${schedule.shift.timeStart} - ${schedule.shift.timeEnd}"
-                                           <c:if test="${!schedule.available}">disabled</c:if>
-                                           onchange="updateBookButton(${doctor.id})">
-                                    ${schedule.shift.timeStart} - ${schedule.shift.timeEnd}
-                                </label><br>
-                            </c:forEach>
-                        </td>
-                        <td>
-                            <button id="bookBtn_${doctor.id}" disabled class="disabled-btn" onclick="openBookingModal(${doctor.id})">Book</button>
-                        </td>
-                    </tr>
-                </c:forEach>
+        <!-- Main container with sidebar and content -->
+        <div class="container">
+            <!-- Sidebar for Doctor Details -->
+            <div class="sidebar doctor-sidebar" id="doctor-sidebar">
+                <div id="doctor-sidebar-content">
+                    <div class="no-doctor-selected">
+                        <i class="fas fa-user-md fa-3x"></i>
+                        <p>Select a doctor to view details</p>
+                    </div>
+                </div>
+            </div>
 
-            </tbody>
-        </table>
+            <!-- Main content area -->
+            <div class="main-content">
+                <!-- Doctor List Table -->
+                <div>
+                    <table border="1">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Specialties</th>
+                                <th>Price ($)</th>
+                                <th>Time Slot</th>
+                                <th>Book</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:set var="hasDoctor" value="false" />
+
+                            <c:forEach var="entry" items="${doctorMap}">
+                                <c:set var="doctor" value="${entry.key}" />
+                                <c:set var="schedules" value="${entry.value}" />
+                                <c:set var="hasDoctor" value="true" />
+
+                                <tr class="clickable-row" data-doctor-id="${doctor.id}"
+                                    data-doctor-name="${doctor.name}"
+                                    data-rating="${doctor.average_rating}"
+                                    data-certificates="<c:forEach var='cert' items='${doctor.staff.certificates}' varStatus='status'>
+                                        ${cert.certificateName} (${cert.issuingAuthority})${!status.last ? ', ' : ''}
+                                    </c:forEach>"
+                                    data-image="${doctor.img}">
+                                    <td>${doctor.name}</td>
+                                    <td>
+                                        <ul>
+                                            <c:forEach var="specialty" items="${doctor.specialties}">
+                                                <li>${specialty}</li>
+                                                </c:forEach>
+                                        </ul>
+                                    </td>
+                                    <td>${doctor.price}</td>
+                                    <td>
+                                        <c:forEach var="schedule" items="${schedules}">
+                                            <label>
+                                                <input type="radio" name="selectedSchedule_${doctor.id}" value="${schedule.id}"
+                                                       data-doctor-name="${doctor.name}" 
+                                                       data-specialties="<c:forEach var='sp' items='${doctor.specialties}' varStatus='status'>${sp}${!status.last ? ', ' : ''}</c:forEach>" 
+                                                       data-shift-time="${schedule.shift.timeStart} - ${schedule.shift.timeEnd}"
+                                                       <c:if test="${!schedule.available}">disabled</c:if>
+                                                       onchange="updateBookButton(${doctor.id})">
+                                                ${schedule.shift.timeStart} - ${schedule.shift.timeEnd}
+                                            </label><br>
+                                        </c:forEach>
+                                    </td>
+                                    <td>
+                                        <button id="bookBtn_${doctor.id}" disabled class="disabled-btn book-action-btn" onclick="openBookingModal(${doctor.id})">Book</button>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table> 
+                    <c:if test="${!hasDoctor}">
+                        <div class="empty-state">
+                            <i class="fas fa-ban empty-state-icon"></i>
+                            <p class="empty-state-text">No Available Doctor.<br>
+                                You can try another day to make an appointment with your doctor.</p>
+                        </div>
+                    </c:if>
+                </div>
+            </div>
+        </div>
 
         <!-- Booking Modal -->
         <div id="bookingModal" class="modal" style="display: none;">
@@ -108,13 +146,57 @@
                 <p><strong>Doctor Name:</strong> <span id="modalDoctorName"></span></p>
                 <p><strong>Specialties:</strong> <span id="modalSpecialties"></span></p>
                 <p><strong>Time Slot:</strong> <span id="modalShiftTime"></span></p>
+
+                <!-- Radio buttons for choosing action -->
+                <label>
+                    <input type="radio" name="action" value="createInvoice" id="createInvoiceRadio"> Create Invoice
+                </label>
+                <label>
+                    <input type="radio" name="action" value="payAtHospital" id="payAtHospitalRadio"> Pay at Hospital
+                </label><br>
+
                 <button onclick="closeModal()">Close</button>
-                <button id="confirmBooking">Confirm Booking</button>
+                <button id="confirmBooking" onclick="confirmBooking()">Confirm Booking</button> <!-- Confirm Booking Button -->
             </div>
         </div>
 
+
         <script>
-            
+            document.addEventListener("DOMContentLoaded", function () {
+                const doctorRows = document.querySelectorAll(".clickable-row");
+                doctorRows.forEach(row => {
+                    row.addEventListener("click", function () {
+                        updateDoctorSidebar(this);
+                    });
+                });
+            });
+
+            function updateDoctorSidebar(row) {
+                const sidebarContent = document.getElementById("doctor-sidebar-content");
+
+                const doctorName = row.getAttribute("data-doctor-name");
+                const doctorRating = parseFloat(row.getAttribute("data-rating"));
+                const doctorCertificates = row.getAttribute("data-certificates");
+                const doctorImage = row.getAttribute("data-image");
+
+                let stars = "";
+                for (let i = 0; i < Math.floor(doctorRating); i++) {
+                    stars += '<i class="fas fa-star"></i>';
+                }
+                if (doctorRating - Math.floor(doctorRating) >= 0.5) {
+                    stars += '<i class="fas fa-star-half-alt"></i>';
+                }
+
+                sidebarContent.innerHTML = `
+                    <div class="doctor-sidebar-info">
+                        <img src="${doctorImage ? doctorImage : '../static/images/default-doctor.jpg'}" alt="Doctor Image" class="doctor-img">
+                        <h3>`+doctorName+`</h3>
+                        <div class="rating">`+stars+`</div>
+                        <h4>Certificates:</h4>
+                        <p>${doctorCertificates ? doctorCertificates : "No certificates available"}</p>
+                    </div>
+                `;
+            }
 
             function openDepartmentModal() {
                 document.getElementById("departmentModal").style.display = "block";
@@ -175,19 +257,34 @@
                     return;
                 }
 
+                // Set modal content dynamically
                 document.getElementById("modalDoctorName").innerText = selectedSchedule.getAttribute("data-doctor-name");
                 document.getElementById("modalSpecialties").innerText = selectedSchedule.getAttribute("data-specialties");
                 document.getElementById("modalShiftTime").innerText = selectedSchedule.getAttribute("data-shift-time");
 
-                let scheduleId = selectedSchedule.value;
-                document.getElementById("confirmBooking").onclick = function () {
-                    
-                    
-                    window.location.href = "../appointment/confirm?doctor=" + doctorId + "&schedule=" + scheduleId;
-                };
-
+                // Show the modal
                 document.getElementById("bookingModal").style.display = "block";
+
+                // Attach the confirm booking logic to the button
+                document.getElementById("confirmBooking").onclick = function () {
+                    // Get selected action
+                    const selectedAction = document.querySelector('input[name="action"]:checked');
+
+                    if (!selectedAction) {
+                        alert("Please select an action (Create Invoice or Pay at Hospital).");
+                        return;
+                    }
+
+                    const action = selectedAction.value; // Get the selected action ('createInvoice' or 'payAtHospital')
+
+                    // Get the schedule ID
+                    let scheduleId = selectedSchedule.value;
+
+                    // Redirect to the appropriate URL with the selected action
+                    window.location.href = "../appointment/confirm?doctor=" + doctorId + "&schedule=" + scheduleId + "&action=" + action;
+                };
             }
+
 
             function closeModal() {
                 document.getElementById("bookingModal").style.display = "none";

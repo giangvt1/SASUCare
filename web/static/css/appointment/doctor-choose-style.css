@@ -193,6 +193,193 @@ li {
   color: var(--text-color);
 }
 
+
+/* Doctor Details Sidebar Styles */
+
+/* Sidebar container */
+.sidebar {
+    width: 320px;
+    background-color: #f8f9fa;
+    border-right: 1px solid #e9ecef;
+    overflow-y: auto;
+    transition: width 0.3s;
+    height: auto;
+    min-height: 500px;
+}
+
+/* Doctor info container */
+.doctor-info {
+    padding: 20px;
+}
+
+/* Doctor avatar */
+.doctor-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #e9ecef;
+    overflow: hidden;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.doctor-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.doctor-avatar svg {
+    width: 60px;
+    height: 60px;
+    color: #6c757d;
+}
+
+/* Doctor name */
+.doctor-name {
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 5px;
+    color: #343a40;
+}
+
+/* Doctor department/specialty */
+.doctor-department {
+    font-size: 14px;
+    color: #6c757d;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Doctor rating */
+.doctor-rating {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.stars {
+    margin-bottom: 5px;
+    color: #ffc107; /* Star color */
+}
+
+/* Certificate section */
+.doctor-certificates {
+    margin-top: 20px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: bold;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+    color: #343a40;
+}
+
+.certificate-item {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.certificate-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.certificate-authority {
+    font-size: 14px;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+.certificate-date {
+    font-size: 12px;
+    color: #999;
+}
+
+/* Loading spinner */
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+}
+
+.loading-spinner i {
+    margin-bottom: 15px;
+    color: #007bff;
+}
+
+/* No doctor selected state */
+.no-doctor-selected {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    color: #6c757d;
+}
+
+.no-doctor-selected svg {
+    margin-bottom: 15px;
+    width: 48px;
+    height: 48px;
+}
+
+/* Accordion panel */
+.accordion {
+    background-color: #f1f3f5;
+    color: #343a40;
+    cursor: pointer;
+    padding: 12px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+    font-weight: bold;
+    border-radius: 4px;
+    margin-top: 15px;
+    position: relative;
+}
+
+.accordion:after {
+    content: '\002B';
+    color: #777;
+    font-weight: bold;
+    float: right;
+    margin-left: 5px;
+}
+
+.accordion.active:after {
+    content: "\2212";
+}
+
+.panel {
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    background-color: white;
+    border-radius: 0 0 4px 4px;
+}
+
+.panel.active {
+    padding: 15px;
+    max-height: 500px;
+    border: 1px solid #e9ecef;
+    border-top: none;
+}
+
+
 /* Animations */
 @keyframes fadeIn {
   from { opacity: 0; }
@@ -248,31 +435,6 @@ li {
   background-color: var(--light-gray);
   margin-left: var(--spacing-md);
 }
-
-/* Style the modal content */
-.modal-content {
-    width: 400px;
-    padding: 20px;
-    background-color: white;
-    position: relative;
-}
-
-/* Add scroll for the checkbox list */
-.checkbox-container {
-    max-height: 300px; /* Adjust this height as needed */
-    overflow-y: auto;  /* Show scrollbar if the content exceeds the max height */
-    margin-bottom: 20px;
-}
-
-/* Style for close button */
-.close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 30px;
-    cursor: pointer;
-}
-
 /* 
 #confirmBooking:hover {
   background-color: var(--primary-dark);

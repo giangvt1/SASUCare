@@ -5,7 +5,7 @@
 
 package controller.guest;
 
-import dao.DoctorDBContext;
+import dao.DoctorRatingDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -22,7 +22,7 @@ import model.Doctor;
  */
 @WebServlet(name="DoctorListServlet", urlPatterns={"/DoctorListServlet"})
 public class DoctorListServlet extends HttpServlet {
-   private DoctorDBContext doctorDB = new DoctorDBContext();
+   private DoctorRatingDBContext doctorDB = new DoctorRatingDBContext();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<Doctor> doctors = doctorDB.list();

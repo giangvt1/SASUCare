@@ -8,7 +8,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Appointment;
 import model.Customer;
-import model.Department;
 import model.Doctor;
 import model.DoctorSchedule;
 import model.Shift;
@@ -17,6 +16,17 @@ public class AppointmentDBContext extends DBContext<Appointment> {
 
     private static final Logger LOGGER = Logger.getLogger(AppointmentDBContext.class.getName());
 
+    public void cancelExpiredAppointments() {
+        String sql = "UPDATE Appointment SET status = 'Canceled', updateAt = GETDATE() WHERE status = 'Pending' AND DocSchedule_id IN \n" +
+"                (SELECT id FROM Doctor_Schedule WHERE schedule_date < CONVERT(DATE, GETDATE()))";
+
+        try ( PreparedStatement stmt = connection.prepareStatement(sql)) {
+            int affectedRows = stmt.executeUpdate();
+            System.out.println("Expired appointments canceled: " + affectedRows);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     public List<Appointment> getFilteredAppointments(String name, Date date, String status, int pageIndex, int pageSize) {
         List<Appointment> appointments = new ArrayList<>();
         StringBuilder sql = new StringBuilder("""
@@ -219,16 +229,15 @@ public class AppointmentDBContext extends DBContext<Appointment> {
         List<Appointment> appointments = new ArrayList<>();
         String sql = """
         SELECT a.id AS appointment_id, a.status, ds.schedule_date, 
-                                       s.time_start, s.time_end, d.id AS doctor_id, Staff.fullname AS doctor_name,
-                                       c.id AS customer_id, c.fullname AS customer_name, c.phone_number, Shift.time_start, Shift.time_end, c.phone_number
-                                FROM Appointment a
-                                JOIN Doctor d ON a.doctor_id = d.id
-                                JOIN Staff ON d.staff_id = Staff.id
-                                JOIN Doctor_Schedule ds ON a.DocSchedule_id = ds.id
-                                JOIN Shift s ON ds.shift_id = s.id
-                                JOIN Customer c ON a.customer_id = c.id
-                                join Shift on Shift.id = ds.shift_id
-                WHERE a.doctor_id = ? AND ds.schedule_date = ? 
+               s.time_start, s.time_end, d.id AS doctor_id, Staff.fullname AS doctor_name,
+               c.id AS customer_id, c.fullname AS customer_name, c.phone_number
+        FROM Appointment a
+        JOIN Doctor d ON a.doctor_id = d.id
+        JOIN Staff ON d.staff_id = Staff.id
+        JOIN Doctor_Schedule ds ON a.DocSchedule_id = ds.id
+        JOIN Shift s ON ds.shift_id = s.id
+        JOIN Customer c ON a.customer_id = c.id
+        WHERE a.doctor_id = ? AND ds.schedule_date = ?
     """;
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
