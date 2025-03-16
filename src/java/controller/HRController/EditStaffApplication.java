@@ -1,5 +1,6 @@
 package controller.HRController;
 
+import controller.systemaccesscontrol.BaseRBACController;
 import dao.ApplicationDBContext;
 import dao.GoogleDBContext;
 import dao.StaffDBContext;
@@ -12,16 +13,18 @@ import java.io.PrintWriter;
 import java.util.List;
 import model.Application;
 import model.TypeApplication;
+import model.system.User;
 
 /**
  *
  * @author TRUNG
  */
-public class EditStaffApplication extends HttpServlet {
+public class EditStaffApplication extends BaseRBACController {
+
+   
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
         String applicationId = request.getParameter("applicationId");
         String status = request.getParameter("status");
         ApplicationDBContext appDAO = new ApplicationDBContext();
@@ -32,8 +35,7 @@ public class EditStaffApplication extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
         int staffHandleId = Integer.parseInt(request.getParameter("staffHanleId"));
         int staffSendId = Integer.parseInt(request.getParameter("staffSendId"));
         int id = Integer.parseInt(request.getParameter("id"));

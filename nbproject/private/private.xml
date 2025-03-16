@@ -14,22 +14,6 @@
             <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/web/accesscontrol/Register.jsp</file>
         </group>
         <group name="PRJ301"/>
-        <group>
-            <file>file:/C:/Users/admin/Downloads/backup/web/admin/AdminHeader.jsp</file>
-            <file>file:/C:/Users/admin/Downloads/backup/src/java/controller/customerService/ManageServiceServlet.java</file>
-            <file>file:/C:/Users/admin/Downloads/backup/web/SearchPackageForm.jsp</file>
-            <file>file:/C:/Users/admin/Downloads/backup/src/java/controller/guest/TestPackageServlet.java</file>
-            <file>file:/C:/Users/admin/Downloads/backup/web/VaccinePackages.jsp</file>
-        </group>
-        <group>
-            <file>file:/C:/Users/admin/Downloads/backup/src/java/controller/customerService/ManageServiceServlet.java</file>
-            <file>file:/C:/Users/admin/Downloads/backup/src/java/controller/guest/SearchPackageServlet.java</file>
-            <file>file:/C:/Users/admin/Downloads/backup/web/SearchPackageForm.jsp</file>
-            <file>file:/C:/Users/admin/Downloads/backup/src/java/dao/TestPackageDBContext.java</file>
-            <file>file:/C:/Users/admin/Downloads/backup/src/java/controller/guest/TestPackageServlet.java</file>
-            <file>file:/C:/Users/admin/Downloads/backup/web/guest/GusPackage.jsp</file>
-            <file>file:/C:/Users/admin/Downloads/backup/web/guest/GusTest.jsp</file>
-        </group>
         <group name="ThisForTest">
             <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentDoctorListController.java</file>
             <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentCalendarServlet.java</file>
@@ -141,6 +125,19 @@
         </group>
         <group>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/inter2-3/SWP391_GROUP6/web/hr/CalendarManage.jsp</file>
+        </group>
+        <group/>
+        <group>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/EditStaffApplication.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/ProfileUpdateController.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/EditUserController.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/ViewStaffApplication.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/ChatBoxController.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/EditDoctorCertificate.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/StaffAccountListController.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/ManageServiceServlet.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/CalendarDoctorManageController.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/ResetPasswordController.java</file>
         </group>
     </open-files>
 </project-private>
