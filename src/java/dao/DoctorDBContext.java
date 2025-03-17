@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.DoctorSchedule;
 import model.Shift;
+import model.VisitHistory;
 
 /**
  *
@@ -21,6 +22,177 @@ import model.Shift;
 public class DoctorDBContext extends DBContext<Doctor> {
 
     private static final Logger LOGGER = Logger.getLogger(DoctorDBContext.class.getName());
+
+    public static void main(String[] args) {
+        DoctorDBContext d = new DoctorDBContext();
+        System.out.println(d.getVisitHistoriesByDoctorIdPaginated(16, 1, 10).size());
+    }
+
+    public ArrayList<VisitHistory> getVisitHistoriesByDoctorIdPaginated(int doctorId, int page, int size) {
+        ArrayList<VisitHistory> visitHistories = new ArrayList<>();
+        String sql = "SELECT v.VisitDate, v.ReasonForVisit, v.Diagnoses, v.TreatmentPlan, c.fullname FROM VisitHistory v JOIN [doctor] d ON v.doctorID = d.id JOIN [Customer] c ON v.CustomerID = c.id WHERE DoctorID = ? ORDER BY VisitDate DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        int offset = (page - 1) * size;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, doctorId);
+            ps.setInt(2, offset);
+            ps.setInt(3, size);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    VisitHistory vh = new VisitHistory();
+                    vh.setVisitDate(rs.getTimestamp("VisitDate"));
+                    vh.setReasonForVisit(rs.getString("ReasonForVisit"));
+                    vh.setDiagnoses(rs.getString("Diagnoses"));
+                    vh.setTreatmentPlan(rs.getString("TreatmentPlan"));
+                    vh.setCustomerName(rs.getString("fullname"));
+                    visitHistories.add(vh);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return visitHistories;
+    }
+
+    public int getVisitHistoryCountByDoctorId(int doctorId) {
+        String sql = "SELECT COUNT(*) FROM VisitHistory WHERE DoctorID = ?";
+        int count = 0;
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, doctorId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    public ArrayList<Doctor> searchDoctor(String name, Date dob, Boolean gender, int page, String sort, int size) {
+        ArrayList<Doctor> doctors = new ArrayList<>();
+        String sql = """
+                  SELECT d.id, s.fullname, s.gender, s.dob, s.address, d.info, d.salaryCoefficient, u.gmail, u.phone
+                                   FROM [Staff] s 
+                                   JOIN [Doctor] d ON s.id = d.staff_id 
+                                   JOIN [User] u ON u.username = s.staff_username
+                 """;
+
+        StringBuilder sqlBuilder = new StringBuilder(sql);
+
+        if (name != null && !name.isEmpty()) {
+            sqlBuilder.append(" AND s.fullname COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?");
+        }
+        if (dob != null) {
+            sqlBuilder.append(" AND s.dob = ?");
+        }
+        if (gender != null) {
+            sqlBuilder.append(" AND s.gender = ?");
+        }
+
+        switch (sort) {
+            case "default":
+                sqlBuilder.append(" ORDER BY s.id");
+                break;
+            case "fullNameAZ":
+                sqlBuilder.append(" ORDER BY s.fullname ASC");
+                break;
+            case "fullNameZA":
+                sqlBuilder.append(" ORDER BY s.fullname DESC");
+                break;
+            case "DOBLTH":
+                sqlBuilder.append(" ORDER BY s.dob ASC");
+                break;
+            case "DOBHTL":
+                sqlBuilder.append(" ORDER BY s.dob DESC");
+                break;
+            default:
+                throw new AssertionError("Invalid sort type: " + sort);
+        }
+        sqlBuilder.append(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+
+        try (PreparedStatement stm = connection.prepareStatement(sqlBuilder.toString())) {
+            int paramIndex = 1;
+
+            if (name != null && !name.isEmpty()) {
+                stm.setString(paramIndex++, "%" + name + "%");
+            }
+            if (dob != null) {
+                stm.setDate(paramIndex++, new java.sql.Date(dob.getTime()));
+            }
+            if (gender != null) {
+                stm.setBoolean(paramIndex++, gender);
+            }
+
+            int offset = (page - 1) * size;
+            stm.setInt(paramIndex++, offset);
+            stm.setInt(paramIndex++, size);
+
+            try (ResultSet rs = stm.executeQuery()) {
+                while (rs.next()) {
+                    Doctor doctor = new Doctor();
+                    doctor.setId(rs.getInt("id"));
+                    doctor.setName(rs.getString("fullname"));
+                    doctor.setGender(rs.getBoolean("gender"));
+                    doctor.setDob(rs.getDate("dob"));
+                    doctor.setEmail(rs.getString("gmail"));
+                    doctor.setAddress(rs.getString("address"));
+                    doctor.setInfo(rs.getString("info"));
+                    doctor.setSalaryCoefficient(rs.getDouble("salaryCoefficient"));
+                    doctors.add(doctor);
+                }
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error listing doctors: {0}", ex.getMessage());
+        }
+
+        return doctors;
+    }
+
+    public int countSearchDoctor(String name, Date dob, Boolean gender) {
+        int count = 0;
+        String sql = " SELECT COUNT(*)FROM [Staff] s JOIN [Doctor] d ON s.id = d.staff_id  JOIN [User] u ON u.username = s.staff_username";
+
+        StringBuilder sqlBuilder = new StringBuilder(sql);
+
+        if (name != null && !name.isEmpty()) {
+            sqlBuilder.append(" AND fullname COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?");
+        }
+        if (dob != null) {
+            sqlBuilder.append(" AND dob = ?");
+        }
+        if (gender != null) {
+            sqlBuilder.append(" AND gender = ?");
+        }
+
+        try (PreparedStatement stm = connection.prepareStatement(sqlBuilder.toString())) {
+            int paramIndex = 1;
+
+            if (name != null && !name.isEmpty()) {
+                stm.setString(paramIndex++, "%" + name + "%");
+            }
+            if (dob != null) {
+                stm.setDate(paramIndex++, new java.sql.Date(dob.getTime()));
+            }
+            if (gender != null) {
+                stm.setBoolean(paramIndex++, gender);
+            }
+
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt(1);
+                }
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error counting doctors: {0}", ex.getMessage());
+        }
+
+        return count;
+    }
 
     public int getDoctorIdByStaffUsername(String username) {
         int doctorId = -1;
@@ -125,6 +297,27 @@ public class DoctorDBContext extends DBContext<Doctor> {
             }
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Error getting doctor by ID", ex);
+        }
+        return doctor;
+    }
+
+    public Doctor getDoctorInforById(int id) {
+        Doctor doctor = null;
+        String sql = "SELECT d.id, s.fullname,s.gender, s.dob, s.address, u.gmail FROM [doctor] d JOIN [Staff] s ON d.staff_id = s.id JOIN [User] u ON s.staff_username = u.username WHERE d.id = ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setInt(1, id);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                doctor = new Doctor();
+                doctor.setId(rs.getInt("id"));
+                doctor.setName(rs.getString("fullname"));
+                doctor.setGender(rs.getBoolean("gender"));
+                doctor.setDob(rs.getDate("dob"));
+                doctor.setAddress(rs.getString("address"));
+                doctor.setEmail(rs.getString("gmail"));
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error fetching doctor data: {0}", ex.getMessage());
         }
         return doctor;
     }
@@ -313,6 +506,5 @@ public class DoctorDBContext extends DBContext<Doctor> {
         }
         return new ArrayList<>(doctorMap.values());
     }
-    
 
 }

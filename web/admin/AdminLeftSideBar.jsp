@@ -47,7 +47,10 @@
                     <a href="${pageContext.request.contextPath}/admin/ManageTypeCertificate">
                         <i class="fa fa-globe"></i> <span>Manage Type Certificate</span>
                     </a>
-
+                        
+                        <a href="${pageContext.request.contextPath}/admin/SearchDoctor?page=1&sort=default&size=10">
+                        <i class="fa fa-globe"></i> <span>Manage Doctor</span>
+                    </a>
                 </c:if> 
             </li>
 

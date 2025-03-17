@@ -240,6 +240,14 @@
         <servlet-name>DoctorSalaryChartController</servlet-name>
         <servlet-class>controller.financial.DoctorSalaryChartController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DoctorMedicalConsultation</servlet-name>
+        <servlet-class>controller.AdminController.DoctorMedicalConsultation</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SearchDoctor</servlet-name>
+        <servlet-class>controller.AdminController.SearchDoctor</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
         <url-pattern>/forgetpassword</url-pattern>
@@ -563,5 +571,13 @@
     <servlet-mapping>
         <servlet-name>DoctorSalaryChartController</servlet-name>
         <url-pattern>/finance/DoctorSalaryChart</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DoctorMedicalConsultation</servlet-name>
+        <url-pattern>/admin/DoctorMedicalConsultation</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SearchDoctor</servlet-name>
+        <url-pattern>/admin/SearchDoctor</url-pattern>
     </servlet-mapping>
 </web-app>

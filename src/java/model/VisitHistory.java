@@ -12,6 +12,7 @@ public class VisitHistory {
     private Timestamp visitDate;
     private String reasonForVisit, diagnoses, treatmentPlan;
     private Timestamp nextAppointment;
+    private String doctorName, customerName;
 
     public VisitHistory() {
     }
@@ -89,6 +90,22 @@ public class VisitHistory {
 
     public void setNextAppointment(Timestamp nextAppointment) { // Thay đổi kiểu tham số
         this.nextAppointment = nextAppointment;
+    }
+
+    public String getDoctorName() {
+        return doctorName;
+    }
+
+    public void setDoctorName(String doctorName) {
+        this.doctorName = doctorName;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
 }
