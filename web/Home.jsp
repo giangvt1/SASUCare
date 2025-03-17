@@ -873,6 +873,11 @@
                     </h5>
                     <h1 class="display-4">Our Latest Medical Blog Posts</h1>
                 </div>
+                <div style="
+                     text-align: right;
+                     text-decoration: underline;">
+                    <a href="posts">View All Blogs >></a></div>
+                <div class="row g-5">
                 <div class="row g-5">
                     <div class="col-xl-4 col-lg-6">
                         <div class="bg-light rounded overflow-hidden">
