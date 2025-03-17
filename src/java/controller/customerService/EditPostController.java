@@ -33,7 +33,7 @@ import model.system.User;
  *
  * @author admin
  */
-@WebServlet(name = "EditPostController", urlPatterns = {"/hr/edit-post"})
+@WebServlet(name = "EditPostController", urlPatterns = {"/customer_service/edit-post"})
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024, // 1 MB
         maxFileSize = 1024 * 1024 * 5, // 5 MB

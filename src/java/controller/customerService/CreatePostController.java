@@ -29,7 +29,7 @@ import model.system.User;
  *
  * @author admin
  */
-@WebServlet(name = "CreatePostController", urlPatterns = {"/hr/create-post"})
+@WebServlet(name = "CreatePostController", urlPatterns = {"/customer_service/create-post"})
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024, // 1 MB
         maxFileSize = 1024 * 1024 * 5, // 5 MB

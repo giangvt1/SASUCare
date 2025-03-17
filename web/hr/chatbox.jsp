@@ -3,31 +3,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Chat Box</title>
-
-    <!-- Nếu AdminHeader.jsp đã load Bootstrap 5.x thì không cần dòng này.
-         Ngược lại, nếu muốn load riêng, hãy đảm bảo phiên bản đồng nhất: -->
-    <!--
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    -->
-
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Chat box</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* ------------ Chat Layout Styles ------------ */
-        .chat-container {
-            padding: 1rem;
-        }
-        .chat-container .row {
-            margin: 0; /* Xóa khoảng trắng thừa giữa cột */
-        }
-
-        /* Danh sách người dùng */
-        .user-item {
-            cursor: pointer;
-        }
-        .user-item:hover {
-            background-color: #f8f9fa;
-        }
+        .message { display: flex; align-items: center; margin-bottom: 10px; }
+        .message.received { justify-content: flex-start; }
+        .message.sent { justify-content: flex-end; }
+        .chat-messages { max-height: 400px; overflow-y: auto; }
+        .user-item { cursor: pointer; }
+        .user-item:hover { background-color: #f8f9fa; }
         .user-item.selected {
             background-color: #e9f5ff;
             border-left: 4px solid #007bff;
@@ -37,71 +22,45 @@
         .user-item.selected img {
             border: 2px solid #007bff;
         }
-
-        /* Khu vực chat */
-        .chat-messages {
-            max-height: 400px;
-            overflow-y: auto;
-            margin-bottom: 1rem;
-        }
-        .message {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .message.sent {
-            justify-content: flex-end;
-        }
-        .message.received {
-            justify-content: flex-start;
-        }
-
-        /* Ẩn form-outline của MDB, nếu không dùng MDB */
-        .form-outline {
-            margin-bottom: 1rem;
-        }
     </style>
 </head>
 <body>
-    <!-- Gọi Header & Sidebar -->
     <jsp:include page="../admin/AdminHeader.jsp" />
     <jsp:include page="../admin/AdminLeftSideBar.jsp" />
-
-    <!-- Vùng nội dung chính -->
-    <div class="right-side">
-        <div class="main-content">
-            <!-- Container Bootstrap -->
-            <div class="container chat-container">
-                <div class="row">
-                    <!-- Cột trái: Danh sách users -->
-                    <div class="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0">
-                        <h5 class="fw-bold mb-3 text-center text-lg-start" id="memberTitle"></h5>
-                        <div class="card">
-                            <div class="card-body">
-                                <ul class="list-unstyled mb-0" id="memberList">
-                                    <!-- Danh sách user sẽ được thêm bằng JS -->
-                                </ul>
+    <section>
+        <div class="right-side">
+            <div class="main-content">
+                <div class="container py-5">
+                    <div class="row">
+                        <div class="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0">
+                            <h5 class="font-weight-bold mb-3 text-center text-lg-start" id="memberTitle"></h5>
+                            <div class="card">
+                                <div class="card-body">
+                                    <ul class="list-unstyled mb-0" id="memberList">
+                                    </ul>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- Cột phải: Khu vực chat -->
-                    <div class="col-md-6 col-lg-7 col-xl-8">
-                        <div class="chat-messages" id="chatBody">
-                            <!-- Tin nhắn sẽ được thêm bằng JS -->
+
+                        <div class="col-md-6 col-lg-7 col-xl-8">
+                            <div class="chat-messages" id="chatBody">
+                                <!-- Messages will be added dynamically via JavaScript -->
+                            </div>
+                            <div class="bg-white mb-3">
+                                <div data-mdb-input-init class="form-outline">
+                                    <textarea class="form-control bg-body-tertiary" id="textAreaExample2" rows="4"></textarea>
+                                    <label class="form-label" for="textAreaExample2">Message</label>
+                                </div>
+                            </div>
+                            <button type="button" id="sendButton" class="btn btn-info btn-rounded float-end">Send</button>
                         </div>
-                        <!-- Nhập nội dung chat -->
-                        <div class="mb-3">
-                            <label for="textAreaExample2" class="form-label">Message</label>
-                            <textarea class="form-control bg-body-tertiary" id="textAreaExample2" rows="3"></textarea>
-                        </div>
-                        <button type="button" id="sendButton" class="btn btn-info float-end">Send</button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Modal Assign Doctor (chỉ hiển thị cho HR) -->
+    <!-- Assign Doctor Modal (chỉ hiển thị cho HR) -->
     <c:if test="${sessionScope.userRoles == 'HR'}">
         <div class="modal fade" id="assignDoctorModal" tabindex="-1" aria-labelledby="assignDoctorModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -116,7 +75,6 @@
                             <div class="mb-3">
                                 <label for="doctorSelect" class="form-label">Chọn bác sĩ:</label>
                                 <select class="form-select" id="doctorSelect">
-                                    <!-- Options sẽ được cập nhật bằng JS -->
                                 </select>
                             </div>
                         </form>
@@ -130,13 +88,9 @@
         </div>
     </c:if>
 
-    <!-- Nếu AdminHeader.jsp chưa load Bootstrap JS, ta load tại đây (đồng bộ phiên bản) -->
-    <!--
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        /* ----------- WebSocket & Chat Logic ----------- */
         var socket = new WebSocket("ws://localhost:9999/SWP391_GR6/chat");
         var chatBody = document.getElementById("chatBody");
         var selectedUserEmail = localStorage.getItem("selectedUserEmail") || null;
@@ -151,25 +105,27 @@
             memberTitle.textContent = "Online Users";
         } else if (role === "Doctor") {
             memberTitle.textContent = "Assigned Users";
-        } else {
-            memberTitle.textContent = "Users";
         }
 
-        // Kiểm tra xem đây có phải là phiên mới hay không (nếu trình duyệt vừa mở lại)
+        // Kiểm tra xem đây có phải là phiên mới (trình duyệt vừa mở lại) hay không
         if (!sessionStorage.getItem('sessionActive')) {
+            // Nếu không có flag, tức là trình duyệt vừa được mở lại, xóa tin nhắn trong localStorage
             localStorage.removeItem('chatHistory');
             chatHistory = {};
         }
+
+        // Đặt flag trong sessionStorage để đánh dấu phiên làm việc hiện tại
         sessionStorage.setItem('sessionActive', 'true');
 
-        // Khôi phục lịch sử chat từ localStorage
+        // Khôi phục lịch sử chat từ localStorage (nếu có)
         restoreChatHistory();
-        // Hiển thị lịch sử chat nếu có user đang chọn
+
+        // Hiển thị lịch sử chat nếu có người dùng được chọn
         if (selectedUserEmail && chatHistory[selectedUserEmail]) {
             displayChatHistory(selectedUserEmail);
         }
 
-        socket.onopen = function () {
+        socket.onopen = function() {
             console.log("✅ WebSocket Connected");
             socket.send(JSON.stringify({
                 action: "userInfo",
@@ -179,36 +135,70 @@
             }));
         };
 
-        socket.onmessage = function (event) {
+        socket.onmessage = function(event) {
             let data = JSON.parse(event.data);
             if (data.action === "updateOnlineUsers" && role === "HR") {
                 chatBody.innerHTML = "";
                 updateOnlineUsers(data.onlineUsers);
             } else if (data.action === "clearChat" && role === "HR") {
-                handleClearChat(data.userEmail);
+                let userEmail = data.userEmail;
+                console.log("useremailssssss: " + userEmail);
+                if (chatHistory[userEmail]) {
+                    delete chatHistory[userEmail];
+                    saveChatHistory();
+                    if (selectedUserEmail === userEmail) {
+                        chatBody.innerHTML = "";
+                    }
+                }
+                // Xóa người dùng khỏi danh sách giao diện
+                const userElement = document.querySelector(`.user-item[data-email="`+ userEmail +`"]`);
+                if (userElement) {
+                    userElement.remove();
+                }
             } else if (data.action === "updateAssignedUsers" && role === "Doctor") {
                 chatBody.innerHTML = "";
                 updateAssignedUsers(data.assignedUsers);
             } else if (data.action === "updateOnlineDoctors" && role === "HR") {
                 updateOnlineDoctors(data.onlineDoctors);
             } else if (data.action === "sendMessage") {
-                handleReceiveMessage(data);
+                let senderEmail = data.senderEmail || data.email;
+                let message = data.message;
+
+                if (!chatHistory[senderEmail]) {
+                    chatHistory[senderEmail] = [];
+                }
+                chatHistory[senderEmail].push({ message: message, type: "received" });
+
+                if (selectedUserEmail === senderEmail) {
+                    displayMessage(message, 'received');
+                }
+
+                saveChatHistory();
             } else if (data.action === "assignSuccess" && role === "HR") {
-                handleAssignSuccess(data);
+                console.log(`User `+ data.userEmail +` assigned to doctor `+ data.doctorEmail +``);
+                const userElement = document.querySelector(`.user-item[data-email="`+ data.userEmail +`"]`);
+                if (userElement) {
+                    userElement.remove();
+                }
+                if (selectedUserEmail === data.userEmail) {
+                    chatBody.innerHTML = "";
+                    selectedUserEmail = null;
+                    localStorage.removeItem("selectedUserEmail");
+                }
             } else if (data.action === "assignError" && role === "HR") {
+                console.log("Assign failed: " + data.message);
                 alert("Lỗi: " + data.message);
             }
         };
 
-        socket.onclose = function () {
+        socket.onclose = function() {
             console.log("WebSocket Disconnected.");
         };
 
-        socket.onerror = function (error) {
+        socket.onerror = function(error) {
             console.log("WebSocket Error: " + error);
         };
 
-        /* ----------- Các hàm xử lý ----------- */
         function updateOnlineUsers(users) {
             const memberList = document.getElementById("memberList");
             memberList.innerHTML = "";
@@ -220,10 +210,10 @@
                     <div class="d-flex justify-content-between">
                         <div class="d-flex flex-row">
                             <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp" alt="avatar"
-                                class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
+                                 class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
                             <div class="pt-1">
-                                <p class="fw-bold mb-0">${user.fullName}</p>
-                                <p class="small text-muted">${user.email}</p>
+                                <p class="fw-bold mb-0">`+ user.fullName +`</p>
+                                <p class="small text-muted">`+ user.email +`</p>
                             </div>
                         </div>
                         <div class="pt-1">
@@ -252,10 +242,10 @@
                     <div class="d-flex justify-content-between">
                         <div class="d-flex flex-row">
                             <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp" alt="avatar"
-                                class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
+                                 class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
                             <div class="pt-1">
-                                <p class="fw-bold mb-0">${user.fullName}</p>
-                                <p class="small text-muted">${user.email}</p>
+                                <p class="fw-bold mb-0">` + user.fullName +  `</p>
+                                <p class="small text-muted">` + user.email + `</p>
                             </div>
                         </div>
                         <div class="pt-1">
@@ -274,7 +264,7 @@
 
         function attachUserItemEvents() {
             document.querySelectorAll(".user-item").forEach(item => {
-                item.addEventListener("click", function () {
+                item.addEventListener("click", function() {
                     document.querySelectorAll(".user-item").forEach(el => el.classList.remove("selected"));
                     this.classList.add("selected");
                     selectedUserEmail = this.getAttribute("data-email");
@@ -306,23 +296,23 @@
 
         function displayMessage(message, type) {
             let messageElement = document.createElement("div");
-            messageElement.classList.add("message", type);
-
+            messageElement.classList.add("message");
             if (type === 'sent') {
+                messageElement.classList.add("sent");
                 messageElement.innerHTML = `
                     <div class="d-flex justify-content-end mb-2">
                         <div class="card-body p-2 px-3 bg-primary text-white" style="border-radius: 20px;">
-                            <p class="mb-0">${message}</p>
+                            <p class="mb-0">`+ message +`</p>
                         </div>
                     </div>
                 `;
             } else {
+                messageElement.classList.add("received");
                 messageElement.innerHTML = `
-                    <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp" alt="avatar"
-                        class="me-3 rounded-circle d-flex align-self-center shadow-1-strong" width="60">
+                    <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp" alt="avatar" class="me-3 rounded-circle d-flex align-self-center shadow-1-strong" width="60">
                     <div class="d-flex justify-content-start mb-2">
                         <div class="card-body p-2 px-3 bg-light text-dark" style="border-radius: 20px;">
-                            <p class="mb-0">${message}</p>
+                            <p class="mb-0">`+ message +`</p>
                         </div>
                     </div>
                 `;
@@ -331,49 +321,7 @@
             chatBody.scrollTop = chatBody.scrollHeight;
         }
 
-        function handleClearChat(userEmail) {
-            if (chatHistory[userEmail]) {
-                delete chatHistory[userEmail];
-                saveChatHistory();
-                if (selectedUserEmail === userEmail) {
-                    chatBody.innerHTML = "";
-                }
-            }
-            const userElement = document.querySelector(`.user-item[data-email="${userEmail}"]`);
-            if (userElement) {
-                userElement.remove();
-            }
-        }
-
-        function handleReceiveMessage(data) {
-            let senderEmail = data.senderEmail || data.email;
-            let message = data.message;
-            if (!chatHistory[senderEmail]) {
-                chatHistory[senderEmail] = [];
-            }
-            chatHistory[senderEmail].push({message: message, type: "received"});
-
-            if (selectedUserEmail === senderEmail) {
-                displayMessage(message, 'received');
-            }
-            saveChatHistory();
-        }
-
-        function handleAssignSuccess(data) {
-            console.log(`User ${data.userEmail} assigned to doctor ${data.doctorEmail}`);
-            const userElement = document.querySelector(`.user-item[data-email="${data.userEmail}"]`);
-            if (userElement) {
-                userElement.remove();
-            }
-            if (selectedUserEmail === data.userEmail) {
-                chatBody.innerHTML = "";
-                selectedUserEmail = null;
-                localStorage.removeItem("selectedUserEmail");
-            }
-        }
-
-        /* ----------- Nút Send ----------- */
-        document.getElementById("sendButton").addEventListener("click", function () {
+        document.getElementById("sendButton").addEventListener("click", function() {
             let messageInput = document.getElementById("textAreaExample2");
             let message = messageInput.value.trim();
             if (message && selectedUserEmail) {
@@ -381,16 +329,15 @@
                 if (!chatHistory[selectedUserEmail]) {
                     chatHistory[selectedUserEmail] = [];
                 }
-                chatHistory[selectedUserEmail].push({message: message, type: "sent"});
-
-                socket.send(JSON.stringify({
+                chatHistory[selectedUserEmail].push({ message: message, type: "sent" });
+                const messageData = {
                     action: "sendMessage",
                     message: message,
                     email: adminEmail,
                     fullName: fullName,
                     receiverEmail: selectedUserEmail
-                }));
-
+                };
+                socket.send(JSON.stringify(messageData));
                 messageInput.value = "";
                 saveChatHistory();
             } else {
@@ -398,16 +345,17 @@
             }
         });
 
-        /* ----------- Sự kiện trên danh sách user (Delete, Export, Assign) ----------- */
-        document.getElementById("memberList").addEventListener("click", function (event) {
-            const userItem = event.target.closest(".user-item");
-            if (!userItem) return;
-            const email = userItem.getAttribute("data-email");
-
+        document.getElementById("memberList").addEventListener("click", function(event) {
             if (event.target.classList.contains("btn-danger")) {
+                const userItem = event.target.closest(".user-item");
+                const email = userItem.getAttribute("data-email");
                 deleteChatHistory(email);
             } else if (event.target.classList.contains("btn-success")) {
-                exportChatHistory(email);
+                const userItem = event.target.closest(".user-item");
+                const email = userItem.getAttribute("data-email");
+                const fullNameElement = userItem.querySelector(".fw-bold");
+                const fullName = fullNameElement ? fullNameElement.textContent : "Unknown";
+                exportChatHistory(email, fullName);
             } else if (event.target.classList.contains("assign-to-doctor")) {
                 var assignDoctorModal = new bootstrap.Modal(document.getElementById("assignDoctorModal"));
                 assignDoctorModal.show();
@@ -423,7 +371,7 @@
                     selectedUserEmail = null;
                     localStorage.removeItem("selectedUserEmail");
                 }
-                const userItem = document.querySelector(`.user-item[data-email="${email}"]`);
+                const userItem = document.querySelector(`.user-item[data-email="`+ email +`"]`);
                 if (userItem) {
                     userItem.remove();
                 }
@@ -434,20 +382,18 @@
             }
         }
 
-        function exportChatHistory(email) {
+        function exportChatHistory(email, fullName) {
             if (chatHistory[email]) {
                 const messages = chatHistory[email];
-                const fullNameElement = document.querySelector(`.user-item[data-email="${email}"] .fw-bold`);
-                const userName = fullNameElement ? fullNameElement.textContent : "Unknown";
-                let textContent = `Chat history with ${userName} (${email})\n\n`;
+                let textContent = `Chat history with `+ fullName +` (`+ email +`)\n\n`;
                 messages.forEach(msgObj => {
                     const prefix = msgObj.type === "sent" ? "[Sent]" : "[Received]";
-                    textContent += prefix + " " + msgObj.message + "\n";
+                    textContent += ``+ prefix +` `+ msgObj.message +`\n`;
                 });
                 socket.send(JSON.stringify({
                     action: "exportChat",
                     email: email,
-                    fullName: userName,
+                    fullName: fullName,
                     chatContent: textContent
                 }));
                 alert("Export chat history successful!");
@@ -467,28 +413,23 @@
             }
         }
 
-        /* ----------- Assign Doctor (nếu là HR) ----------- */
-        <c:if test="${sessionScope.userRoles == 'HR'}">
-        document.getElementById("assignDoctorBtn").addEventListener("click", function () {
-            const selectedDoctor = document.getElementById("doctorSelect").value;
-            if (selectedDoctor && selectedDoctor !== "Chọn bác sĩ...") {
-                if (!selectedUserEmail) {
-                    alert("Vui lòng chọn user cần phân công.");
-                    return;
+        if (role === "HR") {
+            document.getElementById("assignDoctorBtn").addEventListener("click", function() {
+                const selectedDoctor = document.getElementById("doctorSelect").value;
+                if (selectedDoctor && selectedDoctor !== "Chọn bác sĩ...") {
+                    socket.send(JSON.stringify({
+                        action: "assignDoctor",
+                        doctor: selectedDoctor,
+                        userEmail: selectedUserEmail
+                    }));
+                    var assignDoctorModal = bootstrap.Modal.getInstance(document.getElementById("assignDoctorModal"));
+                    assignDoctorModal.hide();
+                    alert("Bác sĩ " + selectedDoctor + " đã được phân công.");
+                } else {
+                    alert("Vui lòng chọn bác sĩ.");
                 }
-                socket.send(JSON.stringify({
-                    action: "assignDoctor",
-                    doctor: selectedDoctor,
-                    userEmail: selectedUserEmail
-                }));
-                var assignDoctorModal = bootstrap.Modal.getInstance(document.getElementById("assignDoctorModal"));
-                assignDoctorModal.hide();
-                alert("Bác sĩ " + selectedDoctor + " đã được phân công cho user " + selectedUserEmail);
-            } else {
-                alert("Vui lòng chọn bác sĩ.");
-            }
-        });
-        </c:if>
+            });
+        }
     </script>
 </body>
 </html>

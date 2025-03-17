@@ -270,7 +270,7 @@ public class UserDBContext extends DBContext<User> {
         String sql_insert_staff = "INSERT INTO [Staff](staff_username, createby, createat) VALUES (?,?,?)";
         String sql_insert_doctor = "INSERT INTO [Doctor](staff_id) VALUES (?)";
         String sql_insert_doctor_department = "INSERT INTO [Doctor_Department](doctor_id, department_id) VALUES (?, ?)";
-
+        
         // Hash mật khẩu sử dụng BCrypt
         String hashedPassword = BCrypt.hashpw(model.getPassword(), BCrypt.gensalt(12));
 

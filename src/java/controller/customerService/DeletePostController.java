@@ -19,7 +19,7 @@ import model.Post;
  *
  * @author admin
  */
-@WebServlet(name="DeletePostController", urlPatterns={"/hr/delete-post"})
+@WebServlet(name="DeletePostController", urlPatterns={"/customer_service/delete-post"})
 public class DeletePostController extends HttpServlet {
    
     /** 
@@ -38,7 +38,7 @@ public class DeletePostController extends HttpServlet {
             Post p = new Post();
             p.setId(Integer.parseInt(postId));
             dao.delete(p);
-            request.getRequestDispatcher("/hr/posts").forward(request, response);
+            request.getRequestDispatcher("/customer_service/posts").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
         }

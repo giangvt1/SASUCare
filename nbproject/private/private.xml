@@ -16,18 +16,6 @@
         <group name="PRJ301"/>
         <group>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/web/admin/AdminLogin.jsp</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/src/java/controller/systemaccesscontrol/ForgetPassword.java</file>
-        </group>
-        <group>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/web/admin/AdminLogin.jsp</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/src/java/controller/systemaccesscontrol/ResetPassword.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/web/admin/OTP.jsp</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/src/java/dao/UserDBContext.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/src/java/controller/systemaccesscontrol/ForgetPassword.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/web/admin/forgetpassword.jsp</file>
-        </group>
-        <group>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/web/admin/AdminLogin.jsp</file>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/src/java/controller/systemaccesscontrol/ResetPassword.java</file>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/web/admin/OTP.jsp</file>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/src/java/dao/UserDBContext.java</file>
@@ -90,6 +78,15 @@
         </group>
         <group>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/finance/invoiceManagement.jsp</file>
+        </group>
+        <group>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/UserDBContext.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/UserAccountCreateController.java</file>
+        </group>
+        <group>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/customerService/CreatePostController.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/UserDBContext.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/UserAccountCreateController.java</file>
         </group>
     </open-files>
 </project-private>

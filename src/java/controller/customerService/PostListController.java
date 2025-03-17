@@ -23,7 +23,7 @@ import model.system.UserAccountDTO;
  *
  * @author admin
  */
-@WebServlet(name="PostListController", urlPatterns={"/hr/posts"})
+@WebServlet(name="PostListController", urlPatterns={"/customer_service/posts"})
 public class PostListController extends HttpServlet {
    private static final int PAGE_SIZE = 10; // Số bản ghi trên 1 trang
     /** 
