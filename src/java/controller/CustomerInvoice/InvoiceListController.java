@@ -81,7 +81,7 @@ public class InvoiceListController extends HttpServlet {
             if (invoice.getStatus() != null) {
                 switch (invoice.getStatus().toLowerCase()) {
                     case "paid": paid++; break;
-                    case "unpaid": unpaid++; break;
+                    case "pending": unpaid++; break;
                     case "overdue": overdue++; break;
                 }
             }

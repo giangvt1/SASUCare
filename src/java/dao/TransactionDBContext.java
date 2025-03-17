@@ -8,6 +8,7 @@ import dal.DBContext;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import model.Invoice;
 import model.Transaction;
 
 /**
@@ -15,6 +16,42 @@ import model.Transaction;
  * @author Golden Lightning
  */
 public class TransactionDBContext extends DBContext<Transaction> {
+
+    public Transaction getTransactionByInvoiceId(int invoiceId) {
+        Transaction transaction = null;
+        String sql = "SELECT [id]\n"
+                + "      ,[invoice_id]\n"
+                + "      ,[bank_code]\n"
+                + "      ,[payment_method]\n"
+                + "      ,[payment_url]\n"
+                + "      ,[status]\n"
+                + "      ,[transaction_date]\n"
+                + "      ,[vnp_TxnRef] FROM [Transaction] WHERE invoice_id = ?"; // Ensure the table name matches your schema
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, invoiceId);
+            ResultSet rs = statement.executeQuery();
+
+            if (rs.next()) {
+                transaction = new Transaction();
+                Invoice invoice = new Invoice();
+                invoice.setId(rs.getInt("invoice_id"));
+
+                transaction.setId(rs.getInt("id"));
+                transaction.setInvoice(invoice);
+                transaction.setVnpTxnRef(rs.getString("vnp_txn_ref"));
+                transaction.setBankCode(rs.getString("bank_code"));
+                transaction.setPaymentMethod(rs.getString("payment_method"));
+                transaction.setPaymentUrl(rs.getString("payment_url"));
+                transaction.setStatus(rs.getString("status"));
+                transaction.setTransactionDate(rs.getTimestamp("transaction_date"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return transaction;
+    }
 
     // Method to get transactions for a specific invoice
     public List<Transaction> getTransactionsByInvoiceId(int invoiceId) {
@@ -76,8 +113,23 @@ public class TransactionDBContext extends DBContext<Transaction> {
     }
 
     @Override
-    public void update(Transaction model) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void update(Transaction transaction) {
+        String sql = "UPDATE [Transaction] SET vnp_txn_ref = ?, bank_code = ?, payment_method = ?, "
+                + "payment_url = ?, status = ?, transaction_date = ? WHERE id = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, transaction.getVnpTxnRef());
+            statement.setString(2, transaction.getBankCode());
+            statement.setString(3, transaction.getPaymentMethod());
+            statement.setString(4, transaction.getPaymentUrl());
+            statement.setString(5, transaction.getStatus());
+            statement.setTimestamp(6, transaction.getTransactionDate());
+            statement.setInt(7, transaction.getId());
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -95,7 +95,7 @@ public class DoctorDBContext extends DBContext<Doctor> {
 
     public Doctor getDoctorById(int doctorId) {
         String sql = """
-            SELECT d.id, s.fullname, dep.name AS specialty
+            SELECT d.id, s.fullname, dep.name AS specialty, d.price
             FROM Doctor d
             JOIN Staff s ON d.staff_id = s.id
             LEFT JOIN Doctor_Department dd ON d.id = dd.doctor_id
@@ -114,6 +114,7 @@ public class DoctorDBContext extends DBContext<Doctor> {
                     doctor = new Doctor();
                     doctor.setId(rs.getInt("id"));
                     // Nếu fullname bị null, bạn có thể set giá trị mặc định
+                    doctor.setPrice(rs.getString("price"));
                     doctor.setName(rs.getString("fullname") != null ? rs.getString("fullname") : "N/A");
                 }
                 String specialty = rs.getString("specialty");

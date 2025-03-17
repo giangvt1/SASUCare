@@ -40,10 +40,7 @@
         <div class="label">Paid Amount</div>
         <div class="value value-success">$</div>
       </div>
-      <div class="summary-item">
-        <div class="label">Remaining</div>
-        <div class=""> </div>
-      </div>
+
     </div>
 
     <div class="invoice-meta">
@@ -76,10 +73,10 @@
             </thead>
             <tbody>
               <c:choose>
-                <c:when test="${not empty invoices}">
-                  <c:forEach var="item" items="${invoices}">
+                <c:when test="${not empty transactions}">
+                  <c:forEach var="item" items="${transactions}">
                     <tr>
-                      <td class="text-center">${item.orderInfo}</td>
+                      <td class="text-center">${item.id}</td>
                       <td class="text-end">$</td>
                       <td class="text-end">$</td>
                     </tr>
@@ -104,7 +101,7 @@
 
     <div class="action-buttons">
       <div>
-        <a href="${pageContext.request.contextPath}/invoices?customerId=${invoice.customerId}" class="btn btn-secondary">
+        <a href="${pageContext.request.contextPath}/customer/invoices" class="btn btn-secondary">
           <i class="fas fa-list me-2"></i> Back to Invoice List
         </a>
       </div>
@@ -121,5 +118,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script></script>
 </body>
 </html>

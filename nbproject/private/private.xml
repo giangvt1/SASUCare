@@ -14,50 +14,6 @@
             <file>file:/C:/Users/ngoch/OneDrive/Documents/NetBeansProjects/SWP391_GROUP6_12/web/accesscontrol/Register.jsp</file>
         </group>
         <group name="PRJ301"/>
-        <group name="ThisForTest">
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentDoctorListController.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentCalendarServlet.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/Application.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/static/css/doctor/appointments.css</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentWaitingController.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/DoctorScheduleServlet.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/AppointmentDBContext.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentDetailsController.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/Header.jsp</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/doctor/Appointments.jsp</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/js/doctor/appointments.js</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/system/User.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentConfirmServlet.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/HRController/HRApptManagementController.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/doctor/SendApplication.jsp</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/doctor/DoctorProfile.jsp</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/Appointment.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dal/DBContext.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/WEB-INF/web.xml</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/UserDBContext.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/accesscontrol/LoginController.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/appointment/doctor_list.jsp</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/Doctor.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/appointment/appointment-calendar.jsp</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/appointment/waiting-appointment.jsp</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/Customer.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/system/Staff.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/DoctorDBContext.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentCancelController.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/static/css/appointment/appointments.css</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentActionController.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/admin/AdminLeftSideBar.jsp</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentManagementController.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentRescheduleController.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/doctor/CreateCustomerMedicalHistory.jsp</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentListController.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/hr/hr_appointments.jsp</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/appointment/appointment_list.jsp</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/hr/CalendarManage.jsp</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/DoctorSchedule.java</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/doctor/DoctorLeftSideBar.jsp</file>
-            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/HRController/CalendarDoctorManageController.java</file>
-        </group>
         <group>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/admin/AdminProfile.jsp</file>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/ProfileUpdateController.java</file>
@@ -187,6 +143,84 @@
             <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/Appointment.java</file>
             <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/WEB-INF/web.xml</file>
             <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/doctor/appointments.jsp</file>
+        </group>
+        <group name="ThisForTest">
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/VisitHistoryDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentCalendarServlet.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/guest/SearchPackageServlet.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/MedicalHistory.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/CustomerMedicalHistory/VisitDetailsServlet.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/customer/profile.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/CustomerInvoice/InvoiceListController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/utils/EmailSender.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/Certificate.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/AppointmentDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/com/vnpay/common/ajaxServlet.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/static/css/customer/invoices.css</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/customer/medical-history.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/doctor/MedicalHistoryExportPDFServlet.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dal/DBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/guest/PostViewServlet.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/doctor/DeleteCustomerVisitHistory.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/Doctor.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/Transaction.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/Customer.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/DoctorDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/doctor/DoctorCalendarController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/static/css/appointment/appointments.css</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/DoctorScheduleDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/VisitHistory.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentRescheduleController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentManagementController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/Service/AppointmentStatusUpdater.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/PostDAO.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentListController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/RoleDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/appointment/appointment_list.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/customermanagement/MedicalRecordController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/hr/CalendarManage.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/RatingDBContext_Extended.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/DoctorSchedule.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/doctor/SendApplication.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/DoctorRatingDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/TransactionDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/guest/DoctorDetailsServlet.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/GoogleDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentDoctorListController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/StaffDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/doctor/EditCertificate.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/InvoiceDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/Rating.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentDetailsController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/Header.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/InvoiceFetchServlet.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/customer/customer-invoice.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/static/css/appointment/doctor-choose-style.css</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/Invoice.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/GetAppointmentsByDateAndDoctor.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/Appointment.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/WEB-INF/web.xml</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/appointment/doctor_list.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/CustomerInvoice/InvoiceController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/ServiceDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/appointment/appointment-calendar.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/guest/DoctorListServlet.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/admin/ManageTypeApplication.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/customer/customer-invoice-details.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/doctor/DeleteCustomerMedicalHistory.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/doctor/UpdateCustomerVisitHistory.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/ShiftDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/admin/AdminLeftSideBar.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/doctor/MedicalHistoryExportServlet.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/hr/hr_appointments.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/doctor/EditCustomerMedicalHistory.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/doctor/SearchCustomer.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/assets/bootstrap.min.css</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/CustomerMedicalHistory/MedicalHistoryController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/MedicalRecordDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/hr/ManageDoctorCertificates.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/doctor/appointments.jsp</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/CustomerDBContext.java</file>
         </group>
     </open-files>
 </project-private>

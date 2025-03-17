@@ -32,8 +32,7 @@
                             <select id="statusFilter" name="status" class="form-select">
                                 <option value="" <c:if test="${empty param.status}">selected</c:if>>All Statuses</option>
                                 <option value="paid" <c:if test="${param.status eq 'paid'}">selected</c:if>>Paid</option>
-                                <option value="unpaid" <c:if test="${param.status eq 'unpaid'}">selected</c:if>>Unpaid</option>
-                                <option value="partial" <c:if test="${param.status eq 'partial'}">selected</c:if>>Partially Paid</option>
+                                <option value="pending" <c:if test="${param.status eq 'pending'}">selected</c:if>>Unpaid</option>
                                 <option value="overdue" <c:if test="${param.status eq 'overdue'}">selected</c:if>>Overdue</option>
                                 <option value="cancelled" <c:if test="${param.status eq 'cancelled'}">selected</c:if>>Cancelled</option>
                                 </select>
@@ -59,9 +58,10 @@
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-search me-2"></i> Apply Filters
                             </button>
-                            <button type="reset" class="btn btn-outline-secondary ms-2" onclick="resetFilters()">
+                            <button type="reset" class="btn btn-outline-secondary ms-2" onclick="window.location.href = '/SWP391_GR6/customer/invoices';">
                                 <i class="fas fa-undo me-2"></i> Reset
                             </button>
+
                             <a href="${pageContext.request.contextPath}/customer/invoices/export?customerId=${param.customerId}&status=${param.status}&startDate=${param.startDate}&endDate=${param.endDate}" class="btn btn-outline-secondary ms-2">
                                 <i class="fas fa-file-export me-2"></i> Export
                             </a>
@@ -113,14 +113,12 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Invoice No.</th>
+                                    <th>Invoice Info.</th>
                                     <th>Date</th>
                                     <th>Due Date</th>
                                     <th>Visit</th>
                                     <th>Status</th>
-                                    <th class="text-end">Total</th>
-                                    <th class="text-end">Paid</th>
-                                    <th class="text-end">Remaining</th>
+                                    <th >Total</th>
                                     <th class="text-center">Actions</th>
                                 </tr>
                             </thead>
@@ -128,7 +126,7 @@
                                 <c:if test="${not empty invoices}">
                                     <c:forEach var="invoice" items="${invoices}">
                                         <tr>
-                                            <td>${invoice.id}</td>
+                                            <td>${invoice.orderInfo}</td>
                                             <td><fmt:formatDate value="${invoice.createdDate}" pattern="yyyy-MM-dd" /></td>
                                             <td><fmt:formatDate value="${invoice.expireDate}" pattern="yyyy-MM-dd" /></td>
                                             <td>
@@ -140,9 +138,7 @@
                                                 <td>
                                                     <span class="status-badge status-${invoice.status}">${invoice.status}</span>
                                             </td>
-                                            <td class="amount-cell">$</td>
-                                            <td class="amount-cell">$</td>
-                                            <td class="amount-cell">$</td>
+                                            <td class="amount-cell">${invoice.amount}VND</td>
                                             <td class="text-center">
                                                 <a href="${pageContext.request.contextPath}/customer/invoice-details/${invoice.id}" class="btn btn-sm btn-primary btn-view">
                                                     <i class="fas fa-eye"></i> View
@@ -203,33 +199,23 @@
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-                    function toggleSortDirection() {
-                        const sortDirectionInput = document.getElementById('sortDirectionInput');
-                        const sortIcon = document.getElementById('sortIcon');
+                            function toggleSortDirection() {
+                                const sortDirectionInput = document.getElementById('sortDirectionInput');
+                                const sortIcon = document.getElementById('sortIcon');
 
-                        if (sortDirectionInput.value === 'asc') {
-                            sortDirectionInput.value = 'desc';
-                            sortIcon.className = 'fas fa-sort-amount-down';
-                        } else {
-                            sortDirectionInput.value = 'asc';
-                            sortIcon.className = 'fas fa-sort-amount-up';
-                        }
+                                if (sortDirectionInput.value === 'asc') {
+                                    sortDirectionInput.value = 'desc';
+                                    sortIcon.className = 'fas fa-sort-amount-down';
+                                } else {
+                                    sortDirectionInput.value = 'asc';
+                                    sortIcon.className = 'fas fa-sort-amount-up';
+                                }
 
-                        // Submit the form
-                        document.querySelector('form').submit();
-                    }
+                                // Submit the form
+                                document.querySelector('form').submit();
+                            }
 
-                    function resetFilters() {
-                        // Reset all form fields
-                        document.getElementById('statusFilter').value = '';
-                        document.getElementById('startDate').value = '';
-                        document.getElementById('endDate').value = '';
-                        document.getElementById('sortBy').value = 'date';
-                        document.getElementById('sortDirectionInput').value = 'desc';
 
-                        // Submit the form with reset values
-                        document.querySelector('form').submit();
-                    }
         </script>
     </body>
 </html>
