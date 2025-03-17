@@ -108,7 +108,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <input type="date" class="form-control" name="date" >
-                                </div>
+                                </div>>
                                 <div class="col-md-3">
                                     <select class="form-select" name="status">
                                         <option value="">All Status</option>
@@ -214,8 +214,8 @@
 
                                                                 function cancelOrAcceptAppointment(appointmentId, action) {
                                                                     let confirmationMessage = action === "cancel" ?
-                                                                            "Are you sure that you want to confirm this appointment?" :
-                                                                            "Are you sure that you want to cancel this appointment?";
+                                                                            "Are you sure you want to confirm this appointment?" :
+                                                                            "Are you sure you want to cancel this appointment?";
 
                                                                     if (confirm(confirmationMessage)) {
                                                                         // Redirect to appropriate servlet with query parameters

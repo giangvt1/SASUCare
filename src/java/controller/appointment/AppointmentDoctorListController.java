@@ -20,7 +20,7 @@ import model.Department;
 
 public class AppointmentDoctorListController extends HttpServlet {
 
-    private final DepartmentDBContext departmentDB = new DepartmentDBContext();
+    DepartmentDBContext departmentDB = new DepartmentDBContext();
     private final DoctorDBContext doctorDB = new DoctorDBContext();
 
     @Override
@@ -37,25 +37,31 @@ public class AppointmentDoctorListController extends HttpServlet {
             request.getRequestDispatcher("/appointment/doctor_list.jsp").forward(request, response);
             return;
         }
-
-        // Retrieve department filter
+// Retrieve the specialties parameter, which could have multiple values
         String[] departmentIds = request.getParameterValues("specialties");
-        List<String> selectedSpecialties = (departmentIds != null) ? Arrays.asList(departmentIds) : new ArrayList<>();
 
-        // Retrieve doctor name filter
+// Initialize the list to hold selected specialties
+        List<String> selectedSpecialties = null;
+
+// Check if the departmentIds array has values
+        if (departmentIds != null && departmentIds.length > 0) {
+            selectedSpecialties = Arrays.asList(departmentIds); // Convert array to List
+        } else {
+            selectedSpecialties = new ArrayList<>();
+        }
+
         String name = request.getParameter("name");
+
         if (name != null) {
             name = name.trim().replaceAll("\\s+", " ").replace(" ", "%");
         }
 
-        // Fetch doctors with detailed information
+        // Lấy danh sách bác sĩ từ DB
         List<Doctor> doctors = doctorDB.getDoctorsByFilters(name, selectedSpecialties, selectedDate);
-
-        // Fetch available departments
+//        List<Doctor> doctors = doctorDB.list();
         List<Department> departments = departmentDB.list();
-
-        // Map doctors to their available schedules
         Map<Doctor, List<DoctorSchedule>> doctorMap = new LinkedHashMap<>();
+
         if (selectedDate != null) {
             for (Doctor doctor : doctors) {
                 List<DoctorSchedule> schedules = doctorDB.getDoctorSchedules(doctor.getId(), selectedDate);
@@ -63,12 +69,10 @@ public class AppointmentDoctorListController extends HttpServlet {
             }
         }
 
-        // Set attributes for JSP
+        // Đưa dữ liệu lên request
         request.setAttribute("departments", departments);
         request.setAttribute("doctorMap", doctorMap);
         request.setAttribute("selectedDate", selectedDate);
-
-        // Forward to the JSP page
         request.getRequestDispatcher("/appointment/doctor_list.jsp").forward(request, response);
     }
 }

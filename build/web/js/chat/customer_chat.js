@@ -65,6 +65,7 @@ console.log("currentSessionId: " + currentSessionId);
       infoForm.style.display = "none";
       chatBox.style.display = "none";
       chatIcon.style.display = "flex";
+
     }
   }
 

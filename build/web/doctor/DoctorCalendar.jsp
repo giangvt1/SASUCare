@@ -148,11 +148,6 @@
             </div>
         </div>
 
-        <!-- In JSON events được set từ servlet -->
-        <script>
-            var doctorEvents = ${doctorEventsJson};
-        </script>
-
         <!-- FullCalendar JS (jQuery & Bootstrap đã được load trong AdminHeader.jsp) -->
         <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
         <script>
@@ -164,6 +159,7 @@
                         if (!calendar) {
                             initCalendar();
                         } else {
+                            // Khi quay lại tab Calendar, có thể refetchEvents() nếu cần
                             calendar.refetchEvents();
                         }
                     }
@@ -177,13 +173,32 @@
                             center: 'title',
                             right: 'dayGridMonth,dayGridWeek,dayGridDay'
                         },
-                        // Hiển thị view theo tuần với ngày bắt đầu là weekStart
+                        // View mặc định
                         initialView: 'dayGridWeek',
-                        initialDate: '${weekStart}',
                         dayMaxEventRows: 3,
                         moreLinkClick: 'popover',
                         expandRows: true,
                         selectable: false,
+                        // Lấy events động qua AJAX
+                        events: function(info, successCallback, failureCallback) {
+                            var startDate = info.startStr.split('T')[0]; // "YYYY-MM-DD"
+                            var endDate = info.endStr.split('T')[0];
+                            // Gọi action=getEvents
+                            $.ajax({
+                                url: window.contextPath + '/doctor/calendar?action=getEvents',
+                                type: 'GET',
+                                data: {
+                                    start: startDate,
+                                    end: endDate
+                                },
+                                success: function(response) {
+                                    successCallback(response);
+                                },
+                                error: function() {
+                                    failureCallback();
+                                }
+                            });
+                        },
                         eventContent: function (info) {
                             var shiftId = info.event.extendedProps.shiftId;
                             var shiftColors = {
@@ -193,13 +208,12 @@
                                 '4': '#ffc107'
                             };
                             var bgColor = shiftColors[shiftId] || '#0d6efd';
-                            var title = info.event.title || '';  // Ví dụ "K2"
+                            var title = info.event.title || '';
                             var shiftTime = info.event.extendedProps.shiftTime || '';
                             var appointmentId = info.event.extendedProps.appointmentId;
                             var appointmentStatus = info.event.extendedProps.appointmentStatus || "";
                             var customerName = info.event.extendedProps.customerName || "";
 
-                            // Xây dựng HTML chi tiết cho view DAY
                             var html = '<div style="background-color:' + bgColor + '; color:#fff; padding:8px 12px; border-radius:4px; white-space: normal;">';
                             html += '<div style="font-size:1.1rem; font-weight:bold;">' + title + '</div>';
                             html += '<div style="font-size:1rem;">' + shiftTime + '</div>';
@@ -210,19 +224,16 @@
                             }
                             html += '</div>';
                             return {html: html};
-                        }
-                        ,
+                        },
                         eventClick: function (info) {
                             var shiftTime = info.event.extendedProps.shiftTime || "No details available";
                             $("#shiftTimeDetail").text("Shift Time: " + shiftTime);
                             var modal = new bootstrap.Modal(document.getElementById('shiftDetailModal'));
                             modal.show();
-                        },
-                        events: doctorEvents
+                        }
                     });
                     calendar.render();
                 }
-
             });
         </script>
     </body>
