@@ -194,7 +194,6 @@
                             Trạng Thái
                         </a>
                     </th>
-                    <th>Appointment ID</th>
                 </tr>
             </thead>
             <tbody>
@@ -225,7 +224,6 @@
                                 </td>
                                 <td><c:out value="${inv.txnRef}" /></td>
                                 <td><c:out value="${inv.status}" /></td>
-                                <td><c:out value="${inv.appointmentId}" /></td>
                             </tr>
                         </c:forEach>
                     </c:when>
