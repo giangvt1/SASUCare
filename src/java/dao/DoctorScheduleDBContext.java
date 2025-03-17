@@ -11,47 +11,68 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Appointment;
+import model.Customer;
 import model.DoctorSalaryStat;
 
 public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
 
     private static final Logger LOGGER = Logger.getLogger(DoctorScheduleDBContext.class.getName());
 
-    public List<DoctorSchedule> getSchedulesByDoctorBetweenDates(int doctorId, Date startDate, Date endDate) {
-        List<DoctorSchedule> schedules = new ArrayList<>();
-        String sql = "SELECT ds.id, ds.doctor_id, ds.schedule_date, ds.shift_id, s.time_start, s.time_end, ds.available "
-                + "FROM Doctor_Schedule ds "
-                + "JOIN Shift s ON ds.shift_id = s.id "
-                + "WHERE ds.doctor_id = ? AND ds.schedule_date BETWEEN ? AND ? "
-                + "ORDER BY ds.schedule_date, s.time_start";
-        try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            stm.setInt(1, doctorId);
-            stm.setDate(2, startDate);
-            stm.setDate(3, endDate);
-            ResultSet rs = stm.executeQuery();
-            while (rs.next()) {
-                // Khởi tạo đối tượng Shift từ dữ liệu trả về
-                Shift shift = new Shift(
-                        rs.getInt("shift_id"),
-                        rs.getTime("time_start"),
-                        rs.getTime("time_end")
-                );
-                // Tạo đối tượng Doctor (nếu bạn cần thêm thông tin, có thể gọi hàm getDoctorById)
-                Doctor doctor = new Doctor();
-                doctor.setId(rs.getInt("doctor_id"));
-                // Tạo đối tượng DoctorSchedule và gán các trường
-                DoctorSchedule schedule = new DoctorSchedule();
-                schedule.setId(rs.getInt("id"));
-                schedule.setDoctor(doctor);
-                schedule.setScheduleDate(rs.getDate("schedule_date"));
-                schedule.setShift(shift);
-                schedule.setAvailable(rs.getInt("available") == 1);
-                schedules.add(schedule);
+    public List<DoctorSchedule> getSchedulesByDoctorBetweenDates(int doctorId, Date start, Date end) {
+        List<DoctorSchedule> list = new ArrayList<>();
+        String sql = """
+        SELECT ds.id AS dsid,
+               ds.schedule_date,
+               ds.doctor_id,
+               ds.shift_id,
+               ds.available,
+               s.time_start,
+               s.time_end,
+               a.id AS appointmentId,
+               a.status AS appointmentStatus,
+               c.fullname AS customerName
+        FROM Doctor_Schedule ds
+        JOIN Shift s ON ds.shift_id = s.id
+        LEFT JOIN Appointment a ON ds.id = a.DocSchedule_id
+        LEFT JOIN Customer c ON a.customer_id = c.id
+        WHERE ds.doctor_id = ? AND ds.schedule_date BETWEEN ? AND ?
+        ORDER BY ds.schedule_date, s.time_start
+        """;
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, doctorId);
+            ps.setDate(2, start);
+            ps.setDate(3, end);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    DoctorSchedule dsObj = new DoctorSchedule();
+                    dsObj.setId(rs.getInt("dsid"));
+                    dsObj.setScheduleDate(rs.getDate("schedule_date"));
+                    dsObj.setAvailable(rs.getInt("available") == 1);
+                    // Set Shift
+                    Shift shift = new Shift();
+                    shift.setId(rs.getInt("shift_id"));
+                    shift.setTimeStart(rs.getTime("time_start"));
+                    shift.setTimeEnd(rs.getTime("time_end"));
+                    dsObj.setShift(shift);
+                    // Set Appointment nếu có
+                    int appointmentId = rs.getInt("appointmentId");
+                    if (!rs.wasNull()) {
+                        Appointment app = new Appointment();
+                        app.setId(appointmentId);
+                        app.setStatus(rs.getString("appointmentStatus"));
+                        Customer customer = new Customer();
+                        customer.setFullname(rs.getString("customerName"));
+                        app.setCustomer(customer);
+                        dsObj.setAppointment(app);
+                    }
+                    list.add(dsObj);
+                }
             }
-        } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "Error fetching schedules for doctor between dates: {0}", ex.getMessage());
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return schedules;
+        return list;
     }
 
     public List<DoctorSchedule> getAvailableShiftsForDate(int doctorId, Date selectedDate) {
@@ -246,6 +267,58 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public List<DoctorSchedule> getSchedulesBetweenDatesByDoctor(Date start, Date end, int doctorId) {
+        List<DoctorSchedule> list = new ArrayList<>();
+        String sql = """
+        SELECT ds.id AS dsid,
+               ds.schedule_date,
+               ds.doctor_id,
+               ds.shift_id,
+               ds.available,
+               s.time_start,
+               s.time_end,
+               d.id AS docId,
+               st.fullname AS doctor_name
+        FROM Doctor_Schedule ds
+        JOIN Shift s ON ds.shift_id = s.id
+        JOIN Doctor d ON ds.doctor_id = d.id
+        JOIN Staff st ON d.staff_id = st.id
+        WHERE ds.schedule_date BETWEEN ? AND ? AND ds.doctor_id = ?
+        ORDER BY ds.schedule_date, s.time_start
+        """;
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setDate(1, start);
+            ps.setDate(2, end);
+            ps.setInt(3, doctorId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    DoctorSchedule dsObj = new DoctorSchedule();
+                    dsObj.setId(rs.getInt("dsid"));
+                    dsObj.setScheduleDate(rs.getDate("schedule_date"));
+                    dsObj.setAvailable(rs.getInt("available") == 1);
+
+                    // Set Shift
+                    Shift shift = new Shift();
+                    shift.setId(rs.getInt("shift_id"));
+                    shift.setTimeStart(rs.getTime("time_start"));
+                    shift.setTimeEnd(rs.getTime("time_end"));
+                    dsObj.setShift(shift);
+
+                    // Set Doctor
+                    Doctor doc = new Doctor();
+                    doc.setId(rs.getInt("docId"));
+                    doc.setName(rs.getString("doctor_name"));
+                    dsObj.setDoctor(doc);
+
+                    list.add(dsObj);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public List<DoctorSchedule> getSchedulesBetweenDates(Date start, Date end) {
         List<DoctorSchedule> list = new ArrayList<>();
         String sql = """
@@ -329,12 +402,13 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
         }
     }
 
-    public boolean updateShift(int scheduleId, Date shiftDate, int shiftId) {
-        String sql = "UPDATE Doctor_Schedule SET schedule_date = ?, shift_id = ? WHERE id = ?";
+    public boolean updateShift(int doctor_id, int scheduleId, Date shiftDate, int shiftId) {
+        String sql = "UPDATE Doctor_Schedule SET doctor_id=?,schedule_date = ?, shift_id = ? WHERE id = ?";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            stm.setDate(1, shiftDate);
-            stm.setInt(2, shiftId);
-            stm.setInt(3, scheduleId);
+            stm.setInt(1, doctor_id);
+            stm.setDate(2, shiftDate);
+            stm.setInt(3, shiftId);
+            stm.setInt(4, scheduleId);
             return stm.executeUpdate() > 0;
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Error updating shift: {0}", ex.getMessage());

@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controller.HRController;
+package controller.customerService;
 
 import dao.PostDAO;
 import dao.UserDBContext;
@@ -23,7 +23,7 @@ import model.system.UserAccountDTO;
  *
  * @author admin
  */
-@WebServlet(name="PostListController", urlPatterns={"/hr/posts"})
+@WebServlet(name="PostListController", urlPatterns={"/customer_service/posts"})
 public class PostListController extends HttpServlet {
    private static final int PAGE_SIZE = 10; // Số bản ghi trên 1 trang
     /** 
@@ -63,11 +63,11 @@ public class PostListController extends HttpServlet {
             request.setAttribute("totalPages", totalPages);
             request.setAttribute("search", search == null ? "" : search.replace("%", " "));
 
-            request.getRequestDispatcher("../hr/PostList.jsp").forward(request, response);
+            request.getRequestDispatcher("../customer_service/PostList.jsp").forward(request, response);
 
         } catch (ServletException | IOException e) {
             request.setAttribute("errorMessage", "An error occurred while processing your request.");
-            request.getRequestDispatcher("../hr/PostList.jsp").forward(request, response);
+            request.getRequestDispatcher("../customer_service/PostList.jsp").forward(request, response);
 
         }
     } 

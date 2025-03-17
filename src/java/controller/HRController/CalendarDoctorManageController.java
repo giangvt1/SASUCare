@@ -81,10 +81,20 @@ public class CalendarDoctorManageController extends BaseRBACController {
     private void handleGetEvents(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String startDate = request.getParameter("start");
         String endDate = request.getParameter("end");
+        String doctorIdParam = request.getParameter("doctorId");
 
-        // Lấy danh sách lịch
-        List<DoctorSchedule> schedules = scheduleDAO.getSchedulesBetweenDates(
-                Date.valueOf(startDate), Date.valueOf(endDate));
+        List<DoctorSchedule> schedules;
+        if (doctorIdParam != null && !doctorIdParam.trim().isEmpty()) {
+            int doctorId = Integer.parseInt(doctorIdParam);
+            schedules = scheduleDAO.getSchedulesBetweenDatesByDoctor(
+                    Date.valueOf(startDate),
+                    Date.valueOf(endDate),
+                    doctorId);
+        } else {
+            schedules = scheduleDAO.getSchedulesBetweenDates(
+                    Date.valueOf(startDate),
+                    Date.valueOf(endDate));
+        }
 
         // Convert mỗi DoctorSchedule thành event cho FullCalendar
         List<Map<String, Object>> events = new ArrayList<>();
@@ -92,20 +102,16 @@ public class CalendarDoctorManageController extends BaseRBACController {
             Map<String, Object> event = new HashMap<>();
             event.put("id", ds.getId());
 
-            // Lấy giờ bắt đầu/giờ kết thúc từ shift
-            // (Giả sử getTimeStart()/getTimeEnd() trả về kiểu java.sql.Time)
-            String timeStart = ds.getShift().getTimeStart().toString(); // ví dụ "07:00:00"
-            String timeEnd = ds.getShift().getTimeEnd().toString();   // ví dụ "11:00:00"
-
-            // Ghép với ngày => "2025-03-15T07:00:00"
+            String timeStart = ds.getShift().getTimeStart().toString();
+            String timeEnd = ds.getShift().getTimeEnd().toString();
             String startStr = ds.getScheduleDate().toString() + "T" + timeStart;
             String endStr = ds.getScheduleDate().toString() + "T" + timeEnd;
 
             event.put("start", startStr);
             event.put("end", endStr);
-            event.put("allDay", false); // Bắt buộc để hiển thị theo block giờ
+            event.put("allDay", false);
 
-            // Title (tùy bạn hiển thị gì)
+            // Title có thể là giờ ca hoặc theo định dạng bạn mong muốn
             String shiftTime = timeStart + " - " + timeEnd;
             event.put("title", shiftTime);
 
@@ -119,7 +125,6 @@ public class CalendarDoctorManageController extends BaseRBACController {
             events.add(event);
         }
 
-        // Trả về JSON
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().print(gson.toJson(events));
@@ -225,11 +230,12 @@ public class CalendarDoctorManageController extends BaseRBACController {
      */
     private void handleUpdateShift(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
+            int doctorId = Integer.parseInt(request.getParameter("doctorId"));
             int scheduleId = Integer.parseInt(request.getParameter("scheduleId"));
             int shiftId = Integer.parseInt(request.getParameter("shiftType"));
             Date shiftDate = Date.valueOf(request.getParameter("shiftDate"));
 
-            boolean success = scheduleDAO.updateShift(scheduleId, shiftDate, shiftId);
+            boolean success = scheduleDAO.updateShift(doctorId, scheduleId, shiftDate, shiftId);
             System.out.println("handleUpdateShift: scheduleId=" + scheduleId
                     + ", new date=" + shiftDate
                     + ", new shiftId=" + shiftId + " => " + success);
