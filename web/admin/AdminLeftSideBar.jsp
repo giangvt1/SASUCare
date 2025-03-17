@@ -47,8 +47,8 @@
                     <a href="${pageContext.request.contextPath}/admin/ManageTypeCertificate">
                         <i class="fa fa-globe"></i> <span>Manage Type Certificate</span>
                     </a>
-                        
-                        <a href="${pageContext.request.contextPath}/admin/SearchDoctor?page=1&sort=default&size=10">
+
+                    <a href="${pageContext.request.contextPath}/admin/SearchDoctor?page=1&sort=default&size=10">
                         <i class="fa fa-globe"></i> <span>Manage Doctor</span>
                     </a>
                 </c:if> 
@@ -146,7 +146,14 @@
                     </a>
                 </li>
             </c:if>
-                
+            <c:if test="${allowedUrls != null and (allowedUrls.contains('/hr/posts'))}">
+                <li>
+                    <a href="../hr/posts">
+                        <i class="fa fa-envelope"></i> <span>Post</span>
+                    </a>
+                </li>
+            </c:if>
+
             <%-- Add other menu items as needed --%>
         </ul>
     </section>

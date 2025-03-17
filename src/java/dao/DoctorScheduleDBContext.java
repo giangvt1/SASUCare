@@ -402,10 +402,30 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
         }
     }
 
-    public boolean updateShift(int doctor_id, int scheduleId, Date shiftDate, int shiftId) {
-        String sql = "UPDATE Doctor_Schedule SET doctor_id=?,schedule_date = ?, shift_id = ? WHERE id = ?";
+    public boolean updateShift(int doctorId, int scheduleId, Date shiftDate, int shiftId) {
+        // 1. Kiểm tra xem bác sĩ này, ngày này, ca này đã tồn tại chưa (trừ schedule hiện tại)
+        String checkSql = "SELECT COUNT(*) FROM Doctor_Schedule "
+                + "WHERE doctor_id = ? AND schedule_date = ? AND shift_id = ? AND id <> ?";
+        try (PreparedStatement checkStmt = connection.prepareStatement(checkSql)) {
+            checkStmt.setInt(1, doctorId);
+            checkStmt.setDate(2, shiftDate);
+            checkStmt.setInt(3, shiftId);
+            checkStmt.setInt(4, scheduleId);
+            try (ResultSet rs = checkStmt.executeQuery()) {
+                if (rs.next() && rs.getInt(1) > 0) {
+                    // Đã có 1 lịch khác trùng => return false
+                    return false;
+                }
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error checking duplicate shift: {0}", ex.getMessage());
+            return false;
+        }
+
+        // 2. Nếu không trùng, tiến hành UPDATE
+        String sql = "UPDATE Doctor_Schedule SET doctor_id=?, schedule_date=?, shift_id=? WHERE id = ?";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            stm.setInt(1, doctor_id);
+            stm.setInt(1, doctorId);
             stm.setDate(2, shiftDate);
             stm.setInt(3, shiftId);
             stm.setInt(4, scheduleId);
