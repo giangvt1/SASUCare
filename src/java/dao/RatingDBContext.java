@@ -48,9 +48,9 @@ private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.
     }
 
     public void saveOrUpdateRating(Rating rating) {
-        String checkQuery = "SELECT COUNT(*) FROM Rating WHERE doctor_id = ? AND username = ?";
-        String updateQuery = "UPDATE Rating SET rating = ?, comment = ? WHERE doctor_id = ? AND username = ?";
-        String insertQuery = "INSERT INTO Rating (doctor_id, username, rating, comment) VALUES (?, ?, ?, ?)";
+        String checkQuery = "SELECT COUNT(*) FROM Rating WHERE doctor_id = ? AND customer_username = ?";
+        String updateQuery = "UPDATE Rating SET rating = ?, comment = ? WHERE doctor_id = ? AND customer_username = ?";
+        String insertQuery = "INSERT INTO Rating (doctor_id, customer_username, rating, comment) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = connection; PreparedStatement checkStmt = conn.prepareStatement(checkQuery)) {
             checkStmt.setInt(1, rating.getDoctorId());
@@ -90,7 +90,7 @@ private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.
             ps.setInt(1, doctorId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                ratings.add(new Rating(rs.getInt("doctor_id"), rs.getString("username"),
+                ratings.add(new Rating(rs.getInt("doctor_id"), rs.getString("customer_username"),
                         rs.getFloat("rating"), rs.getString("comment"), rs.getDate("created_at")));
             }
         } catch (SQLException ex) {

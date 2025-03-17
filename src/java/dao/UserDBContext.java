@@ -52,6 +52,7 @@ public class UserDBContext extends DBContext<User> {
         }
         return false;
     }
+
     public boolean resetPasswordwithgmail(String gmail, String newPassword) {
         String sql = "UPDATE [User] SET password = ? WHERE gmail = ?";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
@@ -67,51 +68,34 @@ public class UserDBContext extends DBContext<User> {
         return false;
     }
 
-    public ArrayList<User> listPaginated(int pageIndex, int pageSize) {
-        ArrayList<User> users = new ArrayList<>();
-        String sql = "SELECT * FROM [User] ORDER BY username OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-        try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            // Tính offset dựa trên trang: (pageIndex - 1) * pageSize
-            stm.setInt(1, (pageIndex - 1) * pageSize);
-            stm.setInt(2, pageSize);
-            try (ResultSet rs = stm.executeQuery()) {
-                while (rs.next()) {
-                    User user = new User();
-                    user.setUsername(rs.getString("username"));
-                    user.setDisplayname(rs.getString("displayname"));
-                    user.setGmail(rs.getString("gmail"));
-                    user.setPhone(rs.getString("phone"));
-                    // Nếu cần, lấy danh sách role cho user
-                    user.setRoles(this.getRoles(user.getUsername()));
-                    users.add(user);
-                }
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return users;
-    }
-
     public ArrayList<UserAccountDTO> listAccounts(String search, int pageIndex, int pageSize) {
         ArrayList<UserAccountDTO> list = new ArrayList<>();
-        String sql = "SELECT s.staff_username, s.fullname, u.displayname, u.gmail, u.phone, "
-                + "s.gender, s.dob, s.createat, s.createby, s.updateat, s.updateby, r.name as roleName "
-                + "FROM [User] u "
-                + "JOIN UserRole ur ON ur.username = u.username "
-                + "JOIN [Role] r ON r.id = ur.role_id "
-                + "JOIN Staff s ON s.staff_username = u.username "
-                + "WHERE u.username LIKE ? OR u.displayname LIKE ? OR s.fullname LIKE ? "
-                + "ORDER BY s.staff_username ASC "
-                + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        // Xử lý tìm kiếm (tạo pattern LIKE với khoảng trắng thành "%")
+        String searchPattern = "%";
+        if (search != null && !search.trim().isEmpty()) {
+            searchPattern += search.trim().replaceAll("\\s+", "%") + "%";
+        }
+
+        String sql = """
+        SELECT s.staff_username, s.fullname, u.displayname, u.gmail, u.phone,
+               s.gender, s.dob, s.createat, s.createby, s.updateat, s.updateby, r.name as roleName
+        FROM [User] u
+        JOIN UserRole ur ON ur.username = u.username
+        JOIN [Role] r ON r.id = ur.role_id
+        JOIN Staff s ON s.staff_username = u.username
+        WHERE u.username LIKE ? OR u.displayname LIKE ? OR s.fullname LIKE ?
+        ORDER BY s.staff_username ASC
+        OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
+    """;
+
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            // Nếu search là null, ta gán chuỗi rỗng, sau đó tạo pattern cho LIKE
-            String filter = "%" + (search != null ? search.trim() : "") + "%";
-            stm.setString(1, filter);
-            stm.setString(2, filter);
-            stm.setString(3, filter);
-            // Tính toán offset
+            stm.setString(1, searchPattern);
+            stm.setString(2, searchPattern);
+            stm.setString(3, searchPattern);
             stm.setInt(4, (pageIndex - 1) * pageSize);
             stm.setInt(5, pageSize);
+
             try (ResultSet rs = stm.executeQuery()) {
                 while (rs.next()) {
                     UserAccountDTO dto = new UserAccountDTO();
@@ -136,35 +120,37 @@ public class UserDBContext extends DBContext<User> {
         return list;
     }
 
-    public ArrayList<User> searchAndPaginate(String keyword, int pageIndex, int pageSize) {
-        ArrayList<User> users = new ArrayList<>();
-        // Sử dụng REPLACE để loại bỏ khoảng trắng từ username và gmail
-        String sql = "SELECT * FROM [User] "
-                + "WHERE REPLACE(username, ' ', '') LIKE ? OR REPLACE(gmail, ' ', '') LIKE ? "
-                + "ORDER BY username OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+    public int getTotalUserCount(String search) {
+        int total = 0;
+
+        // Xử lý tìm kiếm
+        String searchPattern = "%";
+        if (search != null && !search.trim().isEmpty()) {
+            searchPattern += search.trim().replaceAll("\\s+", "%") + "%";
+        }
+
+        String sql = """
+        SELECT COUNT(*) AS Total
+        FROM [User] u
+        JOIN UserRole ur ON ur.username = u.username
+        JOIN [Role] r ON r.id = ur.role_id
+        JOIN Staff s ON s.staff_username = u.username
+        WHERE u.username LIKE ? OR u.displayname LIKE ? OR s.fullname LIKE ?
+    """;
+
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            // Loại bỏ tất cả khoảng trắng trong từ khóa và bọc trong dấu phần trăm để dùng với LIKE
-            String filter = "%" + (keyword != null ? keyword.replaceAll("\\s+", "") : "") + "%";
-            stm.setString(1, filter);
-            stm.setString(2, filter);
-            stm.setInt(3, (pageIndex - 1) * pageSize);
-            stm.setInt(4, pageSize);
+            stm.setString(1, searchPattern);
+            stm.setString(2, searchPattern);
+            stm.setString(3, searchPattern);
             try (ResultSet rs = stm.executeQuery()) {
-                while (rs.next()) {
-                    User user = new User();
-                    user.setUsername(rs.getString("username"));
-                    user.setDisplayname(rs.getString("displayname"));
-                    user.setGmail(rs.getString("gmail"));
-                    user.setPhone(rs.getString("phone"));
-                    // Nếu cần, lấy danh sách role cho user
-                    user.setRoles(this.getRoles(user.getUsername()));
-                    users.add(user);
+                if (rs.next()) {
+                    total = rs.getInt("Total");
                 }
             }
         } catch (SQLException ex) {
             Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return users;
+        return total;
     }
 
     public User getUserByUsername(String username) {
@@ -200,8 +186,6 @@ public class UserDBContext extends DBContext<User> {
         }
         return false;
     }
-
-        
 
     public void deleteUser(String username) {
         String sqlCheckDoctor = "SELECT isDoctor FROM Staff WHERE staff_username = ?";
@@ -274,126 +258,121 @@ public class UserDBContext extends DBContext<User> {
         }
     }
 
-   @Override
-public void insert(User model) {
-    throw new UnsupportedOperationException("Not supported yet.");
-}
+    @Override
+    public void insert(User model) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-public void insert(User model, User createdBy) {
-    // SQL cho các bảng
-    String sql_insert_user = "INSERT INTO [User](username, password, displayname, gmail, phone) VALUES (?,?,?,?,?)";
-    String sql_insert_user_role = "INSERT INTO [UserRole](username, role_id) VALUES (?,?)";
-    String sql_insert_staff = "INSERT INTO [Staff](staff_username, createby, createat) VALUES (?,?,?)";
-    String sql_insert_doctor = "INSERT INTO [Doctor](staff_id) VALUES (?)";
-    String sql_insert_doctor_department = "INSERT INTO [Doctor_Department](doctor_id, department_id) VALUES (?, ?)";
-    
-    // Hash mật khẩu sử dụng BCrypt
-    String hashedPassword = BCrypt.hashpw(model.getPassword(), BCrypt.gensalt(12));
+    public void insert(User model, User createdBy) {
+        // SQL cho các bảng
+        String sql_insert_user = "INSERT INTO [User](username, password, displayname, gmail, phone) VALUES (?,?,?,?,?)";
+        String sql_insert_user_role = "INSERT INTO [UserRole](username, role_id) VALUES (?,?)";
+        String sql_insert_staff = "INSERT INTO [Staff](staff_username, createby, createat) VALUES (?,?,?)";
+        String sql_insert_doctor = "INSERT INTO [Doctor](staff_id) VALUES (?)";
+        String sql_insert_doctor_department = "INSERT INTO [Doctor_Department](doctor_id, department_id) VALUES (?, ?)";
 
-    try (PreparedStatement stmUser = connection.prepareStatement(sql_insert_user);
-         PreparedStatement stmUserRole = connection.prepareStatement(sql_insert_user_role);
-         // Dùng RETURN_GENERATED_KEYS để lấy id của Staff
-         PreparedStatement stmStaff = connection.prepareStatement(sql_insert_staff, Statement.RETURN_GENERATED_KEYS);
-         // Dùng RETURN_GENERATED_KEYS để lấy id của Doctor
-         PreparedStatement stmDoctor = connection.prepareStatement(sql_insert_doctor, Statement.RETURN_GENERATED_KEYS);
-         PreparedStatement stmDoctorDept = connection.prepareStatement(sql_insert_doctor_department)) {
+        // Hash mật khẩu sử dụng BCrypt
+        String hashedPassword = BCrypt.hashpw(model.getPassword(), BCrypt.gensalt(12));
 
-        connection.setAutoCommit(false);
+        try (PreparedStatement stmUser = connection.prepareStatement(sql_insert_user); PreparedStatement stmUserRole = connection.prepareStatement(sql_insert_user_role); // Dùng RETURN_GENERATED_KEYS để lấy id của Staff
+                 PreparedStatement stmStaff = connection.prepareStatement(sql_insert_staff, Statement.RETURN_GENERATED_KEYS); // Dùng RETURN_GENERATED_KEYS để lấy id của Doctor
+                 PreparedStatement stmDoctor = connection.prepareStatement(sql_insert_doctor, Statement.RETURN_GENERATED_KEYS); PreparedStatement stmDoctorDept = connection.prepareStatement(sql_insert_doctor_department)) {
 
-        // 1. Insert vào bảng [User]
-        stmUser.setString(1, model.getUsername());
-        stmUser.setString(2, hashedPassword);
-        stmUser.setString(3, model.getDisplayname());
-        stmUser.setString(4, model.getGmail());
-        stmUser.setString(5, model.getPhone());
-        stmUser.executeUpdate();
+            connection.setAutoCommit(false);
 
-        // 2. Insert vào bảng [UserRole]
-        if (model.getRoles() != null) {
-            for (Role role : model.getRoles()) {
-                stmUserRole.setString(1, model.getUsername());
-                stmUserRole.setInt(2, role.getId());
-                stmUserRole.executeUpdate();
-            }
-        }
+            // 1. Insert vào bảng [User]
+            stmUser.setString(1, model.getUsername());
+            stmUser.setString(2, hashedPassword);
+            stmUser.setString(3, model.getDisplayname());
+            stmUser.setString(4, model.getGmail());
+            stmUser.setString(5, model.getPhone());
+            stmUser.executeUpdate();
 
-        // 3. Insert vào bảng [Staff]
-        Timestamp createAt = new Timestamp(System.currentTimeMillis());
-        stmStaff.setString(1, model.getUsername());
-        stmStaff.setString(2, createdBy.getUsername());
-        stmStaff.setTimestamp(3, createAt);
-        stmStaff.executeUpdate();
-
-        int generatedStaffId = -1;
-        try (ResultSet rs = stmStaff.getGeneratedKeys()) {
-            if (rs.next()) {
-                generatedStaffId = rs.getInt(1);
-            }
-        }
-
-        // 4. Kiểm tra nếu user có role là Doctor
-        boolean isDoctor = false;
-        if (model.getRoles() != null) {
-            for (Role role : model.getRoles()) {
-                // Giả sử role_id = 5 là Doctor
-                if (role.getId() == 5) {
-                    isDoctor = true;
-                    break;
+            // 2. Insert vào bảng [UserRole]
+            if (model.getRoles() != null) {
+                for (Role role : model.getRoles()) {
+                    stmUserRole.setString(1, model.getUsername());
+                    stmUserRole.setInt(2, role.getId());
+                    stmUserRole.executeUpdate();
                 }
             }
-        }
 
-        int generatedDoctorId = -1;
-        if (isDoctor && generatedStaffId != -1) {
-            stmDoctor.setInt(1, generatedStaffId);
-            stmDoctor.executeUpdate();
+            // 3. Insert vào bảng [Staff]
+            Timestamp createAt = new Timestamp(System.currentTimeMillis());
+            stmStaff.setString(1, model.getUsername());
+            stmStaff.setString(2, createdBy.getUsername());
+            stmStaff.setTimestamp(3, createAt);
+            stmStaff.executeUpdate();
 
-            try (ResultSet rs = stmDoctor.getGeneratedKeys()) {
+            int generatedStaffId = -1;
+            try (ResultSet rs = stmStaff.getGeneratedKeys()) {
                 if (rs.next()) {
-                    generatedDoctorId = rs.getInt(1);
+                    generatedStaffId = rs.getInt(1);
                 }
             }
-        }
 
-        // 5. Nếu là Doctor và có thông tin phòng ban (departments) được set,
-        //    duyệt qua danh sách phòng ban và insert vào bảng Doctor_Department
-        if (isDoctor && generatedDoctorId != -1 
-            && model.getDep()!= null && !model.getDep().isEmpty()) {
-            for (model.Department dept : model.getDep()) {
-                stmDoctorDept.setInt(1, generatedDoctorId);
-                stmDoctorDept.setInt(2, dept.getId());
-                stmDoctorDept.executeUpdate();
+            // 4. Kiểm tra nếu user có role là Doctor
+            boolean isDoctor = false;
+            if (model.getRoles() != null) {
+                for (Role role : model.getRoles()) {
+                    // Giả sử role_id = 5 là Doctor
+                    if (role.getId() == 5) {
+                        isDoctor = true;
+                        break;
+                    }
+                }
             }
-        }
 
-        connection.commit();
-    } catch (SQLException ex) {
-        try {
-            connection.rollback();
-        } catch (SQLException e) {
-            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, "Rollback failed", e);
-        }
-        if (ex.getMessage().contains("Violation of PRIMARY KEY constraint")) {
-            throw new RuntimeException("Username is duplicated", ex);
-        } else {
-            throw new RuntimeException("Error inserting user: " + ex.getMessage(), ex);
-        }
-    } finally {
-        try {
-            connection.setAutoCommit(true);
+            int generatedDoctorId = -1;
+            if (isDoctor && generatedStaffId != -1) {
+                stmDoctor.setInt(1, generatedStaffId);
+                stmDoctor.executeUpdate();
+
+                try (ResultSet rs = stmDoctor.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        generatedDoctorId = rs.getInt(1);
+                    }
+                }
+            }
+
+            // 5. Nếu là Doctor và có thông tin phòng ban (departments) được set,
+            //    duyệt qua danh sách phòng ban và insert vào bảng Doctor_Department
+            if (isDoctor && generatedDoctorId != -1
+                    && model.getDep() != null && !model.getDep().isEmpty()) {
+                for (model.Department dept : model.getDep()) {
+                    stmDoctorDept.setInt(1, generatedDoctorId);
+                    stmDoctorDept.setInt(2, dept.getId());
+                    stmDoctorDept.executeUpdate();
+                }
+            }
+
+            connection.commit();
         } catch (SQLException ex) {
-            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, "Failed to reset auto-commit", ex);
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, "Rollback failed", e);
+            }
+            if (ex.getMessage().contains("Violation of PRIMARY KEY constraint")) {
+                throw new RuntimeException("Username is duplicated", ex);
+            } else {
+                throw new RuntimeException("Error inserting user: " + ex.getMessage(), ex);
+            }
+        } finally {
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, "Failed to reset auto-commit", ex);
+            }
         }
     }
-}
-
 
     public String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt(12)); // Độ mạnh 12
     }
 
     public User login(String username, String password) {
-        String sql = "SELECT username, password, displayname FROM [User] WHERE username = ?";
+        String sql = "SELECT username, password, displayname, gmail FROM [User] WHERE username = ?";
 
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setString(1, username);
@@ -407,6 +386,7 @@ public void insert(User model, User createdBy) {
                     User user = new User();
                     user.setUsername(rs.getString("username"));
                     user.setDisplayname(rs.getString("displayname"));
+                    user.setGmail(rs.getString("gmail"));
                     return user;
                 }
             }
@@ -434,30 +414,6 @@ public void insert(User model, User createdBy) {
     @Override
     public User get(String id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    public int getTotalUserCount(String keyword) {
-        int total = 0;
-        String sql = "SELECT COUNT(*) AS total "
-                + "FROM [User] u "
-                + "JOIN Staff s ON s.staff_username = u.username "
-                + "WHERE REPLACE(REPLACE(u.username, ' ', ''), '+', '') LIKE ? "
-                + "OR REPLACE(REPLACE(u.displayname, ' ', ''), '+', '') LIKE ? "
-                + "OR REPLACE(REPLACE(s.fullname, ' ', ''), '+', '') LIKE ?";
-        try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            // Chuẩn hóa từ khóa tìm kiếm
-            String filter = "%" + (keyword != null ? keyword.replaceAll("[\\s+]", "") : "") + "%";
-            stm.setString(1, filter);
-            stm.setString(2, filter);
-            stm.setString(3, filter);
-            ResultSet rs = stm.executeQuery();
-            if (rs.next()) {
-                total = rs.getInt("total");
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return total;
     }
 
     public ArrayList<Role> getRoles(String username) {

@@ -13,18 +13,23 @@ document.addEventListener("DOMContentLoaded", function () {
   fetch('/SWP391_GR6/getSessionId')
     .then(response => response.text())
     .then(sessionId => {
+        console.log(sessionId);
       // Save sessionId in localStorage
       localStorage.setItem("sessionId", sessionId);
       // Check and restore chat if session matches
+      console.log("checkSessionAndRestoreChat");
       checkSessionAndRestoreChat();
     })
     .catch(error => console.error('Error fetching Session ID:', error));
 
   function checkSessionAndRestoreChat() {
+
     const currentSessionId = localStorage.getItem("sessionId");
     const storedSessionId = localStorage.getItem("currentSessionId");
-
+console.log("currentSessionId: " + currentSessionId);
+      console.log("storedSessionId: " + storedSessionId);
     if (storedSessionId && storedSessionId === currentSessionId) {
+        console.log("recover: ");
       // Session IDs match: show previous chat if user info was submitted
       if (localStorage.getItem("userInfoSubmitted") === "true") {
         infoForm.style.display = "none";
@@ -40,8 +45,18 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     } else {
       // Session ID mismatch or not present, clear old data
-      localStorage.removeItem("chatMessages");
+      console.log("action delete user");
+      console.log("email local storage: " + localStorage.getItem("userEmail"));
+      console.log("userInfoSubmitted: " + localStorage.getItem()("userInfoSubmitted"));
       localStorage.removeItem("userInfoSubmitted");
+    socket.send(JSON.stringify({
+        action: "deleteUser",
+        email: localStorage.getItem("userEmail")
+    }));
+    
+      
+      localStorage.removeItem("chatMessages");
+      
       localStorage.removeItem("userFullName");
       localStorage.removeItem("userEmail");
       localStorage.removeItem("userRole");
@@ -50,6 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
       infoForm.style.display = "none";
       chatBox.style.display = "none";
       chatIcon.style.display = "flex";
+
     }
   }
 

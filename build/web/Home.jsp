@@ -10,7 +10,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>HOME</title>
         <!-- Icon Font Stylesheet -->
         <link
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css"
@@ -123,11 +123,22 @@
                             <a href="" class="btn btn-light rounded-pill py-md-3 px-md-5 mx-2"
                                >Find Doctor</a
                             >
-                            <a
-                                href="${pageContext.request.contextPath}/appointment"
-                                class="btn btn-outline-light rounded-pill py-md-3 px-md-5 mx-2"
-                                >Appointment</a
-                            >
+                        <c:choose>
+                            <c:when test="${not empty sessionScope.currentCustomer}">
+                                <!-- Content when currentCustomer is not empty -->
+                                <a href="${pageContext.request.contextPath}/listrecord"
+                                   class="btn btn-outline-light rounded-pill py-md-3 px-md-5 mx-2">
+                                    Appointment
+                                </a>
+                            </c:when>
+                            <c:otherwise>
+                                <a href="${pageContext.request.contextPath}/appointment"
+                                   class="btn btn-outline-light rounded-pill py-md-3 px-md-5 mx-2">
+                                    Appointment
+                                </a>
+                            </c:otherwise>
+                        </c:choose>
+                            
                         </div>
                     </div>
                 </div>

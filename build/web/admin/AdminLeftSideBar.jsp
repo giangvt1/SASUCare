@@ -37,15 +37,21 @@
                 <a href="${pageContext.request.contextPath}/admin/Dashboard.jsp">
                     <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                 </a>
-                <c:if test="${sessionScope.allowedUrls != null && sessionScope.allowedUrls.contains('/admin/EditTypeApplication')}">
+                <c:if test="${sessionScope.allowedUrls != null && sessionScope.allowedUrls.contains('/admin/ManageTypeCertificate')}">
+
                     <a href="${pageContext.request.contextPath}/admin/ManageTypeApplication">
                         <i class="fa fa-globe"></i> <span>Manage Type Application</span>
                     </a>
-                    <a href="${pageContext.request.contextPath}/admin/EditTypeApplication   ">
-                        <i class="fa fa-globe"></i> <span>Manage Type Application</span>
+
+
+                    <a href="${pageContext.request.contextPath}/admin/ManageTypeCertificate">
+                        <i class="fa fa-globe"></i> <span>Manage Type Certificate</span>
                     </a>
+
                 </c:if> 
             </li>
+
+
             <c:if test="${sessionScope.allowedUrls != null && sessionScope.allowedUrls.contains('/hr/create')}">
                 <li>
                     <a href="${pageContext.request.contextPath}/hr/create">
@@ -78,8 +84,18 @@
                     </a>
                 </li>
                 <li>
+                    <a href="${pageContext.request.contextPath}/hr/posts">
+                        <i class="fa fa-globe"></i> <span>Post List</span>
+                    </a>
+                </li>
+                <li>
                     <a href="${pageContext.request.contextPath}/hr/appointments">
                         <i class="fa fa-table"></i> <span>Approve Appointment</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/chatbox">
+                        <i class="fa fa-table"></i> <span>Chat</span>
                     </a>
                 </li>
             </c:if>
@@ -101,16 +117,33 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../doctor/waiting-appointment">
-                        <i class="fa fa-medkit"></i> <span>Appoinment</span>
-                    </a>
-                </li>
-                <li>
                     <a href="../doctor/calendar">
                         <i class="fa fa-medkit"></i> <span>Calendar</span>
                     </a>
                 </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/chatbox">
+                        <i class="fa fa-table"></i> <span>Chat</span>
+                    </a>
+                </li>
             </c:if>
+            <c:if test="${allowedUrls != null and (allowedUrls.contains('/finance/InvoiceManagement'))}">
+                <li>
+                    <a href="../finance/InvoiceManagement">
+                        <i class="fa fa-envelope"></i> <span>Invoices management</span>
+                    </a>
+                </li><li>
+                    <a href="../finance/doctorsalary">
+                        <i class="fa fa-envelope"></i> <span>Doctor Salary</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../finance/DoctorSalaryChart">
+                        <i class="fa fa-envelope"></i> <span>Doctor Salary Chart</span>
+                    </a>
+                </li>
+            </c:if>
+                
             <%-- Add other menu items as needed --%>
         </ul>
     </section>

@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function () {
         dateFormat: "Y-m-d",
         altInput: true,
         altFormat: "d/m/Y",
-        clickOpens: false,
         locale: "vn",
         defaultDate: issueDateInput.value || ""
     });

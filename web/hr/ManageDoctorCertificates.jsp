@@ -86,12 +86,13 @@
             </form>
             <div class="table-data mt-4">
                 <div style="margin-bottom: 30px"></div>
-                <table class="table" style="width: 95%">
+                <table class="table" style="width: 95%; color: black">
                     <thead>
-                        <tr>
+                        <tr style="background-color: #007bff">
                             <th>#</th>
-                            <th>Certificate name</th>
+                            <th>Doctor ID</th>
                             <th>Doctor name</th>
+                            <th>Certificate name</th>
                             <th>Type name</th>
                             <th>Issue date</th>
                             <th>Status</th>
@@ -103,8 +104,9 @@
                     <tbody>
                         <c:forEach var="c" items="${certificates}" varStatus="i">
                             <tr><td class="index">${i.index + 1}</td>
-                                <td>${c.certificateName}</td>
+                                <td>${c.doctorId}</td>
                                 <td>${c.doctorName}</td>
+                                <td>${c.certificateName}</td>
                                 <td>${c.typeName}</td>
                                 <td><fmt:formatDate value="${c.issueDate}" pattern="dd/MM/yyyy" /></td>
                                 <td>${c.status}</td>

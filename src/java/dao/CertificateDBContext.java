@@ -28,6 +28,36 @@ public class CertificateDBContext extends DBContext<Certificate> {
         CertificateDBContext c = new CertificateDBContext();
         System.out.println(c.getCertificatesByDoctorID(null, null, null, 16, 1, "default", 10).size());
     }
+    public boolean createTypeCertificate(TypeCertificate typeCer) {
+        String sql = "INSERT INTO Type_Certificate (name, staff_manage_id) VALUES (?, ?)";
+
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setString(1, typeCer.getName());
+            stm.setInt(2, typeCer.getStaffManageId());
+
+            int rowsAffected = stm.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateTypeCertificate(TypeCertificate typeCer) {
+        String sql = "UPDATE Type_Certificate SET name = ?, staff_manage_id = ? WHERE id = ?";
+
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setString(1, typeCer.getName());
+            stm.setInt(2, typeCer.getStaffManageId());
+            stm.setInt(3, typeCer.getId());
+
+            int rowsAffected = stm.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     public boolean updateCertificateForDoctor(Certificate certificate) {
         String sql = "UPDATE Certificate SET checkNote = ?, checkedByStaffId = ?, checkedDate = ?, status = ? WHERE certificateId = ?";
