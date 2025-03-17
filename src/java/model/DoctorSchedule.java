@@ -8,6 +8,7 @@ public class DoctorSchedule {
     private Date scheduleDate;
     private Shift shift;
     private boolean available;
+    
 
     public DoctorSchedule() {}
 

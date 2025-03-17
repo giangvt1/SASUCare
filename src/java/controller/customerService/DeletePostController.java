@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controller.HRController;
+package controller.customerService;
 
 import dao.PostDAO;
 import java.io.IOException;

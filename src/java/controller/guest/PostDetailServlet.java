@@ -65,7 +65,7 @@ public class PostDetailServlet extends HttpServlet {
             
             if (post != null) {
                 request.setAttribute("post", post);
-                request.getRequestDispatcher("/customer_service/postDetail.jsp").forward(request, response);
+                request.getRequestDispatcher("/hr/postDetail.jsp").forward(request, response);
             } else {
                 response.sendRedirect("posts");  // If post not found, redirect to post list
             }

@@ -57,10 +57,6 @@
         <servlet-class>controller.appointment.AppointmentCalendarServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>AppointmentDoctorListController</servlet-name>
-        <servlet-class>controller.appointment.AppointmentDoctorListController</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>AppointmentConfirmServlet</servlet-name>
         <servlet-class>controller.appointment.AppointmentConfirmServlet</servlet-class>
     </servlet>
@@ -160,6 +156,10 @@
         <servlet-name>EditStaffApplication</servlet-name>
         <servlet-class>controller.HRController.EditStaffApplication</servlet-class>
     </servlet>
+    <servlet-name>ChatHistoryController</servlet-name>
+    <servlet-class>controller.ChatController.ChatHistoryController</servlet-class>
+    <servlet-name>SessionServlet</servlet-name>
+    <servlet-class>controller.ChatController.SessionServlet</servlet-class>
     <servlet>
         <servlet-name>SessionServlet</servlet-name>
         <servlet-class>controller.ChatController.SessionServlet</servlet-class>
@@ -239,6 +239,14 @@
     <servlet>
         <servlet-name>DoctorSalaryChartController</servlet-name>
         <servlet-class>controller.financial.DoctorSalaryChartController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AppointmentManagementController</servlet-name>
+        <servlet-class>controller.appointment.AppointmentManagementController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AppointmentDoctorListController</servlet-name>
+        <servlet-class>controller.appointment.AppointmentDoctorListController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
@@ -366,10 +374,6 @@
         <url-pattern>/hr/accountlist</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>AppointmentDoctorListController</servlet-name>
-        <url-pattern>/appointment/doctor</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>AppointmentConfirmServlet</servlet-name>
         <url-pattern>/appointment/confirm</url-pattern>
     </servlet-mapping>
@@ -460,10 +464,6 @@
     <servlet-mapping>
         <servlet-name>EditTypeApplication</servlet-name>
         <url-pattern>/admin/EditTypeApplication</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>AppointmentsManagementController</servlet-name>
-        <url-pattern>/doctor/appointmentsmanagement</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>HRApptManagementController</servlet-name>
@@ -563,5 +563,13 @@
     <servlet-mapping>
         <servlet-name>DoctorSalaryChartController</servlet-name>
         <url-pattern>/finance/DoctorSalaryChart</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AppointmentManagementController</servlet-name>
+        <url-pattern>/doctor/appointmentsmanagement</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AppointmentDoctorListController</servlet-name>
+        <url-pattern>/appointment/doctor</url-pattern>
     </servlet-mapping>
 </web-app>

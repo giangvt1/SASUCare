@@ -22,6 +22,16 @@ public class Doctor {
     private List<String> specialties;
     private ArrayList<DoctorSchedule> doctorSchedules;
     private List<Department> departments;
+    private List<String> certificates;  // Stores certificate names
+
+    public List<String> getCertificates() {
+        return certificates;
+    }
+
+    public void setCertificates(List<String> certificates) {
+        this.certificates = certificates;
+    }
+
 
     public double getSalaryCoefficient() {
         return salaryCoefficient;

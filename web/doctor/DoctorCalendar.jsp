@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="java.util.*, model.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,6 +14,7 @@
     <!-- Custom CSS -->
     <link href="${pageContext.request.contextPath}/css/doctor_styles.css" rel="stylesheet">
     <style>
+        /* Các style riêng cho trang DoctorCalendar.jsp */
         .schedule-table {
             margin-top: 20px;
         }
