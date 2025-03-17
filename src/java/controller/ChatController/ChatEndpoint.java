@@ -1,6 +1,6 @@
 package controller.ChatController;
 
-import org.json.JSONObject;
+//import org.json.JSONObject;
 import jakarta.servlet.http.HttpSession;
 import jakarta.websocket.*;
 import jakarta.websocket.server.ServerEndpoint;
@@ -36,12 +36,12 @@ public class ChatEndpoint {
     @OnMessage
     public void onMessage(String message, Session senderSession) {
         if (message.trim().startsWith("{") && message.trim().endsWith("}")) {
-            JSONObject json = new JSONObject(message);
-            if ("setRole".equals(json.optString("action"))) {
-                String role = json.optString("role");
-                userRoles.put(senderSession, role);
-                return;
-            }
+//            JSONObject json = new JSONObject(message);
+//            if ("setRole".equals(json.optString("action"))) {
+//                String role = json.optString("role");
+//                userRoles.put(senderSession, role);
+//                return;
+//            }
         } 
 
         String senderRole = userRoles.getOrDefault(senderSession, "guest");

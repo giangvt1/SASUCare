@@ -53,6 +53,11 @@
                         <i class="fa fa-globe"></i> <span>Account List</span>
                     </a>
                 </li>
+                 <li>
+                    <a href="${pageContext.request.contextPath}/hr/posts">
+                        <i class="fa fa-globe"></i> <span>Post List</span>
+                    </a>
+                </li>
                 <li>
                     <a href="${pageContext.request.contextPath}/hr/ViewStaffApplication?staffId=${sessionScope.staff.id}">
                         <i class="fa fa-globe"></i> <span>Staff Application</span>
@@ -71,6 +76,11 @@
                 <li>
                     <a href="${pageContext.request.contextPath}/hr/appointments">
                         <i class="fa fa-table"></i> <span>Approve Appointment</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/hr/createcontent">
+                        <i class="fa fa-table"></i> <span>Content Managament</span>
                     </a>
                 </li>
             </c:if>

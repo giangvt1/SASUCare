@@ -2,7 +2,7 @@ package controller.appointment;
 
 import dao.AppointmentDBContext;
 import dao.CustomerDBContext;
-import dao.DoctorDBContext;
+import dao.DoctorRatingDBContext;
 import dao.DoctorScheduleDBContext;
 import model.Appointment;
 import model.Customer;
@@ -23,7 +23,7 @@ public class AppointmentConfirmServlet extends HttpServlet {
 
     private final AppointmentDBContext appointmentDB = new AppointmentDBContext();
     private final CustomerDBContext customerDB = new CustomerDBContext();
-    private final DoctorDBContext doctorDB = new DoctorDBContext();
+    private final DoctorRatingDBContext doctorDB = new DoctorRatingDBContext();
     private final DoctorScheduleDBContext doctorScheduleDB = new DoctorScheduleDBContext();
 
     @Override

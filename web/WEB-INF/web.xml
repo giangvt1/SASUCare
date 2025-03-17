@@ -184,6 +184,22 @@
         <servlet-name>HomepageController</servlet-name>
         <servlet-class>controller.Homepage.HomepageController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CreateContent</servlet-name>
+        <servlet-class>controller.AdminController.CreateContent</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ContentDBContext</servlet-name>
+        <servlet-class>dao.ContentDBContext</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Content</servlet-name>
+        <servlet-class>model.Content</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>BlogController</servlet-name>
+        <servlet-class>controller.Homepage.Blog</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
         <url-pattern>/forgetpassword</url-pattern>
@@ -424,5 +440,25 @@
     <servlet-mapping>
         <servlet-name>HomepageController</servlet-name>
         <url-pattern>/home</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>CreateContent</servlet-name>
+        <servlet-class>controller.AdminController.CreateContent</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CreateContent</servlet-name>
+        <url-pattern>/hr/createcontent</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ContentDBContext</servlet-name>
+        <url-pattern>/ContentDBContext</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Content</servlet-name>
+        <url-pattern>/Content</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BlogController</servlet-name>
+        <url-pattern>/BlogController</url-pattern>
     </servlet-mapping>
 </web-app>

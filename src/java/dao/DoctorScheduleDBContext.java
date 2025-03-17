@@ -151,7 +151,7 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
     @Override
     public DoctorSchedule get(String id) {
         DoctorSchedule schedule = null;
-        DoctorDBContext docDb = new DoctorDBContext();
+        DoctorRatingDBContext docDb = new DoctorRatingDBContext();
         String sql = """
             SELECT ds.id, ds.doctor_id, ds.schedule_date, ds.shift_id, s.time_start, s.time_end, ds.available
             FROM Doctor_Schedule ds
@@ -210,7 +210,7 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
 
     public List<DoctorSchedule> getSchedulesByDoctor(int doctorId, Date date) {
         List<DoctorSchedule> schedules = new ArrayList<>();
-        DoctorDBContext docDB = new DoctorDBContext();
+        DoctorRatingDBContext docDB = new DoctorRatingDBContext();
         String sql = """
             SELECT ds.id, ds.schedule_date, ds.shift_id, s.time_start, s.time_end, ds.available
             FROM Doctor_Schedule ds
@@ -246,7 +246,7 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
 
     public List<DoctorSchedule> getSchedulesBetweenDates(Date startDate, Date endDate) {
         List<DoctorSchedule> schedules = new ArrayList<>();
-        DoctorDBContext docDB = new DoctorDBContext();
+        DoctorRatingDBContext docDB = new DoctorRatingDBContext();
         String sql = """
             SELECT ds.id, ds.doctor_id, ds.schedule_date, ds.shift_id, s.time_start, s.time_end, ds.available
             FROM Doctor_Schedule ds

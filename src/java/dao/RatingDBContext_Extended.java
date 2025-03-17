@@ -1,25 +1,3 @@
-<<<<<<< Updated upstream
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package dao;
-
-import dal.DBContext;
-import java.util.ArrayList;
-import model.Rating;
-import java.sql.*;
-import java.util.List;
-import java.util.logging.Level;
-
-/**
- *
- * @author admin
- */
-public class RatingDBContext_Extended extends RatingDBContext {
-    private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(RatingDBContext_Extended.class.getSimpleName());
-
-=======
 package dao;
 
 import dal.DBContext;
@@ -33,7 +11,6 @@ public class RatingDBContext_Extended extends RatingDBContext {
     private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(RatingDBContext_Extended.class.getSimpleName());
 
     // Lấy tất cả đánh giá
->>>>>>> Stashed changes
     public List<Rating> getAllRatings() {
         List<Rating> ratings = new ArrayList<>();
         String sql = "SELECT * FROM Rating ORDER BY created_at DESC";
@@ -49,32 +26,18 @@ public class RatingDBContext_Extended extends RatingDBContext {
         return ratings;
     }
 
-<<<<<<< Updated upstream
-    public void deleteRating(int ratingId) {
-        String sql = "DELETE FROM Rating WHERE id = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, ratingId);
-=======
     // Xóa đánh giá
     public void deleteRating(int doctorId, String username) {
         String sql = "DELETE FROM Rating WHERE doctor_id = ? AND username = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, doctorId);
             ps.setString(2, username);
->>>>>>> Stashed changes
             ps.executeUpdate();
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Error deleting rating", ex);
         }
     }
 
-<<<<<<< Updated upstream
-    public void toggleVisibility(int ratingId, boolean visible) {
-        String sql = "UPDATE Rating SET visible = ? WHERE id = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setBoolean(1, visible);
-            ps.setInt(2, ratingId);
-=======
     // Chuyển đổi trạng thái hiển thị của đánh giá
     public void toggleVisibility(int doctorId, String username, boolean visible) {
         String sql = "UPDATE Rating SET visible = ? WHERE doctor_id = ? AND username = ?";
@@ -82,41 +45,12 @@ public class RatingDBContext_Extended extends RatingDBContext {
             ps.setBoolean(1, visible);
             ps.setInt(2, doctorId);
             ps.setString(3, username);
->>>>>>> Stashed changes
             ps.executeUpdate();
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Error toggling rating visibility", ex);
         }
     }
 
-<<<<<<< Updated upstream
-    @Override
-    public void insert(Rating model) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void update(Rating model) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void delete(Rating model) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public ArrayList<Rating> list() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Rating get(String id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-}
-
-=======
     // Thêm một đánh giá
     @Override
     public void insert(Rating model) {
@@ -196,4 +130,3 @@ public class RatingDBContext_Extended extends RatingDBContext {
         return rating;
     }
 }
->>>>>>> Stashed changes

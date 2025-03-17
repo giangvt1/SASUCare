@@ -5,11 +5,7 @@
 
 package controller.guest;
 
-<<<<<<< Updated upstream
-import dao.DoctorDBContext;
-=======
 import dao.DoctorRatingDBContext;
->>>>>>> Stashed changes
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -24,13 +20,9 @@ import model.Doctor;
  *
  * @author nofom
  */
-@WebServlet(name="DoctorListServlet", urlPatterns={"/DoctorListServlet"})
+@WebServlet(name="DoctorListServlet", urlPatterns={"/DoctorList"})
 public class DoctorListServlet extends HttpServlet {
-<<<<<<< Updated upstream
-   private DoctorDBContext doctorDB = new DoctorDBContext();
-=======
    private DoctorRatingDBContext doctorDB = new DoctorRatingDBContext();
->>>>>>> Stashed changes
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<Doctor> doctors = doctorDB.list();

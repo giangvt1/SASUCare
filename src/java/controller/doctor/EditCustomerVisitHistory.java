@@ -2,7 +2,7 @@ package controller.doctor;
 
 import controller.systemaccesscontrol.BaseRBACController;
 import dao.CustomerDBContext;
-import dao.DoctorDBContext;
+import dao.DoctorRatingDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
@@ -43,7 +43,7 @@ public class EditCustomerVisitHistory extends BaseRBACController {
         System.out.println("Received visitDateStr: " + visitDateStr);
         System.out.println("Received nextAppointmentStr: " + nextAppointmentStr);
 
-        DoctorDBContext doctorDB = new DoctorDBContext();
+        DoctorRatingDBContext doctorDB = new DoctorRatingDBContext();
         int doctorId = doctorDB.getDoctorIdByStaffId(staffId);
         Timestamp visitDate = null;
         Timestamp nextAppointment = null;

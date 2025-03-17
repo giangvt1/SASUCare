@@ -2,7 +2,7 @@ package controller.appointment;
 
 import controller.systemaccesscontrol.BaseRBACController;
 import dao.AppointmentDBContext;
-import dao.DoctorDBContext;
+import dao.DoctorRatingDBContext;
 import dao.UserDBContext;
 import model.Appointment;
 import model.Doctor;
@@ -20,7 +20,7 @@ import java.util.List;
 public class AppointmentManagementController extends BaseRBACController {
 
     private final AppointmentDBContext appointmentDB = new AppointmentDBContext();
-    private final DoctorDBContext doctordb = new DoctorDBContext();
+    private final DoctorRatingDBContext doctordb = new DoctorRatingDBContext();
 
     @Override
     protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {

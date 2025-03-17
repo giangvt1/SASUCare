@@ -59,6 +59,7 @@ public class ManageDoctorReviewsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        
         RatingDBContext_Extended ratingDB = new RatingDBContext_Extended();
         List<Rating> ratings = ratingDB.getAllRatings();
         request.setAttribute("ratings", ratings);
@@ -78,15 +79,21 @@ public class ManageDoctorReviewsServlet extends HttpServlet {
         String action = request.getParameter("action");
         RatingDBContext_Extended ratingDB = new RatingDBContext_Extended();
 
+        // Xóa đánh giá
         if ("delete".equals(action)) {
-            int id = Integer.parseInt(request.getParameter("id"));
-            ratingDB.deleteRating(id);
-        } else if ("toggleVisibility".equals(action)) {
-            int id = Integer.parseInt(request.getParameter("id"));
+            int doctorId = Integer.parseInt(request.getParameter("id"));
+            String username = request.getParameter("username");
+            ratingDB.deleteRating(doctorId, username);
+        }
+        // Thay đổi trạng thái hiển thị
+        else if ("toggleVisibility".equals(action)) {
+            int doctorId = Integer.parseInt(request.getParameter("id"));
+            String username = request.getParameter("username");
             boolean visible = Boolean.parseBoolean(request.getParameter("visible"));
-            ratingDB.toggleVisibility(id, visible);
+            ratingDB.toggleVisibility(doctorId, username, visible);
         }
 
+        // Sau khi thao tác xong, chuyển hướng lại trang quản lý đánh giá
         response.sendRedirect(request.getContextPath() + "/managereviews");
     }
 

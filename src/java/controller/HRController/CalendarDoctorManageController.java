@@ -2,7 +2,7 @@ package controller.HRController;
 
 import com.google.gson.Gson;
 import controller.systemaccesscontrol.BaseRBACController;
-import dao.DoctorDBContext;
+import dao.DoctorRatingDBContext;
 import dao.DoctorScheduleDBContext;
 import dao.ShiftDBContext;
 import jakarta.servlet.ServletException;
@@ -25,7 +25,7 @@ import model.system.User;
  */
 public class CalendarDoctorManageController extends BaseRBACController {
 
-    private final DoctorDBContext doctorDAO = new DoctorDBContext();
+    private final DoctorRatingDBContext doctorDAO = new DoctorRatingDBContext();
     private final DoctorScheduleDBContext scheduleDAO = new DoctorScheduleDBContext();
     private final ShiftDBContext shiftDAO = new ShiftDBContext();
     private final Gson gson = new Gson();

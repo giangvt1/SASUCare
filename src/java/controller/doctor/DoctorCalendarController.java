@@ -2,7 +2,7 @@ package controller.doctor;
 
 import com.google.gson.Gson;
 import controller.systemaccesscontrol.BaseRBACController;
-import dao.DoctorDBContext;
+import dao.DoctorRatingDBContext;
 import dao.DoctorScheduleDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -22,7 +22,7 @@ import model.system.User;
 
 public class DoctorCalendarController extends BaseRBACController {
 
-    private final DoctorDBContext doctorDAO = new DoctorDBContext();
+    private final DoctorRatingDBContext doctorDAO = new DoctorRatingDBContext();
     private final DoctorScheduleDBContext scheduleDAO = new DoctorScheduleDBContext();
 
     @Override

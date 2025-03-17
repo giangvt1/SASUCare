@@ -59,37 +59,35 @@
             <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/HRController/CalendarDoctorManageController.java</file>
         </group>
         <group>
-            <file>file:/D:/Ky%205/SWP/HRSide/SWP391_GROUP6/src/java/controller/doctor/MedicalHistoryExportPDFServlet.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup0311/fix/web/hr/SearchPackageForm.jsp</file>
         </group>
-        <group>
-            <file>file:/D:/Ky%205/SWP/HRSide/SWP391_GROUP6/src/java/controller/doctor/MedicalHistoryExportPDFServlet.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/WEB-INF/web.xml</file>
-        </group>
-        <group>
-            <file>file:/D:/Ky%205/SWP/DoctorSide/SWP391_GROUP6/web/WEB-INF/web.xml</file>
-        </group>
-        <group>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/admin/AdminProfile.jsp</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/ProfileUpdateController.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/hr/HRCreate.jsp</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/DepartmentDBContext.java</file>
-        </group>
-        <group>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/admin/AdminProfile.jsp</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/ProfileUpdateController.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/hr/HRCreate.jsp</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/DepartmentDBContext.java</file>
-        </group>
-        <group>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/admin/AdminProfile.jsp</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/ProfileUpdateController.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/hr/HRCreate.jsp</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/DepartmentDBContext.java</file>
-        </group>
+        <group/>
         <group>
             <file>file:/C:/Users/admin/Downloads/backup0311/fix/web/guest/doctorList.jsp</file>
-            <file>file:/C:/Users/admin/Downloads/backup0311/fix/src/java/dal/DBContext.java</file>
-            <file>file:/C:/Users/admin/Downloads/backup0311/fix/web/guest/doctorDetails.jsp</file>
         </group>
+        <group>
+            <file>file:/C:/Users/admin/Downloads/backup0311/fix/src/java/controller/customerService/PostServlet.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup0311/fix/src/java/dao/PostDAO.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup0311/fix/src/java/controller/guest/PostViewServlet.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup0311/fix/web/Post.jsp</file>
+            <file>file:/C:/Users/admin/Downloads/backup0311/fix/web/editPost.jsp</file>
+        </group>
+        <group>
+            <file>file:/C:/Users/admin/Downloads/backup0311/fix/src/java/dao/PostDAO.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup0311/fix/src/java/controller/guest/PostViewServlet.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup0311/fix/web/Post.jsp</file>
+            <file>file:/C:/Users/admin/Downloads/backup0311/fix/web/editPost.jsp</file>
+        </group>
+        <group>
+            <file>file:/C:/Users/admin/Downloads/backup0311/fix/src/java/controller/HRController/EditPostController.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup0311/fix/web/hr/PostList.jsp</file>
+            <file>file:/C:/Users/admin/Downloads/backup0311/fix/src/java/controller/HRController/DeletePostController.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup0311/fix/src/java/dao/PostDAO.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup0311/fix/src/java/controller/guest/PostViewServlet.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup0311/fix/src/java/controller/guest/PostsController.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup0311/fix/src/java/model/Post.java</file>
+            <file>file:/C:/Users/admin/Downloads/backup0311/fix/src/java/controller/HRController/PostListController.java</file>
+        </group>
+        <group/>
     </open-files>
 </project-private>

@@ -28,103 +28,103 @@
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
         <link href="css/login_style.css" rel="stylesheet" type="text/css"/>
         <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-        
+
         <style>
-          .chat-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 300px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            display: none;
-          }
-          .chat-header {
-            background: #007bff;
-            color: white;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-          }
-          .chat-body {
-            max-height: 300px;
-            overflow-y: auto;
-            padding: 10px;
-            display: block;
-          }
-          .chat-footer {
-            padding: 10px;
-            display: flex;
-            gap: 5px;
-          }
-          .message {
-            display: flex;
-            align-items: center;
-            margin: 5px 0;
-          }
-          .received img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            margin-right: 10px;
-          }
-          .received p, .sent p {
-            background: #f1f1f1;
-            padding: 5px 10px;
-            border-radius: 10px;
-          }
-          .sent p {
-            background: #007bff;
-            color: white;
-            align-self: flex-end;
-          }
-          .chat-icon {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-          }
-          .message.sent {
-              justify-content: flex-end;
-          }
+            .chat-container {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                width: 300px;
+                background: white;
+                border-radius: 10px;
+                box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+                display: none;
+            }
+            .chat-header {
+                background: #007bff;
+                color: white;
+                padding: 10px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                cursor: pointer;
+            }
+            .chat-body {
+                max-height: 300px;
+                overflow-y: auto;
+                padding: 10px;
+                display: block;
+            }
+            .chat-footer {
+                padding: 10px;
+                display: flex;
+                gap: 5px;
+            }
+            .message {
+                display: flex;
+                align-items: center;
+                margin: 5px 0;
+            }
+            .received img {
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                margin-right: 10px;
+            }
+            .received p, .sent p {
+                background: #f1f1f1;
+                padding: 5px 10px;
+                border-radius: 10px;
+            }
+            .sent p {
+                background: #007bff;
+                color: white;
+                align-self: flex-end;
+            }
+            .chat-icon {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                background: #007bff;
+                color: white;
+                border: none;
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            }
+            .message.sent {
+                justify-content: flex-end;
+            }
         </style>
     </head>
     <body>
         <jsp:include page="Header.jsp"></jsp:include>
-        <!-- Hero Start -->
-        <div class="container-fluid bg-primary py-5 mb-5 hero-header">
-            <div class="container py-5">
-                <div class="row justify-content-start">
-                    <div class="col-lg-8 text-center text-lg-start">
-                        <h5
-                            class="d-inline-block text-primary text-uppercase border-bottom border-5"
-                            style="border-color: rgba(256, 256, 256, 0.3) !important"
-                            >
-                            Welcome To SASUCare
-                        </h5>
-                        <h1 class="display-1 text-white mb-md-4">
-                            Best Healthcare Solution In Your City
-                        </h1>
-                        <div class="pt-2">
-                            <a href="" class="btn btn-light rounded-pill py-md-3 px-md-5 mx-2"
-                               >Find Doctor</a
-                            >
-                            <a
-                                href="${pageContext.request.contextPath}/appointment"
+            <!-- Hero Start -->
+            <div class="container-fluid bg-primary py-5 mb-5 hero-header">
+                <div class="container py-5">
+                    <div class="row justify-content-start">
+                        <div class="col-lg-8 text-center text-lg-start">
+                            <h5
+                                class="d-inline-block text-primary text-uppercase border-bottom border-5"
+                                style="border-color: rgba(256, 256, 256, 0.3) !important"
+                                >
+                                Welcome To SASUCare
+                            </h5>
+                            <h1 class="display-1 text-white mb-md-4">
+                                Best Healthcare Solution In Your City
+                            </h1>
+                            <div class="pt-2">
+                                <a href="" class="btn btn-light rounded-pill py-md-3 px-md-5 mx-2"
+                                   >Find Doctor</a
+                                >
+                                <a
+                                    href="${pageContext.request.contextPath}/appointment"
                                 class="btn btn-outline-light rounded-pill py-md-3 px-md-5 mx-2"
                                 >Appointment</a
                             >
@@ -235,7 +235,7 @@
                                 rebum stet, justo elitr dolor amet sit
                             </p>
                             <a class="btn btn-lg btn-primary rounded-pill" href="capcuu.jsp">
-                                
+
                                 <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>
@@ -850,7 +850,6 @@
             </div>
         </div>
         <!-- Testimonial End -->
-
         <!-- Blog Start -->
         <div class="container-fluid py-5">
             <div class="container">
@@ -862,6 +861,10 @@
                     </h5>
                     <h1 class="display-4">Our Latest Medical Blog Posts</h1>
                 </div>
+                <div style="
+                     text-align: right;
+                     text-decoration: underline;">
+                    <a href="posts">View All Blogs >></a></div>
                 <div class="row g-5">
                     <div class="col-xl-4 col-lg-6">
                         <div class="bg-light rounded overflow-hidden">
@@ -968,34 +971,36 @@
                 </div>
             </div>
         </div>
+
+
         <!-- Blog End -->
-        
+
         <section>
             <div id="chat-box" class="chat-container">
-              <div class="chat-header" id="chat-toggle">
-                <h5 class="mb-0">Chat</h5>
-                <button id="toggle-chat" class="btn btn-primary btn-sm">&#x25B2;</button>
-              </div>
-              <div class="chat-body">
-                <div class="chat-messages">
-                  <div class="message received">
-                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp" alt="avatar">
-                    <p>Hi, How are you?</p>
-                  </div>
-                  <div class="message sent">
-                    <p>I'm good. How about you?</p>
-                  </div>
+                <div class="chat-header" id="chat-toggle">
+                    <h5 class="mb-0">Chat</h5>
+                    <button id="toggle-chat" class="btn btn-primary btn-sm">&#x25B2;</button>
                 </div>
-              </div>
-              <div class="chat-footer">
-                <input type="text" class="form-control" placeholder="Type a message">
-                <button class="btn btn-primary">Send</button>
-              </div>
+                <div class="chat-body">
+                    <div class="chat-messages">
+                        <div class="message received">
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp" alt="avatar">
+                            <p>Hi, How are you?</p>
+                        </div>
+                        <div class="message sent">
+                            <p>I'm good. How about you?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-footer">
+                    <input type="text" class="form-control" placeholder="Type a message">
+                    <button class="btn btn-primary">Send</button>
+                </div>
             </div>
             <button id="chat-icon" class="chat-icon">
-              <i class="fas fa-comment"></i>
+                <i class="fas fa-comment"></i>
             </button>
-          </section>
+        </section>
 
         <jsp:include page="Footer.jsp"></jsp:include>
         <!-- JavaScript Libraries -->
@@ -1011,47 +1016,47 @@
         <!-- Template Javascript -->
         <script src="js/main.js"></script>
         <script>
-            document.getElementById("toggle-chat").addEventListener("click", function() {
-              document.getElementById("chat-box").style.display = "none";
-              document.getElementById("chat-icon").style.display = "flex";
+            document.getElementById("toggle-chat").addEventListener("click", function () {
+                document.getElementById("chat-box").style.display = "none";
+                document.getElementById("chat-icon").style.display = "flex";
             });
-            document.getElementById("chat-icon").addEventListener("click", function() {
-              document.getElementById("chat-box").style.display = "block";
-              document.getElementById("chat-icon").style.display = "none";
+            document.getElementById("chat-icon").addEventListener("click", function () {
+                document.getElementById("chat-box").style.display = "block";
+                document.getElementById("chat-icon").style.display = "none";
             });
-            
+
             var socket = new WebSocket("ws://localhost:9999/SWP391_GR6/chat");
 
-            socket.onopen = function() {
+            socket.onopen = function () {
                 if (!localStorage.getItem("userRole")) {
                     localStorage.setItem("userRole", "guest");  // Đặt mặc định là guest nếu chưa có
-                    
+
                 }
                 console.log("WebSocket Connected.");
-                
-                 let userRole = localStorage.getItem("userRole");
+
+                let userRole = localStorage.getItem("userRole");
 
                 // Gửi role sau khi WebSocket đã kết nối
-                socket.send(JSON.stringify({ action: "setRole", role: userRole }));
+                socket.send(JSON.stringify({action: "setRole", role: userRole}));
                 console.log("📤 Sent role:", userRole);
             };
-            
-           
-            
-            socket.onmessage = function(event) {
+
+
+
+            socket.onmessage = function (event) {
                 let chatBody = document.querySelector(".chat-messages");
                 let receivedMessage = document.createElement("div");
                 receivedMessage.classList.add("message", "received");
                 receivedMessage.innerHTML = `
                     <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp" alt="avatar">
-                    <p>`+ event.data + `</p>
+                    <p>` + event.data + `</p>
                 `;
-                
+
                 chatBody.appendChild(receivedMessage);
                 chatBody.scrollTop = chatBody.scrollHeight;
             };
 
-            socket.onerror = function(error) {
+            socket.onerror = function (error) {
                 console.log("WebSocket Error: " + error);
             };
 
@@ -1062,7 +1067,7 @@
                     let chatBody = document.querySelector(".chat-messages");
                     let sentMessage = document.createElement("div");
                     sentMessage.classList.add("message", "sent");
-                    sentMessage.innerHTML = `<p>`+ message + `</p>`;
+                    sentMessage.innerHTML = `<p>` + message + `</p>`;
                     chatBody.appendChild(sentMessage);
                     chatBody.scrollTop = chatBody.scrollHeight;
 
@@ -1072,11 +1077,11 @@
             }
 
             document.querySelector(".chat-footer button").addEventListener("click", sendMessage);
-            document.querySelector(".chat-footer input").addEventListener("keypress", function(event) {
+            document.querySelector(".chat-footer input").addEventListener("keypress", function (event) {
                 if (event.key === "Enter") {
                     sendMessage();
                 }
             });
-          </script>
+        </script>
     </body>
 </html>

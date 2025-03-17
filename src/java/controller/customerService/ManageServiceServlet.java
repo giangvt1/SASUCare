@@ -191,7 +191,6 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
             // Create a new Package object
             Package pkg = new Package(id, name, description, price, duration, category, serviceId);
 
-<<<<<<< Updated upstream
             // Insert or update based on ID
 //            if (id == 0) {
 //                db.insert(pkg);
@@ -199,15 +198,6 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
 //                db.update(pkg);
 //            }
             db.save(pkg);
-=======
-//             Insert or update based on ID
-            if (id == 0) {
-                db.insert(pkg);
-            } else {
-                db.update(pkg);
-            }
-//            db.save(pkg);
->>>>>>> Stashed changes
             response.sendRedirect("ManageService");
 
         } catch (Exception e) {

@@ -1,7 +1,7 @@
 package controller.appointment;
 
 import dao.DepartmentDBContext;
-import dao.DoctorDBContext;
+import dao.DoctorRatingDBContext;
 import model.Doctor;
 import model.DoctorSchedule;
 
@@ -21,7 +21,7 @@ import model.Department;
 public class AppointmentDoctorListController extends HttpServlet {
 
     DepartmentDBContext departmentDB = new DepartmentDBContext();
-    private final DoctorDBContext doctorDB = new DoctorDBContext();
+    private final DoctorRatingDBContext doctorDB = new DoctorRatingDBContext();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
