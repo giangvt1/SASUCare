@@ -12,28 +12,9 @@ public class VisitHistory {
     private Timestamp visitDate;
     private String reasonForVisit, diagnoses, treatmentPlan;
     private Timestamp nextAppointment;
-    private Appointment appointment;
+    private String doctorName, customerName;
 
     public VisitHistory() {
-    }
-
-    public VisitHistory(int id, int doctorId, int customerId, Timestamp visitDate, String reasonForVisit, String diagnoses, String treatmentPlan, Appointment appointment) {
-        this.id = id;
-        this.doctorId = doctorId;
-        this.customerId = customerId;
-        this.visitDate = visitDate;
-        this.reasonForVisit = reasonForVisit;
-        this.diagnoses = diagnoses;
-        this.treatmentPlan = treatmentPlan;
-        this.appointment = appointment;
-    }
-
-    public Appointment getAppointment() {
-        return appointment;
-    }
-
-    public void setAppointment(Appointment appointment) {
-        this.appointment = appointment;
     }
 
     public VisitHistory(int id, int doctorId, int customerId, Timestamp visitDate, String reasonForVisit, String diagnoses, String treatmentPlan, Timestamp nextAppointment) {
@@ -109,6 +90,22 @@ public class VisitHistory {
 
     public void setNextAppointment(Timestamp nextAppointment) { // Thay đổi kiểu tham số
         this.nextAppointment = nextAppointment;
+    }
+
+    public String getDoctorName() {
+        return doctorName;
+    }
+
+    public void setDoctorName(String doctorName) {
+        this.doctorName = doctorName;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
 }

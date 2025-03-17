@@ -1,27 +1,26 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Biểu đồ thống kê lương bác sĩ</title>
+    <title>Biểu đồ doanh thu hóa đơn</title>
     <style>
-        /* Reset cơ bản và nền trang với gradient nhẹ */
+        /* Reset và nền trang với gradient nhẹ */
         body {
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(to right, #ece9e6, #ffffff);
         }
-        /* Container bên phải (nội dung chính) với khoảng cách từ sidebar */
+        /* Container chính bên phải, có khoảng cách từ sidebar */
         .right-side {
             margin-left: 220px;
             padding: 40px 30px;
             min-height: 100vh;
             background-color: #f9f9f9;
         }
-        /* Card chứa biểu đồ với hiệu ứng bóng đổ, bo tròn và hover nhẹ */
+        /* Card chứa biểu đồ với bo tròn, bóng đổ và hiệu ứng hover */
         .chart-container {
             width: 90%;
             max-width: 1000px;
@@ -43,7 +42,7 @@
             font-size: 28px;
             margin-bottom: 30px;
         }
-        /* Form lọc: căn giữa, khoảng cách hợp lý và input đẹp */
+        /* Form lọc doanh thu: căn giữa và khoảng cách hợp lý */
         .filter-form {
             display: flex;
             flex-wrap: wrap;
@@ -56,14 +55,14 @@
             font-size: 16px;
             color: #555;
         }
-        .filter-form input[type="month"] {
+        .filter-form input[type="date"] {
             padding: 10px 14px;
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 16px;
             transition: border-color 0.3s;
         }
-        .filter-form input[type="month"]:focus {
+        .filter-form input[type="date"]:focus {
             outline: none;
             border-color: #007bff;
         }
@@ -85,7 +84,7 @@
             position: relative;
             height: 500px;
         }
-        /* Responsive */
+        /* Responsive cho thiết bị nhỏ */
         @media (max-width: 768px) {
             .right-side {
                 margin-left: 0;
@@ -99,24 +98,26 @@
     </style>
 </head>
 <body>
-    <!-- Include Header & Sidebar -->
+    <!-- Include Header & Sidebar (AdminHeader.jsp và AdminLeftSideBar.jsp) -->
     <jsp:include page="../admin/AdminHeader.jsp" />
     <jsp:include page="../admin/AdminLeftSideBar.jsp" />
     
     <div class="right-side">
         <div class="chart-container">
-            <h1>Biểu đồ tổng lương theo bác sĩ</h1>
+            <h1>Biểu đồ doanh thu hóa đơn</h1>
             
-            <!-- Form lọc: chọn tháng -->
-            <form class="filter-form" action="DoctorSalaryChart" method="get">
-                <label for="selectedMonth">Chọn tháng:</label>
-                <input type="month" id="selectedMonth" name="month" value="${monthSelected}" />
+            <!-- Form lọc doanh thu theo khoảng thời gian -->
+            <form class="filter-form" action="../finance/revenue" method="get">
+                <label for="startDate">Từ ngày:</label>
+                <input type="date" id="startDate" name="startDate" value="${startDate}" />
+                <label for="endDate">Đến ngày:</label>
+                <input type="date" id="endDate" name="endDate" value="${endDate}" />
                 <button type="submit">Lọc</button>
             </form>
             
-            <!-- Khu vực hiển thị biểu đồ -->
+            <!-- Khu vực hiển thị biểu đồ doanh thu -->
             <div class="chart-box">
-                <canvas id="salaryChart"></canvas>
+                <canvas id="revenueChart"></canvas>
             </div>
         </div>
     </div>
@@ -124,32 +125,33 @@
     <!-- Nhúng Chart.js từ CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // Lấy dữ liệu doanh thu từ attribute revenueList (mỗi đối tượng có thuộc tính month và totalRevenue)
+        const revenueData = [
+            <c:forEach var="rev" items="${revenueList}" varStatus="loop">
+                { month: "<c:out value='${rev.month}'/>", totalRevenue: ${rev.totalRevenue} }<c:if test="${!loop.last}">,</c:if>
+            </c:forEach>
+        ];
+        
+        // Tạo mảng nhãn (tháng) và dữ liệu (doanh thu) cho biểu đồ
+        const labels = revenueData.map(item => item.month);
+        const dataValues = revenueData.map(item => item.totalRevenue);
+        
         // Lấy context của canvas
-        const ctx = document.getElementById('salaryChart').getContext('2d');
-
-        // Tạo mảng nhãn (tên bác sĩ) và dữ liệu (tổng lương) từ attribute stats
-        const labels = [
-            <c:forEach var="stat" items="${stats}" varStatus="loop">
-                "<c:out value='${stat.doctorName}'/>"<c:if test="${!loop.last}">,</c:if>
-            </c:forEach>
-        ];
-        const totalSalaries = [
-            <c:forEach var="stat" items="${stats}" varStatus="loop">
-                ${stat.totalSalary}<c:if test="${!loop.last}">,</c:if>
-            </c:forEach>
-        ];
-
-        // Khởi tạo biểu đồ cột với Chart.js
-        const salaryChart = new Chart(ctx, {
-            type: 'bar',
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        
+        // Khởi tạo biểu đồ với Chart.js
+        const revenueChart = new Chart(ctx, {
+            type: 'line', // Bạn có thể thay đổi thành 'bar' nếu thích biểu đồ cột
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Tổng lương',
-                    data: totalSalaries,
-                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
+                    label: 'Doanh thu (VND)',
+                    data: dataValues,
+                    backgroundColor: 'rgba(40, 167, 69, 0.3)',
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.3
                 }]
             },
             options: {
@@ -158,10 +160,8 @@
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Thống kê tổng lương theo bác sĩ',
-                        font: {
-                            size: 20
-                        }
+                        text: 'Doanh thu hóa đơn theo tháng',
+                        font: { size: 20 }
                     },
                     tooltip: {
                         callbacks: {
