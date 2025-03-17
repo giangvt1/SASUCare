@@ -24,7 +24,10 @@ public class ChatEndpoint {
     private static final Map<String, String> assignedToDoctor = Collections.synchronizedMap(new HashMap<>()); // userEmail -> doctorEmail
     private static final Map<String, UserInfo> assignedUsers = Collections.synchronizedMap(new HashMap<>()); // userEmail -> UserInfo
 
-    // Khi một kết nối WebSocket được mở
+    // Thêm biến để quản lý timer
+    private static final Map<String, TimerTask> removalTimers = Collections.synchronizedMap(new HashMap<>());
+    private static final Timer timer = new Timer();
+
     @OnOpen
     public void onOpen(Session session, EndpointConfig config) {
         clients.add(session);
@@ -38,7 +41,7 @@ public class ChatEndpoint {
         onlineHRs.remove(session);
         userToHR.remove(session);
 
-        // Handle user disconnection
+        // Xử lý ngắt kết nối của người dùng
         String userEmail = null;
         for (Map.Entry<String, Set<Session>> entry : userSessions.entrySet()) {
             if (entry.getValue().contains(session)) {
@@ -53,22 +56,39 @@ public class ChatEndpoint {
                 userSessions.remove(userEmail);
                 String doctorEmail = assignedToDoctor.get(userEmail);
                 if (doctorEmail != null) {
-                    // User was assigned to a doctor; notify doctor and clean up
+                    // Người dùng đã được phân công cho bác sĩ; thông báo và dọn dẹp
                     assignedToDoctor.remove(userEmail);
                     assignedUsers.remove(userEmail);
                     notifyDoctorOfRemoval(doctorEmail, userEmail);
                 } else {
-                    onlineUsers.remove(userEmail);
-                    // Gửi thông báo "clearChat" cho HR khi người dùng ngắt kết nối hoàn toàn
-                    JSONObject clearChatMsg = new JSONObject();
-                    clearChatMsg.put("action", "clearChat");
-                    clearChatMsg.put("userEmail", userEmail);
-                    broadcastToHRs(clearChatMsg);
+                    // Lập lịch xóa sau khi trì hoãn
+                    scheduleUserRemoval(userEmail);
                 }
             }
         }
         broadcastOnlineUsers();
         broadcastOnlineDoctors();
+    }
+
+    private void scheduleUserRemoval(String userEmail) {
+        TimerTask removalTask = new TimerTask() {
+            @Override
+            public void run() {
+                synchronized (userSessions) {
+                    if (!userSessions.containsKey(userEmail) || userSessions.get(userEmail).isEmpty()) {
+                        System.out.println("remove usersssssssssssssssssssssss: " + userEmail);
+                        onlineUsers.remove(userEmail);
+                        JSONObject clearChatMsg = new JSONObject();
+                        clearChatMsg.put("action", "clearChat");
+                        clearChatMsg.put("userEmail", userEmail);
+                        broadcastToHRs(clearChatMsg);
+                    }
+                }
+                removalTimers.remove(userEmail);
+            }
+        };
+        removalTimers.put(userEmail, removalTask);
+        timer.schedule(removalTask, 10000); // Trì hoãn 10 giây
     }
 
     @OnMessage
@@ -114,12 +134,17 @@ public class ChatEndpoint {
             // Send assigned users list to doctor upon connection
             sendAssignedUsersToDoctor(email, session);
         } else {
+            // Kiểm tra xem có timer xóa đang chờ không
+            TimerTask pendingTask = removalTimers.get(email);
+            if (pendingTask != null) {
+                pendingTask.cancel();
+                removalTimers.remove(email);
+                System.out.println("Đã hủy xóa cho người dùng: " + email);
+            }
             userSessions.computeIfAbsent(email, k -> new HashSet<>()).add(session);
-            // Chỉ thêm vào onlineUsers nếu email chưa tồn tại ở bất kỳ đâu
             if (!onlineUsers.containsKey(email) && !assignedToDoctor.containsKey(email)) {
                 onlineUsers.put(email, user);
             }
-            // Nếu email đã tồn tại, chỉ cập nhật danh sách phiên, không thêm mới
         }
         broadcastOnlineUsers();
         broadcastOnlineDoctors();
@@ -192,14 +217,11 @@ public class ChatEndpoint {
             sendError(session, "exportError", "Only HR can export chat history.");
         }
     }
-    
+
     private void handleDeleteUser(JSONObject json, Session session) {
         String email = json.getString("email");
         System.out.println("email: delete: " + email);
         onlineUsers.remove(email);
-        
-        System.out.println("email account: " + onlineUsers.get(email));
-        
         broadcastOnlineUsers();
     }
 
@@ -479,8 +501,6 @@ public class ChatEndpoint {
             }
         }
     }
-    
-    
 
     public static Map<String, UserInfo> getOnlineUsers() {
         return onlineUsers;

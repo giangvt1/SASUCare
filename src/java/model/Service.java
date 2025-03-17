@@ -8,7 +8,34 @@ package model;
 public class Service {
     private int id;
     private String name;
+    private int level;
+    private double price;
+    private Department dept;
 
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public Department getDept() {
+        return dept;
+    }
+
+    public void setDept(Department dept) {
+        this.dept = dept;
+    }
+    
     public Service() {
     }
 

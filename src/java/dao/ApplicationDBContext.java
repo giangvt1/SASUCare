@@ -20,6 +20,68 @@ public class ApplicationDBContext extends DBContext<Application> {
 
     private static final Logger LOGGER = Logger.getLogger(ApplicationDBContext.class.getName());
 
+    public List<TypeApplication> getAllTypes(String typeName, int page, int sizeOfEachTable) {
+        List<TypeApplication> typeList = new ArrayList<>();
+        int offset = (page - 1) * sizeOfEachTable;
+
+        // Xây dựng SQL động
+        StringBuilder sqlBuilder = new StringBuilder(
+                "SELECT t.id, t.name, t.staff_manage_id, s.fullname AS staffManagerName "
+                + "FROM Type_Application t "
+                + "JOIN Staff s ON t.staff_manage_id = s.id "
+        );
+
+        if (typeName != null && !typeName.isEmpty()) {
+            sqlBuilder.append(" WHERE t.name LIKE ?");
+        }
+
+        sqlBuilder.append(" ORDER BY t.id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+
+        try (PreparedStatement stm = connection.prepareStatement(sqlBuilder.toString())) {
+            int paramIndex = 1;
+
+            if (typeName != null && !typeName.isEmpty()) {
+                stm.setString(paramIndex++, "%" + typeName + "%");
+            }
+
+            stm.setInt(paramIndex++, offset);  // OFFSET đi trước
+            stm.setInt(paramIndex++, sizeOfEachTable);  // FETCH NEXT đi sau
+
+            try (ResultSet rs = stm.executeQuery()) {
+                while (rs.next()) {
+                    TypeApplication type = new TypeApplication();
+                    type.setId(rs.getInt("id"));
+                    type.setName(rs.getString("name"));
+                    type.setStaffManageId(rs.getInt("staff_manage_id"));
+                    type.setStaffManageName(rs.getString("staffManagerName"));
+                    typeList.add(type);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return typeList;
+    }
+
+    public int getTotalTypes(String typeName) {
+        int total = 0;
+        String sql = "SELECT COUNT(*) FROM Type_Application "
+                + (typeName != null ? "WHERE name LIKE ?" : "");
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            if (typeName != null) {
+                stm.setString(1, "%" + typeName + "%");
+            }
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    total = rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
+
     public List<Application> getStaffApplicationsByStaffID(String typeName, String staffName,
             java.sql.Date dateFrom, java.sql.Date dateTo, String status, int staffManageId,
             int page, String sort, int size) {
@@ -122,7 +184,6 @@ public class ApplicationDBContext extends DBContext<Application> {
                 + "WHERE t.staff_manage_id = ?"
         );
 
-        // Add filters
         if (typeName != null && !typeName.isEmpty()) {
             sqlBuilder.append(" AND t.name LIKE ?");
         }

@@ -7,8 +7,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Doctor Weekly Schedule</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Sử dụng Bootstrap CSS cùng phiên bản với header -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FullCalendar CSS -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css" rel="stylesheet" />
     <!-- Custom CSS -->
@@ -22,17 +22,44 @@
             text-align: center;
             vertical-align: middle;
         }
-        /* Nếu cần custom thêm cho FullCalendar events */
-        .fc-event-custom-style {
-            padding: 2px 4px;
-            border-radius: 4px;
-            white-space: normal;
-            font-size: 0.85rem;
+        /* Giới hạn CSS FullCalendar chỉ áp dụng cho lịch */
+        .fc {
+            z-index: 1 !important;
+            position: relative;
+            overflow: visible !important;
+        }
+        .fc .dropdown-menu {
+            z-index: 1051 !important;
+            position: absolute !important;
+            top: 100% !important;
+        }
+        /* Cải tiến giao diện của Calendar */
+        #fullcalendar {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            padding: 1rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            margin-top: 1rem;
+        }
+        /* Toolbar của lịch */
+        .fc .fc-toolbar-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+        .fc .fc-button {
+            border: none;
+            background-color: transparent;
+            font-size: 1rem;
+            color: #0d6efd;
+        }
+        .fc .fc-button:hover {
+            background-color: #e9ecef;
         }
     </style>
 </head>
 <body>
-    <!-- Include Header và Sidebar (nếu có giao diện riêng cho bác sĩ) -->
+    <!-- Include Header và Sidebar (đã load jQuery & Bootstrap từ AdminHeader.jsp) -->
     <jsp:include page="../admin/AdminHeader.jsp" />
     <jsp:include page="../admin/AdminLeftSideBar.jsp" />
 
@@ -99,7 +126,7 @@
                     </div>
                     <!-- Calendar View -->
                     <div class="tab-pane fade" id="calendarView" role="tabpanel" aria-labelledby="calendar-tab">
-                        <div id="fullcalendar" class="mt-3"></div>
+                        <div id="fullcalendar"></div>
                     </div>
                 </div>
             </div>
@@ -129,14 +156,12 @@
         var doctorEvents = ${doctorEventsJson};
     </script>
 
-    <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- FullCalendar JS -->
+    <!-- Chỉ load FullCalendar JS (jQuery & Bootstrap đã được load trong AdminHeader.jsp) -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
     <script>
         var calendar;
         $(document).ready(function () {
+            // Khởi tạo FullCalendar khi tab Calendar được active
             $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
                 if ($(e.target).attr("id") === "calendar-tab") {
                     if (!calendar) {
@@ -161,6 +186,21 @@
                     moreLinkClick: 'popover',
                     expandRows: true,
                     selectable: false,
+                    // Hiển thị màu dựa trên shiftId cho từng sự kiện
+                    eventContent: function(info) {
+                        var shiftId = info.event.extendedProps.shiftId;
+                        var shiftColors = {
+                            '1': '#0d6efd',  // Blue
+                            '2': '#198754',  // Green
+                            '3': '#dc3545',  // Red
+                            '4': '#ffc107'   // Yellow
+                        };
+                        var bgColor = shiftColors[shiftId] || '#0d6efd';
+                        var title = info.event.title || '';
+                        var html = '<div style="background-color: ' + bgColor + '; color: #fff; padding: 2px 4px; border-radius: 4px; font-size:0.85rem;">' 
+                                    + title + '</div>';
+                        return { html: html };
+                    },
                     eventClick: function(info) {
                         var shiftTime = info.event.extendedProps.shiftTime || "No details available";
                         $("#shiftTimeDetail").text("Shift Time: " + shiftTime);
@@ -172,7 +212,6 @@
                 calendar.render();
             }
         });
-        
     </script>
 </body>
 </html>

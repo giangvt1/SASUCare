@@ -84,81 +84,79 @@
                     <button type="submit" class="back-btn">Search</button>
                 </div>
             </form>
-            <div class="table-data mt-4">
-                <div style="margin-bottom: 30px"></div>
-                <table class="table" style="width: 95%">
-                    <thead>
+            <table class="table">
+                <thead>
+                    <tr style="background-color: #007bff; color: white">
+                        <th>#</th>
+                        <th>Staff ID</th>
+                        <th>Staff name</th>
+                        <th>Type name</th>
+                        <th>Date send</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Date reply</th>
+                        <th style="text-align-last: center">Reply</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <c:forEach var="app" items="${applications}" varStatus="status">
                         <tr>
-                            <th>#</th>
-                            <th>Type name</th>
-                            <th>Staff name</th>
-                            <th>Date send</th>
-                            <th>Reason</th>
-                            <th>Status</th>
-                            <th>Date reply</th>
-                            <th style="text-align-last: center">Reply</th>
-                            <th>Action</th>
+                            <td>${status.index + 1}</td>
+                            <td>${app.staffSendId}</td>
+                            <td>${app.staffName}</td>
+                            <td>${app.typeName}</td>                   
+                            <td><fmt:formatDate value="${app.dateSend}" pattern="dd/MM/yyyy HH:mm:ss" /></td>
+                            <td>${app.reason}</td>
+                            <td>${app.status}</td>
+                            <td><fmt:formatDate value="${app.dateReply}" pattern="dd/MM/yyyy HH:mm:ss" /></td>
+                            <td>${app.reply}</td>
+                            <td> <c:if test="${fn:toLowerCase(app.status) == 'pending'}">
+                                    <a style="display: block;width: 110px;margin: 0" class="add-btn" href="EditStaffApplication?applicationId=${app.id}&status=Approved">Approved</a>
+                                    <a style="display: block;width: 110px" class="delete-btn" href="EditStaffApplication?applicationId=${app.id}&status=Rejected">Rejected</a>
+                                </c:if>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <c:forEach var="app" items="${applications}" varStatus="status">
-                            <tr>
-                                <td>${status.index + 1}</td>
-                                <td>${app.typeName}</td>
-                                <td>${app.staffName}</td>
-                                <td><fmt:formatDate value="${app.dateSend}" pattern="dd/MM/yyyy HH:mm:ss" /></td>
-                                <td>${app.reason}</td>
-                                <td>${app.status}</td>
-                                <td><fmt:formatDate value="${app.dateReply}" pattern="dd/MM/yyyy HH:mm:ss" /></td>
-                                <td>${app.reply}</td>
-                                <td> <c:if test="${fn:toLowerCase(app.status) == 'pending'}">
-                                        <a style="display: block;width: 110px;margin: 0" class="add-btn" href="EditStaffApplication?applicationId=${app.id}&status=Approved">Approved</a>
-                                        <a style="display: block;width: 110px" class="delete-btn" href="EditStaffApplication?applicationId=${app.id}&status=Rejected">Rejected</a>
-                                    </c:if>
-                                </td>
-                            </tr>
-                        </c:forEach>
-                    </tbody>
-                </table>
-                <div class="pre-next-Btn">
-                    <!-- Nút Previous -->
-                    <c:if test="${currentPage > 1}">
-                        <a class="page-link" href="ViewStaffApplication?staffId=${sessionScope.staff.id}&page=${currentPage - 1}&staffName=${param.staffName}&dateSendFrom=${param.dateSendFrom}&dateSendTo=${param.dateSendTo}&typeName=${param.typeName}&status=${param.status}&sort=${param.sort}&size=${param.size}">Previous</a>
-                    </c:if>
-                    <!-- Phần phân trang -->
-                    <div class="page-link-container">
-                        <c:choose>
-                            <c:when test="${totalPages <= 5}">
-                                <c:forEach begin="1" end="${totalPages}" var="i">
+                    </c:forEach>
+                </tbody>
+            </table>
+            <div class="pre-next-Btn">
+                <!-- Nút Previous -->
+                <c:if test="${currentPage > 1}">
+                    <a class="page-link" href="ViewStaffApplication?staffId=${sessionScope.staff.id}&page=${currentPage - 1}&staffName=${param.staffName}&dateSendFrom=${param.dateSendFrom}&dateSendTo=${param.dateSendTo}&typeName=${param.typeName}&status=${param.status}&sort=${param.sort}&size=${param.size}">Previous</a>
+                </c:if>
+                <!-- Phần phân trang -->
+                <div class="page-link-container">
+                    <c:choose>
+                        <c:when test="${totalPages <= 5}">
+                            <c:forEach begin="1" end="${totalPages}" var="i">
+                                <a class="page-link ${i == currentPage ? 'active' : ''}" href="ViewStaffApplication?staffId=${sessionScope.staff.id}&page=${i}&staffName=${param.staffName}&dateSendFrom=${param.dateSendFrom}&dateSendTo=${param.dateSendTo}&typeName=${param.typeName}&status=${param.status}&sort=${param.sort}&size=${param.size}">${i}</a>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <a class="page-link ${currentPage == 1 ? 'active' : ''}" href="ViewStaffApplication?staffId=${sessionScope.staff.id}&page=1&staffName=${param.staffName}&dateSendFrom=${param.dateSendFrom}&dateSendTo=${param.dateSendTo}&typeName=${param.typeName}&status=${param.status}&sort=${param.sort}&size=${param.size}">1</a>
+                            <c:if test="${currentPage > 2}">
+                                <span class="page-link">...</span>
+                            </c:if>
+
+                            <c:forEach begin="${currentPage - 1}" end="${currentPage + 1}" var="i">
+                                <c:if test="${i > 1 && i < totalPages}">
                                     <a class="page-link ${i == currentPage ? 'active' : ''}" href="ViewStaffApplication?staffId=${sessionScope.staff.id}&page=${i}&staffName=${param.staffName}&dateSendFrom=${param.dateSendFrom}&dateSendTo=${param.dateSendTo}&typeName=${param.typeName}&status=${param.status}&sort=${param.sort}&size=${param.size}">${i}</a>
-                                </c:forEach>
-                            </c:when>
-                            <c:otherwise>
-                                <a class="page-link ${currentPage == 1 ? 'active' : ''}" href="ViewStaffApplication?staffId=${sessionScope.staff.id}&page=1&staffName=${param.staffName}&dateSendFrom=${param.dateSendFrom}&dateSendTo=${param.dateSendTo}&typeName=${param.typeName}&status=${param.status}&sort=${param.sort}&size=${param.size}">1</a>
-                                <c:if test="${currentPage > 2}">
-                                    <span class="page-link">...</span>
                                 </c:if>
+                            </c:forEach>
 
-                                <c:forEach begin="${currentPage - 1}" end="${currentPage + 1}" var="i">
-                                    <c:if test="${i > 1 && i < totalPages}">
-                                        <a class="page-link ${i == currentPage ? 'active' : ''}" href="ViewStaffApplication?staffId=${sessionScope.staff.id}&page=${i}&staffName=${param.staffName}&dateSendFrom=${param.dateSendFrom}&dateSendTo=${param.dateSendTo}&typeName=${param.typeName}&status=${param.status}&sort=${param.sort}&size=${param.size}">${i}</a>
-                                    </c:if>
-                                </c:forEach>
-
-                                <c:if test="${currentPage < totalPages - 2}">
-                                    <span class="page-link">...</span>
-                                </c:if>
-                                <a class="page-link ${currentPage == totalPages ? 'active' : ''}" href="ViewStaffApplication?staffId=${sessionScope.staff.id}&page=${totalPages}&staffName=${param.staffName}&dateSendFrom=${param.dateSendFrom}&dateSendTo=${param.dateSendTo}&typeName=${param.typeName}&status=${param.status}&sort=${param.sort}&size=${param.size}">${totalPages}</a>
-                            </c:otherwise>
-                        </c:choose>
-                    </div>
-                    <!-- Nút Next -->
-                    <c:if test="${currentPage < totalPages}">
-                        <a class="page-link" href="ViewStaffApplication?staffId=${sessionScope.staff.id}&page=${currentPage + 1}&staffName=${param.staffName}&dateSendFrom=${param.dateSendFrom}&dateSendTo=${param.dateSendTo}&typeName=${param.typeName}&status=${param.status}&sort=${param.sort}&size=${param.size}">Next</a>
-                    </c:if>
+                            <c:if test="${currentPage < totalPages - 2}">
+                                <span class="page-link">...</span>
+                            </c:if>
+                            <a class="page-link ${currentPage == totalPages ? 'active' : ''}" href="ViewStaffApplication?staffId=${sessionScope.staff.id}&page=${totalPages}&staffName=${param.staffName}&dateSendFrom=${param.dateSendFrom}&dateSendTo=${param.dateSendTo}&typeName=${param.typeName}&status=${param.status}&sort=${param.sort}&size=${param.size}">${totalPages}</a>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
+                <!-- Nút Next -->
+                <c:if test="${currentPage < totalPages}">
+                    <a class="page-link" href="ViewStaffApplication?staffId=${sessionScope.staff.id}&page=${currentPage + 1}&staffName=${param.staffName}&dateSendFrom=${param.dateSendFrom}&dateSendTo=${param.dateSendTo}&typeName=${param.typeName}&status=${param.status}&sort=${param.sort}&size=${param.size}">Next</a>
+                </c:if>
             </div>
-        </div>
 
     </body>
 </html>

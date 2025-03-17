@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controller.guest;
+package controller.HRController;
 
 import dao.PostDAO;
 import java.io.IOException;
@@ -13,16 +13,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
 import model.Post;
 
 /**
  *
  * @author admin
  */
-@WebServlet(name="PostViewServlet", urlPatterns={"/viewPost"})
-public class PostViewServlet extends HttpServlet {
-   private final PostDAO postDAO = new PostDAO();
+@WebServlet(name="DeletePostController", urlPatterns={"/hr/delete-post"})
+public class DeletePostController extends HttpServlet {
+   
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -33,17 +32,15 @@ public class PostViewServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet PostViewServlet</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet PostViewServlet at " + request.getContextPath () + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        try {
+            String postId = request.getParameter("id");
+            PostDAO dao = new PostDAO();
+            Post p = new Post();
+            p.setId(Integer.parseInt(postId));
+            dao.delete(p);
+            request.getRequestDispatcher("/hr/posts").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     } 
 
@@ -58,45 +55,7 @@ public class PostViewServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String action = request.getParameter("action");
-        List<Post> posts = null;
-
-        // Xử lý tìm kiếm
-        String keyword = request.getParameter("keyword");
-        if (keyword != null && !keyword.isEmpty()) {
-            posts = postDAO.search(keyword);
-        }
-
-        // Lọc theo trạng thái
-        String statusParam = request.getParameter("status");
-        if (statusParam != null) {
-            boolean status = "1".equals(statusParam);
-            posts = postDAO.filterByStatus(status);
-        }
-
-        // Sắp xếp theo ngày
-        String sortDate = request.getParameter("sortDate");
-        if ("asc".equals(sortDate)) {
-            posts = postDAO.sortByDate(true); // Cũ nhất
-        } else if ("desc".equals(sortDate)) {
-            posts = postDAO.sortByDate(false); // Mới nhất
-        }
-
-        // Sắp xếp theo tiêu đề
-        String sortTitle = request.getParameter("sortTitle");
-        if ("asc".equals(sortTitle)) {
-            posts = postDAO.sortByTitle(true); // A-Z
-        } else if ("desc".equals(sortTitle)) {
-            posts = postDAO.sortByTitle(false); // Z-A
-        }
-
-        if (posts == null) {
-            posts = postDAO.list(); // Nếu không có filter nào, lấy tất cả
-        }
-
-        request.setAttribute("posts", posts);
-        request.getRequestDispatcher("viewPosts.jsp").forward(request, response);
-    
+        processRequest(request, response);
     } 
 
     /** 

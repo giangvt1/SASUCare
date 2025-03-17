@@ -84,6 +84,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="${pageContext.request.contextPath}/hr/posts">
+                        <i class="fa fa-globe"></i> <span>Post List</span>
+                    </a>
+                </li>
+                <li>
                     <a href="${pageContext.request.contextPath}/hr/appointments">
                         <i class="fa fa-table"></i> <span>Approve Appointment</span>
                     </a>
