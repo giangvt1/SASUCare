@@ -228,6 +228,10 @@
         <servlet-name>MedicalRecordController</servlet-name>
         <servlet-class>controller.customermanagement.MedicalRecordController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>InvoiceManagementController</servlet-name>
+        <servlet-class>controller.financial.InvoiceManagementController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
         <url-pattern>/forgetpassword</url-pattern>
@@ -539,5 +543,9 @@
     <servlet-mapping>
         <servlet-name>MedicalRecordController</servlet-name>
         <url-pattern>/record</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>InvoiceManagementController</servlet-name>
+        <url-pattern>/finance/InvoiceManagement</url-pattern>
     </servlet-mapping>
 </web-app>

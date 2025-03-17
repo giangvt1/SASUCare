@@ -5,6 +5,8 @@ import model.Invoice;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import model.Customer;
+import model.Service;
 
 public class InvoiceDBContext extends DBContext<Invoice> {
     // Method to get invoice by appointment ID
@@ -70,8 +72,8 @@ public class InvoiceDBContext extends DBContext<Invoice> {
                 + "[service_id], "
                 + "[vnp_TxnRef], "
                 + "[status], "
-                + "[appointment_id] "+
-                "FROM [Invoices] WHERE id = ?";
+                + "[appointment_id] "
+                + "FROM [Invoices] WHERE id = ?";
         Invoice invoice = null;
 
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
@@ -84,8 +86,12 @@ public class InvoiceDBContext extends DBContext<Invoice> {
                 invoice.setOrderInfo(rs.getString("order_info"));  // Corrected column name
                 invoice.setCreatedDate(rs.getDate("created_date")); // Corrected column name
                 invoice.setExpireDate(rs.getDate("expire_date"));  // Corrected column name
-                invoice.setCustomerId(rs.getInt("customer_id"));   // Corrected column name
-                invoice.setServiceId(rs.getInt("service_id"));     // Corrected column name
+                Customer customer = new Customer();
+                customer.setId(rs.getInt("customer_id"));
+                invoice.setCustomer(customer);
+                Service service = new Service();
+                service.setId(rs.getInt("service_id"));
+                invoice.setService(service);   // Corrected column name
                 invoice.setTxnRef(rs.getString("vnp_TxnRef"));
                 invoice.setStatus(rs.getString("status"));         // Corrected column name
                 invoice.setAppointmentId(rs.getInt("appointment_id")); // Corrected column name
@@ -99,7 +105,7 @@ public class InvoiceDBContext extends DBContext<Invoice> {
 
     // Optional: Method to retrieve a list of invoices for a customer
     public List<Invoice> getInvoicesByCustomerId(int customerId) {
-        String sql = "SELECT * FROM Invoice sWHERE customerId = ?";
+        String sql = "SELECT * FROM Invoice sWHERE customer_id = ?";
         List<Invoice> invoices = new ArrayList<>();
 
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
@@ -112,8 +118,12 @@ public class InvoiceDBContext extends DBContext<Invoice> {
 //                invoice.setAmount(rs.getLong("amount"));
                 invoice.setOrderInfo(rs.getString("orderInfo"));
                 invoice.setOrderType(rs.getString("orderType"));
-                invoice.setCustomerId(rs.getInt("customerId"));
-                invoice.setServiceId(rs.getInt("serviceId"));
+                Customer customer = new Customer();
+                customer.setId(rs.getInt("customer_id"));
+                invoice.setCustomer(customer);
+                Service service = new Service();
+                service.setId(rs.getInt("service_id"));
+                invoice.setService(service);
                 invoice.setCreatedDate(rs.getDate("createdDate"));
                 invoice.setExpireDate(rs.getDate("expireDate"));
                 invoice.setTxnRef(rs.getString("txnRef"));
@@ -145,4 +155,44 @@ public class InvoiceDBContext extends DBContext<Invoice> {
     public Invoice get(String id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
+    public List<Invoice> getAllInvoices() {
+        List<Invoice> invoices = new ArrayList<>();
+        String sql = """
+                     SELECT [id]
+                           ,[order_info]
+                           ,[created_date]
+                           ,[expire_date]
+                           ,[customer_id]
+                           ,[service_id]
+                           ,[vnp_TxnRef]
+                           ,[status]
+                           ,[appointment_id]
+                       FROM [dbo].[Invoices]
+                     """;
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                Invoice inv = new Invoice();
+                inv.setId(rs.getInt("id"));
+                inv.setOrderInfo(rs.getString("order_info"));
+                inv.setCreatedDate(rs.getTimestamp("created_date"));
+                inv.setExpireDate(rs.getTimestamp("expire_date"));
+                Customer customer=new Customer();
+                customer.setId(rs.getInt("customer_id"));
+                inv.setCustomer(customer);
+                Service service =new Service();
+                service.setId(rs.getInt("service_id"));
+                inv.setService(service);
+                inv.setTxnRef(rs.getString("vnp_TxnRef"));
+                inv.setStatus(rs.getString("status"));
+                inv.setAppointmentId(rs.getInt("appointment_id"));
+                invoices.add(inv);
+            }
+        } catch (SQLException ex) {
+            System.err.println("Error while retrieving invoices: " + ex.getMessage());
+        }
+        return invoices;
+    }
+
 }

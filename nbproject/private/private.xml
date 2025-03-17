@@ -59,9 +59,6 @@
             <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/HRController/CalendarDoctorManageController.java</file>
         </group>
         <group>
-            <file>file:/D:/Ky%205/SWP/DoctorSide/SWP391_GROUP6/web/WEB-INF/web.xml</file>
-        </group>
-        <group>
             <file>file:/D:/Ky%205/SWP/DoctorSide/SWP391_GROUP6/src/java/model/TypeApplication.java</file>
             <file>file:/D:/Ky%205/SWP/DoctorSide/SWP391_GROUP6/src/java/controller/HRController/ViewStaffApplication.java</file>
             <file>file:/D:/Ky%205/SWP/DoctorSide/SWP391_GROUP6/web/Home.jsp</file>
@@ -141,6 +138,14 @@
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/doctor/EditCertificate.java</file>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/doctor/DoctorCalendar.jsp</file>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/CalendarDoctorManageController.java</file>
+        </group>
+        <group>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/finance/invoiceManagement.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/doctor/DoctorCalendarController.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/model/Invoice.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/InvoiceDBContext.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/financial/InvoiceManagementController.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/doctor/DoctorCalendar.jsp</file>
         </group>
     </open-files>
 </project-private>
