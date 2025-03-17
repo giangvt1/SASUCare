@@ -46,15 +46,17 @@ console.log("currentSessionId: " + currentSessionId);
     } else {
       // Session ID mismatch or not present, clear old data
       console.log("action delete user");
-      console.log("email local storage: " + localStorage.getItem("userEmail"))
+      console.log("email local storage: " + localStorage.getItem("userEmail"));
+      console.log("userInfoSubmitted: " + localStorage.getItem()("userInfoSubmitted"));
+      localStorage.removeItem("userInfoSubmitted");
     socket.send(JSON.stringify({
         action: "deleteUser",
         email: localStorage.getItem("userEmail")
     }));
-    console.log("delete: ");
+    
       
       localStorage.removeItem("chatMessages");
-      localStorage.removeItem("userInfoSubmitted");
+      
       localStorage.removeItem("userFullName");
       localStorage.removeItem("userEmail");
       localStorage.removeItem("userRole");

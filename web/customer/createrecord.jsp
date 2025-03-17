@@ -8,7 +8,7 @@
     <!-- Bootstrap 5 CSS (CDN) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Custom CSS nếu cần -->
+    <!-- Custom CSS -->
     <style>
         .form-label {
             font-weight: 500;
@@ -36,13 +36,13 @@
         <div class="form-container">
             <h4 class="mb-3">Thông tin bắt buộc nhập</h4>
             <form id="registrationForm" action="${pageContext.request.contextPath}/record" method="post">
-                <!-- Nếu action update thì gửi thêm thông tin action và record_id (nếu cần) -->
+                <!-- Hidden fields for update action -->
                 <c:if test="${action == 'update'}">
                     <input type="hidden" name="action" value="update"/>
                     <input type="hidden" name="recordId" value="${record.record_id}"/>
                 </c:if>
                 
-                <!-- Họ và tên, Ngày sinh -->
+                <!-- Full Name and Date of Birth -->
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="fullName" class="form-label required">Họ và tên (CHỮ IN HOA, có dấu)</label>
@@ -57,7 +57,7 @@
                     </div>
                 </div>
 
-                <!-- Số điện thoại, Giới tính -->
+                <!-- Phone Number and Gender -->
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="phone" class="form-label required">Số điện thoại</label>
@@ -76,7 +76,7 @@
                     </div>
                 </div>
 
-                <!-- Nghề nghiệp, Mã định danh/CCCD/Passport -->
+                <!-- Occupation and ID Number -->
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="job" class="form-label required">Nghề nghiệp</label>
@@ -87,13 +87,13 @@
                         <label for="idNumber" class="form-label required">Mã định danh/CCCD/Passport</label>
                         <input type="text" class="form-control" id="idNumber" name="idNumber"
                                placeholder="Nhập số CCCD/Passport" required
-                               pattern="^(\\d{12}|[A-Z0-9]{8,9})$"
+                               pattern="^(\d{12}|[A-Z0-9]{8,9})$"
                                title="Nhập CCCD (12 chữ số) hoặc Passport (8-9 ký tự, chữ in hoa và số)"
                                value="<c:out value='${action == "update" ? record.idNumber : ""}'/>">
                     </div>
                 </div>
 
-                <!-- Địa chỉ Email, Dân tộc -->
+                <!-- Email and Ethnicity -->
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="email" class="form-label">Địa chỉ Email</label>
@@ -111,7 +111,7 @@
                 <hr class="my-4">
                 <h5 class="mb-3">Địa chỉ theo CCCD</h5>
 
-                <!-- Tỉnh/Thành, Quận/Huyện -->
+                <!-- Province and District -->
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="province" class="form-label required">Tỉnh/Thành</label>
@@ -127,7 +127,7 @@
                     </div>
                 </div>
 
-                <!-- Phường/Xã, Số nhà/Tên đường/Ấp thôn xóm -->
+                <!-- Ward and Address Details -->
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="ward" class="form-label required">Phường/Xã</label>
@@ -143,6 +143,7 @@
                     </div>
                 </div>
 
+                <!-- Form Buttons -->
                 <div class="d-flex justify-content-end">
                     <button type="reset" class="btn btn-secondary me-2">Nhập lại</button>
                     <button type="submit" class="btn btn-primary">
@@ -160,10 +161,11 @@
         </div>
     </div>
     <jsp:include page="/Footer.jsp"/>
+
     <!-- Bootstrap 5 JS (CDN) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- JavaScript kiểm tra đầu vào -->
+    <!-- Input Validation JavaScript -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const today = new Date().toISOString().split("T")[0];
@@ -172,56 +174,161 @@
 
         document.getElementById("registrationForm").addEventListener("submit", function(e) {
             let valid = true;
+            let errorMessage = "";
 
-            // Kiểm tra Họ và tên: chỉ kiểm tra định dạng cho phép chữ cái có dấu và khoảng trắng
-            const fullName = document.getElementById("fullName").value.trim();
+            // Validate Full Name
+            const fullNameInput = document.getElementById("fullName").value;
+            const fullNameTrimmed = fullNameInput.trim();
+            if (fullNameInput !== fullNameTrimmed) {
+                errorMessage += "Họ và tên không được bắt đầu hoặc kết thúc bằng dấu cách.\n";
+                valid = false;
+            } else {
+                const nameRegex = /^[A-ZÀ-ỸĂÂĐÊÔƠƯ]+(?: [A-ZÀ-ỸĂÂĐÊÔƠƯ]+)*$/;
+                if (!nameRegex.test(fullNameTrimmed)) {
+                    errorMessage += "Họ và tên phải là chữ in hoa, có dấu, không chứa số hoặc ký tự đặc biệt, và không có nhiều hơn một dấu cách giữa các từ.\n";
+                    valid = false;
+                } else if (fullNameTrimmed.includes("  ")) {
+                    errorMessage += "Họ và tên không được chứa nhiều dấu cách liên tiếp.\n";
+                    valid = false;
+                }
+            }
 
-            // Kiểm tra Ngày sinh (không cho phép ngày tương lai)
+            // Validate Date of Birth
             const dobValue = document.getElementById("dob").value;
             if (dobValue) {
                 const dobDate = new Date(dobValue);
                 const today = new Date();
                 if (dobDate > today) {
-                    alert("Ngày sinh không được lớn hơn ngày hiện tại.");
+                    errorMessage += "Ngày sinh không được lớn hơn ngày hiện tại.\n";
+                    valid = false;
+                }
+            } else {
+                errorMessage += "Vui lòng nhập ngày sinh.\n";
+                valid = false;
+            }
+
+            // Validate Phone Number
+            const phone = document.getElementById("phone").value.trim();
+            const phoneRegex = /^0\d{9,10}$/;
+            if (!phoneRegex.test(phone)) {
+                errorMessage += "Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại bắt đầu bằng số 0 và có 10-11 chữ số.\n";
+                valid = false;
+            }
+
+            // Validate Gender
+            const gender = document.getElementById("gender").value;
+            if (gender === "") {
+                errorMessage += "Vui lòng chọn giới tính.\n";
+                valid = false;
+            }
+
+            // Validate Occupation
+            const jobInput = document.getElementById("job").value;
+            const jobTrimmed = jobInput.trim();
+            if (jobTrimmed === "") {
+                errorMessage += "Vui lòng nhập nghề nghiệp.\n";
+                valid = false;
+            } else if (jobInput !== jobTrimmed) {
+                errorMessage += "Nghề nghiệp không được bắt đầu hoặc kết thúc bằng dấu cách.\n";
+                valid = false;
+            } else if (jobTrimmed.includes("  ")) {
+                errorMessage += "Nghề nghiệp không được chứa nhiều dấu cách liên tiếp.\n";
+                valid = false;
+            }
+
+            // Validate ID Number
+            const idNumber = document.getElementById("idNumber").value.trim();
+            const idRegex = /^(\d{12}|[A-Z0-9]{8,9})$/;
+            if (!idRegex.test(idNumber)) {
+                errorMessage += "Mã định danh/CCCD/Passport không hợp lệ. Vui lòng nhập CCCD (12 chữ số) hoặc Passport (8-9 ký tự, chữ in hoa và số).\n";
+                valid = false;
+            }
+
+            // Validate Email
+            const email = document.getElementById("email").value.trim();
+            if (email !== "") {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    errorMessage += "Địa chỉ Email không hợp lệ.\n";
                     valid = false;
                 }
             }
 
-            // Kiểm tra Số điện thoại
-            const phone = document.getElementById("phone").value.trim();
-            const phoneRegex = /^0\d{9,10}$/;
-            if (!phoneRegex.test(phone)) {
-                alert("Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại bắt đầu bằng số 0 và có 10-11 chữ số.");
+            // Validate Ethnicity
+            const nationInput = document.getElementById("nation").value;
+            const nationTrimmed = nationInput.trim();
+            if (nationTrimmed !== "") {
+                if (nationInput !== nationTrimmed) {
+                    errorMessage += "Dân tộc không được bắt đầu hoặc kết thúc bằng dấu cách.\n";
+                    valid = false;
+                } else if (nationTrimmed.includes("  ")) {
+                    errorMessage += "Dân tộc không được chứa nhiều dấu cách liên tiếp.\n";
+                    valid = false;
+                }
+            }
+
+            // Validate Province
+            const provinceInput = document.getElementById("province").value;
+            const provinceTrimmed = provinceInput.trim();
+            if (provinceTrimmed === "") {
+                errorMessage += "Vui lòng nhập Tỉnh/Thành.\n";
+                valid = false;
+            } else if (provinceInput !== provinceTrimmed) {
+                errorMessage += "Tỉnh/Thành không được bắt đầu hoặc kết thúc bằng dấu cách.\n";
+                valid = false;
+            } else if (provinceTrimmed.includes("  ")) {
+                errorMessage += "Tỉnh/Thành không được chứa nhiều dấu cách liên tiếp.\n";
                 valid = false;
             }
 
-            // Kiểm tra Giới tính đã chọn
-            const gender = document.getElementById("gender").value;
-            if (gender === "") {
-                alert("Vui lòng chọn giới tính.");
+            // Validate District
+            const districtInput = document.getElementById("district").value;
+            const districtTrimmed = districtInput.trim();
+            if (districtTrimmed === "") {
+                errorMessage += "Vui lòng nhập Quận/Huyện.\n";
+                valid = false;
+            } else if (districtInput !== districtTrimmed) {
+                errorMessage += "Quận/Huyện không được bắt đầu hoặc kết thúc bằng dấu cách.\n";
+                valid = false;
+            } else if (districtTrimmed.includes("  ")) {
+                errorMessage += "Quận/Huyện không được chứa nhiều dấu cách liên tiếp.\n";
                 valid = false;
             }
 
-            // Kiểm tra Nghề nghiệp
-            const job = document.getElementById("job").value.trim();
-            if (job === "") {
-                alert("Vui lòng nhập nghề nghiệp.");
+            // Validate Ward
+            const wardInput = document.getElementById("ward").value;
+            const wardTrimmed = wardInput.trim();
+            if (wardTrimmed === "") {
+                errorMessage += "Vui lòng nhập Phường/Xã.\n";
+                valid = false;
+            } else if (wardInput !== wardTrimmed) {
+                errorMessage += "Phường/Xã không được bắt đầu hoặc kết thúc bằng dấu cách.\n";
+                valid = false;
+            } else if (wardTrimmed.includes("  ")) {
+                errorMessage += "Phường/Xã không được chứa nhiều dấu cách liên tiếp.\n";
                 valid = false;
             }
 
-            // Kiểm tra Mã định danh/CCCD/Passport
-            const idNumber = document.getElementById("idNumber").value.trim();
-            const idRegex = /^(\d{12}|[A-Z0-9]{8,9})$/;
-            if (!idRegex.test(idNumber)) {
-                alert("Mã định danh/CCCD/Passport không hợp lệ. Vui lòng nhập CCCD (12 chữ số) hoặc Passport (8-9 ký tự, chữ in hoa và số).");
+            // Validate Address Detail
+            const addressDetailInput = document.getElementById("addressDetail").value;
+            const addressDetailTrimmed = addressDetailInput.trim();
+            if (addressDetailTrimmed === "") {
+                errorMessage += "Vui lòng nhập Số nhà/Tên đường/Ấp thôn xóm.\n";
+                valid = false;
+            } else if (addressDetailInput !== addressDetailTrimmed) {
+                errorMessage += "Địa chỉ chi tiết không được bắt đầu hoặc kết thúc bằng dấu cách.\n";
+                valid = false;
+            } else if (addressDetailTrimmed.includes("  ")) {
+                errorMessage += "Địa chỉ chi tiết không được chứa nhiều dấu cách liên tiếp.\n";
                 valid = false;
             }
 
+            // Display errors and prevent submission if invalid
             if (!valid) {
+                alert(errorMessage);
                 e.preventDefault();
             }
         });
     </script>
-
 </body>
 </html>

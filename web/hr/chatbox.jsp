@@ -142,6 +142,7 @@
                 updateOnlineUsers(data.onlineUsers);
             } else if (data.action === "clearChat" && role === "HR") {
                 let userEmail = data.userEmail;
+                console.log("useremailssssss: " + userEmail);
                 if (chatHistory[userEmail]) {
                     delete chatHistory[userEmail];
                     saveChatHistory();
@@ -150,7 +151,7 @@
                     }
                 }
                 // Xóa người dùng khỏi danh sách giao diện
-                const userElement = document.querySelector(`.user-item[data-email="${userEmail}"]`);
+                const userElement = document.querySelector(`.user-item[data-email="`+ userEmail +`"]`);
                 if (userElement) {
                     userElement.remove();
                 }
@@ -174,8 +175,8 @@
 
                 saveChatHistory();
             } else if (data.action === "assignSuccess" && role === "HR") {
-                console.log(`User ${data.userEmail} assigned to doctor ${data.doctorEmail}`);
-                const userElement = document.querySelector(`.user-item[data-email="${data.userEmail}"]`);
+                console.log(`User `+ data.userEmail +` assigned to doctor `+ data.doctorEmail +``);
+                const userElement = document.querySelector(`.user-item[data-email="`+ data.userEmail +`"]`);
                 if (userElement) {
                     userElement.remove();
                 }
@@ -211,8 +212,8 @@
                             <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp" alt="avatar"
                                  class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
                             <div class="pt-1">
-                                <p class="fw-bold mb-0">${user.fullName}</p>
-                                <p class="small text-muted">${user.email}</p>
+                                <p class="fw-bold mb-0">`+ user.fullName +`</p>
+                                <p class="small text-muted">`+ user.email +`</p>
                             </div>
                         </div>
                         <div class="pt-1">
@@ -243,8 +244,8 @@
                             <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp" alt="avatar"
                                  class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
                             <div class="pt-1">
-                                <p class="fw-bold mb-0">${user.fullName}</p>
-                                <p class="small text-muted">${user.email}</p>
+                                <p class="fw-bold mb-0">` + user.fullName +  `</p>
+                                <p class="small text-muted">` + user.email + `</p>
                             </div>
                         </div>
                         <div class="pt-1">
@@ -301,7 +302,7 @@
                 messageElement.innerHTML = `
                     <div class="d-flex justify-content-end mb-2">
                         <div class="card-body p-2 px-3 bg-primary text-white" style="border-radius: 20px;">
-                            <p class="mb-0">${message}</p>
+                            <p class="mb-0">`+ message +`</p>
                         </div>
                     </div>
                 `;
@@ -311,7 +312,7 @@
                     <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp" alt="avatar" class="me-3 rounded-circle d-flex align-self-center shadow-1-strong" width="60">
                     <div class="d-flex justify-content-start mb-2">
                         <div class="card-body p-2 px-3 bg-light text-dark" style="border-radius: 20px;">
-                            <p class="mb-0">${message}</p>
+                            <p class="mb-0">`+ message +`</p>
                         </div>
                     </div>
                 `;
@@ -370,7 +371,7 @@
                     selectedUserEmail = null;
                     localStorage.removeItem("selectedUserEmail");
                 }
-                const userItem = document.querySelector(`.user-item[data-email="${email}"]`);
+                const userItem = document.querySelector(`.user-item[data-email="`+ email +`"]`);
                 if (userItem) {
                     userItem.remove();
                 }
@@ -384,10 +385,10 @@
         function exportChatHistory(email, fullName) {
             if (chatHistory[email]) {
                 const messages = chatHistory[email];
-                let textContent = `Chat history with ${fullName} (${email})\n\n`;
+                let textContent = `Chat history with `+ fullName +` (`+ email +`)\n\n`;
                 messages.forEach(msgObj => {
                     const prefix = msgObj.type === "sent" ? "[Sent]" : "[Received]";
-                    textContent += `${prefix} ${msgObj.message}\n`;
+                    textContent += ``+ prefix +` `+ msgObj.message +`\n`;
                 });
                 socket.send(JSON.stringify({
                     action: "exportChat",
