@@ -122,10 +122,14 @@
                     </a>
                 </li>
             </c:if>
-                <c:if test="${allowedUrls != null and (allowedUrls.contains('/finance/InvoiceManagement'))}">
+            <c:if test="${allowedUrls != null and (allowedUrls.contains('/finance/InvoiceManagement'))}">
                 <li>
                     <a href="../finance/InvoiceManagement">
                         <i class="fa fa-envelope"></i> <span>Invoices management</span>
+                    </a>
+                </li><li>
+                    <a href="../finance/doctorsalary">
+                        <i class="fa fa-envelope"></i> <span>Doctor Salary</span>
                     </a>
                 </li>
             </c:if>

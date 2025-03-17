@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.DoctorSalaryStat;
 
 public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
 
@@ -352,4 +353,111 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
             return false;
         }
     }
+
+    public List<DoctorSalaryStat> getDoctorSalaryStats(Date start, Date end, String search,
+            String sortField, String sortDir, int offset, int pageSize) {
+        List<DoctorSalaryStat> stats = new ArrayList<>();
+
+        // Câu truy vấn cơ bản, thêm điều kiện ds.available = 1 để chỉ tính những ca làm việc khả dụng
+        String sql = """
+        SELECT d.id as DoctorId, st.fullname as DoctorName, COUNT(*) as ShiftCount, 
+               d.price as SalaryRate, d.salaryCoefficient as SalaryCoefficient
+        FROM Doctor_Schedule ds
+        JOIN Doctor d ON ds.doctor_id = d.id
+        JOIN Staff st ON d.staff_id = st.id
+        WHERE ds.schedule_date BETWEEN ? AND ? AND ds.available = 1
+        """;
+
+        // Nếu có từ khóa tìm kiếm, thêm điều kiện
+        if (search != null && !search.trim().isEmpty()) {
+            sql += " AND st.fullname LIKE ? ";
+        }
+
+        sql += " GROUP BY d.id, st.fullname, d.price, d.salaryCoefficient ";
+
+        // Xử lý sắp xếp, chỉ cho phép các giá trị cụ thể
+        if (sortField != null) {
+            switch (sortField) {
+                case "DoctorName":
+                    sql += " ORDER BY st.fullname " + ("desc".equalsIgnoreCase(sortDir) ? "DESC" : "ASC");
+                    break;
+                case "ShiftCount":
+                    sql += " ORDER BY COUNT(*) " + ("desc".equalsIgnoreCase(sortDir) ? "DESC" : "ASC");
+                    break;
+                case "TotalSalary":
+                    // Tổng lương = COUNT(*) * d.price * d.salaryCoefficient
+                    sql += " ORDER BY (COUNT(*) * d.price * d.salaryCoefficient) " + ("desc".equalsIgnoreCase(sortDir) ? "DESC" : "ASC");
+                    break;
+                default:
+                    sql += " ORDER BY st.fullname ASC";
+                    break;
+            }
+        } else {
+            sql += " ORDER BY st.fullname ASC";
+        }
+
+        // Áp dụng phân trang: OFFSET FETCH
+        sql += " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            int index = 1;
+            stm.setDate(index++, start);
+            stm.setDate(index++, end);
+            if (search != null && !search.trim().isEmpty()) {
+                stm.setString(index++, "%" + search + "%");
+            }
+            stm.setInt(index++, offset);
+            stm.setInt(index++, pageSize);
+
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                DoctorSalaryStat stat = new DoctorSalaryStat();
+                stat.setDoctorId(rs.getInt("DoctorId"));
+                stat.setDoctorName(rs.getString("DoctorName"));
+                stat.setShiftCount(rs.getInt("ShiftCount"));
+                double salaryRate = rs.getDouble("SalaryRate");
+                double coefficient = rs.getDouble("SalaryCoefficient");
+                stat.setSalaryRate(salaryRate);
+                stat.setTotalSalary(stat.getShiftCount() * salaryRate * coefficient);
+                stats.add(stat);
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error fetching doctor salary stats: {0}", ex.getMessage());
+        }
+        return stats;
+    }
+
+    public int countDoctorSalaryStats(Date start, Date end, String search) {
+        int total = 0;
+        String sql = """
+        SELECT COUNT(*) as Total
+        FROM (
+            SELECT d.id
+            FROM Doctor_Schedule ds
+            JOIN Doctor d ON ds.doctor_id = d.id
+            JOIN Staff st ON d.staff_id = st.id
+            WHERE ds.schedule_date BETWEEN ? AND ? AND ds.available = 1
+        """;
+        if (search != null && !search.trim().isEmpty()) {
+            sql += " AND st.fullname LIKE ? ";
+        }
+        sql += " GROUP BY d.id, st.fullname, d.price, d.salaryCoefficient) AS T";
+
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            int index = 1;
+            stm.setDate(index++, start);
+            stm.setDate(index++, end);
+            if (search != null && !search.trim().isEmpty()) {
+                stm.setString(index++, "%" + search + "%");
+            }
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                total++; // Mỗi dòng đại diện 1 bác sĩ
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error counting doctor salary stats: {0}", ex.getMessage());
+        }
+        return total;
+    }
+
 }

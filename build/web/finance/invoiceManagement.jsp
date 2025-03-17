@@ -52,32 +52,6 @@
                     <th>Appointment ID</th>
                 </tr>
             </thead>
-            <tbody>
-                <!-- Kiểm tra xem danh sách invoice có trống hay không -->
-                <c:choose>
-                    <c:when test="${not empty invoiceList}">
-                        <!-- Nếu có dữ liệu, duyệt qua từng invoice -->
-                        <c:forEach var="inv" items="${invoiceList}">
-                            <tr>
-                                <td><c:out value="${inv.orderInfo}" /></td>
-                                <td><c:out value="${inv.createdDate}" /></td>
-                                <td><c:out value="${inv.expireDate}" /></td>
-                                <td><c:out value="${inv.customerId}" /></td>
-                                <td><c:out value="${inv.serviceId}" /></td>
-                                <td><c:out value="${inv.txnRef}" /></td>
-                                <td><c:out value="${inv.status}" /></td>
-                                <td><c:out value="${inv.appointmentId}" /></td>
-                            </tr>
-                        </c:forEach>
-                    </c:when>
-                    <c:otherwise>
-                        <!-- Nếu danh sách trống, hiển thị dòng thông báo -->
-                        <tr>
-                            <td class="no-data" colspan="9">Không có hóa đơn nào</td>
-                        </tr>
-                    </c:otherwise>
-                </c:choose>
-            </tbody>
         </table>
         </div>
     </body>

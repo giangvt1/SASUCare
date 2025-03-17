@@ -232,6 +232,10 @@
         <servlet-name>InvoiceManagementController</servlet-name>
         <servlet-class>controller.financial.InvoiceManagementController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DoctorSalaryStatController</servlet-name>
+        <servlet-class>controller.financial.DoctorSalaryStatController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
         <url-pattern>/forgetpassword</url-pattern>
@@ -547,5 +551,9 @@
     <servlet-mapping>
         <servlet-name>InvoiceManagementController</servlet-name>
         <url-pattern>/finance/InvoiceManagement</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DoctorSalaryStatController</servlet-name>
+        <url-pattern>/finance/doctorsalary</url-pattern>
     </servlet-mapping>
 </web-app>
