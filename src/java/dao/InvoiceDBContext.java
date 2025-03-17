@@ -27,11 +27,11 @@ public class InvoiceDBContext extends DBContext<Invoice> {
                 Customer customer = new Customer();
                 customer.setId(rs.getInt("customer_id"));
                 invoice.setCustomer(customer);
-                
+
                 Service service = new Service();
                 service.setId(rs.getInt("service_id"));
                 invoice.setService(service);
-                
+
                 invoice.setCreatedDate(rs.getTimestamp("created_date"));
                 invoice.setExpireDate(rs.getTimestamp("expire_date"));
                 invoice.setTxnRef(rs.getString("vnp_TxnRef"));
@@ -185,10 +185,10 @@ public class InvoiceDBContext extends DBContext<Invoice> {
                 inv.setOrderInfo(rs.getString("order_info"));
                 inv.setCreatedDate(rs.getTimestamp("created_date"));
                 inv.setExpireDate(rs.getTimestamp("expire_date"));
-                Customer customer=new Customer();
+                Customer customer = new Customer();
                 customer.setId(rs.getInt("customer_id"));
                 inv.setCustomer(customer);
-                Service service =new Service();
+                Service service = new Service();
                 service.setId(rs.getInt("service_id"));
                 inv.setService(service);
                 inv.setTxnRef(rs.getString("vnp_TxnRef"));
@@ -200,6 +200,176 @@ public class InvoiceDBContext extends DBContext<Invoice> {
             System.err.println("Error while retrieving invoices: " + ex.getMessage());
         }
         return invoices;
+    }
+
+    public List<Invoice> getInvoiceDetails(Date start, Date end, String rawSearch,
+            String sortField, String sortDir, int offset, int pageSize) {
+        List<Invoice> invoices = new ArrayList<>();
+
+        // Xử lý search: loại bỏ khoảng trắng thừa và thay thế nhiều khoảng trắng thành '%'
+        String searchPattern = null;
+        if (rawSearch != null) {
+            rawSearch = rawSearch.trim().replaceAll("\\s+", "%");
+            if (!rawSearch.isEmpty()) {
+                searchPattern = "%" + rawSearch + "%";
+            }
+        }
+
+        String sql = """
+        SELECT c.fullname as Customer_Name,
+               c.gmail as Customer_Gmail,
+               s.name as Service_Name,
+               i.order_info as Order_Info,
+               i.status as Status,
+               i.vnp_TxnRef as VNPAY_Id,
+               i.created_date,
+               i.expire_date,
+               s.price
+        FROM [test1].[dbo].[Invoices] i
+        LEFT JOIN Appointment a ON a.id = i.appointment_id
+        LEFT JOIN Customer c ON a.customer_id = c.id
+        LEFT JOIN Service s ON s.id = i.service_id
+        WHERE 1=1
+    """;
+
+        // Lọc theo khoảng thời gian (theo i.created_date)
+        if (start != null && end != null) {
+            sql += " AND i.created_date BETWEEN ? AND ? ";
+        }
+
+        // Tìm kiếm (trong fullname, order_info, service name)
+        if (searchPattern != null && !searchPattern.isEmpty()) {
+            sql += " AND (c.fullname LIKE ? OR i.order_info LIKE ? OR s.name LIKE ?) ";
+        }
+
+        // Xử lý sắp xếp: chỉ cho phép sắp xếp theo các trường cụ thể
+        if (sortField != null && !sortField.trim().isEmpty()) {
+            switch (sortField) {
+                case "orderInfo":
+                    sql += " ORDER BY i.order_info " + ("desc".equalsIgnoreCase(sortDir) ? "DESC" : "ASC");
+                    break;
+                case "createdDate":
+                    sql += " ORDER BY i.created_date " + ("desc".equalsIgnoreCase(sortDir) ? "DESC" : "ASC");
+                    break;
+                case "expireDate":
+                    sql += " ORDER BY i.expire_date " + ("desc".equalsIgnoreCase(sortDir) ? "DESC" : "ASC");
+                    break;
+                case "Customer_Name":
+                    sql += " ORDER BY c.fullname " + ("desc".equalsIgnoreCase(sortDir) ? "DESC" : "ASC");
+                    break;
+                case "Service_Name":
+                    sql += " ORDER BY s.name " + ("desc".equalsIgnoreCase(sortDir) ? "DESC" : "ASC");
+                    break;
+                case "Status":
+                    sql += " ORDER BY i.status " + ("desc".equalsIgnoreCase(sortDir) ? "DESC" : "ASC");
+                    break;
+                case "VNPAY_Id":
+                    sql += " ORDER BY i.vnp_TxnRef " + ("desc".equalsIgnoreCase(sortDir) ? "DESC" : "ASC");
+                    break;
+                default:
+                    sql += " ORDER BY i.created_date ASC";
+                    break;
+            }
+        } else {
+            sql += " ORDER BY i.created_date ASC";
+        }
+
+        // Áp dụng phân trang: OFFSET FETCH
+        sql += " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            int index = 1;
+            if (start != null && end != null) {
+                stm.setDate(index++, start);
+                stm.setDate(index++, end);
+            }
+            if (searchPattern != null && !searchPattern.isEmpty()) {
+                // 3 placeholder cho fullname, order_info và service name
+                stm.setString(index++, searchPattern);
+                stm.setString(index++, searchPattern);
+                stm.setString(index++, searchPattern);
+            }
+            stm.setInt(index++, offset);
+            stm.setInt(index++, pageSize);
+
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                Invoice inv = new Invoice();
+                inv.setOrderInfo(rs.getString("Order_Info"));
+                inv.setStatus(rs.getString("Status"));
+                inv.setTxnRef(rs.getString("VNPAY_Id"));
+                inv.setCreatedDate(rs.getTimestamp("created_date"));
+                inv.setExpireDate(rs.getTimestamp("expire_date"));
+
+                // Mapping thông tin khách hàng
+                Customer customer = new Customer();
+                customer.setFullname(rs.getString("Customer_Name"));
+                customer.setGmail(rs.getString("Customer_Gmail"));
+                inv.setCustomer(customer);
+
+                // Mapping thông tin dịch vụ
+                Service service = new Service();
+                service.setName(rs.getString("Service_Name"));
+                service.setPrice(rs.getDouble("price"));
+                inv.setService(service);
+
+                invoices.add(inv);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return invoices;
+    }
+
+    public int countInvoiceDetails(Date start, Date end, String rawSearch) {
+        int total = 0;
+        // Xử lý searchPattern: loại bỏ khoảng trắng thừa và thay thế nhiều khoảng trắng liên tiếp bằng '%'
+        String searchPattern = null;
+        if (rawSearch != null) {
+            rawSearch = rawSearch.trim().replaceAll("\\s+", "%");
+            if (!rawSearch.isEmpty()) {
+                searchPattern = "%" + rawSearch + "%";
+            }
+        }
+
+        String sql = """
+         SELECT COUNT(*) as Total
+         FROM (
+            SELECT i.id
+            FROM [test1].[dbo].[Invoices] i
+            LEFT JOIN Appointment a ON a.id = i.appointment_id
+            LEFT JOIN Customer c ON a.customer_id = c.id
+            LEFT JOIN Service s ON s.id = i.service_id
+            WHERE 1=1
+    """;
+        if (start != null && end != null) {
+            sql += " AND i.created_date BETWEEN ? AND ? ";
+        }
+        if (searchPattern != null && !searchPattern.isEmpty()) {
+            sql += " AND (c.fullname LIKE ? OR i.order_info LIKE ? OR s.name LIKE ?) ";
+        }
+        sql += " GROUP BY i.id ) AS T";
+
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            int index = 1;
+            if (start != null && end != null) {
+                stm.setDate(index++, start);
+                stm.setDate(index++, end);
+            }
+            if (searchPattern != null && !searchPattern.isEmpty()) {
+                stm.setString(index++, searchPattern);
+                stm.setString(index++, searchPattern);
+                stm.setString(index++, searchPattern);
+            }
+            ResultSet rs = stm.executeQuery();
+            // Vì SELECT COUNT(*) trả về 1 dòng, lấy trực tiếp giá trị của "Total"
+            if (rs.next()) {
+                total = rs.getInt("Total");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return total;
     }
 
 }
