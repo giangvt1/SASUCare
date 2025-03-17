@@ -132,7 +132,13 @@
                         <i class="fa fa-envelope"></i> <span>Doctor Salary</span>
                     </a>
                 </li>
+                <li>
+                    <a href="../finance/DoctorSalaryChart">
+                        <i class="fa fa-envelope"></i> <span>Doctor Salary Chart</span>
+                    </a>
+                </li>
             </c:if>
+                
             <%-- Add other menu items as needed --%>
         </ul>
     </section>
