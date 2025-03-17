@@ -237,7 +237,7 @@ public class AppointmentDBContext extends DBContext<Appointment> {
         JOIN Doctor_Schedule ds ON a.DocSchedule_id = ds.id
         JOIN Shift s ON ds.shift_id = s.id
         JOIN Customer c ON a.customer_id = c.id
-        WHERE a.doctor_id = ? AND ds.schedule_date = ?
+        WHERE a.doctor_id = ? AND ds.schedule_date = ? and status = 'Confirmed'
     """;
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {

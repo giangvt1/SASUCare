@@ -28,5 +28,12 @@
         <p>&copy; VNPAY 2025</p>
     </footer>
 </div>
+<!--     <script type="text/javascript">
+        // Redirect after 3 seconds
+        setTimeout(function() {
+            // Redirect to the invoice page
+            window.location.href = "../customer/invoice/${vnp_TxnRef}";
+        }, 3000); // 3000 milliseconds = 3 seconds
+    </script>-->
 </body>
 </html>

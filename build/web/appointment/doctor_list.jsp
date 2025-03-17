@@ -56,21 +56,22 @@
             </div>
         </div>
 
-        <!-- Doctor List Table -->
-        <!-- Main container with sidebar and content -->
         <div class="container">
-            <!-- Sidebar for Doctor Details -->
-            <div class="sidebar doctor-sidebar" id="doctor-sidebar">
-                <div id="doctor-sidebar-content">
-                    <div class="no-doctor-selected">
-                        <i class="fas fa-user-md fa-3x"></i>
-                        <p>Select a doctor to view details</p>
-                    </div>
-                </div>
-            </div>
 
             <!-- Main content area -->
             <div class="main-content">
+                <!-- Doctor List Table -->
+                <!-- Main container with sidebar and content -->
+
+                <!-- Sidebar for Doctor Details -->
+                <div class="sidebar doctor-sidebar" id="doctor-sidebar">
+                    <div id="doctor-sidebar-content">
+                        <div class="no-doctor-selected">
+                            <i class="fas fa-user-md fa-3x"></i>
+                            <p>Select a doctor to view details</p>
+                        </div>
+                    </div>
+                </div>
                 <!-- Doctor List Table -->
                 <div>
                     <table border="1">
@@ -173,7 +174,7 @@
 
             function updateDoctorSidebar(row) {
                 const sidebarContent = document.getElementById("doctor-sidebar-content");
-
+                const docId = row.getAttribute("data-doctor-id");
                 const doctorName = row.getAttribute("data-doctor-name");
                 const doctorRating = parseFloat(row.getAttribute("data-rating"));
                 const doctorCertificates = row.getAttribute("data-certificates");
@@ -187,16 +188,21 @@
                     stars += '<i class="fas fa-star-half-alt"></i>';
                 }
 
-                sidebarContent.innerHTML = `
-                    <div class="doctor-sidebar-info">
-                        <img src="${doctorImage ? doctorImage : '../static/images/default-doctor.jpg'}" alt="Doctor Image" class="doctor-img">
-                        <h3>`+doctorName+`</h3>
-                        <div class="rating">`+stars+`</div>
-                        <h4>Certificates:</h4>
-                        <p>${doctorCertificates ? doctorCertificates : "No certificates available"}</p>
-                    </div>
-                `;
+                // Ensure a valid doctor image URL
+                const imageUrl = doctorImage && doctorImage.trim() !== ""
+                        ? "../" + doctorImage
+                        : "../static/images/default-doctor.jpg";
+
+                sidebarContent.innerHTML =
+                        '<div class="doctor-sidebar-info">' +
+                        '<img src="' + imageUrl + '" alt="Doctor Image" class="doctor-img"> <br>' +
+                        '<a href = "/SWP391_GR6/DoctorDetailsServlet?id='+docId+'" <h3>' + doctorName + '</h3> </a>' +
+                        '<div class="rating">' + stars + '</div>' +
+                        '<h4>Certificates:</h4>' +
+                        '<p>' + (doctorCertificates ? doctorCertificates : "No certificates available") + '</p>' +
+                        '</div>';
             }
+
 
             function openDepartmentModal() {
                 document.getElementById("departmentModal").style.display = "block";
