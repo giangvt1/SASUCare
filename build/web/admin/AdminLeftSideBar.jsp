@@ -135,7 +135,13 @@
                     <a href="../finance/InvoiceManagement">
                         <i class="fa fa-envelope"></i> <span>Invoices management</span>
                     </a>
-                </li><li>
+                </li>
+                <li>
+                    <a href="../finance/revenue">
+                        <i class="fa fa-envelope"></i> <span>Revenue chart</span>
+                    </a>
+                </li>
+                <li>
                     <a href="../finance/doctorsalary">
                         <i class="fa fa-envelope"></i> <span>Doctor Salary</span>
                     </a>

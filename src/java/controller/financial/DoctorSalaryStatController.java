@@ -20,7 +20,7 @@ public class DoctorSalaryStatController extends BaseRBACController {
     @Override
     protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged)
             throws ServletException, IOException {
-        // Lấy các tham số filter, search, sort và phân trang
+        // Lấy các tham số filter, search, sort, phân trang từ request
         String startParam = request.getParameter("startDate");
         String endParam = request.getParameter("endDate");
         String search = request.getParameter("search");
@@ -28,38 +28,41 @@ public class DoctorSalaryStatController extends BaseRBACController {
         String sortDir = request.getParameter("sortDir");
         String pageParam = request.getParameter("page");
         String pageSizeParam = request.getParameter("pageSize");
-        
-        // Mặc định nếu tham số không có
-        Date startDate = (startParam != null && !startParam.isEmpty())
-                ? Date.valueOf(startParam)
+
+        // Xử lý giá trị mặc định cho ngày lọc
+        Date startDate = (startParam != null && !startParam.trim().isEmpty())
+                ? Date.valueOf(startParam.trim())
                 : Date.valueOf("2025-02-01");
-        Date endDate = (endParam != null && !endParam.isEmpty())
-                ? Date.valueOf(endParam)
+        Date endDate = (endParam != null && !endParam.trim().isEmpty())
+                ? Date.valueOf(endParam.trim())
                 : new Date(System.currentTimeMillis());
-        int page = (pageParam != null && !pageParam.isEmpty()) ? Integer.parseInt(pageParam) : 1;
-        int pageSize = (pageSizeParam != null && !pageSizeParam.isEmpty()) ? Integer.parseInt(pageSizeParam) : 10;
-        
-        // Tính offset
+
+        // Xử lý phân trang
+        int page = (pageParam != null && !pageParam.trim().isEmpty()) ? Integer.parseInt(pageParam.trim()) : 1;
+        int pageSize = (pageSizeParam != null && !pageSizeParam.trim().isEmpty()) ? Integer.parseInt(pageSizeParam.trim()) : 10;
+        // Giới hạn pageSize: tối thiểu 5, tối đa 50
+        if (pageSize < 5) pageSize = 5;
+        if (pageSize > 50) pageSize = 50;
         int offset = (page - 1) * pageSize;
-        
-        // Lấy danh sách thống kê theo phân trang và filter
+
+        // Lấy danh sách thống kê lương bác sĩ
         List<DoctorSalaryStat> stats = dsDAO.getDoctorSalaryStats(startDate, endDate, search, sortField, sortDir, offset, pageSize);
-        
-        // Đếm tổng số bản ghi (số bác sĩ)
         int totalRecords = dsDAO.countDoctorSalaryStats(startDate, endDate, search);
         int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
-        
+        if (totalPages == 0) totalPages = 1;
+        if (page > totalPages) page = totalPages;
+
         // Đưa các tham số ra JSP
         request.setAttribute("stats", stats);
-        request.setAttribute("startDate", startDate);
-        request.setAttribute("endDate", endDate);
+        request.setAttribute("startDate", startParam != null ? startParam.trim() : startDate.toString());
+        request.setAttribute("endDate", endParam != null ? endParam.trim() : endDate.toString());
         request.setAttribute("search", search);
         request.setAttribute("sortField", sortField);
         request.setAttribute("sortDir", sortDir);
         request.setAttribute("page", page);
         request.setAttribute("pageSize", pageSize);
         request.setAttribute("totalPages", totalPages);
-        
+
         request.getRequestDispatcher("../finance/doctorSalaryStat.jsp").forward(request, response);
     }
 

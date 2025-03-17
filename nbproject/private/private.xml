@@ -67,14 +67,6 @@
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/web/admin/forgetpassword.jsp</file>
         </group>
         <group>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/web/admin/AdminLogin.jsp</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/src/java/controller/systemaccesscontrol/ResetPassword.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/web/admin/OTP.jsp</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/src/java/dao/UserDBContext.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/src/java/controller/systemaccesscontrol/ForgetPassword.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/web/admin/forgetpassword.jsp</file>
-        </group>
-        <group>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/inter2-3/SWP391_GROUP6/nbproject/build-impl.xml</file>
         </group>
         <group>
@@ -136,5 +128,6 @@
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/giang/SWP391_GROUP6-9b5de4af5cf4b198956deb9290c8f74ad2a38d7f/src/java/dao/DoctorScheduleDBContext.java</file>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/giang/SWP391_GROUP6-9b5de4af5cf4b198956deb9290c8f74ad2a38d7f/web/doctor/DoctorCalendar.jsp</file>
         </group>
+        <group/>
     </open-files>
 </project-private>

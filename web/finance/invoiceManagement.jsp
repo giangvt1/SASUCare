@@ -217,7 +217,7 @@
                                         <div class="info-block">
                                             <strong><c:out value="${inv.service.name}" /></strong>
                                             <small>
-                                                <fmt:formatNumber value="${inv.service.price}" type="currency" currencySymbol="$" />
+                                                <fmt:formatNumber value="${inv.service.price}" type="currency" currencySymbol="VND" />
                                             </small>
                                         </div>
                                     </c:if>
