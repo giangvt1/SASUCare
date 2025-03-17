@@ -1,33 +1,59 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
-/**
- *
- * @author admin
- */
 public class Post {
+
     private int id;
     private String title;
     private String content;
-    private Date createdAt;
-    private Date updatedAt;
-    private String managerUsername;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
     private boolean status;
+    private int staffId;
+    private String staffName;
+    private String image;
+    private String detail;
 
-    public Post() {}
+    public Post() {
+    }
 
-    public Post(int id, String title, String content, Date createdAt, Date updatedAt, String managerUsername, boolean status) {
+    // Constructor với full tham số (kể cả staffName)
+    public Post(int id, String title, String content, Timestamp createdAt, Timestamp updatedAt, boolean status, int staffId, String staffName) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.managerUsername = managerUsername;
+        this.status = status;
+        this.staffId = staffId;
+        this.staffName = staffName;
+    }
+
+    // Constructor chỉ cần các tham số cần thiết (không có staffName)
+    public Post(int id, String title, String content, Timestamp createdAt, Timestamp updatedAt, boolean status, int staffId) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.status = status;
+        this.staffId = staffId;
+    }
+
+    public Post(String title, String content, int staffId, String image) {
+        this.title = title;
+        this.content = content;
+        this.staffId = staffId;
+        this.image = image;
+    }
+
+    public Post(int id, String title, String content, int staffId, String image, boolean status) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.staffId = staffId;
+        this.image = image;
         this.status = status;
     }
 
@@ -55,28 +81,20 @@ public class Post {
         this.content = content;
     }
 
-    public Date getCreatedAt() {
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public Timestamp getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public String getManagerUsername() {
-        return managerUsername;
-    }
-
-    public void setManagerUsername(String managerUsername) {
-        this.managerUsername = managerUsername;
     }
 
     public boolean isStatus() {
@@ -85,5 +103,52 @@ public class Post {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public int getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(int staffId) {
+        this.staffId = staffId;
+    }
+
+    public String getStaffName() {
+        return staffName;
+    }
+
+    public void setStaffName(String staffName) {
+        this.staffName = staffName;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
+
+    // Phương thức toString() để dễ dàng kiểm tra
+    @Override
+    public String toString() {
+        return "Post{"
+                + "id=" + id
+                + ", title='" + title + '\''
+                + ", content='" + content + '\''
+                + ", createdAt=" + createdAt
+                + ", updatedAt=" + updatedAt
+                + ", status=" + status
+                + ", staffId=" + staffId
+                + ", staffName='" + staffName + '\''
+                + '}';
     }
 }

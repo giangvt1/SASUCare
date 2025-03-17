@@ -81,6 +81,7 @@
                             <a href="${pageContext.request.contextPath}/Home.jsp" class="nav-item nav-link active">Home</a>
                             <a href="${pageContext.request.contextPath}/about.jsp" class="nav-item nav-link">About</a>
                             <a href="${pageContext.request.contextPath}/ServiceList" class="nav-item nav-link">Service</a>
+                            <a href="${pageContext.request.contextPath}/posts" class="nav-item nav-link">Blog</a>
                             <a href="${pageContext.request.contextPath}/price.jsp" class="nav-item nav-link">Pricing</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
