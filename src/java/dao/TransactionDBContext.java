@@ -54,32 +54,23 @@ public class TransactionDBContext extends DBContext<Transaction> {
     }
 
     // Method to get transactions for a specific invoice
-    public Transaction getTransactionsByInvoiceId(int invoiceId) {
+    public List<Transaction> getTransactionsByInvoiceId(int invoiceId) {
         List<Transaction> transactions = new ArrayList<>();
-        Transaction transaction = new Transaction();
-        
-        String sql = "SELECT [id]\n"
-                + "      ,[invoice_id]\n"
-                + "      ,[bank_code]\n"
-                + "      ,[payment_method]\n"
-                + "      ,[payment_url]\n"
-                + "      ,[status]\n"
-                + "      ,[transaction_date]\n"
-                + "      ,[vnp_TxnRef] FROM [Transaction] WHERE invoice_id = ?";  // Assuming the relation is by invoice_id
+        String sql = "SELECT * FROM [Transaction] WHERE invoice_id = ?";  // Assuming the relation is by invoice_id
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, invoiceId);  // Set the invoice ID parameter
 
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                
+                Transaction transaction = new Transaction();
                 transaction.setId(rs.getInt("id"));
                 transaction.setVnpTxnRef(rs.getString("vnp_TxnRef"));
-                transaction.setBankCode(rs.getString("bank_code"));
-                transaction.setPaymentMethod(rs.getString("payment_method"));
-                transaction.setPaymentUrl(rs.getString("payment_url"));
+                transaction.setBankCode(rs.getString("bankCode"));
+                transaction.setPaymentMethod(rs.getString("paymentMethod"));
+                transaction.setPaymentUrl(rs.getString("paymentUrl"));
                 transaction.setStatus(rs.getString("status"));
-                transaction.setTransactionDate(rs.getTimestamp("transaction_date"));
+                transaction.setTransactionDate(rs.getTimestamp("transactionDate"));
 
                 // Set the associated invoice
                 // If you need to load the related Invoice, you can also query the invoice here
@@ -91,7 +82,7 @@ public class TransactionDBContext extends DBContext<Transaction> {
             System.err.println("Error while fetching transactions for invoice ID " + invoiceId + ": " + ex.getMessage());
         }
 
-        return transaction;
+        return transactions;
     }
 
     @Override

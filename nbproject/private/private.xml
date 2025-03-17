@@ -124,10 +124,21 @@
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/finance/invoiceManagement.jsp</file>
         </group>
         <group>
+<<<<<<< HEAD
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/giang/SWP391_GROUP6-9b5de4af5cf4b198956deb9290c8f74ad2a38d7f/src/java/controller/doctor/DoctorCalendarController.java</file>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/giang/SWP391_GROUP6-9b5de4af5cf4b198956deb9290c8f74ad2a38d7f/src/java/dao/DoctorScheduleDBContext.java</file>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/giang/SWP391_GROUP6-9b5de4af5cf4b198956deb9290c8f74ad2a38d7f/web/doctor/DoctorCalendar.jsp</file>
         </group>
         <group/>
+=======
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/UserDBContext.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/UserAccountCreateController.java</file>
+        </group>
+        <group>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/customerService/CreatePostController.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/UserDBContext.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/UserAccountCreateController.java</file>
+        </group>
+>>>>>>> parent of a5b60b7 (revert)
     </open-files>
 </project-private>

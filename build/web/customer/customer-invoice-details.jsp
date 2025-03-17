@@ -15,14 +15,14 @@
        <jsp:include page="../Header.jsp"/>
   <div class="container">
     <div class="page-header">
-<!--      <a href="${pageContext.request.contextPath}/customer/invoices" class="btn btn-outline-secondary mb-3">
+      <a href="${pageContext.request.contextPath}/customer/invoices" class="btn btn-outline-secondary mb-3">
         <i class="fas fa-arrow-left me-2"></i> Back to Invoices
-      </a>-->
+      </a>
       
       <div class="invoice-header">
-        <div class="invoice-id">Invoice - ${invoice.orderInfo}</div>
+        <div class="invoice-id">Invoice #${invoice.id}</div>
         <div class="invoice-date">
-          <span class="me-3">Issued: <fmt:formatDate value="${invoice.createdDate}" pattern="dd MMM yyyy"/></span>-
+          <span class="me-3">Issued: <fmt:formatDate value="${invoice.createdDate}" pattern="dd MMM yyyy"/></span>
           <span>Due: <fmt:formatDate value="${invoice.expireDate}" pattern="dd MMM yyyy"/></span>
         </div>
         <div>
@@ -36,6 +36,9 @@
         <div class="label">Total Amount</div>
         <div class="value">$${invoice.amount}</div>
       </div>
+      <div class="summary-item">
+        <div class="label">Paid Amount</div>
+        <div class="value value-success">$</div>
       </div>
 
     </div>
@@ -54,8 +57,6 @@
       </div>
     </div>
 
-      
-      <button class="pay" onclick="payInvoice(${invoice.id}, ${invoice.amount}, ${invoice.txnRef})">Pay Invoice</button>
     <div class="card">
       <div class="card-header">
         <i class="fas fa-list-ul me-2"></i> Invoice Items
@@ -66,22 +67,24 @@
             <thead>
               <tr>
                 <th>Description</th>
-                <th class="text-end"></th>
-                <th class="text-end">Status</th>
+                <th class="text-end">Unit Price</th>
+                <th class="text-end">Total</th>
               </tr>
             </thead>
             <tbody>
               <c:choose>
-                <c:when test="${not empty transaction}">
+                <c:when test="${not empty transactions}">
+                  <c:forEach var="item" items="${transactions}">
                     <tr>
-                      <td class="text">Payment with ${transaction.bankCode}</td>
-                      <td class="text"></td>
-                      <td class="text-end">${transaction.status}</td>
+                      <td class="text-center">${item.id}</td>
+                      <td class="text-end">$</td>
+                      <td class="text-end">$</td>
                     </tr>
+                  </c:forEach>
                 </c:when>
                 <c:otherwise>
                   <tr>
-                    <td colspan="4" class="text-center">No transaction found for this invoice</td>
+                    <td colspan="4" class="text-center">No items found for this invoice</td>
                   </tr>
                 </c:otherwise>
               </c:choose>
@@ -115,38 +118,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-            function payInvoice(invoiceId, amount, txnRef) {
-                if (!txnRef) {
-                    alert("Transaction reference is missing!");
-                    return;
-                }
-
-                let data = new URLSearchParams();
-                data.append('amount', amount);
-                data.append('vnp_TxnRef', txnRef);
-                data.append('bankCode', 'VNBANK');
-                data.append('language', 'vn');
-
-                fetch('/SWP391_GR6/vnpayajax', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                    body: data
-                })
-                        .then(response => response.json())
-                        .then(x => {
-                            if (x.code === '00') {
-                                window.location.href = x.data;
-                            } else {
-                                alert(x.message);
-                            }
-                        })
-                        .catch(error => {
-                            console.error("Error processing payment:", error);
-                            alert("An error occurred while processing the payment.");
-                        });
-            }
-      
-  </script>
+  <script></script>
 </body>
 </html>

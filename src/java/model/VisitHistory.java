@@ -13,6 +13,17 @@ public class VisitHistory {
     private String reasonForVisit, diagnoses, treatmentPlan;
     private Timestamp nextAppointment;
     private String doctorName, customerName;
+    private Appointment appointment;
+
+    public Appointment getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
+    }
+    
+    
 
     public VisitHistory() {
     }

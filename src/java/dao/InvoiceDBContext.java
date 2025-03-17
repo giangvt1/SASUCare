@@ -29,8 +29,7 @@ public class InvoiceDBContext extends DBContext<Invoice> {
         return invoiceId;
     }
 
-    public List<Invoice> getInvoicesByCustomerId(int customerId, String status, String startDate, String endDate,
-            String sortBy, String sortDirection, int currentPage, int pageSize) {
+    public List<Invoice> getInvoicesByCustomerId(int customerId, String status, String startDate, String endDate, String sortBy, String sortDirection, int currentPage, int pageSize) {
         List<Invoice> invoices = new ArrayList<>();
         StringBuilder sql = new StringBuilder(
                 "SELECT [id], [order_info], [created_date], [expire_date], [customer_id], "

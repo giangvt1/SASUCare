@@ -92,7 +92,6 @@ public class PaymentResultServlet extends HttpServlet {
         request.setAttribute("vnp_OrderInfo", vnp_OrderInfo);
         request.setAttribute("status", isValidSignature ? status : "Invalid signature");
 
-//        request.getRequestDispatcher("/vnpay/vnpay_return.jsp").forward(request, response);
-        response.sendRedirect("./customer/invoice-details/" + invoiceId);
+        request.getRequestDispatcher("/vnpay/vnpay_return.jsp").forward(request, response);
     }
 }
