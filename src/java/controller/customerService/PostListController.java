@@ -3,9 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controller.HRController;
+package controller.customerService;
 
 import dao.PostDAO;
+import dao.UserDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,15 +14,18 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 import model.Post;
+import model.system.UserAccountDTO;
 
 /**
  *
  * @author admin
  */
-@WebServlet(name="DeletePostController", urlPatterns={"/hr/delete-post"})
-public class DeletePostController extends HttpServlet {
-   
+@WebServlet(name="PostListController", urlPatterns={"/hr/posts"})
+public class PostListController extends HttpServlet {
+   private static final int PAGE_SIZE = 10; // Số bản ghi trên 1 trang
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -32,15 +36,39 @@ public class DeletePostController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try {
-            String postId = request.getParameter("id");
-            PostDAO dao = new PostDAO();
-            Post p = new Post();
-            p.setId(Integer.parseInt(postId));
-            dao.delete(p);
-            request.getRequestDispatcher("/hr/posts").forward(request, response);
-        } catch (Exception e) {
-            e.printStackTrace();
+         try {
+            String search = request.getParameter("search");
+            if (search != null) {
+                search = search.trim().replaceAll("\\s+", " ").replace(" ", "%");
+            }
+
+            int pageIndex = 1;
+            try {
+                String pageParam = request.getParameter("page");
+                if (pageParam != null && !pageParam.trim().isEmpty()) {
+                    pageIndex = Integer.parseInt(pageParam);
+                }
+            } catch (NumberFormatException ex) {
+                response.sendRedirect(request.getContextPath() + "/hr/posts"); // Redirect to first page
+                return;
+            }
+
+             PostDAO dao = new PostDAO();
+            List<Post> posts = dao.listPosts(search, pageIndex, PAGE_SIZE, null);
+            int totalRecords = dao.getTotalPosts(search, null);
+            int totalPages = (int) Math.ceil((double) totalRecords / PAGE_SIZE);
+
+            request.setAttribute("posts", posts);
+            request.setAttribute("currentPage", pageIndex);
+            request.setAttribute("totalPages", totalPages);
+            request.setAttribute("search", search == null ? "" : search.replace("%", " "));
+
+            request.getRequestDispatcher("../customer_service/PostList.jsp").forward(request, response);
+
+        } catch (ServletException | IOException e) {
+            request.setAttribute("errorMessage", "An error occurred while processing your request.");
+            request.getRequestDispatcher("../customer_service/PostList.jsp").forward(request, response);
+
         }
     } 
 

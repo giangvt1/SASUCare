@@ -20,7 +20,7 @@ import model.Doctor;
  *
  * @author nofom
  */
-@WebServlet(name="DoctorListServlet", urlPatterns={"/DoctorListServlet"})
+@WebServlet(name="DoctorListServlet", urlPatterns={"/DoctorList"})
 public class DoctorListServlet extends HttpServlet {
    private DoctorRatingDBContext doctorDB = new DoctorRatingDBContext();
 
