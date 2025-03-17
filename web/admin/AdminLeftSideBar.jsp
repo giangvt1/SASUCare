@@ -112,6 +112,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="../doctor/appointmentsmanagement">
+                        <i class="fa fa-envelope"></i> <span>Appointments</span>
+                    </a>
+                </li>
+                <li>
                     <a href="../doctor/SearchCustomer?page=1&sort=default&size=10">
                         <i class="fa fa-medkit"></i> <span>Manage Medical</span>
                     </a>

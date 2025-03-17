@@ -49,6 +49,7 @@ public class AppointmentManagementController extends BaseRBACController {
 
         // Đặt các đối tượng vào request để sử dụng trong JSP
         request.setAttribute("todayAppointments", todayAppointments);
+        request.setAttribute("docID", loggedDoctor.getId());
         request.setAttribute("currentDate", currentDate);
 
         // Forward dữ liệu sang JSP
