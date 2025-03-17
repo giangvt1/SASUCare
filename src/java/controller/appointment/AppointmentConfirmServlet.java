@@ -107,11 +107,15 @@ public class AppointmentConfirmServlet extends HttpServlet {
     }
 
     private Invoice createInvoice(Appointment appointment) {
+       
         Invoice invoice = new Invoice();
         invoice.setAmount(10000);  // Example amount (adjust as per your logic)
         invoice.setOrderInfo("Payment for appointment with Doctor " + appointment.getDoctor().getName());
         invoice.setOrderType("Appointment");
-        invoice.setCustomerId(appointment.getCustomer().getId());
+        
+        Customer customer = customerDB.getCustomerById(appointment.getCustomer().getId());
+        
+        invoice.setCustomer(customer);
         invoice.setCreatedDate(new java.sql.Date(System.currentTimeMillis()));
         invoice.setExpireDate(new java.sql.Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24))); // Example expiration of 1 day
         invoice.setTxnRef(Config.getRandomNumber(8));  // Generate a random txnRef for VNPAY

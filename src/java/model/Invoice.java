@@ -5,7 +5,7 @@ import java.util.Date;
 public class Invoice {
 
     private int id;
-    private long amount;
+    private float amount;
     private String orderInfo;
     private String orderType;
     private Customer customer;
@@ -15,6 +15,7 @@ public class Invoice {
     private String txnRef;
     private int appointmentId; // Added appointmentId field
     private String status;
+ 
 
     public Customer getCustomer() {
         return customer;
@@ -48,11 +49,11 @@ public class Invoice {
         this.id = id;
     }
 
-    public long getAmount() {
+    public float getAmount() {
         return amount;
     }
 
-    public void setAmount(long amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 

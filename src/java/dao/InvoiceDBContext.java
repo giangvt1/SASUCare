@@ -23,9 +23,15 @@ public class InvoiceDBContext extends DBContext<Invoice> {
                 invoice = new Invoice();
                 invoice.setId(rs.getInt("id"));
                 invoice.setOrderInfo(rs.getString("order_info"));
-                invoice.setOrderType(rs.getString("order_type"));
-                invoice.setCustomerId(rs.getInt("customer_id"));
-                invoice.setServiceId(rs.getInt("service_id"));
+//                invoice.setOrderType(rs.getString("order_type"));
+                Customer customer = new Customer();
+                customer.setId(rs.getInt("customer_id"));
+                invoice.setCustomer(customer);
+                
+                Service service = new Service();
+                service.setId(rs.getInt("service_id"));
+                invoice.setService(service);
+                
                 invoice.setCreatedDate(rs.getTimestamp("created_date"));
                 invoice.setExpireDate(rs.getTimestamp("expire_date"));
                 invoice.setTxnRef(rs.getString("vnp_TxnRef"));
@@ -41,16 +47,17 @@ public class InvoiceDBContext extends DBContext<Invoice> {
 
     // Method to insert a new invoice into the database
     public void insert(Invoice invoice) {
-        String sql = "INSERT INTO Invoices (order_info, created_date, expire_date, customer_id, vnp_TxnRef, status, appointment_id) "
-                + "VALUES (?, GETDATE(), ?, ?, ?, ?, ?)";  // Service ID is removed
+        String sql = "INSERT INTO Invoices (order_info, amount, created_date, expire_date, customer_id, vnp_TxnRef, status, appointment_id) "
+                + "VALUES (?,?, GETDATE(), ?, ?, ?, ?, ?)";  // Service ID is removed
 
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setString(1, invoice.getOrderInfo());
-            stm.setTimestamp(2, new Timestamp(invoice.getExpireDate().getTime())); // Expiry date
-            stm.setInt(3, invoice.getCustomerId());
-            stm.setString(4, invoice.getTxnRef());
-            stm.setString(5, invoice.getStatus());
-            stm.setInt(6, invoice.getAppointmentId());
+            stm.setFloat(2, invoice.getAmount());
+            stm.setTimestamp(3, new Timestamp(invoice.getExpireDate().getTime())); // Expiry date
+            stm.setInt(4, invoice.getCustomer().getId());
+            stm.setString(5, invoice.getTxnRef());
+            stm.setString(6, invoice.getStatus());
+            stm.setInt(7, invoice.getAppointmentId());
 
             int affectedRows = stm.executeUpdate();
             if (affectedRows > 0) {
