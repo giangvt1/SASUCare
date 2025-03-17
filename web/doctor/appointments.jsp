@@ -144,6 +144,7 @@ Date date = Date.from(currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant
                             <i class="fas fa-chevron-right"></i>
                         </button>
                     </div>
+
                 </div>
 
                 <div class="timeline-slots">

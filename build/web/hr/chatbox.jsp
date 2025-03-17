@@ -5,7 +5,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Chat box</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .message { display: flex; align-items: center; margin-bottom: 10px; }
         .message.received { justify-content: flex-start; }
@@ -33,7 +33,7 @@
                 <div class="container py-5">
                     <div class="row">
                         <div class="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0">
-                            <h5 class="font-weight-bold mb-3 text-center text-lg-start">Member</h5>
+                            <h5 class="font-weight-bold mb-3 text-center text-lg-start" id="memberTitle"></h5>
                             <div class="card">
                                 <div class="card-body">
                                     <ul class="list-unstyled mb-0" id="memberList">
@@ -59,20 +59,68 @@
             </div>
         </div>
     </section>
+
+    <!-- Assign Doctor Modal (chỉ hiển thị cho HR) -->
+    <c:if test="${sessionScope.userRoles == 'HR'}">
+        <div class="modal fade" id="assignDoctorModal" tabindex="-1" aria-labelledby="assignDoctorModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="assignDoctorModalLabel">Assign Doctor</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Chọn bác sĩ cần phân công.</p>
+                        <form id="assignDoctorForm">
+                            <div class="mb-3">
+                                <label for="doctorSelect" class="form-label">Chọn bác sĩ:</label>
+                                <select class="form-select" id="doctorSelect">
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" id="assignDoctorBtn" class="btn btn-primary">Assign</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </c:if>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
         var socket = new WebSocket("ws://localhost:9999/SWP391_GR6/chat");
         var chatBody = document.getElementById("chatBody");
         var selectedUserEmail = localStorage.getItem("selectedUserEmail") || null;
-        var adminEmail = "${sessionScope.email}" || "admin";
+        var adminEmail = "${sessionScope.account.gmail}" || "admin";
         var role = "${sessionScope.userRoles}";
-        var fullName = "${sessionScope.fullName}";
-        var adminRole = "HR";
+        var fullName = "${sessionScope.account.displayname}";
         var chatHistory = {};
+        var memberTitle = document.getElementById("memberTitle");
 
-        // Restore chat history when the page loads
+        // Đặt tiêu đề danh sách dựa trên vai trò
+        if (role === "HR") {
+            memberTitle.textContent = "Online Users";
+        } else if (role === "Doctor") {
+            memberTitle.textContent = "Assigned Users";
+        }
+
+        // Kiểm tra xem đây có phải là phiên mới (trình duyệt vừa mở lại) hay không
+        if (!sessionStorage.getItem('sessionActive')) {
+            // Nếu không có flag, tức là trình duyệt vừa được mở lại, xóa tin nhắn trong localStorage
+            localStorage.removeItem('chatHistory');
+            chatHistory = {};
+        }
+
+        // Đặt flag trong sessionStorage để đánh dấu phiên làm việc hiện tại
+        sessionStorage.setItem('sessionActive', 'true');
+
+        // Khôi phục lịch sử chat từ localStorage (nếu có)
         restoreChatHistory();
 
-        // Display chat history if a user is selected
+        // Hiển thị lịch sử chat nếu có người dùng được chọn
         if (selectedUserEmail && chatHistory[selectedUserEmail]) {
             displayChatHistory(selectedUserEmail);
         }
@@ -89,8 +137,28 @@
 
         socket.onmessage = function(event) {
             let data = JSON.parse(event.data);
-            if (data.action === "updateOnlineUsers") {
+            if (data.action === "updateOnlineUsers" && role === "HR") {
+                chatBody.innerHTML = "";
                 updateOnlineUsers(data.onlineUsers);
+            } else if (data.action === "clearChat" && role === "HR") {
+                let userEmail = data.userEmail;
+                if (chatHistory[userEmail]) {
+                    delete chatHistory[userEmail];
+                    saveChatHistory();
+                    if (selectedUserEmail === userEmail) {
+                        chatBody.innerHTML = "";
+                    }
+                }
+                // Xóa người dùng khỏi danh sách giao diện
+                const userElement = document.querySelector(`.user-item[data-email="${userEmail}"]`);
+                if (userElement) {
+                    userElement.remove();
+                }
+            } else if (data.action === "updateAssignedUsers" && role === "Doctor") {
+                chatBody.innerHTML = "";
+                updateAssignedUsers(data.assignedUsers);
+            } else if (data.action === "updateOnlineDoctors" && role === "HR") {
+                updateOnlineDoctors(data.onlineDoctors);
             } else if (data.action === "sendMessage") {
                 let senderEmail = data.senderEmail || data.email;
                 let message = data.message;
@@ -105,6 +173,20 @@
                 }
 
                 saveChatHistory();
+            } else if (data.action === "assignSuccess" && role === "HR") {
+                console.log(`User ${data.userEmail} assigned to doctor ${data.doctorEmail}`);
+                const userElement = document.querySelector(`.user-item[data-email="${data.userEmail}"]`);
+                if (userElement) {
+                    userElement.remove();
+                }
+                if (selectedUserEmail === data.userEmail) {
+                    chatBody.innerHTML = "";
+                    selectedUserEmail = null;
+                    localStorage.removeItem("selectedUserEmail");
+                }
+            } else if (data.action === "assignError" && role === "HR") {
+                console.log("Assign failed: " + data.message);
+                alert("Lỗi: " + data.message);
             }
         };
 
@@ -118,9 +200,6 @@
 
         function updateOnlineUsers(users) {
             const memberList = document.getElementById("memberList");
-            const onlineEmails = users.map(user => user.email);
-
-            // Clear the old list and populate with updated online users
             memberList.innerHTML = "";
             users.forEach(user => {
                 const li = document.createElement("li");
@@ -132,8 +211,8 @@
                             <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp" alt="avatar"
                                  class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
                             <div class="pt-1">
-                                <p class="fw-bold mb-0">` + user.fullName + `</p>
-                                <p class="small text-muted">` + user.email + `</p>
+                                <p class="fw-bold mb-0">${user.fullName}</p>
+                                <p class="small text-muted">${user.email}</p>
                             </div>
                         </div>
                         <div class="pt-1">
@@ -141,15 +220,48 @@
                             <div class="btn-group" role="group" aria-label="User actions">
                                 <button type="button" class="btn btn-sm btn-danger">Delete</button>
                                 <button type="button" class="btn btn-sm btn-success">Export</button>
-                                <button type="button" class="btn btn-sm btn-primary assign-to-doctor">Assign to Doctor</button>
+                                <button type="button" class="btn btn-sm btn-primary assign-to-doctor">Assign</button>
                             </div>
                         </div>
                     </div>
                 `;
                 memberList.appendChild(li);
             });
+            attachUserItemEvents();
+        }
 
-            // Add click event listeners to user items
+        function updateAssignedUsers(users) {
+            const memberList = document.getElementById("memberList");
+            memberList.innerHTML = "";
+            users.forEach(user => {
+                const li = document.createElement("li");
+                li.classList.add("p-2", "border-bottom", "bg-body-tertiary", "user-item");
+                li.setAttribute("data-email", user.email);
+                li.innerHTML = `
+                    <div class="d-flex justify-content-between">
+                        <div class="d-flex flex-row">
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp" alt="avatar"
+                                 class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
+                            <div class="pt-1">
+                                <p class="fw-bold mb-0">${user.fullName}</p>
+                                <p class="small text-muted">${user.email}</p>
+                            </div>
+                        </div>
+                        <div class="pt-1">
+                            <p class="small text-muted mb-1">Assigned</p>
+                            <div class="btn-group" role="group" aria-label="User actions">
+                                <button type="button" class="btn btn-sm btn-danger">Delete</button>
+                                <button type="button" class="btn btn-sm btn-success">Export</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                memberList.appendChild(li);
+            });
+            attachUserItemEvents();
+        }
+
+        function attachUserItemEvents() {
             document.querySelectorAll(".user-item").forEach(item => {
                 item.addEventListener("click", function() {
                     document.querySelectorAll(".user-item").forEach(el => el.classList.remove("selected"));
@@ -157,25 +269,19 @@
                     selectedUserEmail = this.getAttribute("data-email");
                     localStorage.setItem("selectedUserEmail", selectedUserEmail);
                     displayChatHistory(selectedUserEmail);
-                    console.log("Email selected: " + selectedUserEmail);
-                    socket.send(JSON.stringify({
-                        action: "selectUser",
-                        email: selectedUserEmail
-                    }));
                 });
             });
+        }
 
-            // If the selected user is online, display their chat; otherwise, clear the chat
-            if (selectedUserEmail && onlineEmails.includes(selectedUserEmail)) {
-                displayChatHistory(selectedUserEmail);
-                const selectedItem = document.querySelector(`.user-item[data-email="${selectedUserEmail}"]`);
-                if (selectedItem) {
-                    selectedItem.classList.add("selected");
-                }
-            } else if (selectedUserEmail && !onlineEmails.includes(selectedUserEmail)) {
-                chatBody.innerHTML = "";
-                console.log(`Cleared chat content because user ${selectedUserEmail} is offline`);
-            }
+        function updateOnlineDoctors(onlineDoctors) {
+            const doctorSelect = document.getElementById("doctorSelect");
+            doctorSelect.innerHTML = `<option selected>Chọn bác sĩ...</option>`;
+            onlineDoctors.forEach(doctor => {
+                const option = document.createElement("option");
+                option.value = doctor.email;
+                option.textContent = doctor.fullName;
+                doctorSelect.appendChild(option);
+            });
         }
 
         function displayChatHistory(email) {
@@ -195,7 +301,7 @@
                 messageElement.innerHTML = `
                     <div class="d-flex justify-content-end mb-2">
                         <div class="card-body p-2 px-3 bg-primary text-white" style="border-radius: 20px;">
-                            <p class="mb-0">` + message + `</p>
+                            <p class="mb-0">${message}</p>
                         </div>
                     </div>
                 `;
@@ -205,7 +311,7 @@
                     <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp" alt="avatar" class="me-3 rounded-circle d-flex align-self-center shadow-1-strong" width="60">
                     <div class="d-flex justify-content-start mb-2">
                         <div class="card-body p-2 px-3 bg-light text-dark" style="border-radius: 20px;">
-                            <p class="mb-0">` + message + `</p>
+                            <p class="mb-0">${message}</p>
                         </div>
                     </div>
                 `;
@@ -219,12 +325,10 @@
             let message = messageInput.value.trim();
             if (message && selectedUserEmail) {
                 displayMessage(message, 'sent');
-
                 if (!chatHistory[selectedUserEmail]) {
                     chatHistory[selectedUserEmail] = [];
                 }
                 chatHistory[selectedUserEmail].push({ message: message, type: "sent" });
-
                 const messageData = {
                     action: "sendMessage",
                     message: message,
@@ -234,7 +338,6 @@
                 };
                 socket.send(JSON.stringify(messageData));
                 messageInput.value = "";
-
                 saveChatHistory();
             } else {
                 alert("Please select a user and enter a message.");
@@ -251,9 +354,10 @@
                 const email = userItem.getAttribute("data-email");
                 const fullNameElement = userItem.querySelector(".fw-bold");
                 const fullName = fullNameElement ? fullNameElement.textContent : "Unknown";
-                console.log("email: " + email);
-                console.log("fullName: " + fullName);
                 exportChatHistory(email, fullName);
+            } else if (event.target.classList.contains("assign-to-doctor")) {
+                var assignDoctorModal = new bootstrap.Modal(document.getElementById("assignDoctorModal"));
+                assignDoctorModal.show();
             }
         });
 
@@ -280,19 +384,18 @@
         function exportChatHistory(email, fullName) {
             if (chatHistory[email]) {
                 const messages = chatHistory[email];
-                console.log("messages: " + messages);
-                let textContent = `Chat history with `+ fullName +` (`+ email +`)\n\n`;
+                let textContent = `Chat history with ${fullName} (${email})\n\n`;
                 messages.forEach(msgObj => {
                     const prefix = msgObj.type === "sent" ? "[Sent]" : "[Received]";
-                    textContent += ``+ prefix +` `+ msgObj.message +`\n`;
+                    textContent += `${prefix} ${msgObj.message}\n`;
                 });
-                // Gửi dữ liệu đến server qua WebSocket
                 socket.send(JSON.stringify({
                     action: "exportChat",
                     email: email,
                     fullName: fullName,
                     chatContent: textContent
                 }));
+                alert("Export chat history successful!");
             } else {
                 alert("Không tìm thấy lịch sử chat cho người dùng này.");
             }
@@ -307,6 +410,24 @@
             if (storedHistory) {
                 chatHistory = JSON.parse(storedHistory);
             }
+        }
+
+        if (role === "HR") {
+            document.getElementById("assignDoctorBtn").addEventListener("click", function() {
+                const selectedDoctor = document.getElementById("doctorSelect").value;
+                if (selectedDoctor && selectedDoctor !== "Chọn bác sĩ...") {
+                    socket.send(JSON.stringify({
+                        action: "assignDoctor",
+                        doctor: selectedDoctor,
+                        userEmail: selectedUserEmail
+                    }));
+                    var assignDoctorModal = bootstrap.Modal.getInstance(document.getElementById("assignDoctorModal"));
+                    assignDoctorModal.hide();
+                    alert("Bác sĩ " + selectedDoctor + " đã được phân công.");
+                } else {
+                    alert("Vui lòng chọn bác sĩ.");
+                }
+            });
         }
     </script>
 </body>

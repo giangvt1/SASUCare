@@ -16,6 +16,7 @@ public class Doctor {
     private String img;
     private String price;
     private String info;
+        private double salaryCoefficient; // hệ số lương
     private double average_rating;
     private List<Rating> ratings;
     private List<String> specialties;
@@ -31,6 +32,14 @@ public class Doctor {
         this.certificates = certificates;
     }
 
+
+    public double getSalaryCoefficient() {
+        return salaryCoefficient;
+    }
+
+    public void setSalaryCoefficient(double salaryCoefficient) {
+        this.salaryCoefficient = salaryCoefficient;
+    }
 
     public List<Department> getDepartments() {
         return departments;

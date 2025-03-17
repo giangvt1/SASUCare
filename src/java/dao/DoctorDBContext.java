@@ -1,7 +1,6 @@
 package dao;
 
 import dal.DBContext;
-import model.Doctor;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.Certificate;
+import model.Doctor;
 import model.DoctorSchedule;
 import model.Shift;
 
@@ -333,5 +332,6 @@ public class DoctorDBContext extends DBContext<Doctor> {
         }
         return new ArrayList<>(doctorMap.values());
     }
+    
 
 }

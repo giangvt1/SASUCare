@@ -105,7 +105,7 @@
             <div class="nav-borders d-flex">
                 <button class="btn btn-primary" id="btnProfile">Profile</button>
                 <button class="btn btn-secondary" id="btnSecurity">Security</button>
-                
+                <button class="btn btn-secondary" id="listrecords">Records</button>
             </div>
             <hr class="mt-0 mb-4">
             
@@ -222,6 +222,7 @@
                     </div>
                 
             </div>
+            
         </div>
 
         <jsp:include page="/Footer.jsp"/>
@@ -240,6 +241,15 @@
             document.getElementById("name").oninput = validateProfileForm;
             document.getElementById("phone").oninput = validateProfileForm;
             document.getElementById("address").oninput = validateProfileForm;
+            
+            // Tìm nút bằng id
+            const listRecordsButton = document.getElementById('listrecords');
+
+            // Thêm sự kiện click
+            listRecordsButton.addEventListener('click', function() {
+                // Chuyển hướng đến đường link ./listrecords
+                window.location.href = './listrecord';
+            });
 
             if (profileForm) {
                 profileForm.addEventListener("submit", function (e) {
@@ -346,7 +356,7 @@
 
     btnProfile.addEventListener("click", showProfile);
     btnSecurity.addEventListener("click", showSecurity);
-
+    
     showProfile();
 });
 

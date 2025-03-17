@@ -165,12 +165,20 @@
     <servlet-name>SessionServlet</servlet-name>
     <servlet-class>controller.ChatController.SessionServlet</servlet-class>
     <servlet>
+        <servlet-name>SessionServlet</servlet-name>
+        <servlet-class>controller.ChatController.SessionServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>ManageTypeApplication</servlet-name>
         <servlet-class>controller.AdminController.ManageTypeApplication</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>EditTypeApplication</servlet-name>
         <servlet-class>controller.AdminController.EditTypeApplication</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AppointmentsManagementController</servlet-name>
+        <servlet-class>controller.appointment.AppointmentsManagementController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>HRApptManagementController</servlet-name>
@@ -217,8 +225,24 @@
         <servlet-class>controller.AdminController.ManageTypeCertificate</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>AppointmentManagementController</servlet-name>
-        <servlet-class>controller.appointment.AppointmentManagementController</servlet-class>
+        <servlet-name>ListDoctorController</servlet-name>
+        <servlet-class>controller.ChatController.ListDoctorController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>MedicalRecordController</servlet-name>
+        <servlet-class>controller.customermanagement.MedicalRecordController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>InvoiceManagementController</servlet-name>
+        <servlet-class>controller.financial.InvoiceManagementController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DoctorSalaryStatController</servlet-name>
+        <servlet-class>controller.financial.DoctorSalaryStatController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DoctorSalaryChartController</servlet-name>
+        <servlet-class>controller.financial.DoctorSalaryChartController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
@@ -501,9 +525,10 @@
         <servlet-name>vnpayRefund</servlet-name>
         <url-pattern>/vnpayrefund/*</url-pattern>
     </servlet-mapping>
-    <url-pattern>/ChatHistoryController</url-pattern>
-    <servlet-name>SessionServlet</servlet-name>
-    <url-pattern>/getSessionId</url-pattern>
+    <servlet-mapping>
+        <servlet-name>SessionServlet</servlet-name>
+        <url-pattern>/getSessionId</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>EditTypeCertificate</servlet-name>
         <url-pattern>/admin/EditTypeCertificate</url-pattern>
@@ -512,8 +537,31 @@
         <servlet-name>ManageTypeCertificate</servlet-name>
         <url-pattern>/admin/ManageTypeCertificate</url-pattern>
     </servlet-mapping>
+    <servlet-name>SessionServlet</servlet-name>
+    <servlet-class>controller.ChatController.SessionServlet</servlet-class>
+    <servlet-name>ChatHistoryController</servlet-name>
+    <servlet-class>controller.ChatController.ChatHistoryController</servlet-class>
+    <url-pattern>/getSessionId</url-pattern>
+    <servlet-name>SessionServlet</servlet-name>
+    <url-pattern>/ChatHistoryController</url-pattern>
     <servlet-mapping>
-        <servlet-name>AppointmentManagementController</servlet-name>
-        <url-pattern>/doctor/appointmentsmanagement</url-pattern>
+        <servlet-name>ListDoctorController</servlet-name>
+        <url-pattern>/getdoctor</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MedicalRecordController</servlet-name>
+        <url-pattern>/record</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>InvoiceManagementController</servlet-name>
+        <url-pattern>/finance/InvoiceManagement</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DoctorSalaryStatController</servlet-name>
+        <url-pattern>/finance/doctorsalary</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DoctorSalaryChartController</servlet-name>
+        <url-pattern>/finance/DoctorSalaryChart</url-pattern>
     </servlet-mapping>
 </web-app>

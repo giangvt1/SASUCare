@@ -53,7 +53,7 @@
     try (Connection connection = DriverManager.getConnection(
             "jdbc:sqlserver://localhost\\SQLEXPRESS:1433;databaseName=test1;encrypt=true;trustServerCertificate=true;",
             "golden", "dx2134");
-         PreparedStatement ps = connection.prepareStatement("SELECT id FROM Invoice WHERE vnp_TxnRef = ?")) {
+         PreparedStatement ps = connection.prepareStatement("SELECT id FROM Invoices WHERE vnp_TxnRef = ?")) {
         
         ps.setString(1, vnp_TxnRef);
         try (ResultSet rs = ps.executeQuery()) {
