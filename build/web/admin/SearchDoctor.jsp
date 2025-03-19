@@ -63,7 +63,7 @@
             </form>
             <div class="table-data mt-4">
                 <table class="table" style="width:95%">
-                    <h3 class="title">doctor Results</h3>
+                    <h3 class="title">Doctor list</h3>
                     <thead>
                         <tr><th>#</th>
                             <th>Full Name</th>

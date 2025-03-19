@@ -59,46 +59,6 @@
             <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/HRController/CalendarDoctorManageController.java</file>
         </group>
         <group>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/web/admin/AdminLogin.jsp</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/src/java/controller/systemaccesscontrol/ResetPassword.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/web/admin/OTP.jsp</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/src/java/dao/UserDBContext.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/src/java/controller/systemaccesscontrol/ForgetPassword.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code(TRUNG)/SWP391_GROUP6/web/admin/forgetpassword.jsp</file>
-        </group>
-        <group>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/inter2-3/SWP391_GROUP6/nbproject/build-impl.xml</file>
-        </group>
-        <group>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/inter2-3/SWP391_GROUP6/src/java/controller/HRController/CalendarDoctorManageController.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/inter2-3/SWP391_GROUP6/src/java/dal/DBContext.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/inter2-3/SWP391_GROUP6/web/hr/CalendarManage.jsp</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/inter2-3/SWP391_GROUP6/src/java/dao/DoctorScheduleDBContext.java</file>
-        </group>
-        <group>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/inter2-3/SWP391_GROUP6/web/hr/CalendarManage.jsp</file>
-        </group>
-        <group/>
-        <group>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/EditStaffApplication.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/ProfileUpdateController.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/EditUserController.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/ViewStaffApplication.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/ChatBoxController.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/EditDoctorCertificate.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/StaffAccountListController.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/ManageServiceServlet.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/CalendarDoctorManageController.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/ResetPasswordController.java</file>
-        </group>
-        <group>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/doctor/DoctorCalendarController.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/doctor/DeleteCustomerMedicalHistory.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/doctor/EditCertificate.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/doctor/DoctorCalendar.jsp</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/CalendarDoctorManageController.java</file>
-        </group>
-        <group>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/finance/invoiceManagement.jsp</file>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/doctor/DoctorCalendarController.java</file>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/model/Invoice.java</file>
@@ -128,6 +88,67 @@
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/giang/SWP391_GROUP6-9b5de4af5cf4b198956deb9290c8f74ad2a38d7f/src/java/dao/DoctorScheduleDBContext.java</file>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/giang/SWP391_GROUP6-9b5de4af5cf4b198956deb9290c8f74ad2a38d7f/web/doctor/DoctorCalendar.jsp</file>
         </group>
+        <group/>
+        <group/>
+        <group>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/hr/CalendarManage.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/DoctorScheduleDBContext.java</file>
+        </group>
+        <group>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/PostListController.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/guest/DoctorListServlet.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/finance/invoiceRevenueChart.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/admin/SearchDoctor.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/hr/UserAccountList.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/DoctorDBContext.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/PackageDBContext.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/customerService/RatingServlet.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/hr/SearchPackageForm.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/DoctorRatingDBContext.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/financial/DoctorSalaryStatController.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/service.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/financial/DoctorSalaryChartController.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/DoctorScheduleDBContext.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/ManageServiceServlet.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/financial/InvoiceRevenueChartController.java</file>
+        </group>
+        <group>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/PostListController.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/guest/DoctorListServlet.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/finance/invoiceRevenueChart.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/admin/SearchDoctor.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/hr/UserAccountList.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/DoctorDBContext.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/PackageDBContext.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/customerService/RatingServlet.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/hr/SearchPackageForm.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/DoctorRatingDBContext.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/financial/DoctorSalaryStatController.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/service.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/financial/DoctorSalaryChartController.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/DoctorScheduleDBContext.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/ManageServiceServlet.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/financial/InvoiceRevenueChartController.java</file>
+        </group>
+        <group>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/PostListController.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/guest/DoctorListServlet.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/finance/invoiceRevenueChart.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/admin/SearchDoctor.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/hr/UserAccountList.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/DoctorDBContext.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/PackageDBContext.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/customerService/RatingServlet.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/hr/SearchPackageForm.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/DoctorRatingDBContext.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/financial/DoctorSalaryStatController.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/service.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/financial/DoctorSalaryChartController.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/DoctorScheduleDBContext.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/ManageServiceServlet.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/financial/InvoiceRevenueChartController.java</file>
+        </group>
+        <group/>
         <group/>
     </open-files>
 </project-private>

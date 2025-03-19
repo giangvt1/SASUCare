@@ -82,7 +82,7 @@
                                         <td>${user.roleName}</td>
                                     </c:if>
                                     <td>
-                                        <a href="?page=${currentPage}&pageSize=${pageSize}&view=${view}&search=${search}&username=${user.staffUsername}" class="btn btn-warning btn-sm">Edit</a>
+                                        <a href="${pageContext.request.contextPath}/hr/edit?username=${user.staffUsername}&page=${requestScope.currentPage}&view=${param.view}&search=${searchValue}" class="btn btn-warning btn-sm">Edit</a>
                                         <a href="?action=delete&page=${currentPage}&pageSize=${pageSize}&view=${view}&search=${search}&username=${user.staffUsername}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
                                     </td>
                                 </tr>

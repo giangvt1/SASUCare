@@ -113,7 +113,7 @@
                 <label for="endDate">Đến ngày:</label>
                 <input type="date" id="endDate" name="endDate" value="${endDate}" />
                 <button type="submit">Lọc</button>
-            </form>
+            </form>.
             
             <!-- Khu vực hiển thị biểu đồ doanh thu -->
             <div class="chart-box">
