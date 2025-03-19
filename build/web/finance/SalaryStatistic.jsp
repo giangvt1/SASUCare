@@ -7,99 +7,78 @@
     <meta charset="UTF-8">
     <title>Biểu đồ thống kê lương bác sĩ</title>
     <style>
-        /* Reset cơ bản và nền trang với gradient nhẹ */
+        /* Reset cơ bản và thiết lập nền */
         body {
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(to right, #ece9e6, #ffffff);
         }
-        /* Container bên phải (nội dung chính) với khoảng cách từ sidebar */
+        /* Container chính: giả sử sidebar chiếm 200px */
         .right-side {
             margin-left: 220px;
-            padding: 40px 30px;
+            padding: 30px 20px;
             min-height: 100vh;
             background-color: #f9f9f9;
         }
-        /* Card chứa biểu đồ với hiệu ứng bóng đổ, bo tròn và hover nhẹ */
+        /* Chart container với kiểu card hiện đại */
         .chart-container {
             width: 90%;
             max-width: 1000px;
             margin: 20px auto;
             background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            padding: 40px;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .chart-container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            padding: 30px;
         }
         .chart-container h1 {
             margin-top: 0;
             text-align: center;
             color: #333;
-            font-size: 28px;
-            margin-bottom: 30px;
+            font-size: 24px;
+            margin-bottom: 20px;
         }
-        /* Form lọc: căn giữa, khoảng cách hợp lý và input đẹp */
+        /* Form filter: canh giữa, khoảng cách hợp lý */
         .filter-form {
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            gap: 20px;
-            margin-bottom: 30px;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
         }
         .filter-form label {
             font-size: 16px;
             color: #555;
         }
         .filter-form input[type="month"] {
-            padding: 10px 14px;
+            padding: 8px 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        .filter-form input[type="month"]:focus {
-            outline: none;
-            border-color: #007bff;
+            font-size: 15px;
         }
         .filter-form button {
-            padding: 10px 20px;
+            padding: 8px 18px;
             background-color: #007bff;
             color: #fff;
             border: none;
             border-radius: 4px;
-            font-size: 16px;
+            font-size: 15px;
             cursor: pointer;
             transition: background-color 0.3s;
         }
         .filter-form button:hover {
             background-color: #0056b3;
         }
-        /* Khu vực hiển thị biểu đồ */
+        /* Responsive cho biểu đồ */
         .chart-box {
             position: relative;
             height: 500px;
         }
-        /* Responsive */
-        @media (max-width: 768px) {
-            .right-side {
-                margin-left: 0;
-                padding: 20px;
-            }
-            .chart-container {
-                width: 100%;
-                padding: 20px;
-            }
-        }
     </style>
 </head>
 <body>
-    <!-- Include Header & Sidebar -->
+    <!-- Include Header & Sidebar (tùy chỉnh theo hệ thống của bạn) -->
     <jsp:include page="../admin/AdminHeader.jsp" />
     <jsp:include page="../admin/AdminLeftSideBar.jsp" />
     
@@ -107,14 +86,14 @@
         <div class="chart-container">
             <h1>Biểu đồ tổng lương theo bác sĩ</h1>
             
-            <!-- Form lọc: chọn tháng -->
+            <!-- Form chọn tháng để lọc dữ liệu -->
             <form class="filter-form" action="DoctorSalaryChart" method="get">
                 <label for="selectedMonth">Chọn tháng:</label>
                 <input type="month" id="selectedMonth" name="month" value="${monthSelected}" />
                 <button type="submit">Lọc</button>
             </form>
             
-            <!-- Khu vực hiển thị biểu đồ -->
+            <!-- Vùng hiển thị biểu đồ -->
             <div class="chart-box">
                 <canvas id="salaryChart"></canvas>
             </div>
@@ -127,7 +106,7 @@
         // Lấy context của canvas
         const ctx = document.getElementById('salaryChart').getContext('2d');
 
-        // Tạo mảng nhãn (tên bác sĩ) và dữ liệu (tổng lương) từ attribute stats
+        // Tạo mảng nhãn và dữ liệu từ attribute stats
         const labels = [
             <c:forEach var="stat" items="${stats}" varStatus="loop">
                 "<c:out value='${stat.doctorName}'/>"<c:if test="${!loop.last}">,</c:if>
@@ -158,10 +137,7 @@
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Thống kê tổng lương theo bác sĩ',
-                        font: {
-                            size: 20
-                        }
+                        text: 'Thống kê tổng lương theo bác sĩ'
                     },
                     tooltip: {
                         callbacks: {
@@ -175,18 +151,9 @@
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            font: { size: 14 },
                             callback: function(value) {
                                 return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
                             }
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            font: { size: 14 },
-                            autoSkip: false,
-                            maxRotation: 30,
-                            minRotation: 30
                         }
                     }
                 }

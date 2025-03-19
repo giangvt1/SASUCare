@@ -124,7 +124,17 @@ public class VisitHistoryDBContext extends DBContext<VisitHistory> {
     // Get a specific visit history by its ID
     public VisitHistory getVisitHistoryById(int id) {
         VisitHistory visitHistory = null;
-        String sql = "SELECT * FROM VisitHistory WHERE id = ?";
+        String sql = "SELECT  vh.[id]\r\n" + //
+                        "      ,[DoctorID]\r\n" + //
+                        "      ,[CustomerID]\r\n" + //
+                        "      ,[VisitDate]\r\n" + //
+                        "      ,[ReasonForVisit]\r\n" + //
+                        "      ,[Diagnoses]\r\n" + //
+                        "      ,[TreatmentPlan]\r\n" + //
+                        "      ,ds.schedule_date as NextAppointment\r\n" + //
+                        "  FROM [VisitHistory] vh left join Appointment a on a.id = vh.NextAppointmentID\r\n" + //
+                        "   join Doctor_Schedule ds on a.DocSchedule_id = ds.id\r\n" + //
+                        " WHERE vh.id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();

@@ -25,12 +25,12 @@ public class InvoiceController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 //        try {
             // Get the customer from session
-//            HttpSession session = request.getSession();
-//            Customer customer = (Customer) session.getAttribute("currentCustomer");
-//            if (customer == null) {
-//                response.sendRedirect(request.getContextPath() + "/Home.jsp");
-//                return;
-//            }
+            HttpSession session = request.getSession();
+            Customer customer = (Customer) session.getAttribute("currentCustomer");
+            if (customer == null) {
+                response.sendRedirect(request.getContextPath() + "/Home.jsp");
+                return;
+            }
 
             // Extract the invoice ID from the URL path
             String pathInfo = request.getPathInfo();
@@ -46,11 +46,11 @@ public class InvoiceController extends HttpServlet {
             }
 
             // Fetch related transactions for the invoice
-            List<Transaction> transactions = transactionDB.getTransactionsByInvoiceId(invoiceId);
+            Transaction transaction = transactionDB.getTransactionsByInvoiceId(invoiceId);
 
             // Set the invoice and related transactions to the request
             request.setAttribute("invoice", invoice);
-            request.setAttribute("transactions", transactions);
+            request.setAttribute("transaction", transaction);
 
             // Forward to JSP page to display invoice details
             request.getRequestDispatcher("/customer/customer-invoice-details.jsp").forward(request, response);

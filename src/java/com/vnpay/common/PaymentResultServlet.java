@@ -84,6 +84,7 @@ public class PaymentResultServlet extends HttpServlet {
 
         // Forward to JSP with payment details
         request.setAttribute("vnp_TxnRef", vnp_TxnRef);
+        request.setAttribute("invoiceId", invoiceId);
         request.setAttribute("vnp_TransactionNo", vnp_TransactionNo);
         request.setAttribute("vnp_BankCode", vnp_BankCode);
         request.setAttribute("vnp_ResponseCode", vnp_ResponseCode);

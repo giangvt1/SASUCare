@@ -62,8 +62,11 @@
                                 <i class="fas fa-undo me-2"></i> Reset
                             </button>
 
-                            <a href="${pageContext.request.contextPath}/customer/invoices/export?customerId=${param.customerId}&status=${param.status}&startDate=${param.startDate}&endDate=${param.endDate}" class="btn btn-outline-secondary ms-2">
-                                <i class="fas fa-file-export me-2"></i> Export
+<!--                            <a href="${pageContext.request.contextPath}/customer/invoices/export?format=excel" class="btn btn-outline-secondary ms-2">
+                                <i class="fas fa-file-excel me-2"></i> Export to Excel
+                            </a>-->
+                            <a href="${pageContext.request.contextPath}/customer/invoices/export?format=csv" class="btn btn-outline-secondary ms-2">
+                                <i class="fas fa-file-csv me-2"></i> Export to CSV
                             </a>
                         </div>
                     </form>
@@ -138,7 +141,7 @@
                                                 <td>
                                                     <span class="status-badge status-${invoice.status}">${invoice.status}</span>
                                             </td>
-                                            <td class="amount-cell">${invoice.amount}VND</td>
+                                            <td class="amount-cell"><fmt:formatNumber value="${invoice.amount}" pattern="#,###"/> VND</td>
                                             <td class="text-center">
                                                 <a href="${pageContext.request.contextPath}/customer/invoice-details/${invoice.id}" class="btn btn-sm btn-primary btn-view">
                                                     <i class="fas fa-eye"></i> View

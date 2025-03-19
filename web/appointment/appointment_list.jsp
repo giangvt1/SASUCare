@@ -282,7 +282,7 @@
                                 // Set dynamic onclick event for payment button
                                 payInvoiceButton.style.display = 'inline';
                                 payInvoiceButton.onclick = function () {
-                                    payInvoice(invoice.id, 10000, invoice.txnRef);
+                                    payInvoice(invoice.id, invoice.amount, invoice.txnRef);
                                 };
                             })
                             .catch(error => {

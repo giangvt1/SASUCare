@@ -67,6 +67,102 @@
             .modal-hidden {
                 display: none;
             }
+            
+            /* Modal Background */
+.visitDetailsModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow: auto;
+}
+
+/* Modal Content */
+.modal-content {
+    position: relative;
+    background-color: #ffffff;
+    margin: 10% auto;
+    padding: 30px;
+    width: 70%;
+    max-width: 600px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+/* Modal Animation */
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Close Button */
+.close {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close:hover,
+.close:focus {
+    color: #333;
+}
+
+/* Modal Header */
+#visitDetailsModal h2 {
+    margin-top: 0;
+    color: #2c3e50;
+    border-bottom: 2px solid #eaeaea;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+/* Modal Content Styling */
+#visitDetailsModal p {
+    margin: 12px 0;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+#visitDetailsModal strong {
+    color: #2c3e50;
+    min-width: 140px;
+    display: inline-block;
+}
+
+#visitDetailsModal span[id^="modal"] {
+    color: #34495e;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .modal-content {
+        width: 90%;
+        margin: 20% auto;
+        padding: 20px;
+    }
+    
+    #visitDetailsModal strong {
+        display: block;
+        margin-bottom: 4px;
+    }
+}
         </style>
     </head>
     <body class="bg-gray-50 min-h-screen">
@@ -197,7 +293,7 @@
                     <span class="close" onclick="closeModal()">×</span>
                     <h2>Visit Details</h2>
                     <p><strong>Visit Date:</strong> <span id="modalVisitDate"></span></p>
-                    <p><strong>Doctor:</strong> <span id="modalDoctor"></span></p>
+<!--                    <p><strong>Doctor:</strong> <span id="modalDoctor"></span></p>-->
                     <p><strong>Reason For Visit:</strong> <span id="modalReasonForVisit"></span></p>
                     <p><strong>Diagnoses:</strong> <span id="modalDiagnoses"></span></p>
                     <p><strong>Treatment Plan:</strong> <span id="modalTreatmentPlan"></span></p>
@@ -262,7 +358,7 @@
                             document.getElementById('modalReasonForVisit').textContent = visit.reasonForVisit;
                             document.getElementById('modalDiagnoses').textContent = visit.diagnoses;
                             document.getElementById('modalTreatmentPlan').textContent = visit.treatmentPlan;
-                            document.getElementById('modalNextAppointment').textContent = visit.nextAppointment;
+                            document.getElementById('modalNextAppointment').textContent = visit.appointment.;
 
                             // Show the modal
                             document.getElementById('visitDetailsModal').style.display = 'block';

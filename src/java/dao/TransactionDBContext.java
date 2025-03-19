@@ -16,6 +16,8 @@ import model.Transaction;
  * @author Golden Lightning
  */
 public class TransactionDBContext extends DBContext<Transaction> {
+    
+    
 
     public Transaction getTransactionByInvoiceId(int invoiceId) {
         Transaction transaction = null;
@@ -54,8 +56,9 @@ public class TransactionDBContext extends DBContext<Transaction> {
     }
 
     // Method to get transactions for a specific invoice
-    public List<Transaction> getTransactionsByInvoiceId(int invoiceId) {
+    public Transaction getTransactionsByInvoiceId(int invoiceId) {
         List<Transaction> transactions = new ArrayList<>();
+        Transaction transaction = new Transaction();
         String sql = "SELECT * FROM [Transaction] WHERE invoice_id = ?";  // Assuming the relation is by invoice_id
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -63,14 +66,14 @@ public class TransactionDBContext extends DBContext<Transaction> {
 
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Transaction transaction = new Transaction();
+     
                 transaction.setId(rs.getInt("id"));
                 transaction.setVnpTxnRef(rs.getString("vnp_TxnRef"));
-                transaction.setBankCode(rs.getString("bankCode"));
-                transaction.setPaymentMethod(rs.getString("paymentMethod"));
-                transaction.setPaymentUrl(rs.getString("paymentUrl"));
+                transaction.setBankCode(rs.getString("bank_Code"));
+                transaction.setPaymentMethod(rs.getString("payment_Method"));
+                transaction.setPaymentUrl(rs.getString("payment_Url"));
                 transaction.setStatus(rs.getString("status"));
-                transaction.setTransactionDate(rs.getTimestamp("transactionDate"));
+                transaction.setTransactionDate(rs.getTimestamp("transaction_Date"));
 
                 // Set the associated invoice
                 // If you need to load the related Invoice, you can also query the invoice here
@@ -82,7 +85,7 @@ public class TransactionDBContext extends DBContext<Transaction> {
             System.err.println("Error while fetching transactions for invoice ID " + invoiceId + ": " + ex.getMessage());
         }
 
-        return transactions;
+        return transaction;
     }
 
     @Override

@@ -1,5 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -157,8 +159,8 @@
                                             <h6 class="mb-1">${appointment.doctor.name}</h6>
                                             <small class="text-muted">${appointment.doctor.staff.department.name}</small>
                                         </div>
-                                        <div class="col-md-3">
-                                            <h6 class="mb-1">${appointment.doctorSchedule.scheduleDate}</h6>
+                                        <div class="col-md-3">    
+                                            <h6 class="mb-1"><fmt:formatDate value="${appointment.doctorSchedule.scheduleDate}" pattern="dd/MM/yyyy" /></h6>
                                             <small class="text-muted">${appointment.doctorSchedule.shift.timeStart} - ${appointment.doctorSchedule.shift.timeEnd}</small>
                                         </div>
                                         <div class="col-md-3">
@@ -167,7 +169,7 @@
                                                     ${appointment.status}
                                                 </span>
                                                 <div class="action-buttons">
-                                                    <button class="btn btn-sm btn-outline-primary" onclick="viewDetails('${appointment.id}')">
+                                                    <button class="btn btn-sm btn-outline-primary" onclick="viewDetails('${appointment.doctorSchedule.scheduleDate}', '${appointment.doctor.id}')">
                                                         <i class="fas fa-eye"></i>
                                                     </button>
                                                     <c:if test="${appointment.status == 'Pending' }">
@@ -190,6 +192,51 @@
 
                     </div>
                 </main>
+            </div>
+        </div>
+
+        <div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="appointmentModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="appointmentModalLabel">Appointment Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th>Patient Name</th>
+                                    <td id="patientName"></td>
+                                </tr>
+                                <tr>
+                                    <th>Doctor Name</th>
+                                    <td id="doctorName"></td>
+                                </tr>
+                                <tr>
+                                    <th>Department</th>
+                                    <td id="department"></td>
+                                </tr>
+                                <tr>
+                                    <th>Appointment Date</th>
+                                    <td id="appointmentDate"></td>
+                                </tr>
+                                <tr>
+                                    <th>Time</th>
+                                    <td id="appointmentTime"></td>
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td id="appointmentStatus"></td>
+                                </tr>
+                                <tr>
+                                    <th>Notes</th>
+                                    <td id="appointmentNotes"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -223,8 +270,47 @@
                                                                     }
                                                                 }
 
-                                                                function viewDetails(appointmentId) {
-                                                                    alert('Viewing details for appointment: ' + appointmentId);
+                                                                function viewDetails(date, doctorId) {
+                                                                    fetch(`/SWP391_GR6/doctor/api/appointments?date=` + date + `&doctorId=` + doctorId)
+                                                                            .then(response => response.json())
+                                                                            .then(data => {
+                                                                                if (data.length === 0) {
+                                                                                    alert("No appointments found for this date and doctor.");
+                                                                                    return;
+                                                                                }
+
+                                                                                let appointment = data[0]; // Get first appointment from the response
+
+                                                                                // 🟢 Fix: Check if elements exist before setting values
+                                                                                let patientNameElem = document.getElementById("patientName");
+                                                                                let doctorNameElem = document.getElementById("doctorName");
+                                                                                let departmentElem = document.getElementById("department");
+                                                                                let appointmentDateElem = document.getElementById("appointmentDate");
+                                                                                let appointmentTimeElem = document.getElementById("appointmentTime");
+                                                                                let appointmentStatusElem = document.getElementById("appointmentStatus");
+                                                                                let appointmentNotesElem = document.getElementById("appointmentNotes");
+                                                                                if (!patientNameElem || !doctorNameElem || !departmentElem || !appointmentDateElem || !appointmentTimeElem || !appointmentStatusElem || !appointmentNotesElem) {
+                                                                                    console.error("Modal elements not found in DOM.");
+                                                                                    return;
+                                                                                }
+
+                                                                                //  Update modal content with appointment details
+                                                                                patientNameElem.innerText = appointment.customer.id || "N/A"; // Use customer ID instead of fullname since it's missing
+                                                                                doctorNameElem.innerText = appointment.doctor.name || "N/A";
+                                                                                departmentElem.innerText = "Department Data Not Available"; // Fix: No department in response
+                                                                                appointmentDateElem.innerText = appointment.doctorSchedule.scheduleDate || "N/A";
+                                                                                appointmentTimeElem.innerText = appointment.doctorSchedule.shift.timeStart + " - " + appointment.doctorSchedule.shift.timeEnd;
+                                                                                appointmentStatusElem.innerText = "Unknown"; // Fix: Status missing in response
+                                                                                appointmentNotesElem.innerText = "No notes available."; // Fix: Notes missing in response
+
+                                                                                // Show modal
+                                                                                let modal = new bootstrap.Modal(document.getElementById('appointmentModal'));
+                                                                                modal.show();
+                                                                            })
+                                                                            .catch(error => {
+                                                                                console.error("Error fetching appointment details:", error);
+                                                                                alert("Failed to load appointment details.");
+                                                                            });
                                                                 }
         </script>
     </body>

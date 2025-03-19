@@ -6,7 +6,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import model.Customer;
-import model.InvoiceRevenue;
 import model.Service;
 
 public class InvoiceDBContext extends DBContext<Invoice> {
@@ -29,7 +28,8 @@ public class InvoiceDBContext extends DBContext<Invoice> {
         return invoiceId;
     }
 
-    public List<Invoice> getInvoicesByCustomerId(int customerId, String status, String startDate, String endDate, String sortBy, String sortDirection, int currentPage, int pageSize) {
+    public List<Invoice> getInvoicesByCustomerId(int customerId, String status, String startDate, String endDate,
+            String sortBy, String sortDirection, int currentPage, int pageSize) {
         List<Invoice> invoices = new ArrayList<>();
         StringBuilder sql = new StringBuilder(
                 "SELECT [id], [order_info], [created_date], [expire_date], [customer_id], "
@@ -240,9 +240,8 @@ public class InvoiceDBContext extends DBContext<Invoice> {
         return invoice;
     }
 
-    // Optional: Method to retrieve a list of invoices for a customer
     public List<Invoice> getInvoicesByCustomerId(int customerId) {
-        String sql = "SELECT * FROM Invoice sWHERE customer_id = ?";
+        String sql = "SELECT id, order_info, created_date, expire_date, customer_id, service_id, vnp_TxnRef, status, appointment_id, amount FROM Invoices WHERE customer_id = ?";
         List<Invoice> invoices = new ArrayList<>();
 
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
@@ -252,18 +251,28 @@ public class InvoiceDBContext extends DBContext<Invoice> {
             while (rs.next()) {
                 Invoice invoice = new Invoice();
                 invoice.setId(rs.getInt("id"));
-//                invoice.setAmount(rs.getLong("amount"));
-                invoice.setOrderInfo(rs.getString("orderInfo"));
-                invoice.setOrderType(rs.getString("orderType"));
+                invoice.setOrderInfo(rs.getString("order_info"));
+                invoice.setCreatedDate(rs.getDate("created_date"));
+                invoice.setExpireDate(rs.getDate("expire_date"));
+                invoice.setTxnRef(rs.getString("vnp_TxnRef"));
+                invoice.setStatus(rs.getString("status")); // Ensure you have a setter in Invoice class
+
+                // Handling `amount` column (assuming it's a BigDecimal or double)
+                invoice.setAmount(rs.getFloat("amount"));
+
+                // Set customer
                 Customer customer = new Customer();
                 customer.setId(rs.getInt("customer_id"));
                 invoice.setCustomer(customer);
+
+                // Set service
                 Service service = new Service();
                 service.setId(rs.getInt("service_id"));
                 invoice.setService(service);
-                invoice.setCreatedDate(rs.getDate("createdDate"));
-                invoice.setExpireDate(rs.getDate("expireDate"));
-                invoice.setTxnRef(rs.getString("txnRef"));
+
+                // Set appointment ID (assuming it's an integer)
+                invoice.setAppointmentId(rs.getInt("appointment_id"));
+
                 invoices.add(invoice);
             }
         } catch (SQLException ex) {
@@ -335,8 +344,21 @@ public class InvoiceDBContext extends DBContext<Invoice> {
     }
 
     @Override
-    public void delete(Invoice model) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void delete(Invoice invoice) {
+        String sql = "DELETE FROM Invoices WHERE id = ?";
+
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setInt(1, invoice.getId());
+
+            int affectedRows = stm.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("Invoice deleted successfully.");
+            } else {
+                System.out.println("Invoice deletion failed. No invoice found with ID: " + invoice.getId());
+            }
+        } catch (SQLException ex) {
+            System.err.println("Error while deleting invoice: " + ex.getMessage());
+        }
     }
 
     @Override
@@ -386,31 +408,6 @@ public class InvoiceDBContext extends DBContext<Invoice> {
             System.err.println("Error while retrieving invoices: " + ex.getMessage());
         }
         return invoices;
-    }
-
-    public List<InvoiceRevenue> getInvoiceRevenueByMonth(Date start, Date end) {
-        List<InvoiceRevenue> list = new ArrayList<>();
-        // Giả sử SQL Server, dùng FORMAT để nhóm theo năm-tháng
-        String sql = "SELECT FORMAT(i.created_date, 'yyyy-MM') as Month, SUM(s.price) as TotalRevenue "
-                + "FROM [test1].[dbo].[Invoices] i "
-                + "LEFT JOIN Service s ON s.id = i.service_id "
-                + "WHERE i.created_date BETWEEN ? AND ? "
-                + "GROUP BY FORMAT(i.created_date, 'yyyy-MM') "
-                + "ORDER BY Month ASC";
-        try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            stm.setDate(1, start);
-            stm.setDate(2, end);
-            ResultSet rs = stm.executeQuery();
-            while (rs.next()) {
-                InvoiceRevenue rev = new InvoiceRevenue();
-                rev.setMonth(rs.getString("Month"));
-                rev.setTotalRevenue(rs.getDouble("TotalRevenue"));
-                list.add(rev);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return list;
     }
 
     public List<Invoice> getInvoiceDetails(Date start, Date end, String rawSearch,
