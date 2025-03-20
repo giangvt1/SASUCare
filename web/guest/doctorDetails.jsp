@@ -117,7 +117,7 @@
             <p><strong>Chuyên khoa:</strong> ${doctor.specialties}</p>
             <p><strong>Giá khám:</strong> ${doctor.price}</p>
             <p><strong>Lịch khám:</strong> Hẹn khám</p>
-            <a href="bookAppointment.jsp?doctorId=${doctor.id}" class="action-btn">Đặt lịch hẹn</a>
+            <a href="appointment" class="action-btn">Đặt lịch hẹn</a>
             <c:if test="${not empty sessionScope.currentCustomer}">
                 <c:choose>
                     <c:when test="${not empty userRating}">

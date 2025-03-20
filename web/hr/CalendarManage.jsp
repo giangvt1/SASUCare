@@ -162,7 +162,6 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <!-- Dropdown trong modal (ID: editDoctorSelect) -->
                         <div class="mb-3">
                             <label class="form-label">Doctor</label>
                             <select class="form-control" name="doctorId" id="editDoctorSelect">

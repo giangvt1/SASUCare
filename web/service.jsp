@@ -145,7 +145,7 @@
                                 <img src="https://cdn.pixabay.com/photo/2021/01/27/06/48/medical-5953866_960_720.png" alt="Đặt Khám Bác Sĩ">
                                 <div class="card-content">
                                     <h3>${service.name}</h3>
-                                    <a class="more" href="DoctorList">More →</a>
+                                    <a class="more" href="DoctorListServlet">More →</a>
                                 </div>
 
                             </c:when>

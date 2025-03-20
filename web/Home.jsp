@@ -120,7 +120,7 @@
                             Best Healthcare Solution In Your City
                         </h1>
                         <div class="pt-2">
-                            <a href="" class="btn btn-light rounded-pill py-md-3 px-md-5 mx-2"
+                            <a href="DoctorListServlet" class="btn btn-light rounded-pill py-md-3 px-md-5 mx-2"
                                >Find Doctor</a
                             >
                         <c:choose>

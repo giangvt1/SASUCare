@@ -32,7 +32,6 @@ public class CalendarDoctorManageController extends BaseRBACController {
         String action = request.getParameter("action");
 
         if (action == null) {
-            // Hiển thị trang CalendarManage.jsp kèm danh sách bác sĩ và ca
             List<Doctor> doctors = doctorDAO.getAllDoctors();
             List<Shift> shifts = shiftDAO.getAllShifts();
             request.setAttribute("doctors", doctors);
