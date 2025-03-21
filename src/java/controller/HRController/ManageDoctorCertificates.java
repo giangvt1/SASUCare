@@ -36,6 +36,7 @@ public class ManageDoctorCertificates extends HttpServlet {
             certificateNameStr = certificateNameStr.trim().replaceAll("\\s+", " ");
             certificateNameStr = certificateNameStr.replace(" ", "%");
             certificateName = certificateNameStr;
+        
         }
         String typeName = request.getParameter("typeName");
         String status = request.getParameter("status");

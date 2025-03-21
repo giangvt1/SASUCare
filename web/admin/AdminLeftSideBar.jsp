@@ -48,9 +48,6 @@
                         <i class="fa fa-globe"></i> <span>Manage Type Certificate</span>
                     </a>
 
-                    <a href="${pageContext.request.contextPath}/admin/SearchDoctor?page=1&sort=default&size=10">
-                        <i class="fa fa-globe"></i> <span>Manage Doctor</span>
-                    </a>
                 </c:if> 
             </li>
 
@@ -115,6 +112,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="../doctor/appointmentsmanagement">
+                        <i class="fa fa-envelope"></i> <span>Appointments</span>
+                    </a>
+                </li>
+                <li>
                     <a href="../doctor/SearchCustomer?page=1&sort=default&size=10">
                         <i class="fa fa-medkit"></i> <span>Manage Medical</span>
                     </a>
@@ -135,13 +137,7 @@
                     <a href="../finance/InvoiceManagement">
                         <i class="fa fa-envelope"></i> <span>Invoices management</span>
                     </a>
-                </li>
-                <li>
-                    <a href="../finance/revenue">
-                        <i class="fa fa-envelope"></i> <span>Revenue chart</span>
-                    </a>
-                </li>
-                <li>
+                </li><li>
                     <a href="../finance/doctorsalary">
                         <i class="fa fa-envelope"></i> <span>Doctor Salary</span>
                     </a>
@@ -152,14 +148,7 @@
                     </a>
                 </li>
             </c:if>
-            <c:if test="${allowedUrls != null and (allowedUrls.contains('/hr/posts'))}">
-                <li>
-                    <a href="../hr/posts">
-                        <i class="fa fa-envelope"></i> <span>Post</span>
-                    </a>
-                </li>
-            </c:if>
-
+                
             <%-- Add other menu items as needed --%>
         </ul>
     </section>

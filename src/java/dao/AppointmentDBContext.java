@@ -10,6 +10,7 @@ import model.Appointment;
 import model.Customer;
 import model.Doctor;
 import model.DoctorSchedule;
+import model.Invoice;
 import model.Shift;
 
 public class AppointmentDBContext extends DBContext<Appointment> {
@@ -61,7 +62,7 @@ public class AppointmentDBContext extends DBContext<Appointment> {
         }
 
         // Add ORDER BY clause (required for SQL Server pagination)
-        sql.append(" ORDER BY a.id");
+        sql.append(" ORDER BY a.id desc");
 
         // Add pagination (SQL Server syntax)
         int offset = (pageIndex - 1) * pageSize;
@@ -237,7 +238,7 @@ public class AppointmentDBContext extends DBContext<Appointment> {
         JOIN Doctor_Schedule ds ON a.DocSchedule_id = ds.id
         JOIN Shift s ON ds.shift_id = s.id
         JOIN Customer c ON a.customer_id = c.id
-        WHERE a.doctor_id = ? AND ds.schedule_date = ?
+        WHERE a.doctor_id = ? AND ds.schedule_date = ? --and status = 'Confirmed'
     """;
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -649,6 +650,12 @@ SELECT
             stm.setString(4, model.getStatus());
             stm.setInt(5, model.getId()); // WHERE condition
 
+            InvoiceDBContext invoiceDB = new InvoiceDBContext();
+            Invoice invoice = new Invoice();
+            invoice = invoiceDB.getInvoiceByAppointmentId(model.getId());
+            if(invoice != null){
+                invoiceDB.delete(invoice);
+            }
             int affectedRows = stm.executeUpdate();
             if (affectedRows > 0) {
                 System.out.println(" Appointment updated successfully.");

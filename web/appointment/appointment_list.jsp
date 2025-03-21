@@ -47,6 +47,7 @@
                     <c:set var="hasConfirmedAppointments" value="false" />
                     <c:forEach var="appointment" items="${appointments}">
                         <c:if test="${appointment.status == 'Confirmed'}">
+                             <c:set var="hasConfirmedAppointments" value="true" />
                             <div class="event-card">
                                 <div class="event-details">
                                     <div class="doctor-name">${appointment.doctor.name}</div>
@@ -281,7 +282,7 @@
                                 // Set dynamic onclick event for payment button
                                 payInvoiceButton.style.display = 'inline';
                                 payInvoiceButton.onclick = function () {
-                                    payInvoice(invoice.id, 10000, invoice.txnRef);
+                                    payInvoice(invoice.id, invoice.amount, invoice.txnRef);
                                 };
                             })
                             .catch(error => {

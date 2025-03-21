@@ -29,20 +29,7 @@ public class DoctorCalendarController extends BaseRBACController {
     @Override
     protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged)
             throws ServletException, IOException {
-
-        String action = request.getParameter("action");
-        if ("getEvents".equals(action)) {
-            // Gọi hàm handleGetEvents() để trả về JSON cho FullCalendar
-            handleGetEvents(request, response, logged);
-        } else {
-            // Mặc định: hiển thị trang JSP kèm table "tuần hiện tại"
-            handleShowWeeklyTable(request, response, logged);
-        }
-    }
-
-    private void handleShowWeeklyTable(HttpServletRequest request, HttpServletResponse response, User logged)
-            throws ServletException, IOException {
-        // Lấy username
+        // Lấy username từ đối tượng logged
         String username = logged.getUsername();
         // Lấy doctorId dựa trên staff_username
         int doctorId = doctorDAO.getDoctorIdByStaffUsername(username);
@@ -53,7 +40,7 @@ public class DoctorCalendarController extends BaseRBACController {
         // Lấy đối tượng Doctor đầy đủ
         Doctor doctor = doctorDAO.getDoctorById(doctorId);
 
-        // Tính toán tuần hiện tại (Monday -> Sunday)
+        // Tính toán tuần hiện tại: từ Monday đến Sunday
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
@@ -62,7 +49,7 @@ public class DoctorCalendarController extends BaseRBACController {
         int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK); // Sunday=1, Monday=2, ...
         int diff;
         if (dayOfWeek == Calendar.SUNDAY) {
-            diff = 1; 
+            diff = 1; // Nếu là Chủ Nhật, chuyển sang Monday của tuần sau
         } else {
             diff = Calendar.MONDAY - dayOfWeek;
         }
@@ -72,54 +59,12 @@ public class DoctorCalendarController extends BaseRBACController {
         endCal.add(Calendar.DAY_OF_MONTH, 6);
         Date weekEnd = new Date(endCal.getTimeInMillis());
 
-        // Lấy danh sách lịch của bác sĩ trong khoảng tuần đó
-        List<DoctorSchedule> weeklySchedules =
-                scheduleDAO.getSchedulesByDoctorBetweenDates(doctorId, weekStart, weekEnd);
+        // Lấy danh sách lịch của bác sĩ trong khoảng tuần đó (bao gồm thông tin appointment nếu có)
+        List<DoctorSchedule> weeklySchedules = scheduleDAO.getSchedulesByDoctorBetweenDates(doctorId, weekStart, weekEnd);
 
-        // Xây dựng JSON events (chỉ để table? Thực ra table có sẵn weeklySchedules)
-        // ...
-        // Thực hiện forward sang JSP
-        request.setAttribute("doctor", doctor);
-        request.setAttribute("weekStart", weekStart);
-        request.setAttribute("weekEnd", weekEnd);
-        request.setAttribute("weeklySchedules", weeklySchedules);
-
-        // Ở table view, ta chỉ hiển thị 1 tuần. Ở Calendar view, ta sẽ load AJAX => do not rely on events JSON
-        // -> Có thể set 1 JSON rỗng hoặc tùy ý
-        request.setAttribute("doctorEventsJson", "[]");
-
-        request.getRequestDispatcher("../doctor/DoctorCalendar.jsp").forward(request, response);
-    }
-
-    /**
-     * Trả về JSON event list cho khoảng thời gian [start, end] do FullCalendar yêu cầu.
-     */
-    private void handleGetEvents(HttpServletRequest request, HttpServletResponse response, User logged)
-            throws IOException {
-        // Lấy username => doctorId
-        String username = logged.getUsername();
-        int doctorId = doctorDAO.getDoctorIdByStaffUsername(username);
-        if (doctorId == -1) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Doctor not found for username: " + username);
-            return;
-        }
-        // Parse start, end
-        String startParam = request.getParameter("start");
-        String endParam = request.getParameter("end");
-        if (startParam == null || endParam == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing start or end param");
-            return;
-        }
-        Date startDate = Date.valueOf(startParam);
-        Date endDate = Date.valueOf(endParam);
-
-        // Lấy lịch trong khoảng [startDate, endDate]
-        List<DoctorSchedule> schedules =
-                scheduleDAO.getSchedulesByDoctorBetweenDates(doctorId, startDate, endDate);
-
-        // Build JSON
+        // Xây dựng danh sách event cho FullCalendar
         List<Map<String, Object>> events = new ArrayList<>();
-        for (DoctorSchedule ds : schedules) {
+        for (DoctorSchedule ds : weeklySchedules) {
             Map<String, Object> event = new HashMap<>();
             event.put("id", ds.getId());
             String timeStart = ds.getShift().getTimeStart().toString();
@@ -129,24 +74,32 @@ public class DoctorCalendarController extends BaseRBACController {
             event.put("start", startStr);
             event.put("end", endStr);
             event.put("allDay", false);
+            // Ví dụ title: "K" + shiftId
             event.put("title", "K" + ds.getShift().getId());
-
+            
+            // Xây dựng extendedProps chứa các thông tin chi tiết của ca, bao gồm thông tin appointment nếu có
             Map<String, Object> extendedProps = new HashMap<>();
             extendedProps.put("shiftTime", timeStart + " - " + timeEnd);
             extendedProps.put("shiftId", ds.getShift().getId());
-            if (ds.getAppointment() != null) {
+            if(ds.getAppointment() != null) {
                 extendedProps.put("appointmentId", ds.getAppointment().getId());
                 extendedProps.put("appointmentStatus", ds.getAppointment().getStatus());
+                // Giả sử Customer trong Appointment có getter getFullname()
                 extendedProps.put("customerName", ds.getAppointment().getCustomer().getFullname());
             }
             event.put("extendedProps", extendedProps);
             events.add(event);
         }
+        String eventsJson = gson.toJson(events);
 
-        String json = gson.toJson(events);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(json);
+        // Đưa các dữ liệu cần thiết vào request attributes để JSP render
+        request.setAttribute("doctor", doctor);
+        request.setAttribute("weekStart", weekStart);
+        request.setAttribute("weekEnd", weekEnd);
+        request.setAttribute("weeklySchedules", weeklySchedules);
+        request.setAttribute("doctorEventsJson", eventsJson);
+
+        request.getRequestDispatcher("../doctor/DoctorCalendar.jsp").forward(request, response);
     }
 
     @Override

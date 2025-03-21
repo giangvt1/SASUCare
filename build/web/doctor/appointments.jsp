@@ -19,6 +19,15 @@
     int startDayOfWeek = firstOfMonth.getDayOfWeek().getValue() % 7; // Adjust to 0-based index (0=Sunday)
 %>
 
+<%@ page import="java.text.SimpleDateFormat, java.time.ZoneId, java.util.Date" %>
+<%
+    // Parse the date if it's a String
+Date date = Date.from(currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd-MM-yyyy"); // "EEEE" for day name
+    String sdfDate = sdf.format(date);
+%>
+
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -30,7 +39,8 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/doctor/appointments.css">
         <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css" rel="stylesheet" />
         <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
-        <style>.calendar-container {
+        <style>
+            .calendar-container {
                 background: white;
                 padding: 1.5rem;
                 border-radius: 8px;
@@ -72,7 +82,19 @@
                 background-color: #f5f5f5;
                 color: #888;
                 cursor: not-allowed;
-            }</style>
+            }
+
+            .bullet-point {
+                width: 6px;
+                height: 6px;
+                background-color: #2196F3;
+                border-radius: 50%;
+                display: inline-block;
+                margin-top: 2px;
+            }
+
+
+        </style>
     </head>
     <body>
         <jsp:include page="../admin/AdminHeader.jsp" />
@@ -88,13 +110,6 @@
                             <span class="stat-label">Today's Appointments</span>
                         </div>
                     </div>
-                    <!--                    <div class="stat-card">
-                                            <i class="fas fa-clock"></i>
-                                            <div class="stat-info">
-                                                <span class="stat-value">${requestScope.pendingAppointments.size()}</span>
-                                                <span class="stat-label">Pending Approval</span>
-                                            </div>
-                                        </div>-->
                 </div>
             </header>
 
@@ -105,19 +120,13 @@
                         <input type="text" id="searchInput" placeholder="Search by patient name or ID">
                         <i class="fas fa-search"></i>
                     </div>
-                    <!--                    <div class="filter-group">
-                                            <button class="filter-btn active" data-filter="all">All</button>
-                                            <button class="filter-btn" data-filter="today">Today</button>
-                                            <button class="filter-btn" data-filter="pending">Pending</button>
-                                            <button class="filter-btn" data-filter="confirmed">Confirmed</button>
-                                        </div>-->
                 </div>
                 <div class="view-controls">
                     <button class="view-btn active" data-view="timeline">
                         <i class="fas fa-stream"></i> Timeline
                     </button>
                     <button class="view-btn" data-view="calendar">
-                        <i class="fas fa-calendar-alt"></i> Calendar
+                        <i class="fas fa-calendar-alt"></i> Today
                     </button>
                 </div>
             </div>
@@ -129,7 +138,8 @@
                         <button class="date-nav-btn" onclick="changeScheduleDate(-1)">
                             <i class="fas fa-chevron-left"></i>
                         </button>
-                        <span id="currentDate">${requestScope.currentDate}</span>
+                        <!--<span id="currentDate">${requestScope.currentDate}</span>-->
+                        <span id="currentDate"><%= sdfDate %></span>
                         <button class="date-nav-btn" onclick="changeScheduleDate(1)">
                             <i class="fas fa-chevron-right"></i>
                         </button>
@@ -158,14 +168,6 @@
                                     <button class="action-btn view-btn" onclick="viewDetails('${appointment.id}')">
                                         <i class="fas fa-eye"></i> View
                                     </button>
-                                    <!--                                    <c:if test="${appointment.status == 'Pending'}">
-                                                                            <button class="action-btn approve-btn" onclick="approveAppointment('${appointment.id}')">
-                                                                                <i class="fas fa-check"></i> Approve
-                                                                            </button>
-                                    </c:if>
-                                    <button class="action-btn reschedule-btn" onclick="rescheduleAppointment('${appointment.id}')">
-                                        <i class="fas fa-calendar-alt"></i> Reschedule
-                                    </button>-->
                                 </div>
                             </div>
                         </div>
@@ -179,7 +181,6 @@
                     </c:if>
                 </div>
             </div>
-
 
             <!-- Appointment Details Modal -->
             <div id="appointmentModal" class="modal">
@@ -214,10 +215,12 @@
                                 <div class="info-group">
                                     <label>Reason for Visit</label>
                                     <p id="modalReason"></p>
+                                    <button class="btn-secondary" id="viewHistoryBtn">View all Patient's history</button>
                                 </div>
                                 <div class="info-group">
                                     <label>Medical History</label>
                                     <p id="modalHistory"></p>
+
                                 </div>
                                 <div class="info-group">
                                     <label>Phone number</label>
@@ -290,10 +293,13 @@
                             %>
                             <td class="<%= isDisabled ? "disabled-day" : "day" %>"
                                 data-date="<%= loopDate.toString() %>"
-                                onclick="fetchAppointmentsByDate('<%= loopDate.toString() %>')">
+                                <%= isDisabled ? "" : "onclick=\"fetchAppointmentsByDate('" + loopDate.toString() + "')\"" %>>
                                 <%= day %>
+                                <!-- Bullet point for days with appointments -->
+                                <c:if test="${appointmentsOnDate.contains(loopDate)}">
+                                    <span class="bullet-point"></span>
+                                </c:if>
                             </td>
-
 
                             <% 
                                     dayOfWeekCounter++;
@@ -315,204 +321,228 @@
 
 
             <script>
-                // DOM Elements
-                const searchInput = document.getElementById('searchInput');
-                const filterButtons = document.querySelectorAll('.filter-btn');
-                const viewButtons = document.querySelectorAll('.view-btn');
-                const appointmentModal = document.getElementById('appointmentModal');
-                // Get the context path for AJAX requests
-                const contextPath = '${pageContext.request.contextPath}';
-                let currentDate = new Date(); // Track the selected date
+                document.querySelector('.view-btn[data-view="calendar"]').addEventListener("click", function () {
+                    // Get today's date
+                    const today = new Date();
 
-                // **Fetch appointments for a given date**
+                    // Format today's date for backend (YYYY-MM-DD)
+                    const newDate = today.getFullYear() + "-" +
+                            String(today.getMonth() + 1).padStart(2, "0") + "-" +
+                            String(today.getDate()).padStart(2, "0");
+
+                    // Format today's date for display ("Sunday, 17-03-2024")
+                    const dayName = today.toLocaleDateString("en-GB", {weekday: "long"});
+                    const formattedDate = dayName + ", " +
+                            String(today.getDate()).padStart(2, "0") + "-" +
+                            String(today.getMonth() + 1).padStart(2, "0") + "-" +
+                            today.getFullYear();
+
+                    // Update the displayed date
+                    document.getElementById('currentDate').textContent = formattedDate;
+
+                    // Fetch appointments for today
+                    fetchAppointmentsByDate(newDate);
+                });
+
+
+                // Set global variables for context path and doctor ID
+                const contextPath = '${pageContext.request.contextPath}';
+                const doctorId = ${docID}; // Ensure doctorId is set in JSP scope, e.g., sessionScope.doctorId or requestScope.doctorId
+
+// Function to fetch appointments by date
                 function fetchAppointmentsByDate(date) {
-                    if (!date || date === 'null' || date.trim() === "") {
-                        console.error("Invalid date provided:", date);
+                    // Construct the API URL with date and doctorId parameters
+                    const apiUrl = contextPath + `/doctor/api/appointments?date=` + date + `&doctorId=` + doctorId;
+
+                    // Fetch appointments from the servlet
+                    fetch(apiUrl)
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error(`HTTP error! Status: ${response.status}`);
+                                }
+                                return response.json();
+                            })
+                            .then(appointments => {
+                                // Get the timeline slots container
+                                const timelineSlots = document.querySelector('.timeline-slots');
+                                timelineSlots.innerHTML = ''; // Clear existing content
+
+                                // Check if there are appointments
+                                if (appointments.length === 0) {
+                                    timelineSlots.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-day empty-state-icon"></i>
+                        <p class="empty-state-text">No appointments scheduled for this day</p>
+                    </div>
+                `;
+                                } else {
+                                    // Populate timeline with appointments
+                                    appointments.forEach(appointment => {
+                                        const slotHtml = `
+                        <div class="appointment-slot" data-status="` + appointment.status + `">
+                            <div class="time-indicator">
+               ` + appointment.doctorSchedule.shift.timeStart + `- ` + appointment.doctorSchedule.shift.timeEnd + `
+                            </div>
+                            <div class="appointment-card">
+                                <div class="patient-info">
+                                    <img src="` + contextPath + `/img/patient-placeholder.svg" alt="Patient" class="patient-avatar">
+                                    <div class="patient-details">
+                                        <h3>` + appointment.customer.fullname + `</h3>
+                                        <span class="patient-id">ID: ` + appointment.customer.id + `</span>
+                                    </div>
+                                </div>
+                                <div class="appointment-details">
+               Phone number: ` + appointment.customer.phone_number + `
+                                </div>
+                                <div class="appointment-actions">
+                                    <button class="action-btn view-btn" onclick="viewDetails('` + appointment.id + `')">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                                        timelineSlots.innerHTML += slotHtml;
+                                    });
+                                }
+                                //Format the date properly before updating the display
+                                const dateObj = new Date(date);
+
+                                const dayName = dateObj.toLocaleDateString("en-GB", {weekday: "long"});
+                                const day = String(dateObj.getDate()).padStart(2, "0");
+                                const month = String(dateObj.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+                                const year = dateObj.getFullYear();
+
+// Concatenating strings using `+`
+                                const formattedDate = dayName + ", " + day + "-" + month + "-" + year;
+
+                                document.getElementById('currentDate').textContent = formattedDate;
+
+                            })
+                            .catch(error => {
+                                console.error('Error fetching appointments:', error);
+                                alert('Failed to load appointments. Please try again.');
+                            });
+                }
+
+// Function to handle date navigation (previous/next buttons)
+                function changeScheduleDate(delta) {
+                    const currentDateSpan = document.getElementById('currentDate');
+                    const rawDate = currentDateSpan.textContent.trim(); // Ensure no extra spaces
+
+                    // Split to extract "17-03-2024" from "Sunday, 17-03-2024"
+                    const dateParts = rawDate.split(', ')[1]?.split('-');
+
+                    if (!dateParts || dateParts.length !== 3) {
+                        console.error("Invalid date format:", rawDate);
                         return;
                     }
 
-                    let doctorId = 16; // Ensure doctorId is correctly set
-                    let apiUrl = `${contextPath}/doctor/api/appointments?date=${date}&doctorId=${doctorId}`;
+                    // Convert extracted parts into numbers
+                    const day = parseInt(dateParts[0], 10);
+                    const month = parseInt(dateParts[1], 10) - 1; // JavaScript months are 0-based
+                    const year = parseInt(dateParts[2], 10);
 
-                            console.log("Fetching appointments from:", apiUrl);
+                    // Create Date object and adjust the date
+                    const currentDate = new Date(year, month, day);
+                    currentDate.setDate(currentDate.getDate() + delta);
 
-                            fetch(apiUrl)
-                                    .then(response => {
-                                        if (!response.ok) {
-                                            return response.text().then(text => {
-                                                throw new Error(text);
-                                            });
-                                        }
-                                        return response.json();
-                                    })
-                                    .then(data => updateScheduleUI(data, date))
-                                    .catch(error => console.error('Error fetching appointments:', error));
-                        }
+                    // Format the new date for the backend (YYYY-MM-DD)
+                    const newDate = currentDate.getFullYear() + "-" +
+                            String(currentDate.getMonth() + 1).padStart(2, "0") + "-" +
+                            String(currentDate.getDate()).padStart(2, "0");
 
+                    // Format the displayed date as "Sunday, 17-03-2024"
+                    const dayName = currentDate.toLocaleDateString("en-GB", {weekday: "long"});
+                    const formattedDate = dayName + ", " +
+                            String(currentDate.getDate()).padStart(2, "0") + "-" +
+                            String(currentDate.getMonth() + 1).padStart(2, "0") + "-" +
+                            currentDate.getFullYear();
 
+                    // Update the displayed date
+                    currentDateSpan.textContent = formattedDate;
 
-                        // **Update "Today's Schedule" dynamically**
-                        function updateScheduleUI(appointments, date) {
-                            let scheduleContainer = document.querySelector('.timeline-slots');
-                            let dateDisplay = document.getElementById('currentDate');
-                            dateDisplay.textContent = new Date(date).toDateString();
-                            scheduleContainer.innerHTML = '';
-
-                            if (appointments.length === 0) {
-                                scheduleContainer.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-calendar-day empty-state-icon"></i>
-                    <p class="empty-state-text">No appointments scheduled for this day.</p>
-                </div>`;
-                                return;
-                            }
-
-                            appointments.forEach(appointment => {
-                                let scheduleDate = new Date(appointment.doctorSchedule.scheduleDate);
-                                let timeStart = scheduleDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
-                                let timeEndDate = new Date(scheduleDate.getTime() + 30 * 60000);
-                                let timeEnd = timeEndDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
-
-                                let appointmentHTML = `
-                <div class="appointment-slot" data-status="${appointment.status}">
-                    <div class="time-indicator">${timeStart} - ${timeEnd}</div>
-                    <div class="appointment-card">
-                        <div class="patient-info">
-                            <div class="patient-details">
-                                <h3>${appointment.customer.fullname}</h3>
-                                <span class="patient-id">ID: ${appointment.customer.id}</span>
-                            </div>
-                        </div>
-                        <div class="appointment-details">
-                            <p><i class="fas fa-notes-medical"></i></p>
-                        </div>
-                    </div>
-                </div>`;
-                                scheduleContainer.innerHTML += appointmentHTML;
-                            });
-                        }
-
-                        // **Change schedule date when clicking Previous/Next**
-                        function changeScheduleDate(offset) {
-                            currentDate.setDate(currentDate.getDate() + offset);
-                            let formattedDate = currentDate.toISOString().split('T')[0];
-                            fetchAppointmentsByDate(formattedDate);
-                        }
-
-                        // **Clicking on a calendar date updates "Today's Schedule"**
-                        document.querySelectorAll('.day').forEach(cell => {
-                            cell.addEventListener('click', function () {
-                                let selectedDate = this.getAttribute('data-date');
-                                fetchAppointmentsByDate(selectedDate);
-                            });
-                        });
-
-                        // **Format and Display Date**
-                        function formatDate(date) {
-                            return new Intl.DateTimeFormat('en-US', {
-                                weekday: 'long',
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                            }).format(date);
-                        }
-
-                        function updateDateDisplay() {
-                            document.getElementById('currentDate').textContent = formatDate(currentDate);
-                        }
-
-                        // **Run this on Page Load**
-                        document.addEventListener('DOMContentLoaded', updateDateDisplay);
+                    // Fetch new appointments
+                    fetchAppointmentsByDate(newDate);
+                }
 
 
+                // Fetch & Display Appointment Details in Modal
+                function viewDetails(appointmentId) {
+                    if (!appointmentId) {
+                        console.error("Appointment ID is missing.");
+                        alert("Error: Appointment ID is missing.");
+                        return;
+                    }
 
-                        function updateDateDisplay() {
-                            document.getElementById('currentDate').textContent = formatDate(currentDate);
-                        }
+                    let apiUrl = `/SWP391_GR6/doctor/api/appointment?id=` + appointmentId;
+                    console.log("Fetching appointment from:", apiUrl); // Debugging
 
-                        function previousDay() {
-                            currentDate.setDate(currentDate.getDate() - 1);
-                            updateDateDisplay();
-                        }
-
-                        function nextDay() {
-                            currentDate.setDate(currentDate.getDate() + 1);
-                            updateDateDisplay();
-                        }
-
-
-
-                        // Fetch & Display Appointment Details in Modal
-                        function viewDetails(appointmentId) {
-                            if (!appointmentId) {
-                                console.error("Appointment ID is missing.");
-                                alert("Error: Appointment ID is missing.");
-                                return;
-                            }
-
-                            let apiUrl = `/SWP391_GR6/doctor/api/appointment?id=` + appointmentId;
-                            console.log("Fetching appointment from:", apiUrl); // Debugging
-
-                            fetch(apiUrl)
-                                    .then(response => {
-                                        if (!response.ok) {
-                                            throw new Error(`HTTP error! Status: ${response.status}`);
-                                        }
-                                        return response.json();
-                                    })
-                                    .then(appointment => {
-                                        document.getElementById('modalPatientName').textContent = appointment.customer.fullname;
-                                        document.getElementById('modalPatientId').textContent = "ID: " + appointment.customer.id;
-                                        document.getElementById('modalDateTime').textContent = appointment.doctorSchedule.scheduleDate;
-                                        document.getElementById('modalReason').textContent = "No reason provided";
-                                        document.getElementById('modalHistory').textContent = "No medical history available";
-                                        document.getElementById('modalPatientPhone').textContent = appointment.customer.phone_number || "No phone number available";
-                                        document.getElementById('modalNotes').value = "";
-                                        openModal();
-                                    })
-                                    .catch(error => {
-                                        console.error('Error fetching appointment details:', error);
-                                        alert('Failed to load appointment details.');
-                                    });
-                        }
-
-
-
-
-                        // Save Notes
-                        function saveNotes() {
-                            const notes = document.getElementById('modalNotes').value;
-                            alert('this function does not available yet');
-                            closeModal();
-                        }
-
-                        // Modal Controls
-                        function openModal() {
-                            appointmentModal.style.display = 'block';
-                            document.body.classList.add('modal-open'); // Prevents scrolling
-                        }
-
-                        function closeModal() {
-                            appointmentModal.style.display = 'none';
-                            document.body.classList.remove('modal-open'); // Restores scrolling
-                        }
-
-                        // Close modal when clicking outside
-                        window.addEventListener('click', (event) => {
-                            if (event.target === appointmentModal)
-                                closeModal();
-                        });
-                        // Initialize on Page Load
-                        document.addEventListener('DOMContentLoaded', updateDateDisplay);
-                        // Add Loading States to Buttons
-                        document.querySelectorAll('button').forEach(button => {
-                            button.addEventListener('click', () => {
-                                if (!button.classList.contains('date-nav-btn')) {
-                                    button.classList.add('loading');
-                                    setTimeout(() => button.classList.remove('loading'), 1000);
+                    fetch(apiUrl)
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error(`HTTP error! Status: ${response.status}`);
                                 }
+                                return response.json();
+                            })
+                            .then(appointment => {
+                                document.getElementById('modalPatientName').textContent = appointment.customer.fullname;
+                                document.getElementById('modalPatientId').textContent = "ID: " + appointment.customer.id;
+                                document.getElementById('modalDateTime').textContent = appointment.doctorSchedule.scheduleDate;
+                                document.getElementById('modalReason').textContent = "No reason provided";
+                                document.getElementById('modalHistory').textContent = "No medical history available";
+                                document.getElementById('modalPatientPhone').textContent = appointment.customer.phone_number || "No phone number available";
+                                document.getElementById('modalNotes').value = "";
+                                document.getElementById('viewHistoryBtn').onclick = function () {
+                                    window.location.href = contextPath+`/doctor/ShowCustomerMedicalDetail?cId=` + appointment.customer.id;
+                                };
+                                openModal();
+                            })
+                            .catch(error => {
+                                console.error('Error fetching appointment details:', error);
+                                alert('Failed to load appointment details.');
                             });
-                        });
+                }
+
+
+
+
+                // Save Notes
+                function saveNotes() {
+                    const notes = document.getElementById('modalNotes').value;
+                    alert('this function does not available yet');
+                    closeModal();
+                }
+
+                // Modal Controls
+                function openModal() {
+                    appointmentModal.style.display = 'block';
+                    document.body.classList.add('modal-open'); // Prevents scrolling
+                }
+
+                function closeModal() {
+                    appointmentModal.style.display = 'none';
+                    document.body.classList.remove('modal-open'); // Restores scrolling
+                }
+
+                // Close modal when clicking outside
+                window.addEventListener('click', (event) => {
+                    if (event.target === appointmentModal)
+                        closeModal();
+                });
+                // Initialize on Page Load
+                document.addEventListener('DOMContentLoaded', updateDateDisplay);
+                // Add Loading States to Buttons
+                document.querySelectorAll('button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        if (!button.classList.contains('date-nav-btn')) {
+                            button.classList.add('loading');
+                            setTimeout(() => button.classList.remove('loading'), 1000);
+                        }
+                    });
+                });
+
+
 
 
 

@@ -1,9 +1,9 @@
 package dao;
 
 import dal.DBContext;
-import model.Doctor;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Doctor;
 import model.DoctorSchedule;
 import model.Shift;
-import model.VisitHistory;
 
 /**
  *
@@ -22,177 +22,6 @@ import model.VisitHistory;
 public class DoctorDBContext extends DBContext<Doctor> {
 
     private static final Logger LOGGER = Logger.getLogger(DoctorDBContext.class.getName());
-
-    public static void main(String[] args) {
-        DoctorDBContext d = new DoctorDBContext();
-        System.out.println(d.getVisitHistoriesByDoctorIdPaginated(16, 1, 10).size());
-    }
-
-    public ArrayList<VisitHistory> getVisitHistoriesByDoctorIdPaginated(int doctorId, int page, int size) {
-        ArrayList<VisitHistory> visitHistories = new ArrayList<>();
-        String sql = "SELECT v.VisitDate, v.ReasonForVisit, v.Diagnoses, v.TreatmentPlan, c.fullname FROM VisitHistory v JOIN [doctor] d ON v.doctorID = d.id JOIN [Customer] c ON v.CustomerID = c.id WHERE DoctorID = ? ORDER BY VisitDate DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-
-        int offset = (page - 1) * size;
-
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, doctorId);
-            ps.setInt(2, offset);
-            ps.setInt(3, size);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    VisitHistory vh = new VisitHistory();
-                    vh.setVisitDate(rs.getTimestamp("VisitDate"));
-                    vh.setReasonForVisit(rs.getString("ReasonForVisit"));
-                    vh.setDiagnoses(rs.getString("Diagnoses"));
-                    vh.setTreatmentPlan(rs.getString("TreatmentPlan"));
-                    vh.setCustomerName(rs.getString("fullname"));
-                    visitHistories.add(vh);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return visitHistories;
-    }
-
-    public int getVisitHistoryCountByDoctorId(int doctorId) {
-        String sql = "SELECT COUNT(*) FROM VisitHistory WHERE DoctorID = ?";
-        int count = 0;
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, doctorId);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    count = rs.getInt(1);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return count;
-    }
-
-    public ArrayList<Doctor> searchDoctor(String name, Date dob, Boolean gender, int page, String sort, int size) {
-        ArrayList<Doctor> doctors = new ArrayList<>();
-        String sql = """
-                  SELECT d.id, s.fullname, s.gender, s.dob, s.address, d.info, d.salaryCoefficient, u.gmail, u.phone
-                                   FROM [Staff] s 
-                                   JOIN [Doctor] d ON s.id = d.staff_id 
-                                   JOIN [User] u ON u.username = s.staff_username
-                 """;
-
-        StringBuilder sqlBuilder = new StringBuilder(sql);
-
-        if (name != null && !name.isEmpty()) {
-            sqlBuilder.append(" AND s.fullname COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?");
-        }
-        if (dob != null) {
-            sqlBuilder.append(" AND s.dob = ?");
-        }
-        if (gender != null) {
-            sqlBuilder.append(" AND s.gender = ?");
-        }
-
-        switch (sort) {
-            case "default":
-                sqlBuilder.append(" ORDER BY s.id");
-                break;
-            case "fullNameAZ":
-                sqlBuilder.append(" ORDER BY s.fullname ASC");
-                break;
-            case "fullNameZA":
-                sqlBuilder.append(" ORDER BY s.fullname DESC");
-                break;
-            case "DOBLTH":
-                sqlBuilder.append(" ORDER BY s.dob ASC");
-                break;
-            case "DOBHTL":
-                sqlBuilder.append(" ORDER BY s.dob DESC");
-                break;
-            default:
-                throw new AssertionError("Invalid sort type: " + sort);
-        }
-        sqlBuilder.append(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
-
-        try (PreparedStatement stm = connection.prepareStatement(sqlBuilder.toString())) {
-            int paramIndex = 1;
-
-            if (name != null && !name.isEmpty()) {
-                stm.setString(paramIndex++, "%" + name + "%");
-            }
-            if (dob != null) {
-                stm.setDate(paramIndex++, new java.sql.Date(dob.getTime()));
-            }
-            if (gender != null) {
-                stm.setBoolean(paramIndex++, gender);
-            }
-
-            int offset = (page - 1) * size;
-            stm.setInt(paramIndex++, offset);
-            stm.setInt(paramIndex++, size);
-
-            try (ResultSet rs = stm.executeQuery()) {
-                while (rs.next()) {
-                    Doctor doctor = new Doctor();
-                    doctor.setId(rs.getInt("id"));
-                    doctor.setName(rs.getString("fullname"));
-                    doctor.setGender(rs.getBoolean("gender"));
-                    doctor.setDob(rs.getDate("dob"));
-                    doctor.setEmail(rs.getString("gmail"));
-                    doctor.setAddress(rs.getString("address"));
-                    doctor.setInfo(rs.getString("info"));
-                    doctor.setSalaryCoefficient(rs.getDouble("salaryCoefficient"));
-                    doctors.add(doctor);
-                }
-            }
-        } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "Error listing doctors: {0}", ex.getMessage());
-        }
-
-        return doctors;
-    }
-
-    public int countSearchDoctor(String name, Date dob, Boolean gender) {
-        int count = 0;
-        String sql = " SELECT COUNT(*)FROM [Staff] s JOIN [Doctor] d ON s.id = d.staff_id  JOIN [User] u ON u.username = s.staff_username";
-
-        StringBuilder sqlBuilder = new StringBuilder(sql);
-
-        if (name != null && !name.isEmpty()) {
-            sqlBuilder.append(" AND fullname COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?");
-        }
-        if (dob != null) {
-            sqlBuilder.append(" AND dob = ?");
-        }
-        if (gender != null) {
-            sqlBuilder.append(" AND gender = ?");
-        }
-
-        try (PreparedStatement stm = connection.prepareStatement(sqlBuilder.toString())) {
-            int paramIndex = 1;
-
-            if (name != null && !name.isEmpty()) {
-                stm.setString(paramIndex++, "%" + name + "%");
-            }
-            if (dob != null) {
-                stm.setDate(paramIndex++, new java.sql.Date(dob.getTime()));
-            }
-            if (gender != null) {
-                stm.setBoolean(paramIndex++, gender);
-            }
-
-            try (ResultSet rs = stm.executeQuery()) {
-                if (rs.next()) {
-                    count = rs.getInt(1);
-                }
-            }
-        } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "Error counting doctors: {0}", ex.getMessage());
-        }
-
-        return count;
-    }
 
     public int getDoctorIdByStaffUsername(String username) {
         int doctorId = -1;
@@ -211,7 +40,7 @@ public class DoctorDBContext extends DBContext<Doctor> {
 
     public Doctor getDoctorByUsername(String username) {
         Doctor doctor = null;
-        String sql = "SELECT * FROM Doctor WHERE username = ?";
+        String sql = "SELECT d.id FROM Doctor d JOIN Staff s ON d.staff_id = s.id WHERE s.staff_username = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
@@ -239,7 +68,7 @@ public class DoctorDBContext extends DBContext<Doctor> {
                 SELECT ds.id, ds.schedule_date, s.id AS shift_id, s.time_start, s.time_end, ds.available
                 FROM Doctor_Schedule ds
                 JOIN Shift s ON ds.shift_id = s.id
-                WHERE ds.doctor_id = ? AND ds.schedule_date = ?
+                WHERE ds.available = 1 and ds.doctor_id = ? AND ds.schedule_date = ?
                 """;
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, doctorId);
@@ -266,7 +95,7 @@ public class DoctorDBContext extends DBContext<Doctor> {
 
     public Doctor getDoctorById(int doctorId) {
         String sql = """
-            SELECT d.id, s.fullname, dep.name AS specialty
+            SELECT d.id, s.fullname, dep.name AS specialty, d.price
             FROM Doctor d
             JOIN Staff s ON d.staff_id = s.id
             LEFT JOIN Doctor_Department dd ON d.id = dd.doctor_id
@@ -285,6 +114,7 @@ public class DoctorDBContext extends DBContext<Doctor> {
                     doctor = new Doctor();
                     doctor.setId(rs.getInt("id"));
                     // Nếu fullname bị null, bạn có thể set giá trị mặc định
+                    doctor.setPrice(rs.getString("price"));
                     doctor.setName(rs.getString("fullname") != null ? rs.getString("fullname") : "N/A");
                 }
                 String specialty = rs.getString("specialty");
@@ -297,27 +127,6 @@ public class DoctorDBContext extends DBContext<Doctor> {
             }
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Error getting doctor by ID", ex);
-        }
-        return doctor;
-    }
-
-    public Doctor getDoctorInforById(int id) {
-        Doctor doctor = null;
-        String sql = "SELECT d.id, s.fullname,s.gender, s.dob, s.address, u.gmail FROM [doctor] d JOIN [Staff] s ON d.staff_id = s.id JOIN [User] u ON s.staff_username = u.username WHERE d.id = ?";
-        try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            stm.setInt(1, id);
-            ResultSet rs = stm.executeQuery();
-            if (rs.next()) {
-                doctor = new Doctor();
-                doctor.setId(rs.getInt("id"));
-                doctor.setName(rs.getString("fullname"));
-                doctor.setGender(rs.getBoolean("gender"));
-                doctor.setDob(rs.getDate("dob"));
-                doctor.setAddress(rs.getString("address"));
-                doctor.setEmail(rs.getString("gmail"));
-            }
-        } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "Error fetching doctor data: {0}", ex.getMessage());
         }
         return doctor;
     }
@@ -372,59 +181,76 @@ public class DoctorDBContext extends DBContext<Doctor> {
     }
 
     public List<Doctor> getDoctorsByFilters(String name, List<String> selectedSpecialties, Date selectedDate) {
-        HashMap<Integer, Doctor> doctorMap = new HashMap<>();
+        List<Doctor> doctors = new ArrayList<>();
 
-        // Start the base SQL query
-        String sql = "SELECT d.id, s.fullname, dep.name AS specialty "
+        String sql = "SELECT d.id, s.fullname AS doctor_name, s.img, d.price, "
+                + "COALESCE(AVG(r.rating), 0) AS average_rating, "
+                + "STUFF(( "
+                + "    SELECT DISTINCT ', ' + dep.name "
+                + "    FROM Doctor_Department dd2 "
+                + "    JOIN Department dep ON dd2.department_id = dep.id "
+                + "    WHERE dd2.doctor_id = d.id "
+                + "    FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 2, '') AS specialties, "
+                + "STUFF(( "
+                + "    SELECT DISTINCT ', ' + c.CertificateName "
+                + "    FROM Certificate c "
+                + "    WHERE c.DoctorID = d.id AND c.Status != 'Pending' "
+                + "    FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 2, '') AS certificates "
                 + "FROM Doctor d "
                 + "JOIN Staff s ON d.staff_id = s.id "
-                + "JOIN Doctor_Department dd ON d.id = dd.doctor_id "
-                + "JOIN Department dep ON dd.department_id = dep.id "
                 + "JOIN Doctor_Schedule ds ON d.id = ds.doctor_id "
-                + "WHERE ds.schedule_date = ? "; // Ensures only doctors with a schedule that day are fetched
+                + "LEFT JOIN Rating r ON d.id = r.doctor_id "
+                + "WHERE ds.schedule_date = ? ";
 
-        ArrayList<Object> paramValues = new ArrayList<>();
-        paramValues.add(selectedDate);  // Filter by selected date
+        List<Object> params = new ArrayList<>();
+        params.add(selectedDate); // Schedule date filter
 
-        // Add filtering by doctor's name (if provided)
+        // Add doctor name filter (if provided)
         if (name != null && !name.trim().isEmpty()) {
-            sql += " AND s.fullname LIKE ?";
-            paramValues.add("%" + name + "%");
+            sql += "AND s.fullname LIKE ? ";
+            params.add("%" + name + "%");
         }
 
-        // Add filtering by specialties (if selected)
+        // Add department filter (if selected)
         if (selectedSpecialties != null && !selectedSpecialties.isEmpty()) {
-            sql += " AND dep.id IN (";
-            sql += String.join(", ", Collections.nCopies(selectedSpecialties.size(), "?"));
-            sql += ")";
-            paramValues.addAll(selectedSpecialties);
+            sql += "AND d.id IN ( "
+                    + "    SELECT DISTINCT dd.doctor_id "
+                    + "    FROM Doctor_Department dd "
+                    + "    WHERE dd.department_id IN (";
+            sql += String.join(", ", Collections.nCopies(selectedSpecialties.size(), "?")) + ")) ";
+            params.addAll(selectedSpecialties);
         }
+
+        sql += "GROUP BY d.id, s.fullname, s.img, d.price";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            // Set parameters dynamically
-            for (int i = 0; i < paramValues.size(); i++) {
-                stmt.setObject(i + 1, paramValues.get(i));
+            for (int i = 0; i < params.size(); i++) {
+                stmt.setObject(i + 1, params.get(i));
             }
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                int doctorId = rs.getInt("id");
-                String doctorFullName = rs.getString("fullname");
-                String specialty = rs.getString("specialty");
+                CertificateDBContext cerdb = new CertificateDBContext();
+                Doctor doctor = new Doctor();
+                doctor.setId(rs.getInt("id"));
+                doctor.setName(rs.getString("doctor_name"));
+                doctor.setImg(rs.getString("img"));
+                doctor.setPrice(rs.getString("price"));
+                doctor.setAverage_rating(rs.getDouble("average_rating"));
 
-                // If doctor is not in the list, add them
-                doctorMap.putIfAbsent(doctorId, new Doctor(doctorId, doctorFullName, new ArrayList<>()));
+                // Convert specialties from comma-separated string to List
+                String specialtiesStr = rs.getString("specialties");
+                doctor.setSpecialties(specialtiesStr != null ? Arrays.asList(specialtiesStr.split(", ")) : new ArrayList<>());
 
-                // Add specialty if not already in the list
-                if (!doctorMap.get(doctorId).getSpecialties().contains(specialty)) {
-                    doctorMap.get(doctorId).getSpecialties().add(specialty);
-                }
+                doctor.setCertificates(cerdb.getCertificatesBelongDoctorId(doctor.getId()));
+           //     System.out.println(doctor.getCertificates().get(0).getCertificateName());
+                doctors.add(doctor);
             }
         } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "Error retrieving doctor list", ex);
+            ex.printStackTrace();
         }
 
-        return new ArrayList<>(doctorMap.values());
+        return doctors;
     }
 
     public Integer getDoctorIdByStaffId(int staffId) {
@@ -506,5 +332,6 @@ public class DoctorDBContext extends DBContext<Doctor> {
         }
         return new ArrayList<>(doctorMap.values());
     }
+    
 
 }

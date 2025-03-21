@@ -433,6 +433,49 @@ public class CertificateDBContext extends DBContext<Certificate> {
     public ArrayList<Certificate> list() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+    
+    public List<Certificate> getCertificatesBelongDoctorId(int doctorId) {
+    List<Certificate> certificates = new ArrayList<>();
+    String sql = "SELECT  [CertificateID]\n" +
+"      ,[DoctorID]\n" +
+"      ,[CertificateName]\n" +
+"      ,[IssuingAuthority]\n" +
+"      ,[IssueDate]\n" +
+"      ,[ExpirationDate]\n" +
+"      ,[DocumentPath]\n" +
+"      ,[Status]\n" +
+"      ,[CheckedByStaffID]\n" +
+"      ,[CheckedDate]\n" +
+"      ,[CheckNote]\n" +
+"      ,[typeId]\n" +
+"  FROM [Certificate] "
+               + " WHERE DoctorID = ? AND Status = 'Approved'";
+
+    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        stmt.setInt(1, doctorId);
+        try (ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Certificate cert = new Certificate();
+                cert.setCertificateId(rs.getInt("certificateId"));
+                cert.setDoctorId(rs.getInt("DoctorID"));
+                cert.setCertificateName(rs.getString("CertificateName"));
+                cert.setIssuingAuthority(rs.getString("IssuingAuthority"));
+                cert.setDocumentPath(rs.getString("DocumentPath"));
+                cert.setStatus(rs.getString("status"));
+                cert.setIssueDate(rs.getDate("issueDate"));
+                cert.setExpirationDate(rs.getDate("expirationDate"));
+                System.out.println(cert.getCertificateName());
+                certificates.add(cert);
+               
+            }
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+    
+    return certificates;
+}
+
 
     @Override
     public Certificate get(String id) {
