@@ -248,6 +248,10 @@
         <servlet-name>AppointmentDoctorListController</servlet-name>
         <servlet-class>controller.appointment.AppointmentDoctorListController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>InvoiceRevenueChartController</servlet-name>
+        <servlet-class>controller.financial.InvoiceRevenueChartController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
         <url-pattern>/forgetpassword</url-pattern>
@@ -571,5 +575,9 @@
     <servlet-mapping>
         <servlet-name>AppointmentDoctorListController</servlet-name>
         <url-pattern>/appointment/doctor</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>InvoiceRevenueChartController</servlet-name>
+        <url-pattern>/finance/revenue</url-pattern>
     </servlet-mapping>
 </web-app>

@@ -6,10 +6,35 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import model.Customer;
+import model.InvoiceRevenue;
 import model.Service;
 
 public class InvoiceDBContext extends DBContext<Invoice> {
 
+    public List<InvoiceRevenue> getInvoiceRevenueByMonth(Date start, Date end) {
+        List<InvoiceRevenue> list = new ArrayList<>();
+        // Giả sử SQL Server, dùng FORMAT để nhóm theo năm-tháng
+        String sql = "SELECT FORMAT(i.created_date, 'yyyy-MM') as Month, SUM(s.price) as TotalRevenue "
+                + "FROM [test1].[dbo].[Invoices] i "
+                + "LEFT JOIN Service s ON s.id = i.service_id "
+                + "WHERE i.created_date BETWEEN ? AND ? "
+                + "GROUP BY FORMAT(i.created_date, 'yyyy-MM') "
+                + "ORDER BY Month ASC";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setDate(1, start);
+            stm.setDate(2, end);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                InvoiceRevenue rev = new InvoiceRevenue();
+                rev.setMonth(rs.getString("Month"));
+                rev.setTotalRevenue(rs.getDouble("TotalRevenue"));
+                list.add(rev);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return list;
+    }
     public int getInvoiceIdByTxnRef(String vnp_TxnRef) {
         int invoiceId = -1;
         String sql = "SELECT id FROM Invoices WHERE vnp_TxnRef = ?";
