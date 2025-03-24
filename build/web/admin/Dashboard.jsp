@@ -171,91 +171,9 @@
         </div>
     </div>
                         
-    <section>
-            <div id="chat-box" class="chat-container">
-              <div class="chat-header" id="chat-toggle">
-                <h5 class="mb-0">Chat</h5>
-                <button id="toggle-chat" class="btn btn-primary btn-sm">&#x25B2;</button>
-              </div>
-              <div class="chat-body">
-                <div class="chat-messages">
-                  <div class="message received">
-                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp" alt="avatar">
-                    <p>Hi, How are you?</p>
-                  </div>
-                  <div class="message sent">
-                    <p>I'm good. How about you?</p>
-                  </div>
-                </div>
-              </div>
-              <div class="chat-footer">
-                <input type="text" class="form-control" placeholder="Type a message">
-                <button class="btn btn-primary">Send</button>
-              </div>
-            </div>
-            <button id="chat-icon" class="chat-icon">
-              <i class="fas fa-comment"></i>
-            </button>
-          </section>
     <script src="${pageContext.request.contextPath}/js/Director/dashboard.js"></script>
     <script>
-        document.getElementById("toggle-chat").addEventListener("click", function() {
-            document.getElementById("chat-box").style.display = "none";
-            document.getElementById("chat-icon").style.display = "flex";
-        });
-        document.getElementById("chat-icon").addEventListener("click", function() {
-            document.getElementById("chat-box").style.display = "block";
-            document.getElementById("chat-icon").style.display = "none";
-        });
-            
-            var socket = new WebSocket("ws://localhost:9999/SWP391_GR6/chat");
-            socket.onmessage = function(event) {
-                
-                console.log("Received message:", event.data);
-                let chatBody = document.querySelector(".chat-messages");
-                let receivedMessage = document.createElement("div");
-                receivedMessage.classList.add("message", "received");
-                receivedMessage.innerHTML = `
-                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp" alt="avatar">
-                    <p>`+ event.data + `</p>
-                `;
-                chatBody.appendChild(receivedMessage);
-                chatBody.scrollTop = chatBody.scrollHeight;
-            };
-            
-            socket.onopen = function() {
-                console.log("✅ WebSocket Connected");
-            };
-            
-            
-
-
-            socket.onerror = function(error) {
-                console.log("WebSocket Error: " + error);
-            };
-
-            function sendMessage() {
-                let inputField = document.querySelector(".chat-footer input");
-                let message = inputField.value.trim();
-                if (message !== "") {
-                    let chatBody = document.querySelector(".chat-messages");
-                    let sentMessage = document.createElement("div");
-                    sentMessage.classList.add("message", "sent");
-                    sentMessage.innerHTML = `<p>`+ message + `</p>`;
-                    chatBody.appendChild(sentMessage);
-                    chatBody.scrollTop = chatBody.scrollHeight;
-
-                    socket.send(message); // Gửi tin nhắn qua WebSocket
-                    inputField.value = "";
-                }
-            }
-
-            document.querySelector(".chat-footer button").addEventListener("click", sendMessage);
-            document.querySelector(".chat-footer input").addEventListener("keypress", function(event) {
-                if (event.key === "Enter") {
-                    sendMessage();
-                }
-            });
+        
         
           const userChart = new Chart(document.getElementById("userChart"), {
             type: "doughnut",

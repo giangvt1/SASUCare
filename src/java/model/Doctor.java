@@ -13,10 +13,68 @@ public class Doctor {
     private String phoneNumber;
     private boolean gender;
     private String address;
+    private String img;
+    private String price;
+    private String info;
+        private double salaryCoefficient; // hệ số lương
+    private double average_rating;
+    private List<Rating> ratings;
     private List<String> specialties;
     private ArrayList<DoctorSchedule> doctorSchedules;
+    private List<Department> departments;
+    private List<Certificate> certificates;  // Stores certificate names
+
+    public List<Certificate> getCertificates() {
+        return certificates;
+    }
+
+    public void setCertificates(List<Certificate> certificates) {
+        this.certificates = certificates;
+    }
+
+
+    public double getSalaryCoefficient() {
+        return salaryCoefficient;
+    }
+
+    public void setSalaryCoefficient(double salaryCoefficient) {
+        this.salaryCoefficient = salaryCoefficient;
+    }
+
+    public List<Department> getDepartments() {
+        return departments;
+    }
+
+    public void setDepartments(List<Department> departments) {
+        this.departments = departments;
+    }
+
+    public Doctor(int id, List<Department> departments) {
+        this.id = id;
+        this.departments = departments;
+    }
 
     public Doctor() {
+    }
+    public Doctor(int id, String name, Staff staff, String email, String phoneNumber, boolean gender, String address, String img, List<Rating> ratings, List<String> specialties, ArrayList<DoctorSchedule> doctorSchedules) {
+        this.id = id;
+        this.name = name;
+        this.staff = staff;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.gender = gender;
+        this.address = address;
+        this.img = img;
+        this.ratings = ratings;
+        this.specialties = specialties;
+        this.doctorSchedules = doctorSchedules;
+    }
+    public Doctor(int id, String name, List<String> specialties, String price, String info) {
+        this.id = id;
+        this.name = name;
+        this.specialties = specialties;
+        this.price = price;
+        this.info = info;
     }
 
     public Doctor(int id, String name, Staff staff, String email, String phoneNumber, boolean gender, String address, List<String> specialties, ArrayList<DoctorSchedule> doctorSchedules) {
@@ -108,5 +166,46 @@ public class Doctor {
     public void setDoctorSchedules(ArrayList<DoctorSchedule> doctorSchedules) {
         this.doctorSchedules = doctorSchedules;
     }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    public double getAverage_rating() {
+        return average_rating;
+    }
+
+    public void setAverage_rating(double average_rating) {
+        this.average_rating = average_rating;
+    }
+
+    public List<Rating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<Rating> ratings) {
+        this.ratings = ratings;
+    }
+    
 
 }

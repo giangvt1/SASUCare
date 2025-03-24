@@ -94,14 +94,5 @@ public class HRApptManagementController extends BaseRBACController {
 
     
 
-    private static class ApiResponse {
-
-        boolean success;
-        String message;
-
-        public ApiResponse(boolean success, String message) {
-            this.success = success;
-            this.message = message;
-        }
-    }
+    
 }

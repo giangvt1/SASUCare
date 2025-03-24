@@ -47,6 +47,7 @@
                     <c:set var="hasConfirmedAppointments" value="false" />
                     <c:forEach var="appointment" items="${appointments}">
                         <c:if test="${appointment.status == 'Confirmed'}">
+                            <c:set var="hasConfirmedAppointments" value="true" />
                             <div class="event-card">
                                 <div class="event-details">
                                     <div class="doctor-name">${appointment.doctor.name}</div>
@@ -203,7 +204,7 @@
                         <strong>Invoice Amount: </strong><span id="invoiceAmount"></span><br>
                         <strong>Invoice Status: </strong><span id="invoiceStatus"></span><br>
                         <strong>Invoice Date: </strong><span id="invoiceDate"></span><br>
-                        <button id="payInvoiceButton">Pay Invoice</button>
+                        <button id="payInvoiceButton" style="display:none;">Pay Invoice</button>
                     </div>
                 </div>
             </div>
@@ -274,15 +275,20 @@
                             .then(response => response.json())
                             .then(invoice => {
                                 // Display invoice details
-                                document.getElementById("invoiceAmount").innerText = invoice.amount;
+                                document.getElementById("invoiceAmount").innerText = formatCurrency(invoice.amount);
                                 document.getElementById("invoiceStatus").innerText = invoice.status;
                                 document.getElementById("invoiceDate").innerText = invoice.expireDate;
 
-                                // Set dynamic onclick event for payment button
-                                payInvoiceButton.style.display = 'inline';
-                                payInvoiceButton.onclick = function () {
-                                    payInvoice(invoice.id, 10000, invoice.txnRef);
-                                };
+                                // Conditionally display the Pay Invoice button based on invoice status
+                                const payInvoiceButton = document.getElementById("payInvoiceButton");
+                                if (invoice.status === 'Pending') {  // Check if the status is 'Pending' or any other condition
+                                    payInvoiceButton.style.display = 'inline';
+                                    payInvoiceButton.onclick = function () {
+                                        payInvoice(invoice.id, invoice.amount, invoice.txnRef);
+                                    };
+                                } else {
+                                    payInvoiceButton.style.display = 'none';  // Hide button if status is not 'Pending'
+                                }
                             })
                             .catch(error => {
                                 console.error('Error fetching invoice:', error);
@@ -290,7 +296,7 @@
                             });
                 } else {
                     document.getElementById("invoiceDetails").style.display = 'none';  // Hide if no invoice
-                    payInvoiceButton.style.display = 'none';
+                    document.getElementById("payInvoiceButton").style.display = 'none'; // Hide Pay Invoice button
                 }
 
                 // Show the modal
@@ -310,6 +316,13 @@
                     // Redirect to cancel servlet
                     window.location.href = "../appointment/cancel?appointmentId=" + appointmentId;
                 }
+            }
+
+            function formatCurrency(amount) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'VND'
+                }).format(amount);
             }
 
 

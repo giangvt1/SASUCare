@@ -10,6 +10,23 @@
     --status-done: rgba(33, 150, 243, 0.1);
 }
 
+.the-container {
+                display: flex;
+                flex-direction: row; /* Align elements in a row */
+            }
+
+            .doctor-sidebar {
+                max-width: 400px; /* Set the width of the sidebar */
+                /*margin-right: 20px;  Add space between sidebar and main content */
+                flex-shrink: 0;  
+            }
+
+            .main-content {
+                flex: 1; /* Take up remaining space */
+                /*padding: 20px;  Optional: add padding */
+            }
+
+
 .status-title {
     font-size: 1.5em;
     margin-bottom: 10px;
@@ -22,6 +39,7 @@
 .canceled.status-title {
     color: red;
 }
+
 
 .done.status-title {
     color: green;

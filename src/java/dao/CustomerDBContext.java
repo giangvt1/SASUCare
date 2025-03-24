@@ -197,7 +197,7 @@ public class CustomerDBContext extends DBContext<Customer> {
         }
         return false;
     }
-    
+
     public boolean hasPassword(Customer customer) {
         String sql = "SELECT [password] FROM [Customer] WHERE gmail = ?";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
@@ -215,38 +215,38 @@ public class CustomerDBContext extends DBContext<Customer> {
         }
         return false;
     }
-
-    public boolean updateMedicalHistory(MedicalHistory m) {
-        String sql = "UPDATE MedicalHistory SET Name = ?, Detail = ? WHERE id = ?";
-        try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            // Gán các giá trị vào PreparedStatement
-            stm.setString(1, m.getName());
-            stm.setString(2, m.getDetail());
-            stm.setInt(3, m.getId()); // Thêm id vào điều kiện WHERE
-
-            // Thực thi câu lệnh và kiểm tra số dòng bị ảnh hưởng
-            int rowsUpdated = stm.executeUpdate();
-            return rowsUpdated > 0; // Nếu số dòng bị ảnh hưởng > 0 thì trả về true
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return false; // Trả về false nếu gặp lỗi
-    }
-
-    public boolean deleteMedicalHistory(int id) {
-        String sql = "DELETE FROM MedicalHistory WHERE id = ?";
-        try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            // Gán giá trị id vào PreparedStatement
-            stm.setInt(1, id);
-
-            // Thực thi câu lệnh và kiểm tra số dòng bị ảnh hưởng
-            int rowsDeleted = stm.executeUpdate();
-            return rowsDeleted > 0; // Nếu số dòng bị ảnh hưởng > 0 thì trả về true
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return false; // Trả về false nếu gặp lỗi
-    }
+//
+//    public boolean updateMedicalHistory(MedicalHistory m) {
+//        String sql = "UPDATE MedicalHistory SET Name = ?, Detail = ? WHERE id = ?";
+//        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+//            // Gán các giá trị vào PreparedStatement
+//            stm.setString(1, m.getName());
+//            stm.setString(2, m.getDetail());
+//            stm.setInt(3, m.getId()); // Thêm id vào điều kiện WHERE
+//
+//            // Thực thi câu lệnh và kiểm tra số dòng bị ảnh hưởng
+//            int rowsUpdated = stm.executeUpdate();
+//            return rowsUpdated > 0; // Nếu số dòng bị ảnh hưởng > 0 thì trả về true
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
+//        return false; // Trả về false nếu gặp lỗi
+//    }
+//
+//    public boolean deleteMedicalHistory(int id) {
+//        String sql = "DELETE FROM MedicalHistory WHERE id = ?";
+//        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+//            // Gán giá trị id vào PreparedStatement
+//            stm.setInt(1, id);
+//
+//            // Thực thi câu lệnh và kiểm tra số dòng bị ảnh hưởng
+//            int rowsDeleted = stm.executeUpdate();
+//            return rowsDeleted > 0; // Nếu số dòng bị ảnh hưởng > 0 thì trả về true
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
+//        return false; // Trả về false nếu gặp lỗi
+//    }
 
     public Customer getCustomerById(int id) {
         Customer customer = null;
@@ -606,7 +606,7 @@ public class CustomerDBContext extends DBContext<Customer> {
                 WHERE username = ? AND [password] = ?
                 """;
         }
-        
+
         PreparedStatement stm = null;
         Customer customer = null;
         try {
@@ -676,7 +676,7 @@ public class CustomerDBContext extends DBContext<Customer> {
         }
         return false;
     }
-    
+
     public boolean isCustomerExistedByGmail(String gmail) {
         String sql = "SELECT * FROM [Customer] WHERE gmail = ?";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
@@ -783,7 +783,7 @@ public class CustomerDBContext extends DBContext<Customer> {
             LOGGER.log(Level.SEVERE, "Error updating password: {0}", ex.getMessage());
         }
     }
-    
+
     public boolean findByUsername(String username) {
         // Kiểm tra mật khẩu mới không trùng với mật khẩu cũ
         String sql = "SELECT [username] FROM Customer WHERE username = ?";
@@ -797,10 +797,10 @@ public class CustomerDBContext extends DBContext<Customer> {
             LOGGER.log(Level.SEVERE, "Error fetching old password: {0}", ex.getMessage());
             return false; // Trong trường hợp lỗi, trả về false để không làm ảnh hưởng tới logic.
         }
-        
+
         return false;
     }
-    
+
     public Customer getByGmail(String gmail) {
         // Kiểm tra mật khẩu mới không trùng với mật khẩu cũ
         Customer customer = new Customer();
@@ -825,13 +825,68 @@ public class CustomerDBContext extends DBContext<Customer> {
                     googleAccount.setId(rs.getString("google_id"));
                     customer.setGoogle_id(googleAccount);
                 }
-                
+
                 return customer;
             }
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Error fetching old password: {0}", ex.getMessage());
         }
-        
+
         return null;
+    }
+
+    public Customer getCustomerWithGoogleAuthById(int customerId) {
+        Customer customer = null;
+        String sql = """
+        SELECT [id]
+              ,[username]
+              ,[password]
+              ,[gmail]
+              ,[gender]
+              ,[dob]
+              ,[address]
+              ,[phone_number]
+              ,[google_id]
+              ,[fullname]
+              ,[account_id]
+              ,[picture]
+          FROM [Customer] 
+          LEFT JOIN Google_Authen ON Google_Authen.email = [Customer].gmail
+          WHERE [Customer].id = ?
+        """;
+
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setInt(1, customerId);
+
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    customer = new Customer();
+                    customer.setId(rs.getInt("id"));
+                    customer.setUsername(rs.getString("username"));
+                    customer.setPassword(rs.getString("password"));
+                    customer.setGmail(rs.getString("gmail"));
+                    customer.setGender(rs.getBoolean("gender"));
+                    customer.setDob(rs.getDate("dob"));
+                    customer.setAddress(rs.getString("address"));
+                    customer.setPhone_number(rs.getString("phone_number"));
+                    customer.setFullname(rs.getString("fullname"));
+
+                    // Handle Google Account information
+                    String googleId = rs.getString("google_id");
+                    if (googleId != null) {
+                        GoogleAccount googleAccount = new GoogleAccount();
+                        googleAccount.setId(googleId);
+                        googleAccount.setId(rs.getString("account_id"));
+                        googleAccount.setPicture(rs.getString("picture"));
+                        googleAccount.setEmail(rs.getString("gmail"));
+                        customer.setGoogle_id(googleAccount);
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error fetching customer with Google auth by ID: {0}", ex.getMessage());
+        }
+
+        return customer;
     }
 }

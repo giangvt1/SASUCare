@@ -11,45 +11,106 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Appointment;
+import model.Customer;
+import model.DoctorSalaryStat;
 
 public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
 
     private static final Logger LOGGER = Logger.getLogger(DoctorScheduleDBContext.class.getName());
 
+    public String checkExsistSchedule(int customerId, String scheduleDate, String doctorId, String shiftId) {
+        String sql = "SELECT COUNT(*) FROM Appointment a "
+                + "JOIN Doctor_Schedule ds ON a.DocSchedule_id = ds.id "
+                + "WHERE a.customer_id = ? AND ds.schedule_date = ? "
+                + "AND (a.doctor_id = ? OR ds.shift_id = ?) ";
+    
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+    
+            // Validate numeric fields
+            int docId = Integer.parseInt(doctorId);
+            int shId = Integer.parseInt(shiftId);
+    
+            // Convert scheduleDate (must be in YYYY-MM-DD format)
+            Date sqlDate = Date.valueOf(scheduleDate);
+    
+            ps.setInt(1, customerId);
+            ps.setDate(2, sqlDate);
+            ps.setInt(3, docId);
+            ps.setInt(4, shId);
+    
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next() && rs.getInt(1) > 0) {
+                    return "exists";
+                } else {
+                    return "available";
+                }
+            }
+    
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return "error: invalid input (must be numbers)";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "error";
+        }
+    }
     
 
-    public List<DoctorSchedule> getSchedulesByDoctorBetweenDates(int doctorId, Date startDate, Date endDate) {
-        List<DoctorSchedule> schedules = new ArrayList<>();
-        String sql = "SELECT ds.id, ds.doctor_id, ds.schedule_date, ds.shift_id, s.time_start, s.time_end, ds.available "
-                + "FROM Doctor_Schedule ds "
-                + "JOIN Shift s ON ds.shift_id = s.id "
-                + "WHERE ds.doctor_id = ? AND ds.schedule_date BETWEEN ? AND ? "
-                + "ORDER BY ds.schedule_date, s.time_start";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, doctorId);
-            stmt.setDate(2, startDate);
-            stmt.setDate(3, endDate);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                DoctorSchedule ds = new DoctorSchedule();
-                ds.setId(rs.getInt("id"));
-                ds.setScheduleDate(rs.getDate("schedule_date"));
-                // Tạo đối tượng Shift
-                Shift shift = new Shift(rs.getInt("shift_id"), rs.getTime("time_start"), rs.getTime("time_end"));
-                ds.setShift(shift);
-                // Nếu đối tượng Doctor không được join đầy đủ, bạn có thể gọi DoctorDAO.getDoctorById(doctorId)
-                Doctor doctor = new Doctor();
-                doctor.setId(rs.getInt("doctor_id"));
-                // Giả sử bạn đã set các thông tin khác cho doctor (hoặc có thể load từ DAO riêng)
-                ds.setDoctor(doctor);
-                ds.setAvailable(rs.getInt("available") == 1);
-                schedules.add(ds);
+    public List<DoctorSchedule> getSchedulesByDoctorBetweenDates(int doctorId, Date start, Date end) {
+        List<DoctorSchedule> list = new ArrayList<>();
+        String sql = """
+        SELECT ds.id AS dsid,
+               ds.schedule_date,
+               ds.doctor_id,
+               ds.shift_id,
+               ds.available,
+               s.time_start,
+               s.time_end,
+               a.id AS appointmentId,
+               a.status AS appointmentStatus,
+               c.fullname AS customerName
+        FROM Doctor_Schedule ds
+        JOIN Shift s ON ds.shift_id = s.id
+        LEFT JOIN Appointment a ON ds.id = a.DocSchedule_id
+        LEFT JOIN Customer c ON a.customer_id = c.id
+        WHERE ds.doctor_id = ? AND ds.schedule_date BETWEEN ? AND ?
+        ORDER BY ds.schedule_date, s.time_start
+        """;
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, doctorId);
+            ps.setDate(2, start);
+            ps.setDate(3, end);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    DoctorSchedule dsObj = new DoctorSchedule();
+                    dsObj.setId(rs.getInt("dsid"));
+                    dsObj.setScheduleDate(rs.getDate("schedule_date"));
+                    dsObj.setAvailable(rs.getInt("available") == 1);
+                    // Set Shift
+                    Shift shift = new Shift();
+                    shift.setId(rs.getInt("shift_id"));
+                    shift.setTimeStart(rs.getTime("time_start"));
+                    shift.setTimeEnd(rs.getTime("time_end"));
+                    dsObj.setShift(shift);
+                    // Set Appointment nếu có
+                    int appointmentId = rs.getInt("appointmentId");
+                    if (!rs.wasNull()) {
+                        Appointment app = new Appointment();
+                        app.setId(appointmentId);
+                        app.setStatus(rs.getString("appointmentStatus"));
+                        Customer customer = new Customer();
+                        customer.setFullname(rs.getString("customerName"));
+                        app.setCustomer(customer);
+                        dsObj.setAppointment(app);
+                    }
+                    list.add(dsObj);
+                }
             }
-        } catch (SQLException ex) {
-            // Log lỗi
-            ex.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return schedules;
+        return list;
     }
 
     public List<DoctorSchedule> getAvailableShiftsForDate(int doctorId, Date selectedDate) {
@@ -244,39 +305,109 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public List<DoctorSchedule> getSchedulesBetweenDates(Date startDate, Date endDate) {
-        List<DoctorSchedule> schedules = new ArrayList<>();
-        DoctorDBContext docDB = new DoctorDBContext();
+    public List<DoctorSchedule> getSchedulesBetweenDatesByDoctor(Date start, Date end, int doctorId) {
+        List<DoctorSchedule> list = new ArrayList<>();
         String sql = """
-            SELECT ds.id, ds.doctor_id, ds.schedule_date, ds.shift_id, s.time_start, s.time_end, ds.available
+        SELECT ds.id AS dsid,
+               ds.schedule_date,
+               ds.doctor_id,
+               ds.shift_id,
+               ds.available,
+               s.time_start,
+               s.time_end,
+               d.id AS docId,
+               st.fullname AS doctor_name
+        FROM Doctor_Schedule ds
+        JOIN Shift s ON ds.shift_id = s.id
+        JOIN Doctor d ON ds.doctor_id = d.id
+        JOIN Staff st ON d.staff_id = st.id
+        WHERE ds.schedule_date BETWEEN ? AND ? AND ds.doctor_id = ?
+        ORDER BY ds.schedule_date, s.time_start
+        """;
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setDate(1, start);
+            ps.setDate(2, end);
+            ps.setInt(3, doctorId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    DoctorSchedule dsObj = new DoctorSchedule();
+                    dsObj.setId(rs.getInt("dsid"));
+                    dsObj.setScheduleDate(rs.getDate("schedule_date"));
+                    dsObj.setAvailable(rs.getInt("available") == 1);
+
+                    // Set Shift
+                    Shift shift = new Shift();
+                    shift.setId(rs.getInt("shift_id"));
+                    shift.setTimeStart(rs.getTime("time_start"));
+                    shift.setTimeEnd(rs.getTime("time_end"));
+                    dsObj.setShift(shift);
+
+                    // Set Doctor
+                    Doctor doc = new Doctor();
+                    doc.setId(rs.getInt("docId"));
+                    doc.setName(rs.getString("doctor_name"));
+                    dsObj.setDoctor(doc);
+
+                    list.add(dsObj);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<DoctorSchedule> getSchedulesBetweenDates(Date start, Date end) {
+        List<DoctorSchedule> list = new ArrayList<>();
+        String sql = """
+            SELECT ds.id AS dsid,
+                   ds.schedule_date,
+                   ds.doctor_id,
+                   ds.shift_id,
+                   ds.available,
+                   s.time_start,
+                   s.time_end,
+                   d.id AS docId,
+                   st.fullname AS doctor_name
             FROM Doctor_Schedule ds
             JOIN Shift s ON ds.shift_id = s.id
+            JOIN Doctor d ON ds.doctor_id = d.id
+            JOIN Staff st ON d.staff_id = st.id
             WHERE ds.schedule_date BETWEEN ? AND ?
             ORDER BY ds.schedule_date, s.time_start
-        """;
+            """;
 
-        try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            stm.setDate(1, startDate);
-            stm.setDate(2, endDate);
-            ResultSet rs = stm.executeQuery();
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setDate(1, start);
+            ps.setDate(2, end);
 
-            while (rs.next()) {
-                Doctor doctor = docDB.getDoctorById(rs.getInt("doctor_id"));
-                Shift shift = new Shift(rs.getInt("shift_id"), rs.getTime("time_start"), rs.getTime("time_end"));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    DoctorSchedule dsObj = new DoctorSchedule();
+                    dsObj.setId(rs.getInt("dsid"));
+                    dsObj.setScheduleDate(rs.getDate("schedule_date"));
+                    dsObj.setAvailable(rs.getInt("available") == 1);
 
-                DoctorSchedule schedule = new DoctorSchedule(
-                        rs.getInt("id"),
-                        doctor,
-                        rs.getDate("schedule_date"),
-                        shift,
-                        rs.getInt("available") == 1
-                );
-                schedules.add(schedule);
+                    // Tạo Shift
+                    Shift shift = new Shift();
+                    shift.setId(rs.getInt("shift_id"));
+                    shift.setTimeStart(rs.getTime("time_start"));
+                    shift.setTimeEnd(rs.getTime("time_end"));
+                    dsObj.setShift(shift);
+
+                    // Tạo Doctor
+                    Doctor doc = new Doctor();
+                    doc.setId(rs.getInt("docId"));
+                    doc.setName(rs.getString("doctor_name"));  // QUAN TRỌNG: setName
+                    dsObj.setDoctor(doc);
+
+                    list.add(dsObj);
+                }
             }
-        } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "Error fetching schedules between dates: {0}", ex.getMessage());
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return schedules;
+        return list;
     }
 
     public boolean assignShift(int doctorId, Date shiftDate, int shiftId) {
@@ -309,12 +440,13 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
         }
     }
 
-    public boolean updateShift(int scheduleId, Date shiftDate, int shiftId) {
-        String sql = "UPDATE Doctor_Schedule SET schedule_date = ?, shift_id = ? WHERE id = ?";
+    public boolean updateShift(int doctor_id, int scheduleId, Date shiftDate, int shiftId) {
+        String sql = "UPDATE Doctor_Schedule SET doctor_id=?,schedule_date = ?, shift_id = ? WHERE id = ?";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            stm.setDate(1, shiftDate);
-            stm.setInt(2, shiftId);
-            stm.setInt(3, scheduleId);
+            stm.setInt(1, doctor_id);
+            stm.setDate(2, shiftDate);
+            stm.setInt(3, shiftId);
+            stm.setInt(4, scheduleId);
             return stm.executeUpdate() > 0;
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Error updating shift: {0}", ex.getMessage());
@@ -333,4 +465,111 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
             return false;
         }
     }
+
+    public List<DoctorSalaryStat> getDoctorSalaryStats(Date start, Date end, String search,
+            String sortField, String sortDir, int offset, int pageSize) {
+        List<DoctorSalaryStat> stats = new ArrayList<>();
+
+        // Câu truy vấn cơ bản, thêm điều kiện ds.available = 1 để chỉ tính những ca làm việc khả dụng
+        String sql = """
+        SELECT d.id as DoctorId, st.fullname as DoctorName, COUNT(*) as ShiftCount, 
+               d.price as SalaryRate, d.salaryCoefficient as SalaryCoefficient
+        FROM Doctor_Schedule ds
+        JOIN Doctor d ON ds.doctor_id = d.id
+        JOIN Staff st ON d.staff_id = st.id
+        WHERE ds.schedule_date BETWEEN ? AND ? AND ds.available = 1
+        """;
+
+        // Nếu có từ khóa tìm kiếm, thêm điều kiện
+        if (search != null && !search.trim().isEmpty()) {
+            sql += " AND st.fullname LIKE ? ";
+        }
+
+        sql += " GROUP BY d.id, st.fullname, d.price, d.salaryCoefficient ";
+
+        // Xử lý sắp xếp, chỉ cho phép các giá trị cụ thể
+        if (sortField != null) {
+            switch (sortField) {
+                case "DoctorName":
+                    sql += " ORDER BY st.fullname " + ("desc".equalsIgnoreCase(sortDir) ? "DESC" : "ASC");
+                    break;
+                case "ShiftCount":
+                    sql += " ORDER BY COUNT(*) " + ("desc".equalsIgnoreCase(sortDir) ? "DESC" : "ASC");
+                    break;
+                case "TotalSalary":
+                    // Tổng lương = COUNT(*) * d.price * d.salaryCoefficient
+                    sql += " ORDER BY (COUNT(*) * d.price * d.salaryCoefficient) " + ("desc".equalsIgnoreCase(sortDir) ? "DESC" : "ASC");
+                    break;
+                default:
+                    sql += " ORDER BY st.fullname ASC";
+                    break;
+            }
+        } else {
+            sql += " ORDER BY st.fullname ASC";
+        }
+
+        // Áp dụng phân trang: OFFSET FETCH
+        sql += " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            int index = 1;
+            stm.setDate(index++, start);
+            stm.setDate(index++, end);
+            if (search != null && !search.trim().isEmpty()) {
+                stm.setString(index++, "%" + search + "%");
+            }
+            stm.setInt(index++, offset);
+            stm.setInt(index++, pageSize);
+
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                DoctorSalaryStat stat = new DoctorSalaryStat();
+                stat.setDoctorId(rs.getInt("DoctorId"));
+                stat.setDoctorName(rs.getString("DoctorName"));
+                stat.setShiftCount(rs.getInt("ShiftCount"));
+                double salaryRate = rs.getDouble("SalaryRate");
+                double coefficient = rs.getDouble("SalaryCoefficient");
+                stat.setSalaryRate(salaryRate);
+                stat.setTotalSalary(stat.getShiftCount() * salaryRate * coefficient);
+                stats.add(stat);
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error fetching doctor salary stats: {0}", ex.getMessage());
+        }
+        return stats;
+    }
+
+    public int countDoctorSalaryStats(Date start, Date end, String search) {
+        int total = 0;
+        String sql = """
+        SELECT COUNT(*) as Total
+        FROM (
+            SELECT d.id
+            FROM Doctor_Schedule ds
+            JOIN Doctor d ON ds.doctor_id = d.id
+            JOIN Staff st ON d.staff_id = st.id
+            WHERE ds.schedule_date BETWEEN ? AND ? AND ds.available = 1
+        """;
+        if (search != null && !search.trim().isEmpty()) {
+            sql += " AND st.fullname LIKE ? ";
+        }
+        sql += " GROUP BY d.id, st.fullname, d.price, d.salaryCoefficient) AS T";
+
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            int index = 1;
+            stm.setDate(index++, start);
+            stm.setDate(index++, end);
+            if (search != null && !search.trim().isEmpty()) {
+                stm.setString(index++, "%" + search + "%");
+            }
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                total++; // Mỗi dòng đại diện 1 bác sĩ
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error counting doctor salary stats: {0}", ex.getMessage());
+        }
+        return total;
+    }
+
 }

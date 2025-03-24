@@ -8,7 +8,16 @@ public class DoctorSchedule {
     private Date scheduleDate;
     private Shift shift;
     private boolean available;
+    private Appointment appointment;
 
+    public Appointment getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
+    }
+    
     public DoctorSchedule() {}
 
     public DoctorSchedule(int id, Doctor doctor, Date scheduleDate, Shift shift, boolean available) {

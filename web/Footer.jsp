@@ -112,22 +112,7 @@
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-6">
-                        <h4
-                            class="d-inline-block text-primary text-uppercase border-bottom border-5 border-secondary mb-4"
-                            >
-                            Newsletter
-                        </h4>
-                        <form action="">
-                            <div class="input-group">
-                                <input
-                                    type="text"
-                                    class="form-control p-3 border-0"
-                                    placeholder="Your Email Address"
-                                    />
-                                <button class="btn btn-primary">Sign Up</button>
-                            </div>
-                        </form>
-                        <h6 class="text-primary text-uppercase mt-4 mb-3">Follow Us</h6>
+                                               <h6 class="text-primary text-uppercase mt-4 mb-3">Follow Us</h6>
                         <div class="d-flex">
                             <a
                                 class="btn btn-lg btn-primary btn-lg-square rounded-circle me-2"

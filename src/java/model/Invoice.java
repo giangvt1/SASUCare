@@ -5,16 +5,33 @@ import java.util.Date;
 public class Invoice {
 
     private int id;
-    private long amount;
+    private float amount;
     private String orderInfo;
     private String orderType;
-    private int customerId;
-    private int serviceId;
+    private Customer customer;
+    private Service service;
     private Date createdDate;
     private Date expireDate;
     private String txnRef;
     private int appointmentId; // Added appointmentId field
     private String status;
+ 
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Service getService() {
+        return service;
+    }
+
+    public void setService(Service service) {
+        this.service = service;
+    }
 
    
     
@@ -32,11 +49,11 @@ public class Invoice {
         this.id = id;
     }
 
-    public long getAmount() {
+    public float getAmount() {
         return amount;
     }
 
-    public void setAmount(long amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 
@@ -54,22 +71,6 @@ public class Invoice {
 
     public void setOrderType(String orderType) {
         this.orderType = orderType;
-    }
-
-    public int getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
-
-    public int getServiceId() {
-        return serviceId;
-    }
-
-    public void setServiceId(int serviceId) {
-        this.serviceId = serviceId;
     }
 
     public Date getCreatedDate() {
@@ -112,20 +113,4 @@ public class Invoice {
     public void setStatus(String status) {
         this.status = status;
     }
-    @Override
-public String toString() {
-    return "Invoice{" +
-            "id=" + id +
-            ", amount=" + amount +
-            ", orderInfo='" + orderInfo + '\'' +
-            ", orderType='" + orderType + '\'' +
-            ", customerId=" + customerId +
-            ", serviceId=" + serviceId +
-            ", createdDate=" + createdDate +
-            ", expireDate=" + expireDate +
-            ", txnRef='" + txnRef + '\'' +
-            ", appointmentId=" + appointmentId +
-            ", status='" + status + '\'' +
-            '}';
-}
 }

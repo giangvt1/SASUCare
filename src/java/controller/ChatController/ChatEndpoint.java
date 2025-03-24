@@ -13,35 +13,84 @@ import java.util.*;
 
 @ServerEndpoint(value = "/chat")
 public class ChatEndpoint {
-    // Các tập hợp và map để quản lý sessions và thông tin người dùng
+    // Collections to manage sessions and user information
     private static final Set<Session> clients = Collections.synchronizedSet(new HashSet<>());
     private static final Map<String, Set<Session>> userSessions = Collections.synchronizedMap(new HashMap<>());
     private static final Map<String, UserInfo> onlineUsers = Collections.synchronizedMap(new HashMap<>());
     private static final Map<Session, UserInfo> onlineHRs = Collections.synchronizedMap(new HashMap<>());
     private static final Map<Session, UserInfo> onlineDoctors = Collections.synchronizedMap(new HashMap<>());
     private static final Map<Session, Session> userToHR = Collections.synchronizedMap(new HashMap<>());
+    // New maps for doctor assignments
+    private static final Map<String, String> assignedToDoctor = Collections.synchronizedMap(new HashMap<>()); // userEmail -> doctorEmail
+    private static final Map<String, UserInfo> assignedUsers = Collections.synchronizedMap(new HashMap<>()); // userEmail -> UserInfo
 
-    // Khi một kết nối WebSocket được mở
+    // Thêm biến để quản lý timer
+    private static final Map<String, TimerTask> removalTimers = Collections.synchronizedMap(new HashMap<>());
+    private static final Timer timer = new Timer();
+
     @OnOpen
     public void onOpen(Session session, EndpointConfig config) {
         clients.add(session);
         System.out.println("New session opened: " + session.getId());
     }
 
-    // Khi một kết nối WebSocket bị đóng
     @OnClose
     public void onClose(Session session) {
         clients.remove(session);
-        // Xóa session khỏi userSessions và cập nhật trạng thái người dùng
-        for (Set<Session> sessions : userSessions.values()) {
-            sessions.remove(session);
-        }
+        onlineDoctors.remove(session);
         onlineHRs.remove(session);
         userToHR.remove(session);
-        updateOnlineUsers(); // Cập nhật danh sách người dùng trực tuyến
+
+        // Xử lý ngắt kết nối của người dùng
+        String userEmail = null;
+        for (Map.Entry<String, Set<Session>> entry : userSessions.entrySet()) {
+            if (entry.getValue().contains(session)) {
+                userEmail = entry.getKey();
+                break;
+            }
+        }
+        if (userEmail != null) {
+            Set<Session> sessions = userSessions.get(userEmail);
+            sessions.remove(session);
+            if (sessions.isEmpty()) {
+                userSessions.remove(userEmail);
+                String doctorEmail = assignedToDoctor.get(userEmail);
+                if (doctorEmail != null) {
+                    // Người dùng đã được phân công cho bác sĩ; thông báo và dọn dẹp
+                    assignedToDoctor.remove(userEmail);
+                    assignedUsers.remove(userEmail);
+                    notifyDoctorOfRemoval(doctorEmail, userEmail);
+                } else {
+                    // Lập lịch xóa sau khi trì hoãn
+                    scheduleUserRemoval(userEmail);
+                }
+            }
+        }
+        broadcastOnlineUsers();
+        broadcastOnlineDoctors();
     }
 
-    // Khi nhận được tin nhắn từ client
+    private void scheduleUserRemoval(String userEmail) {
+        TimerTask removalTask = new TimerTask() {
+            @Override
+            public void run() {
+                synchronized (userSessions) {
+                    if (!userSessions.containsKey(userEmail) || userSessions.get(userEmail).isEmpty()) {
+                        System.out.println("remove usersssssssssssssssssssssss: " + userEmail);
+                        onlineUsers.remove(userEmail);
+                        JSONObject clearChatMsg = new JSONObject();
+                        clearChatMsg.put("action", "clearChat");
+                        clearChatMsg.put("userEmail", userEmail);
+                        broadcastToHRs(clearChatMsg);
+                    }
+                }
+                removalTimers.remove(userEmail);
+            }
+        };
+        removalTimers.put(userEmail, removalTask);
+        timer.schedule(removalTask, 10000); // Trì hoãn 10 giây
+    }
+
     @OnMessage
     public void onMessage(String message, Session session) {
         JSONObject json = new JSONObject(message);
@@ -57,15 +106,21 @@ public class ChatEndpoint {
             case "deleteMessage":
                 handleDeleteMessage(json, session);
                 break;
-            case "exportChat":  // Chức năng xuất lịch sử chat
+            case "exportChat":
                 handleExportChat(json, session);
+                break;
+            case "assignDoctor":
+                handleAssignDoctor(json, session);
+                break;
+            case "deleteUser":
+                System.out.println("action deleteUser");
+                handleDeleteUser(json, session);
                 break;
             default:
                 System.out.println("Unrecognized action: " + action);
         }
     }
 
-    // Xử lý thông tin người dùng khi họ kết nối
     private void handleUserInfo(JSONObject json, Session session) {
         String email = json.getString("email");
         String fullName = json.getString("fullName");
@@ -76,84 +131,66 @@ public class ChatEndpoint {
             onlineHRs.put(session, user);
         } else if ("Doctor".equals(role)) {
             onlineDoctors.put(session, user);
+            // Send assigned users list to doctor upon connection
+            sendAssignedUsersToDoctor(email, session);
         } else {
-            // Thêm session vào tập hợp session của người dùng
+            // Kiểm tra xem có timer xóa đang chờ không
+            TimerTask pendingTask = removalTimers.get(email);
+            if (pendingTask != null) {
+                pendingTask.cancel();
+                removalTimers.remove(email);
+                System.out.println("Đã hủy xóa cho người dùng: " + email);
+            }
             userSessions.computeIfAbsent(email, k -> new HashSet<>()).add(session);
-            // Thêm vào danh sách người dùng trực tuyến nếu chưa có
-            if (!onlineUsers.containsKey(email)) {
+            if (!onlineUsers.containsKey(email) && !assignedToDoctor.containsKey(email)) {
                 onlineUsers.put(email, user);
             }
         }
-        broadcastOnlineUsers(); // Gửi danh sách người dùng trực tuyến cập nhật
+        broadcastOnlineUsers();
+        broadcastOnlineDoctors();
     }
 
-    // Xử lý gửi tin nhắn
     private void handleSendMessage(JSONObject json, Session session) {
         String msg = json.getString("message");
         String senderEmail = json.getString("email");
-        System.out.println("msg: " + msg);
-        System.out.println("senderEmail: " + senderEmail);
 
-        // Xác định thông tin người gửi
-        UserInfo senderInfo = onlineUsers.get(senderEmail) != null ? onlineUsers.get(senderEmail)
-                                                                   : onlineHRs.get(session);
-        if (senderInfo != null && "HR".equals(senderInfo.getRole())) {
-            // HR gửi tin nhắn đến người dùng
+        UserInfo senderInfo = onlineHRs.get(session);
+        if (senderInfo == null) {
+            senderInfo = onlineDoctors.get(session);
+        }
+
+        if (senderInfo != null) {
+            // HR or Doctor sending to user
             String receiverEmail = json.optString("receiverEmail");
-            Set<Session> receiverSessions = userSessions.get(receiverEmail);
-            if (receiverSessions != null) {
-                for (Session userSession : receiverSessions) {
-                    if (userSession.isOpen()) {
-                        try {
-                            JSONObject messageToUser = new JSONObject();
-                            messageToUser.put("action", "sendMessage");
-                            messageToUser.put("message", msg);
-                            messageToUser.put("senderEmail", senderEmail);
-                            userSession.getBasicRemote().sendText(messageToUser.toString());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
+            sendMessageToUser(receiverEmail, senderEmail, msg);
         } else {
-            // Người dùng gửi tin nhắn đến HR
-            Session hrSession = userToHR.get(session);
-            if (hrSession == null) {
-                // Gán HR đầu tiên có sẵn nếu chưa có HR nào được gán
-                if (!onlineHRs.isEmpty()) {
-                    hrSession = onlineHRs.keySet().iterator().next();
-                    userToHR.put(session, hrSession);
-                    System.out.println("Assigned HR: " + hrSession.getId() + " to user: " + session.getId());
-                } else {
-                    try {
-                        JSONObject noHRMessage = new JSONObject();
-                        noHRMessage.put("action", "noHR");
-                        noHRMessage.put("message", "No HR is currently online.");
-                        session.getBasicRemote().sendText(noHRMessage.toString());
-                    } catch (IOException e) {
-                        e.printStackTrace();
+            // User sending message
+            String doctorEmail = assignedToDoctor.get(senderEmail);
+            if (doctorEmail != null) {
+                // Send to assigned doctor
+                sendMessageToDoctor(doctorEmail, senderEmail, msg, session);
+            } else {
+                // Send to HR
+                Session hrSession = userToHR.get(session);
+                // Check if hrSession is null or closed
+                if (hrSession == null || !hrSession.isOpen()) {
+                    if (!onlineHRs.isEmpty()) {
+                        // Assign a new HR from online HRs
+                        hrSession = onlineHRs.keySet().iterator().next();
+                        userToHR.put(session, hrSession);
+                    } else {
+                        hrSession = null;
                     }
-                    return;
                 }
-            }
-
-            // Gửi tin nhắn đến HR được gán
-            if (hrSession != null && hrSession.isOpen()) {
-                try {
-                    JSONObject messageToHR = new JSONObject();
-                    messageToHR.put("action", "sendMessage");
-                    messageToHR.put("message", msg);
-                    messageToHR.put("senderEmail", senderEmail);
-                    hrSession.getBasicRemote().sendText(messageToHR.toString());
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (hrSession != null && hrSession.isOpen()) {
+                    sendMessage(hrSession, senderEmail, msg);
+                } else {
+                    sendError(session, "noHR", "No HR is currently online.");
                 }
             }
         }
     }
 
-    // Xử lý xóa tin nhắn (chỉ HR được phép)
     private void handleDeleteMessage(JSONObject json, Session session) {
         if (onlineHRs.containsKey(session)) {
             String email = json.getString("email");
@@ -167,81 +204,85 @@ public class ChatEndpoint {
                     }
                 }
             }
-        } else {
-            System.out.println("Non-HR tried to delete message.");
         }
     }
 
-    // Xử lý xuất lịch sử chat ra file
     private void handleExportChat(JSONObject json, Session session) {
         if (onlineHRs.containsKey(session)) {
             String email = json.getString("email");
             String fullName = json.getString("fullName");
             String chatContent = json.getString("chatContent");
-            System.out.println("chatContent: " + chatContent);
             exportToFile(email, fullName, chatContent, session);
         } else {
-            System.out.println("Non-HR tried to export chat.");
-            try {
-                JSONObject errorMsg = new JSONObject();
-                errorMsg.put("action", "exportError");
-                errorMsg.put("message", "Only HR can export chat history.");
-                session.getBasicRemote().sendText(errorMsg.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            sendError(session, "exportError", "Only HR can export chat history.");
         }
     }
 
-    // Ghi lịch sử chat ra file
-    private void exportToFile(String email, String fullName, String chatContent, Session session) {
-        try {
-            String directoryPath = "C:\\chat_logs\\"; // Đường dẫn thư mục trên server
-            String safeEmail = email.replaceAll("[^a-zA-Z0-9]", "_"); // Làm sạch email cho tên file
-            String fileName = "chat_with_" + safeEmail + ".txt";
-            File file = new File(directoryPath + fileName);
-
-            // Tạo thư mục nếu chưa tồn tại
-            file.getParentFile().mkdirs();
-
-            FileWriter writer = new FileWriter(file);
-            writer.write(chatContent);
-            writer.close();
-            System.out.println("Chat exported to " + file.getAbsolutePath());
-
-            // Gửi thông báo thành công về client
-            JSONObject successMsg = new JSONObject();
-            successMsg.put("action", "exportSuccess");
-            successMsg.put("message", "Chat exported successfully to " + fileName);
-            session.getBasicRemote().sendText(successMsg.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Gửi thông báo lỗi về client
-            try {
-                JSONObject errorMsg = new JSONObject();
-                errorMsg.put("action", "exportError");
-                errorMsg.put("message", "Failed to export chat: " + e.getMessage());
-                session.getBasicRemote().sendText(errorMsg.toString());
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    // Cập nhật danh sách người dùng trực tuyến
-    private void updateOnlineUsers() {
-        Iterator<String> iterator = onlineUsers.keySet().iterator();
-        while (iterator.hasNext()) {
-            String email = iterator.next();
-            if (userSessions.containsKey(email) && userSessions.get(email).isEmpty()) {
-                iterator.remove();
-                userSessions.remove(email);
-            }
-        }
+    private void handleDeleteUser(JSONObject json, Session session) {
+        String email = json.getString("email");
+        System.out.println("email: delete: " + email);
+        onlineUsers.remove(email);
         broadcastOnlineUsers();
     }
 
-    // Gửi danh sách người dùng trực tuyến đến tất cả HR
+    private void exportToFile(String email, String fullName, String chatContent, Session session) {
+        try {
+            String fileName = "C:\\chat_logs\\chat_with_" + email.replaceAll("[^a-zA-Z0-9]", "_") + ".txt";
+            File file = new File(fileName);
+            file.getParentFile().mkdirs();
+            try (FileWriter writer = new FileWriter(file)) {
+                writer.write(chatContent);
+            }
+            sendSuccess(session, "exportSuccess", "Chat exported successfully to " + fileName);
+        } catch (IOException e) {
+            sendError(session, "exportError", "Failed to export chat: " + e.getMessage());
+        }
+    }
+
+    private void handleAssignDoctor(JSONObject json, Session session) {
+        if (!onlineHRs.containsKey(session)) {
+            System.out.println("Non-HR tried to assign doctor.");
+            return;
+        }
+
+        String doctorEmail = json.getString("doctor");
+        String userEmail = json.getString("userEmail");
+
+        // Validate doctor
+        List<Session> doctorSessions = getDoctorSessions(doctorEmail);
+        if (doctorSessions.isEmpty()) {
+            sendError(session, "assignError", "Doctor not found or offline.");
+            return;
+        }
+
+        // Validate user
+        Set<Session> userSess = userSessions.get(userEmail);
+        if (userSess == null || userSess.isEmpty()) {
+            sendError(session, "assignError", "User not found or offline.");
+            return;
+        }
+
+        // Perform assignment
+        UserInfo userInfo = onlineUsers.get(userEmail);
+        if (userInfo != null) {
+            onlineUsers.remove(userEmail); // Remove from HR's view
+            assignedUsers.put(userEmail, userInfo); // Store user info
+            assignedToDoctor.put(userEmail, doctorEmail); // Track assignment
+
+            // Notify HR
+            sendSuccess(session, "assignSuccess", "User assigned to doctor.", userEmail, doctorEmail);
+
+            // Notify doctor with updated list
+            sendAssignedUserNotification(doctorSessions, userEmail, userInfo.getFullName());
+            sendAssignedUsersToDoctor(doctorEmail, doctorSessions);
+
+            // Notify user
+            sendUserAssignmentNotification(userSess, doctorEmail);
+
+            broadcastOnlineUsers();
+        }
+    }
+
     private void broadcastOnlineUsers() {
         JSONObject json = new JSONObject();
         json.put("action", "updateOnlineUsers");
@@ -253,7 +294,203 @@ public class ChatEndpoint {
             usersArray.put(userJson);
         }
         json.put("onlineUsers", usersArray);
+        broadcastToHRs(json);
+    }
 
+    private void broadcastOnlineDoctors() {
+        JSONObject json = new JSONObject();
+        json.put("action", "updateOnlineDoctors");
+        JSONArray doctorsArray = new JSONArray();
+        for (UserInfo doctor : onlineDoctors.values()) {
+            JSONObject doctorJson = new JSONObject();
+            doctorJson.put("email", doctor.getEmail());
+            doctorJson.put("fullName", doctor.getFullName());
+            doctorsArray.put(doctorJson);
+        }
+        json.put("onlineDoctors", doctorsArray);
+        broadcastToHRs(json);
+    }
+
+    // Helper methods
+    private List<Session> getDoctorSessions(String doctorEmail) {
+        List<Session> sessions = new ArrayList<>();
+        for (Map.Entry<Session, UserInfo> entry : onlineDoctors.entrySet()) {
+            if (entry.getValue().getEmail().equals(doctorEmail)) {
+                sessions.add(entry.getKey());
+            }
+        }
+        return sessions;
+    }
+
+    private void sendAssignedUserNotification(List<Session> doctorSessions, String userEmail, String fullName) {
+        JSONObject notification = new JSONObject();
+        notification.put("action", "assignedUser");
+        notification.put("userEmail", userEmail);
+        notification.put("fullName", fullName);
+        for (Session docSession : doctorSessions) {
+            if (docSession.isOpen()) {
+                try {
+                    docSession.getBasicRemote().sendText(notification.toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void sendAssignedUsersToDoctor(String doctorEmail, Session doctorSession) {
+        List<Session> sessions = Collections.singletonList(doctorSession);
+        sendAssignedUsersToDoctor(doctorEmail, sessions);
+    }
+
+    private void sendAssignedUsersToDoctor(String doctorEmail, List<Session> doctorSessions) {
+        JSONArray usersArray = new JSONArray();
+        for (Map.Entry<String, String> entry : assignedToDoctor.entrySet()) {
+            if (entry.getValue().equals(doctorEmail)) {
+                String userEmail = entry.getKey();
+                UserInfo userInfo = assignedUsers.get(userEmail);
+                if (userInfo != null) {
+                    JSONObject userJson = new JSONObject();
+                    userJson.put("email", userEmail);
+                    userJson.put("fullName", userInfo.getFullName());
+                    usersArray.put(userJson);
+                }
+            }
+        }
+        JSONObject json = new JSONObject();
+        json.put("action", "updateAssignedUsers");
+        json.put("assignedUsers", usersArray);
+        for (Session docSession : doctorSessions) {
+            if (docSession.isOpen()) {
+                try {
+                    docSession.getBasicRemote().sendText(json.toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void notifyDoctorOfRemoval(String doctorEmail, String userEmail) {
+        List<Session> doctorSessions = getDoctorSessions(doctorEmail);
+        JSONObject notification = new JSONObject();
+        notification.put("action", "removeAssignedUser");
+        notification.put("userEmail", userEmail);
+        for (Session docSession : doctorSessions) {
+            if (docSession.isOpen()) {
+                try {
+                    docSession.getBasicRemote().sendText(notification.toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        sendAssignedUsersToDoctor(doctorEmail, doctorSessions);
+    }
+
+    private void sendUserAssignmentNotification(Set<Session> userSessions, String doctorEmail) {
+        JSONObject notification = new JSONObject();
+        notification.put("action", "assignedToDoctor");
+        notification.put("doctorEmail", doctorEmail);
+        for (Session userSession : userSessions) {
+            if (userSession.isOpen()) {
+                try {
+                    userSession.getBasicRemote().sendText(notification.toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void sendMessageToUser(String receiverEmail, String senderEmail, String msg) {
+        Set<Session> receiverSessions = userSessions.get(receiverEmail);
+        if (receiverSessions != null) {
+            JSONObject message = new JSONObject();
+            message.put("action", "sendMessage");
+            message.put("message", msg);
+            message.put("senderEmail", senderEmail);
+            for (Session userSession : receiverSessions) {
+                if (userSession.isOpen()) {
+                    try {
+                        userSession.getBasicRemote().sendText(message.toString());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    private void sendMessageToDoctor(String doctorEmail, String senderEmail, String msg, Session userSession) {
+        List<Session> doctorSessions = getDoctorSessions(doctorEmail);
+        if (!doctorSessions.isEmpty()) {
+            JSONObject message = new JSONObject();
+            message.put("action", "sendMessage");
+            message.put("message", msg);
+            message.put("senderEmail", senderEmail);
+            for (Session docSession : doctorSessions) {
+                if (docSession.isOpen()) {
+                    try {
+                        docSession.getBasicRemote().sendText(message.toString());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } else {
+            sendError(userSession, "noDoctor", "Your assigned doctor is currently offline.");
+        }
+    }
+
+    private void sendMessage(Session targetSession, String senderEmail, String msg) {
+        JSONObject message = new JSONObject();
+        message.put("action", "sendMessage");
+        message.put("message", msg);
+        message.put("senderEmail", senderEmail);
+        try {
+            targetSession.getBasicRemote().sendText(message.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendError(Session session, String action, String message) {
+        JSONObject error = new JSONObject();
+        error.put("action", action);
+        error.put("message", message);
+        try {
+            session.getBasicRemote().sendText(error.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendSuccess(Session session, String action, String message) {
+        JSONObject success = new JSONObject();
+        success.put("action", action);
+        success.put("message", message);
+        try {
+            session.getBasicRemote().sendText(success.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendSuccess(Session session, String action, String message, String userEmail, String doctorEmail) {
+        JSONObject success = new JSONObject();
+        success.put("action", action);
+        success.put("message", message);
+        success.put("userEmail", userEmail);
+        success.put("doctorEmail", doctorEmail);
+        try {
+            session.getBasicRemote().sendText(success.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void broadcastToHRs(JSONObject json) {
         for (Session hrSession : onlineHRs.keySet()) {
             if (hrSession.isOpen()) {
                 try {
@@ -265,7 +502,6 @@ public class ChatEndpoint {
         }
     }
 
-    // Getter cho phép Servlet truy cập
     public static Map<String, UserInfo> getOnlineUsers() {
         return onlineUsers;
     }
