@@ -59,7 +59,6 @@
             <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/HRController/CalendarDoctorManageController.java</file>
         </group>
         <group/>
-        <group/>
         <group>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/admin/AdminProfile.jsp</file>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/appointment/appointment-calendar.jsp</file>
@@ -99,6 +98,9 @@
         </group>
         <group>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dal/DBContext.java</file>
+        </group>
+        <group>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/WEB-INF/web.xml</file>
         </group>
     </open-files>
 </project-private>
