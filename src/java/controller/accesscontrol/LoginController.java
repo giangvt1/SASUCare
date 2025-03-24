@@ -52,6 +52,8 @@ public class LoginController extends HttpServlet {
                 customerDAO.update(customer);
             }
         }
+        
+        System.out.println("asdasdadas: " + customer.getId());
 
         // Lưu thông tin vào session để sử dụng sau này
         session.setAttribute("currentCustomer", customer);

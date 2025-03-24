@@ -15,6 +15,7 @@ import model.system.User;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public class AppointmentManagementController extends BaseRBACController {
@@ -24,25 +25,31 @@ public class AppointmentManagementController extends BaseRBACController {
 
     @Override
     protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
+
+        // Get current date
+        LocalDate currentDate = LocalDate.now();
+        int selectedMonth = request.getParameter("month") != null ? Integer.parseInt(request.getParameter("month")) : currentDate.getMonthValue();
+        int selectedYear = request.getParameter("year") != null ? Integer.parseInt(request.getParameter("year")) : currentDate.getYear();
+
+        request.setAttribute("selectedMonth", selectedMonth);
+        request.setAttribute("selectedYear", selectedYear);
+
         // Lấy bác sĩ đang đăng nhập
-        Doctor loggedDoctor = doctordb.getDoctorByUsername(logged.getUsername()); // Giả sử người dùng có phương thức getDoctor() trả về đối tượng Doctor
+        Doctor loggedDoctor = doctordb.getDoctorByUsername(logged.getUsername());
         if (loggedDoctor == null) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User does not have an associated doctor.");
             return;
         }
 
-        // Lấy ngày hiện tại để xác định hôm nay
-        java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
+        Date today = Date.valueOf(currentDate);
 
-        // Lấy các danh sách cuộc hẹn cho bác sĩ này
-        List<Appointment> todayAppointments = appointmentDB.getAppointmentsByDateAndDoctor(currentDate, loggedDoctor.getId());
-        List<Appointment> pendingAppointments = appointmentDB.getAppointmentsByStatusAndDoctor("Pending", loggedDoctor.getId());
-        List<Appointment> upcomingAppointments = appointmentDB.getUpcomingAppointmentsByDoctor(currentDate, loggedDoctor.getId());
+//     ?  Date today = Date.valueOf(LocalDate.of(2025, 3, 4)); // Correct format
+
+        List<Appointment> todayAppointments = appointmentDB.getAppointmentsByDateAndDoctor(today, loggedDoctor.getId());
 
         // Đặt các đối tượng vào request để sử dụng trong JSP
         request.setAttribute("todayAppointments", todayAppointments);
-        request.setAttribute("pendingAppointments", pendingAppointments);
-        request.setAttribute("upcomingAppointments", upcomingAppointments);
+        request.setAttribute("docID", loggedDoctor.getId());
         request.setAttribute("currentDate", currentDate);
 
         // Forward dữ liệu sang JSP

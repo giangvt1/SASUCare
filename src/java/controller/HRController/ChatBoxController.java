@@ -1,39 +1,34 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
-
 package controller.HRController;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import controller.ChatController.ChatEndpoint;
+import controller.systemaccesscontrol.BaseRBACController;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.websocket.Session;
+import model.UserInfo;
 
-/**
- *
- * @author ngoch
- */
-public class ChatBoxController extends HttpServlet {
+import java.io.IOException;
+import java.util.Map;
+import model.system.User;
+
+@WebServlet("/chatbox")
+public class ChatBoxController extends BaseRBACController {
+
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+    protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        Map<Session, UserInfo> onlineDoctors = ChatEndpoint.getOnlineDoctors();
+        session.setAttribute("onlineDoctors", onlineDoctors.values());
+        System.out.println("onlineDoctors: " + onlineDoctors);
         request.getRequestDispatcher("./hr/chatbox.jsp").forward(request, response);
-
-    } 
-
-    /** 
-     * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-    
     }
+
+    @Override
+    protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
 }

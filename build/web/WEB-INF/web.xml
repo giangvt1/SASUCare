@@ -57,10 +57,6 @@
         <servlet-class>controller.appointment.AppointmentCalendarServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>AppointmentDoctorListController</servlet-name>
-        <servlet-class>controller.appointment.AppointmentDoctorListController</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>AppointmentConfirmServlet</servlet-name>
         <servlet-class>controller.appointment.AppointmentConfirmServlet</servlet-class>
     </servlet>
@@ -117,16 +113,12 @@
         <servlet-class>controller.doctor.VisitHistoryExportServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>AppointmentWaitingController</servlet-name>
-        <servlet-class>controller.appointment.AppointmentWaitingController</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>AppointmentActionController</servlet-name>
         <servlet-class>controller.appointment.AppointmentActionController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ManageServiceServlet</servlet-name>
-        <servlet-class>controller.customerService.ManageServiceServlet</servlet-class>
+        <servlet-class>controller.HRController.ManageServiceServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>PasswordController</servlet-name>
@@ -163,6 +155,14 @@
     <servlet>
         <servlet-name>EditStaffApplication</servlet-name>
         <servlet-class>controller.HRController.EditStaffApplication</servlet-class>
+    </servlet>
+    <servlet-name>ChatHistoryController</servlet-name>
+    <servlet-class>controller.ChatController.ChatHistoryController</servlet-class>
+    <servlet-name>SessionServlet</servlet-name>
+    <servlet-class>controller.ChatController.SessionServlet</servlet-class>
+    <servlet>
+        <servlet-name>SessionServlet</servlet-name>
+        <servlet-class>controller.ChatController.SessionServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ManageTypeApplication</servlet-name>
@@ -211,6 +211,46 @@
     <servlet>
         <servlet-name>ResetPassword</servlet-name>
         <servlet-class>controller.systemaccesscontrol.ResetPassword</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditTypeCertificate</servlet-name>
+        <servlet-class>controller.AdminController.EditTypeCertificate</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ManageTypeCertificate</servlet-name>
+        <servlet-class>controller.AdminController.ManageTypeCertificate</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ListDoctorController</servlet-name>
+        <servlet-class>controller.ChatController.ListDoctorController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>MedicalRecordController</servlet-name>
+        <servlet-class>controller.customermanagement.MedicalRecordController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>InvoiceManagementController</servlet-name>
+        <servlet-class>controller.financial.InvoiceManagementController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DoctorSalaryStatController</servlet-name>
+        <servlet-class>controller.financial.DoctorSalaryStatController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DoctorSalaryChartController</servlet-name>
+        <servlet-class>controller.financial.DoctorSalaryChartController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AppointmentManagementController</servlet-name>
+        <servlet-class>controller.appointment.AppointmentManagementController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AppointmentDoctorListController</servlet-name>
+        <servlet-class>controller.appointment.AppointmentDoctorListController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>InvoiceRevenueChartController</servlet-name>
+        <servlet-class>controller.financial.InvoiceRevenueChartController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
@@ -338,10 +378,6 @@
         <url-pattern>/hr/accountlist</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>AppointmentDoctorListController</servlet-name>
-        <url-pattern>/appointment/doctor</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>AppointmentConfirmServlet</servlet-name>
         <url-pattern>/appointment/confirm</url-pattern>
     </servlet-mapping>
@@ -382,10 +418,6 @@
         <url-pattern>/doctor/VisitHistoryExportServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>AppointmentWaitingController</servlet-name>
-        <url-pattern>/doctor/waiting-appointment</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>AppointmentActionController</servlet-name>
         <url-pattern>/doctor/appointment/action</url-pattern>
     </servlet-mapping>
@@ -408,10 +440,6 @@
     <servlet-mapping>
         <servlet-name>AppointmentDetailsController</servlet-name>
         <url-pattern>/doctor/api/appointment</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ChatBoxController</servlet-name>
-        <url-pattern>/chat-box</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>DoctorCalendarController</servlet-name>
@@ -440,10 +468,6 @@
     <servlet-mapping>
         <servlet-name>EditTypeApplication</servlet-name>
         <url-pattern>/admin/EditTypeApplication</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>AppointmentsManagementController</servlet-name>
-        <url-pattern>/doctor/appointmentsmanagement</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>HRApptManagementController</servlet-name>
@@ -480,5 +504,80 @@
     <servlet-mapping>
         <servlet-name>ResetPassword</servlet-name>
         <url-pattern>/system/resetpassword</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ajaxServlet</servlet-name>
+        <servlet-class>com.vnpay.common.ajaxServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>vnpayQuery</servlet-name>
+        <servlet-class>com.vnpay.common.vnpayQuery</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>vnpayRefund</servlet-name>
+        <servlet-class>com.vnpay.common.vnpayRefund</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ajaxServlet</servlet-name>
+        <url-pattern>/vnpayajax/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>vnpayQuery</servlet-name>
+        <url-pattern>/vnpayquery/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>vnpayRefund</servlet-name>
+        <url-pattern>/vnpayrefund/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SessionServlet</servlet-name>
+        <url-pattern>/getSessionId</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditTypeCertificate</servlet-name>
+        <url-pattern>/admin/EditTypeCertificate</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ManageTypeCertificate</servlet-name>
+        <url-pattern>/admin/ManageTypeCertificate</url-pattern>
+    </servlet-mapping>
+    <servlet-name>SessionServlet</servlet-name>
+    <servlet-class>controller.ChatController.SessionServlet</servlet-class>
+    <servlet-name>ChatHistoryController</servlet-name>
+    <servlet-class>controller.ChatController.ChatHistoryController</servlet-class>
+    <url-pattern>/getSessionId</url-pattern>
+    <servlet-name>SessionServlet</servlet-name>
+    <url-pattern>/ChatHistoryController</url-pattern>
+    <servlet-mapping>
+        <servlet-name>ListDoctorController</servlet-name>
+        <url-pattern>/getdoctor</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MedicalRecordController</servlet-name>
+        <url-pattern>/record</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>InvoiceManagementController</servlet-name>
+        <url-pattern>/finance/InvoiceManagement</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DoctorSalaryStatController</servlet-name>
+        <url-pattern>/finance/doctorsalary</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DoctorSalaryChartController</servlet-name>
+        <url-pattern>/finance/DoctorSalaryChart</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AppointmentManagementController</servlet-name>
+        <url-pattern>/doctor/appointmentsmanagement</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AppointmentDoctorListController</servlet-name>
+        <url-pattern>/appointment/doctor</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>InvoiceRevenueChartController</servlet-name>
+        <url-pattern>/finance/revenue</url-pattern>
     </servlet-mapping>
 </web-app>
