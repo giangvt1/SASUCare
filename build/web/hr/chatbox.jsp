@@ -88,6 +88,21 @@
         </div>
     </c:if>
 
+    <!-- Toast Container: Hiển thị thông báo cho Doctor khi có user được assign -->
+    <div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+      <div id="userToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+          <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp" class="rounded me-2" alt="Avatar" width="20">
+          <strong class="me-auto">Thông báo</strong>
+          <small></small>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="toastMessage">
+          <!-- Nội dung thông báo sẽ được cập nhật động -->
+        </div>
+      </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
@@ -158,6 +173,12 @@
             } else if (data.action === "updateAssignedUsers" && role === "Doctor") {
                 chatBody.innerHTML = "";
                 updateAssignedUsers(data.assignedUsers);
+                // Nếu muốn hiện toast cho từng user mới được assign, bạn có thể gọi hàm showAssignToast
+                // Ví dụ: nếu data.assignedUsers là mảng các user, hiện toast cho user cuối cùng:
+                if(data.assignedUsers && data.assignedUsers.length > 0) {
+                    let newUser = data.assignedUsers[data.assignedUsers.length - 1];
+                    showAssignToast(newUser);
+                }
             } else if (data.action === "updateOnlineDoctors" && role === "HR") {
                 updateOnlineDoctors(data.onlineDoctors);
             } else if (data.action === "sendMessage") {
@@ -174,16 +195,22 @@
                 }
 
                 saveChatHistory();
-            } else if (data.action === "assignSuccess" && role === "HR") {
-                console.log(`User `+ data.userEmail +` assigned to doctor `+ data.doctorEmail +``);
-                const userElement = document.querySelector(`.user-item[data-email="`+ data.userEmail +`"]`);
-                if (userElement) {
-                    userElement.remove();
-                }
-                if (selectedUserEmail === data.userEmail) {
-                    chatBody.innerHTML = "";
-                    selectedUserEmail = null;
-                    localStorage.removeItem("selectedUserEmail");
+            } else if (data.action === "assignSuccess") {
+                // Với HR: xóa user khỏi danh sách, còn với Doctor: hiển thị toast thông báo
+                if (role === "HR") {
+                    console.log(`User `+ data.userEmail +` assigned to doctor `+ data.doctorEmail);
+                    const userElement = document.querySelector(`.user-item[data-email="`+ data.userEmail +`"]`);
+                    if (userElement) {
+                        userElement.remove();
+                    }
+                    if (selectedUserEmail === data.userEmail) {
+                        chatBody.innerHTML = "";
+                        selectedUserEmail = null;
+                        localStorage.removeItem("selectedUserEmail");
+                    }
+                } else if (role === "Doctor") {
+                    // Giả sử data chứa thông tin của user được assign, ví dụ data.fullName và data.email
+                    showAssignToast(data);
                 }
             } else if (data.action === "assignError" && role === "HR") {
                 console.log("Assign failed: " + data.message);
@@ -388,7 +415,7 @@
                 let textContent = `Chat history with `+ fullName +` (`+ email +`)\n\n`;
                 messages.forEach(msgObj => {
                     const prefix = msgObj.type === "sent" ? "[Sent]" : "[Received]";
-                    textContent += ``+ prefix +` `+ msgObj.message +`\n`;
+                    textContent += prefix +` `+ msgObj.message +`\n`;
                 });
                 socket.send(JSON.stringify({
                     action: "exportChat",
@@ -411,6 +438,19 @@
             if (storedHistory) {
                 chatHistory = JSON.parse(storedHistory);
             }
+        }
+
+        // Hàm hiển thị Toast cho Doctor
+        function showAssignToast(user) {
+            // user: object chứa thông tin của user được assign, ví dụ user.fullName
+            const toastElement = document.getElementById('userToast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastMessage.textContent = `${user.fullName || user.userFullName} đã được giao cho bạn.`;
+            
+            // Khởi tạo Toast với delay 2000ms (2 giây)
+            const toast = new bootstrap.Toast(toastElement, { delay: 2000 });
+            toast.show();
         }
 
         if (role === "HR") {
