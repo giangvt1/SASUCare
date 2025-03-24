@@ -185,8 +185,8 @@
         <servlet-class>controller.AdminController.EditTypeApplication</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>AppointmentsManagementController</servlet-name>
-        <servlet-class>controller.appointment.AppointmentsManagementController</servlet-class>
+        <servlet-name>AppointmentManagementController</servlet-name>
+        <servlet-class>controller.appointment.AppointmentManagementController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>HRApptManagementController</servlet-name>
@@ -486,7 +486,7 @@
         <url-pattern>/admin/EditTypeApplication</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>AppointmentsManagementController</servlet-name>
+        <servlet-name>AppointmentManagementController</servlet-name>
         <url-pattern>/doctor/appointmentsmanagement</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
