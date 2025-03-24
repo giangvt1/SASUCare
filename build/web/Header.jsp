@@ -82,19 +82,16 @@
                             <a href="${pageContext.request.contextPath}/about.jsp" class="nav-item nav-link">About</a>
                             <a href="${pageContext.request.contextPath}/ServiceList" class="nav-item nav-link">Service</a>
                             <a href="${pageContext.request.contextPath}/posts" class="nav-item nav-link">Blog</a>
-                            <a href="${pageContext.request.contextPath}/price.jsp" class="nav-item nav-link">Pricing</a>
+              
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                                 <div class="dropdown-menu m-0">
-                                    <a href="blog.html" class="dropdown-item">Blog Grid</a>
-                                    <a href="detail.html" class="dropdown-item">Blog Detail</a>
-                                    <a href="team.html" class="dropdown-item">The Team</a>
                                     <a href="${pageContext.request.contextPath}/customer/medical-history" class="dropdown-item">Medical Visit History</a>
                                     <a href="${pageContext.request.contextPath}/appointment/list" class="dropdown-item">My Appointments</a>
                                     <a href="${pageContext.request.contextPath}/customer/invoices" class="dropdown-item">Invoice</a>
                                 </div>
                             </div>
-                            <a href="${pageContext.request.contextPath}/contact.jsp" class="nav-item nav-link">Contact</a>
+                           
                             <c:if test="${not empty sessionScope.currentCustomer}">
                                 <a href="${pageContext.request.contextPath}/profile?action=profile" class="nav-item nav-link">
                                     Welcome, ${sessionScope.currentCustomer.fullname}

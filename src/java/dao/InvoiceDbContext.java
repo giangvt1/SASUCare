@@ -140,7 +140,17 @@ public class InvoiceDBContext extends DBContext<Invoice> {
 
     // Method to get invoice by appointment ID
     public Invoice getInvoiceByAppointmentId(int appointmentId) {
-        String sql = "SELECT * FROM Invoices WHERE appointment_id = ?";
+        String sql = "SELECT  [id]\n"
+                + "      ,[order_info]\n"
+                + "      ,[created_date]\n"
+                + "      ,[expire_date]\n"
+                + "      ,[customer_id]\n"
+                + "      ,[service_id]\n"
+                + "      ,[vnp_TxnRef]\n"
+                + "      ,[status]\n"
+                + "      ,[appointment_id]\n"
+                + "      ,[amount]\n"
+                + "  FROM [Invoices] WHERE appointment_id = ?";
         Invoice invoice = null;
 
         try (PreparedStatement stm = connection.prepareStatement(sql)) {

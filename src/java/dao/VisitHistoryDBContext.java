@@ -16,8 +16,22 @@ public class VisitHistoryDBContext extends DBContext<VisitHistory> {
     // Get visit histories by customer ID, doctor ID, date range, and sort direction
     public List<VisitHistory> getVisitHistoriesByCustomerId(int customerId, String doctorId, String startDate, String endDate, String sortDirection) {
         List<VisitHistory> visitHistories = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT * FROM VisitHistory vh");
-        sql.append(" JOIN Doctor d ON vh.doctorId = d.id");
+        StringBuilder sql = new StringBuilder("SELECT vh.id,\n"
+                + "       vh.DoctorID,\n"
+                + "       vh.CustomerID,\n"
+                + "       vh.VisitDate,\n"
+                + "       vh.ReasonForVisit,\n"
+                + "       vh.Diagnoses,\n"
+                + "       vh.TreatmentPlan,\n"
+                + "       ds.schedule_date AS NextAppointment,\n"
+                + "       a.id AS appointment_id,\n"
+                + "	   a.[status],\n"
+                + "	   s.[time_start]\n"
+                + "FROM VisitHistory vh\n"
+                + "LEFT JOIN Appointment a ON a.id = vh.NextAppointmentID\n"
+                + "LEFT JOIN Doctor_Schedule ds ON a.DocSchedule_id = ds.id\n"
+                + "join Shift s on s.id = ds.shift_id");
+
         sql.append(" WHERE vh.customerId = ?");
 
         // Apply filtering based on doctor and date range
@@ -72,6 +86,8 @@ public class VisitHistoryDBContext extends DBContext<VisitHistory> {
 
                 // Assuming Appointment details are included or need to be fetched separately
                 Appointment appointment = new Appointment(); // You may need to fetch appointment details
+                appointment.setId(rs.getInt("appointment_id"));
+                appointment.setStatus(rs.getString("status"));
                 visitHistory.setAppointment(appointment);
 
                 visitHistories.add(visitHistory);
@@ -124,17 +140,19 @@ public class VisitHistoryDBContext extends DBContext<VisitHistory> {
     // Get a specific visit history by its ID
     public VisitHistory getVisitHistoryById(int id) {
         VisitHistory visitHistory = null;
-        String sql = "SELECT  vh.[id]\r\n" + //
-                        "      ,[DoctorID]\r\n" + //
-                        "      ,[CustomerID]\r\n" + //
-                        "      ,[VisitDate]\r\n" + //
-                        "      ,[ReasonForVisit]\r\n" + //
-                        "      ,[Diagnoses]\r\n" + //
-                        "      ,[TreatmentPlan]\r\n" + //
-                        "      ,ds.schedule_date as NextAppointment\r\n" + //
-                        "  FROM [VisitHistory] vh left join Appointment a on a.id = vh.NextAppointmentID\r\n" + //
-                        "   join Doctor_Schedule ds on a.DocSchedule_id = ds.id\r\n" + //
-                        " WHERE vh.id = ?";
+        String sql = "SELECT vh.id,\n"
+                + "       vh.DoctorID,\n"
+                + "       vh.CustomerID,\n"
+                + "       vh.VisitDate,\n"
+                + "       vh.ReasonForVisit,\n"
+                + "       vh.Diagnoses,\n"
+                + "       vh.TreatmentPlan,\n"
+                + "       ds.schedule_date AS NextAppointment,\n"
+                + "       a.id AS appointment_id\n"
+                + "FROM VisitHistory vh\n"
+                + "LEFT JOIN Appointment a ON a.id = vh.NextAppointmentID\n"
+                + "LEFT JOIN Doctor_Schedule ds ON a.DocSchedule_id = ds.id"
+                + " WHERE vh.id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
@@ -149,6 +167,9 @@ public class VisitHistoryDBContext extends DBContext<VisitHistory> {
                 visitHistory.setTreatmentPlan(rs.getString("treatmentPlan"));
                 visitHistory.setNextAppointment(rs.getTimestamp("nextAppointment"));
                 // Appointment data should also be fetched if necessary
+                Appointment appointment = new Appointment();
+                appointment.setId(rs.getInt("appointment_id"));
+                visitHistory.setAppointment(appointment);
             }
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Error retrieving visit history by ID", ex);

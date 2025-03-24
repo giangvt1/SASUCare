@@ -177,8 +177,8 @@
         %>
     </head>
     <body>
- <jsp:include page="../Header.jsp"/>
- 
+        <jsp:include page="../Header.jsp"/>
+
         <div class="vnpay-container">
             <div class="header">
                 <h2 style="color: var(--primary-blue); font-size: 1.875rem; font-weight: 600;">
@@ -221,10 +221,11 @@
             </div>
 
             <div class="buttons-container">
-                <button onclick="window.location.href = '${pageContext.request.contextPath}/home" class="btn btn-outline">
+                <button onclick="window.location.href = '${pageContext.request.contextPath}/home'" class="btn btn-outline">
                     <i class="fas fa-arrow-left"></i> Quay Lại
                 </button>
-                <button onclick="window.location.href = '${pageContext.request.contextPath}/customer/invoice-details/${invoiceId}'" class="btn btn-primary">
+
+                <button onclick="window.location.href = '${pageContext.request.contextPath}/customer/invoices'" class="btn btn-primary">
                     <i class="fas fa-file-invoice"></i> Chi Tiết Hóa Đơn
                 </button>
                 <button onclick="exportToFile()" class="btn btn-outline">
@@ -236,7 +237,7 @@
                 <p>&copy; VNPAY ${java.time.Year.now().getValue()}</p>
             </footer>
         </div>
- <jsp:include page="../Footer.jsp"/>
+        <jsp:include page="../Footer.jsp"/>
         <script src="/vnpay_jsp/assets/jquery-1.11.3.min.js"></script>
         <script>
                     const vnp_Amount = ${vnp_Amount}
@@ -268,9 +269,9 @@ Trạng thái: ${vnp_ResponseCode == '00' ? 'Thành công' : 'Thất bại'}
             <c:if test="${status == '00'}">
                     setTimeout(function () {
                         window.location.href = "${pageContext.request.contextPath}/customer/invoice-details/${invoiceId}";
-                    }, 3000);
+                            }, 3000);
             </c:if>
         </script>
-        
+
     </body>
 </html>

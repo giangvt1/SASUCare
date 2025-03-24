@@ -6,6 +6,7 @@ package controller.appointment;
 
 import com.google.gson.Gson;
 import dao.AppointmentDBContext;
+import dao.CustomerDBContext;
 import dao.DoctorDBContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 import java.sql.Date;
 import java.util.List;
 import model.Appointment;
+import model.Customer;
 import model.Doctor;
 
 /**
@@ -27,6 +29,7 @@ import model.Doctor;
 public class GetAppointmentsByDateAndDoctor extends HttpServlet{
      private final AppointmentDBContext appointmentDB = new AppointmentDBContext();
     private final DoctorDBContext doctordb = new DoctorDBContext();
+    private final CustomerDBContext cusDB = new CustomerDBContext();
 
     // New endpoint for fetching appointments by date (AJAX)
     @Override
@@ -42,8 +45,11 @@ public class GetAppointmentsByDateAndDoctor extends HttpServlet{
                 return;
             }
 
-            List<Appointment> appointments = appointmentDB.getAppointmentsByDateAndDoctor(Date.valueOf(selectedDate), loggedDoctor.getId());
-
+            List<Appointment> appointments = appointmentDB.getAppointmentsByDateAndDoctor(Date.valueOf(selectedDate), loggedDoctor.getId(),"");
+            for (Appointment appointment : appointments) {
+                Customer customer = cusDB.getCustomerWithGoogleAuthById(appointment.getCustomer().getId());
+                appointment.setCustomer(customer);
+            }
             // Return the appointments as JSON response
             response.setContentType("application/json");
             response.getWriter().write(new Gson().toJson(appointments));

@@ -2,6 +2,7 @@ package dao;
 
 import dal.DBContext;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -18,16 +19,17 @@ public class AppointmentDBContext extends DBContext<Appointment> {
     private static final Logger LOGGER = Logger.getLogger(AppointmentDBContext.class.getName());
 
     public void cancelExpiredAppointments() {
-        String sql = "UPDATE Appointment SET status = 'Canceled', updateAt = GETDATE() WHERE status = 'Pending' AND DocSchedule_id IN \n" +
-"                (SELECT id FROM Doctor_Schedule WHERE schedule_date < CONVERT(DATE, GETDATE()))";
+        String sql = "UPDATE Appointment SET status = 'Canceled', updateAt = GETDATE() WHERE status = 'Pending' AND DocSchedule_id IN \n"
+                + "                (SELECT id FROM Doctor_Schedule WHERE schedule_date < CONVERT(DATE, GETDATE()))";
 
-        try ( PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             int affectedRows = stmt.executeUpdate();
             System.out.println("Expired appointments canceled: " + affectedRows);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
     public List<Appointment> getFilteredAppointments(String name, Date date, String status, int pageIndex, int pageSize) {
         List<Appointment> appointments = new ArrayList<>();
         StringBuilder sql = new StringBuilder("""
@@ -132,8 +134,6 @@ public class AppointmentDBContext extends DBContext<Appointment> {
 
         List<Object> params = new ArrayList<>();
 
-       
-
         try (PreparedStatement stmt = connection.prepareStatement(sql.toString())) {
             // Set parameters dynamically
             for (int i = 0; i < params.size(); i++) {
@@ -226,7 +226,71 @@ public class AppointmentDBContext extends DBContext<Appointment> {
         return 0; // Return 0 if no appointments found
     }
 
-    public List<Appointment> getAppointmentsByDateAndDoctor(Date date, int doctorId) {
+    public List<Appointment> getAppointmentsByDateRangeAndDoctor(int doctorId, int range, String sqlCondition) {
+        List<Appointment> appointments = new ArrayList<>();
+        String sql = """
+    SELECT a.id AS appointment_id, a.status, ds.schedule_date, 
+           s.time_start, s.time_end, d.id AS doctor_id, Staff.fullname AS doctor_name,
+           c.id AS customer_id, c.fullname AS customer_name, c.phone_number
+    FROM Appointment a
+    JOIN Doctor d ON a.doctor_id = d.id
+    JOIN Staff ON d.staff_id = Staff.id
+    JOIN Doctor_Schedule ds ON a.DocSchedule_id = ds.id
+    JOIN Shift s ON ds.shift_id = s.id
+    JOIN Customer c ON a.customer_id = c.id
+    WHERE a.doctor_id = ? 
+    AND ds.schedule_date BETWEEN ? AND ?
+    """;
+
+        if (sqlCondition != null) {
+            sql += sqlCondition;
+        }
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            LocalDate today = LocalDate.now();
+            stmt.setInt(1, doctorId);
+            stmt.setDate(2, Date.valueOf(today.minusDays(range))); // Start date (7 days ago)
+            stmt.setDate(3, Date.valueOf(today)); // End date (today)
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Appointment appointment = new Appointment();
+                appointment.setId(rs.getInt("appointment_id"));
+                appointment.setStatus(rs.getString("status"));
+
+                // Set Doctor
+                Doctor doctor = new Doctor();
+                doctor.setId(rs.getInt("doctor_id"));
+                doctor.setName(rs.getString("doctor_name"));
+                appointment.setDoctor(doctor);
+
+                // Set Customer
+                Customer customer = new Customer();
+                customer.setId(rs.getInt("customer_id"));
+                customer.setFullname(rs.getString("customer_name"));
+                customer.setPhone_number(rs.getString("phone_number"));
+                appointment.setCustomer(customer);
+
+                // Set Doctor Schedule
+                DoctorSchedule doctorSchedule = new DoctorSchedule();
+                doctorSchedule.setScheduleDate(rs.getDate("schedule_date"));
+
+                // Set Shift
+                Shift shift = new Shift();
+                shift.setTimeStart(rs.getTime("time_start"));
+                shift.setTimeEnd(rs.getTime("time_end"));
+                doctorSchedule.setShift(shift);
+
+                appointment.setDoctorSchedule(doctorSchedule);
+                appointments.add(appointment);
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error retrieving appointments by doctor", ex);
+        }
+        return appointments;
+    }
+
+    public List<Appointment> getAppointmentsByDateAndDoctor(Date date, int doctorId, String sqlCondition) {
         List<Appointment> appointments = new ArrayList<>();
         String sql = """
         SELECT a.id AS appointment_id, a.status, ds.schedule_date, 
@@ -238,9 +302,11 @@ public class AppointmentDBContext extends DBContext<Appointment> {
         JOIN Doctor_Schedule ds ON a.DocSchedule_id = ds.id
         JOIN Shift s ON ds.shift_id = s.id
         JOIN Customer c ON a.customer_id = c.id
-        WHERE a.doctor_id = ? AND ds.schedule_date = ? --and status = 'Confirmed'
+        WHERE a.doctor_id = ? AND ds.schedule_date = ? 
     """;
-
+        if (sqlCondition != null) {
+            sql += sqlCondition;
+        }
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, doctorId);
             stmt.setDate(2, date);
@@ -653,7 +719,7 @@ SELECT
             InvoiceDBContext invoiceDB = new InvoiceDBContext();
             Invoice invoice = new Invoice();
             invoice = invoiceDB.getInvoiceByAppointmentId(model.getId());
-            if(invoice != null){
+            if (invoice != null && model.getStatus().equalsIgnoreCase("canceled")) {
                 invoiceDB.delete(invoice);
             }
             int affectedRows = stm.executeUpdate();
@@ -696,6 +762,7 @@ SELECT
 
                 Customer customer = new Customer();
                 customer.setId(rs.getInt("customer_id"));
+                customer.setGmail(rs.getString("gmail"));
                 appointment.setCustomer(customer);
 
                 Doctor doctor = new Doctor();
