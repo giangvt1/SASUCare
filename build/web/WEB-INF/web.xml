@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error404.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/error500.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>403</error-code>
+        <location>/error403.jsp</location>
+    </error-page>
     <servlet>
         <servlet-name>ForgetPasswordController</servlet-name>
         <servlet-class>controller.accesscontrol.ForgetPasswordController</servlet-class>
@@ -55,6 +67,10 @@
     <servlet>
         <servlet-name>AppointmentCalendarServlet</servlet-name>
         <servlet-class>controller.appointment.AppointmentCalendarServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AppointmentDoctorListController</servlet-name>
+        <servlet-class>controller.appointment.AppointmentDoctorListController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>AppointmentConfirmServlet</servlet-name>
@@ -156,10 +172,6 @@
         <servlet-name>EditStaffApplication</servlet-name>
         <servlet-class>controller.HRController.EditStaffApplication</servlet-class>
     </servlet>
-    <servlet-name>ChatHistoryController</servlet-name>
-    <servlet-class>controller.ChatController.ChatHistoryController</servlet-class>
-    <servlet-name>SessionServlet</servlet-name>
-    <servlet-class>controller.ChatController.SessionServlet</servlet-class>
     <servlet>
         <servlet-name>SessionServlet</servlet-name>
         <servlet-class>controller.ChatController.SessionServlet</servlet-class>
@@ -173,8 +185,8 @@
         <servlet-class>controller.AdminController.EditTypeApplication</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>AppointmentsManagementController</servlet-name>
-        <servlet-class>controller.appointment.AppointmentsManagementController</servlet-class>
+        <servlet-name>AppointmentManagementController</servlet-name>
+        <servlet-class>controller.appointment.AppointmentManagementController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>HRApptManagementController</servlet-name>
@@ -241,12 +253,16 @@
         <servlet-class>controller.financial.DoctorSalaryChartController</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>AppointmentManagementController</servlet-name>
-        <servlet-class>controller.appointment.AppointmentManagementController</servlet-class>
+        <servlet-name>DoctorMedicalConsultation</servlet-name>
+        <servlet-class>controller.AdminController.DoctorMedicalConsultation</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>AppointmentDoctorListController</servlet-name>
-        <servlet-class>controller.appointment.AppointmentDoctorListController</servlet-class>
+        <servlet-name>SearchDoctor</servlet-name>
+        <servlet-class>controller.AdminController.SearchDoctor</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>InvoiceRevenueChartController</servlet-name>
+        <servlet-class>controller.financial.InvoiceRevenueChartController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
@@ -374,6 +390,10 @@
         <url-pattern>/hr/accountlist</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>AppointmentDoctorListController</servlet-name>
+        <url-pattern>/appointment/doctor</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>AppointmentConfirmServlet</servlet-name>
         <url-pattern>/appointment/confirm</url-pattern>
     </servlet-mapping>
@@ -466,6 +486,10 @@
         <url-pattern>/admin/EditTypeApplication</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>AppointmentManagementController</servlet-name>
+        <url-pattern>/doctor/appointmentsmanagement</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>HRApptManagementController</servlet-name>
         <url-pattern>/hr/appointments</url-pattern>
     </servlet-mapping>
@@ -537,13 +561,6 @@
         <servlet-name>ManageTypeCertificate</servlet-name>
         <url-pattern>/admin/ManageTypeCertificate</url-pattern>
     </servlet-mapping>
-    <servlet-name>SessionServlet</servlet-name>
-    <servlet-class>controller.ChatController.SessionServlet</servlet-class>
-    <servlet-name>ChatHistoryController</servlet-name>
-    <servlet-class>controller.ChatController.ChatHistoryController</servlet-class>
-    <url-pattern>/getSessionId</url-pattern>
-    <servlet-name>SessionServlet</servlet-name>
-    <url-pattern>/ChatHistoryController</url-pattern>
     <servlet-mapping>
         <servlet-name>ListDoctorController</servlet-name>
         <url-pattern>/getdoctor</url-pattern>
@@ -565,11 +582,15 @@
         <url-pattern>/finance/DoctorSalaryChart</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>AppointmentManagementController</servlet-name>
-        <url-pattern>/doctor/appointmentsmanagement</url-pattern>
+        <servlet-name>DoctorMedicalConsultation</servlet-name>
+        <url-pattern>/admin/DoctorMedicalConsultation</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>AppointmentDoctorListController</servlet-name>
-        <url-pattern>/appointment/doctor</url-pattern>
+        <servlet-name>SearchDoctor</servlet-name>
+        <url-pattern>/admin/SearchDoctor</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>InvoiceRevenueChartController</servlet-name>
+        <url-pattern>/finance/revenue</url-pattern>
     </servlet-mapping>
 </web-app>

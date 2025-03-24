@@ -102,27 +102,27 @@
 
             <c:if test="${allowedUrls != null and (allowedUrls.contains('/doctor/SendApplication.jsp') or allowedUrls.contains('/doctor/ManageMedical.jsp'))}">
                 <li>
-                    <a href="../doctor/ViewApplication?staffId=${sessionScope.staff.id}">
+                    <a href="${pageContext.request.contextPath}/doctor/ViewApplication?staffId=${sessionScope.staff.id}">
                         <i class="fa fa-envelope"></i> <span>Manage Application</span>
                     </a>
                 </li>
                 <li>
-                    <a href="../doctor/ManageCertificates?staffId=${sessionScope.staff.id}">
+                    <a href="${pageContext.request.contextPath}/doctor/ManageCertificates?staffId=${sessionScope.staff.id}">
                         <i class="fa fa-envelope"></i> <span>Manage Certificate</span>
                     </a>
                 </li>
                 <li>
-                    <a href="../doctor/appointmentsmanagement">
+                    <a href="${pageContext.request.contextPath}/doctor/appointmentsmanagement">
                         <i class="fa fa-envelope"></i> <span>Appointments</span>
                     </a>
                 </li>
                 <li>
-                    <a href="../doctor/SearchCustomer?page=1&sort=default&size=10">
+                    <a href="${pageContext.request.contextPath}/doctor/SearchCustomer?page=1&sort=default&size=10">
                         <i class="fa fa-medkit"></i> <span>Manage Medical</span>
                     </a>
                 </li>
                 <li>
-                    <a href="../doctor/calendar">
+                    <a href="${pageContext.request.contextPath}/doctor/calendar">
                         <i class="fa fa-medkit"></i> <span>Calendar</span>
                     </a>
                 </li>
@@ -134,21 +134,34 @@
             </c:if>
             <c:if test="${allowedUrls != null and (allowedUrls.contains('/finance/InvoiceManagement'))}">
                 <li>
-                    <a href="../finance/InvoiceManagement">
+                    <a href="${pageContext.request.contextPath}/finance/InvoiceManagement">
                         <i class="fa fa-envelope"></i> <span>Invoices management</span>
                     </a>
-                </li><li>
-                    <a href="../finance/doctorsalary">
+                </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/finance/revenue">
+                        <i class="fa fa-envelope"></i> <span>Revenue chart</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/finance/doctorsalary">
                         <i class="fa fa-envelope"></i> <span>Doctor Salary</span>
                     </a>
                 </li>
                 <li>
-                    <a href="../finance/DoctorSalaryChart">
+                    <a href="${pageContext.request.contextPath}/finance/DoctorSalaryChart">
                         <i class="fa fa-envelope"></i> <span>Doctor Salary Chart</span>
                     </a>
                 </li>
             </c:if>
-                
+            
+            <c:if test="${allowedUrls != null and (allowedUrls.contains('/hr/posts'))}">
+                <li>
+                    <a href="${pageContext.request.contextPath}/hr/posts">
+                        <i class="fa fa-envelope"></i> <span>Post</span>
+                    </a>
+                </li>
+            </c:if>    
             <%-- Add other menu items as needed --%>
         </ul>
     </section>

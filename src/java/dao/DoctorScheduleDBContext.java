@@ -18,7 +18,6 @@ import model.DoctorSalaryStat;
 public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
 
     private static final Logger LOGGER = Logger.getLogger(DoctorScheduleDBContext.class.getName());
-
     public String checkExsistSchedule(int customerId, String scheduleDate, String doctorId, String shiftId) {
         String sql = "SELECT COUNT(*) FROM Appointment a "
                 + "JOIN Doctor_Schedule ds ON a.DocSchedule_id = ds.id "
@@ -55,7 +54,6 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
             return "error";
         }
     }
-    
 
     public List<DoctorSchedule> getSchedulesByDoctorBetweenDates(int doctorId, Date start, Date end) {
         List<DoctorSchedule> list = new ArrayList<>();
@@ -440,10 +438,29 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
         }
     }
 
-    public boolean updateShift(int doctor_id, int scheduleId, Date shiftDate, int shiftId) {
-        String sql = "UPDATE Doctor_Schedule SET doctor_id=?,schedule_date = ?, shift_id = ? WHERE id = ?";
+    public boolean updateShift(int doctorId, int scheduleId, Date shiftDate, int shiftId) {
+        // 1. Kiểm tra xem bác sĩ này, ngày này, ca này đã tồn tại chưa (trừ schedule hiện tại)
+        String checkSql = "SELECT COUNT(*) FROM Doctor_Schedule "
+                + "WHERE doctor_id = ? AND schedule_date = ? AND shift_id = ? AND id <> ?";
+        try (PreparedStatement checkStmt = connection.prepareStatement(checkSql)) {
+            checkStmt.setInt(1, doctorId);
+            checkStmt.setDate(2, shiftDate);
+            checkStmt.setInt(3, shiftId);
+            checkStmt.setInt(4, scheduleId);
+            try (ResultSet rs = checkStmt.executeQuery()) {
+                if (rs.next() && rs.getInt(1) > 0) {
+                    // Đã có 1 lịch khác trùng => return false
+                    return false;
+                }
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error checking duplicate shift: {0}", ex.getMessage());
+            return false;
+        }
+
+        String sql = "UPDATE Doctor_Schedule SET doctor_id=?, schedule_date=?, shift_id=? WHERE id = ?";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            stm.setInt(1, doctor_id);
+            stm.setInt(1, doctorId);
             stm.setDate(2, shiftDate);
             stm.setInt(3, shiftId);
             stm.setInt(4, scheduleId);
@@ -466,11 +483,20 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
         }
     }
 
-    public List<DoctorSalaryStat> getDoctorSalaryStats(Date start, Date end, String search,
+    public List<DoctorSalaryStat> getDoctorSalaryStats(Date start, Date end, String rawSearch,
             String sortField, String sortDir, int offset, int pageSize) {
         List<DoctorSalaryStat> stats = new ArrayList<>();
 
-        // Câu truy vấn cơ bản, thêm điều kiện ds.available = 1 để chỉ tính những ca làm việc khả dụng
+        // Xử lý rawSearch: trim và thay thế nhiều khoảng trắng bằng "%"
+        String searchPattern = null;
+        if (rawSearch != null) {
+            rawSearch = rawSearch.trim().replaceAll("\\s+", "%");
+            if (!rawSearch.isEmpty()) {
+                searchPattern = "%" + rawSearch + "%";
+            }
+        }
+
+        // Câu truy vấn cơ bản (chỉ tính những ca làm việc khả dụng)
         String sql = """
         SELECT d.id as DoctorId, st.fullname as DoctorName, COUNT(*) as ShiftCount, 
                d.price as SalaryRate, d.salaryCoefficient as SalaryCoefficient
@@ -480,15 +506,15 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
         WHERE ds.schedule_date BETWEEN ? AND ? AND ds.available = 1
         """;
 
-        // Nếu có từ khóa tìm kiếm, thêm điều kiện
-        if (search != null && !search.trim().isEmpty()) {
+        // Nếu có từ khóa tìm kiếm, thêm điều kiện cho c.fullname
+        if (searchPattern != null && !searchPattern.isEmpty()) {
             sql += " AND st.fullname LIKE ? ";
         }
 
         sql += " GROUP BY d.id, st.fullname, d.price, d.salaryCoefficient ";
 
-        // Xử lý sắp xếp, chỉ cho phép các giá trị cụ thể
-        if (sortField != null) {
+        // Xử lý sắp xếp: chỉ cho phép sắp xếp theo các trường cụ thể
+        if (sortField != null && !sortField.trim().isEmpty()) {
             switch (sortField) {
                 case "DoctorName":
                     sql += " ORDER BY st.fullname " + ("desc".equalsIgnoreCase(sortDir) ? "DESC" : "ASC");
@@ -498,7 +524,8 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
                     break;
                 case "TotalSalary":
                     // Tổng lương = COUNT(*) * d.price * d.salaryCoefficient
-                    sql += " ORDER BY (COUNT(*) * d.price * d.salaryCoefficient) " + ("desc".equalsIgnoreCase(sortDir) ? "DESC" : "ASC");
+                    sql += " ORDER BY (COUNT(*) * d.price * d.salaryCoefficient) "
+                            + ("desc".equalsIgnoreCase(sortDir) ? "DESC" : "ASC");
                     break;
                 default:
                     sql += " ORDER BY st.fullname ASC";
@@ -515,8 +542,8 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
             int index = 1;
             stm.setDate(index++, start);
             stm.setDate(index++, end);
-            if (search != null && !search.trim().isEmpty()) {
-                stm.setString(index++, "%" + search + "%");
+            if (searchPattern != null && !searchPattern.isEmpty()) {
+                stm.setString(index++, searchPattern);
             }
             stm.setInt(index++, offset);
             stm.setInt(index++, pageSize);
@@ -539,8 +566,18 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
         return stats;
     }
 
-    public int countDoctorSalaryStats(Date start, Date end, String search) {
+    public int countDoctorSalaryStats(Date start, Date end, String rawSearch) {
         int total = 0;
+
+        // Xử lý rawSearch: trim và thay thế nhiều khoảng trắng bằng "%"
+        String searchPattern = null;
+        if (rawSearch != null) {
+            rawSearch = rawSearch.trim().replaceAll("\\s+", "%");
+            if (!rawSearch.isEmpty()) {
+                searchPattern = "%" + rawSearch + "%";
+            }
+        }
+
         String sql = """
         SELECT COUNT(*) as Total
         FROM (
@@ -550,21 +587,21 @@ public class DoctorScheduleDBContext extends DBContext<DoctorSchedule> {
             JOIN Staff st ON d.staff_id = st.id
             WHERE ds.schedule_date BETWEEN ? AND ? AND ds.available = 1
         """;
-        if (search != null && !search.trim().isEmpty()) {
+        if (searchPattern != null && !searchPattern.isEmpty()) {
             sql += " AND st.fullname LIKE ? ";
         }
-        sql += " GROUP BY d.id, st.fullname, d.price, d.salaryCoefficient) AS T";
+        sql += " GROUP BY d.id ) AS T";
 
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
             int index = 1;
             stm.setDate(index++, start);
             stm.setDate(index++, end);
-            if (search != null && !search.trim().isEmpty()) {
-                stm.setString(index++, "%" + search + "%");
+            if (searchPattern != null && !searchPattern.isEmpty()) {
+                stm.setString(index++, searchPattern);
             }
             ResultSet rs = stm.executeQuery();
-            while (rs.next()) {
-                total++; // Mỗi dòng đại diện 1 bác sĩ
+            if (rs.next()) {
+                total = rs.getInt("Total");
             }
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Error counting doctor salary stats: {0}", ex.getMessage());
