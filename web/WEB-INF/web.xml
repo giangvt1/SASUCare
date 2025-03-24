@@ -57,6 +57,10 @@
         <servlet-class>controller.appointment.AppointmentCalendarServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>AppointmentDoctorListController</servlet-name>
+        <servlet-class>controller.appointment.AppointmentDoctorListController</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>AppointmentConfirmServlet</servlet-name>
         <servlet-class>controller.appointment.AppointmentConfirmServlet</servlet-class>
     </servlet>
@@ -156,10 +160,6 @@
         <servlet-name>EditStaffApplication</servlet-name>
         <servlet-class>controller.HRController.EditStaffApplication</servlet-class>
     </servlet>
-    <servlet-name>ChatHistoryController</servlet-name>
-    <servlet-class>controller.ChatController.ChatHistoryController</servlet-class>
-    <servlet-name>SessionServlet</servlet-name>
-    <servlet-class>controller.ChatController.SessionServlet</servlet-class>
     <servlet>
         <servlet-name>SessionServlet</servlet-name>
         <servlet-class>controller.ChatController.SessionServlet</servlet-class>
@@ -241,12 +241,12 @@
         <servlet-class>controller.financial.DoctorSalaryChartController</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>AppointmentManagementController</servlet-name>
-        <servlet-class>controller.appointment.AppointmentManagementController</servlet-class>
+        <servlet-name>DoctorMedicalConsultation</servlet-name>
+        <servlet-class>controller.AdminController.DoctorMedicalConsultation</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>AppointmentDoctorListController</servlet-name>
-        <servlet-class>controller.appointment.AppointmentDoctorListController</servlet-class>
+        <servlet-name>SearchDoctor</servlet-name>
+        <servlet-class>controller.AdminController.SearchDoctor</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>InvoiceRevenueChartController</servlet-name>
@@ -378,6 +378,10 @@
         <url-pattern>/hr/accountlist</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>AppointmentDoctorListController</servlet-name>
+        <url-pattern>/appointment/doctor</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>AppointmentConfirmServlet</servlet-name>
         <url-pattern>/appointment/confirm</url-pattern>
     </servlet-mapping>
@@ -470,6 +474,10 @@
         <url-pattern>/admin/EditTypeApplication</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>AppointmentsManagementController</servlet-name>
+        <url-pattern>/doctor/appointmentsmanagement</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>HRApptManagementController</servlet-name>
         <url-pattern>/hr/appointments</url-pattern>
     </servlet-mapping>
@@ -541,13 +549,6 @@
         <servlet-name>ManageTypeCertificate</servlet-name>
         <url-pattern>/admin/ManageTypeCertificate</url-pattern>
     </servlet-mapping>
-    <servlet-name>SessionServlet</servlet-name>
-    <servlet-class>controller.ChatController.SessionServlet</servlet-class>
-    <servlet-name>ChatHistoryController</servlet-name>
-    <servlet-class>controller.ChatController.ChatHistoryController</servlet-class>
-    <url-pattern>/getSessionId</url-pattern>
-    <servlet-name>SessionServlet</servlet-name>
-    <url-pattern>/ChatHistoryController</url-pattern>
     <servlet-mapping>
         <servlet-name>ListDoctorController</servlet-name>
         <url-pattern>/getdoctor</url-pattern>
@@ -569,12 +570,12 @@
         <url-pattern>/finance/DoctorSalaryChart</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>AppointmentManagementController</servlet-name>
-        <url-pattern>/doctor/appointmentsmanagement</url-pattern>
+        <servlet-name>DoctorMedicalConsultation</servlet-name>
+        <url-pattern>/admin/DoctorMedicalConsultation</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>AppointmentDoctorListController</servlet-name>
-        <url-pattern>/appointment/doctor</url-pattern>
+        <servlet-name>SearchDoctor</servlet-name>
+        <url-pattern>/admin/SearchDoctor</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>InvoiceRevenueChartController</servlet-name>
