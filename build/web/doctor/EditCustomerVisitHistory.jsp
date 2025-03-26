@@ -26,28 +26,21 @@
             <h2 class="title">${empty param.id ? "Create new" : "Update"} customer's visit history</h2>
             <form action="EditCustomerVisitHistory" class="edit-form" method="post">
                 <input type="hidden" name="id" value="${param.id}">
-                <input type="hidden" name="sId" value="${sessionScope.staff.id}">
-                <input type="hidden" name="cId" value="${param.cId}">
+                <input type="hidden" name="staffId" value="${sessionScope.staff.id}">
+                <input type="hidden" name="customerId" value="${param.cId}">
+                <input type="hidden" name="appointmentId" value="${param.aId}">
 
                 <label for="reasonForVisit">Reason For Visit:</label>
                 <input type="text" id="reasonForVisit" name="reasonForVisit" value="${param.reasonForVisit}" required>
-
-                <div class="date-container">
-                    <div class="date-item">
-                        <label for="visitDate">Visit Date:</label>
-                        <input type="text" id="visitDate" class="dateTime" readonly="" name="visitDate" value="${param.visitDate}" required>
-                    </div>
-                    <div class="date-item">
-                        <label for="nextAppointment">Next Appointment:</label>
-                        <input type="text" id="nextAppointment" class="dateTime" name="nextAppointment" value="${param.nextAppointment}">
-                    </div>
-                </div>
 
                 <label for="diagnoses">Diagnoses:</label>
                 <input type="text" id="diagnoses" name="diagnoses" value="${param.diagnoses}" required>
 
                 <label for="treatmentPlan">Treatment Plan:</label>
                 <input type="text" id="treatmentPlan" name="treatmentPlan" value="${param.treatmentPlan}" required>
+                `
+                <label for="note">note:</label>
+                <input type="text" id="note" name="note" value="${param.note}" required>
 
                 <div class="submit-container">
                     <button type="submit" class="back-btn" value="${empty param.id ? "Create" : "Update"}">Submit</button>

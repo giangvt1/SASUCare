@@ -118,7 +118,7 @@
                 </li>
                 <li>
                     <a href="${pageContext.request.contextPath}/doctor/SearchCustomer?page=1&sort=default&size=10">
-                        <i class="fa fa-medkit"></i> <span>Manage Medical</span>
+                        <i class="fa fa-medkit"></i> <span>Search Customer</span>
                     </a>
                 </li>
                 <li>

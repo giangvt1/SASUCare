@@ -6,6 +6,7 @@ package controller.doctor;
  */
 import controller.systemaccesscontrol.BaseRBACController;
 import dao.CustomerDBContext;
+import dao.VisitHistoryDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,14 +15,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import model.system.User;
 
 public class DeleteCustomerVisitHistory extends BaseRBACController {
+
     @Override
     protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
         String cid = request.getParameter("cid");
         String id = request.getParameter("id");
 
         // Tạo đối tượng DBContext để lưu MedicalHistory vào cơ sở dữ liệu
-        CustomerDBContext customerDB = new CustomerDBContext();
-        boolean isCreated = customerDB.deleteVisitHistory(Integer.parseInt(id));
+        VisitHistoryDBContext visitHistoryDB = new VisitHistoryDBContext();
+        boolean isCreated = visitHistoryDB.deleteVisitHistory(Integer.parseInt(id));
 
         // Thông báo kết quả
         if (isCreated) {

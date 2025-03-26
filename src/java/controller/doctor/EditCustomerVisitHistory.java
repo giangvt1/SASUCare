@@ -1,18 +1,13 @@
 package controller.doctor;
 
 import controller.systemaccesscontrol.BaseRBACController;
-import dao.CustomerDBContext;
 import dao.DoctorDBContext;
+import dao.VisitHistoryDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Timestamp;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import model.VisitHistory;
 import model.system.User;
 
@@ -32,49 +27,33 @@ public class EditCustomerVisitHistory extends BaseRBACController {
         request.setCharacterEncoding("UTF-8"); // Đảm bảo encoding đúng
 
         String id = request.getParameter("id");
-        int staffId = Integer.parseInt(request.getParameter("sId"));
-        String customerId = request.getParameter("cId");
-        String visitDateStr = request.getParameter("visitDate");
+        int staffId = Integer.parseInt(request.getParameter("staffId"));
+        String customerId = request.getParameter("customerId");
         String reasonForVisit = request.getParameter("reasonForVisit");
         String diagnoses = request.getParameter("diagnoses");
         String treatmentPlan = request.getParameter("treatmentPlan");
-        String nextAppointmentStr = request.getParameter("nextAppointment");
+        String note = request.getParameter("note");
+        String appointmentId = request.getParameter("appointmentId");
         DoctorDBContext doctorDB = new DoctorDBContext();
         int doctorId = doctorDB.getDoctorIdByStaffId(staffId);
-        Timestamp visitDate = null;
-        Timestamp nextAppointment = null;
         String error = "";
-
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-
-        try {
-            if (visitDateStr != null && !visitDateStr.isEmpty()) {
-                visitDate = new Timestamp(format.parse(visitDateStr).getTime());
-            }
-            if (nextAppointmentStr != null && !nextAppointmentStr.isEmpty()) {
-                nextAppointment = new Timestamp(format.parse(nextAppointmentStr).getTime());
-            }
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-            error = "Date format is incorrect.";
-        }
 
         VisitHistory visitHistory = new VisitHistory();
         visitHistory.setDoctorId(doctorId);
         visitHistory.setCustomerId(Integer.parseInt(customerId));
-        visitHistory.setVisitDate(visitDate);
         visitHistory.setReasonForVisit(reasonForVisit);
         visitHistory.setDiagnoses(diagnoses);
         visitHistory.setTreatmentPlan(treatmentPlan);
-        visitHistory.setNextAppointment(nextAppointment);
-
-        CustomerDBContext customerDB = new CustomerDBContext();
+        visitHistory.setNote(note);
+        visitHistory.setAppointmentId(Integer.parseInt(appointmentId));
+        
+        VisitHistoryDBContext visitHistoryDB = new VisitHistoryDBContext();
         boolean isCreated;
         if (id == null || id.isEmpty()) {
-            isCreated = customerDB.createVisitHistory(visitHistory);
+            isCreated = visitHistoryDB.createVisitHistory(visitHistory);
         } else {
             visitHistory.setId(Integer.parseInt(id));
-            isCreated = customerDB.updateVisitHistory(visitHistory);
+            isCreated = visitHistoryDB.updateVisitHistory(visitHistory);
         }
 
         String message = isCreated ? "Visit history edited successfully!" : "Failed to edit visit history.";

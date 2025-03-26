@@ -148,7 +148,7 @@
                             <th>Reason For Visit</th>
                             <th>Diagnoses</th>
                             <th>Treatment Plan</th>
-                            <th>Next Appointment</th>
+                            <th>Note</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -159,7 +159,7 @@
                                 <td>${v.reasonForVisit}</td>
                                 <td>${v.diagnoses}</td>
                                 <td>${v.treatmentPlan}</td>
-                                <td><fmt:formatDate value="${v.nextAppointment}" pattern="dd/MM/yyyy HH:mm:ss" /></td>
+                                <td>${v.note}</td>
                             </tr>
                         </c:forEach>
                     </tbody>

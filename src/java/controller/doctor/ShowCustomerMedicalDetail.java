@@ -2,6 +2,7 @@ package controller.doctor;
 
 import controller.systemaccesscontrol.BaseRBACController;
 import dao.CustomerDBContext;
+import dao.VisitHistoryDBContext;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -56,6 +57,7 @@ public class ShowCustomerMedicalDetail extends BaseRBACController {
         }
 
         CustomerDBContext customerDB = new CustomerDBContext();
+        VisitHistoryDBContext visitHistoryDB = new VisitHistoryDBContext();
         if (cId != null) {
             try {
                 // Lấy thông tin khách hàng theo ID
@@ -69,8 +71,8 @@ public class ShowCustomerMedicalDetail extends BaseRBACController {
 
                 // Lấy danh sách Visit History có phân trang
                 int currentVisitPage = (pageVisitStr != null) ? Integer.parseInt(pageVisitStr) : 1;
-                ArrayList<VisitHistory> visitHistoryList = customerDB.getVisitHistoriesByCustomerIdPaginated(Integer.parseInt(cId), currentVisitPage, sizeOfVisitEachTable);
-                int totalVisits = customerDB.getVisitHistoryCountByCustomerId(Integer.parseInt(cId));
+                ArrayList<VisitHistory> visitHistoryList = visitHistoryDB.getVisitHistoriesByCustomerIdPaginated(Integer.parseInt(cId), currentVisitPage, sizeOfVisitEachTable);
+                int totalVisits = visitHistoryDB.getVisitHistoryCountByCustomerId(Integer.parseInt(cId));
                 int totalVisitPages = (int) Math.ceil((double) totalVisits / sizeOfVisitEachTable);
 
                 // Truyền dữ liệu sang JSP

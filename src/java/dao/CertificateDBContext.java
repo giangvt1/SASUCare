@@ -28,6 +28,7 @@ public class CertificateDBContext extends DBContext<Certificate> {
         CertificateDBContext c = new CertificateDBContext();
         System.out.println(c.getCertificatesByDoctorID(null, null, null, 16, 1, "default", 10).size());
     }
+
     public boolean createTypeCertificate(TypeCertificate typeCer) {
         String sql = "INSERT INTO Type_Certificate (name, staff_manage_id) VALUES (?, ?)";
 
@@ -194,7 +195,7 @@ public class CertificateDBContext extends DBContext<Certificate> {
                     cert.setTypeName(rs.getString("typeName"));
                     cert.setCheckNote(rs.getString("checkNote"));
                     cert.setDocumentPath(rs.getString("documentPath"));
-                    cert.setDoctorName(rs.getString("doctorName")); 
+                    cert.setDoctorName(rs.getString("doctorName"));
                     certificates.add(cert);
                 }
             }
@@ -256,7 +257,7 @@ public class CertificateDBContext extends DBContext<Certificate> {
     }
 
     public boolean createCertificate(Certificate c) {
-        String sql = "INSERT INTO Certificate(certificateName, issueDate, documentPath, status, typeId, doctorId) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Certificate(certificateName, issueDate, documentPath, status, typeId, doctorId, [file]) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
             int paramIndex = 1;
             stm.setString(paramIndex++, c.getCertificateName());
@@ -265,6 +266,7 @@ public class CertificateDBContext extends DBContext<Certificate> {
             stm.setString(paramIndex++, "Pending");
             stm.setInt(paramIndex++, c.getTypeId());
             stm.setInt(paramIndex++, c.getDoctorId());
+            stm.setString(paramIndex++, c.getFile());
             int rowsInserted = stm.executeUpdate();
             return rowsInserted > 0;
         } catch (SQLException ex) {
@@ -293,8 +295,6 @@ public class CertificateDBContext extends DBContext<Certificate> {
             sqlBuilder.append(" AND c.Status like ?");
         }
         switch (sort) {
-            case "default" ->
-                sqlBuilder.append(" ORDER BY id");
             case "certificateNameAZ" ->
                 sqlBuilder.append(" ORDER BY certificateName ASC");
             case "certificateNameZA" ->
@@ -308,7 +308,7 @@ public class CertificateDBContext extends DBContext<Certificate> {
             case "EDNTO" ->
                 sqlBuilder.append(" ORDER BY ExpirationDate ASC");
             default ->
-                throw new AssertionError("Invalid sort type: " + sort);
+                sqlBuilder.append(" ORDER BY id");
         }
 
         sqlBuilder.append(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
@@ -433,49 +433,48 @@ public class CertificateDBContext extends DBContext<Certificate> {
     public ArrayList<Certificate> list() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
+
     public List<Certificate> getCertificatesBelongDoctorId(int doctorId) {
-    List<Certificate> certificates = new ArrayList<>();
-    String sql = "SELECT  [CertificateID]\n" +
-"      ,[DoctorID]\n" +
-"      ,[CertificateName]\n" +
-"      ,[IssuingAuthority]\n" +
-"      ,[IssueDate]\n" +
-"      ,[ExpirationDate]\n" +
-"      ,[DocumentPath]\n" +
-"      ,[Status]\n" +
-"      ,[CheckedByStaffID]\n" +
-"      ,[CheckedDate]\n" +
-"      ,[CheckNote]\n" +
-"      ,[typeId]\n" +
-"  FROM [Certificate] "
-               + " WHERE DoctorID = ? AND Status = 'Approved'";
+        List<Certificate> certificates = new ArrayList<>();
+        String sql = "SELECT  [CertificateID]\n"
+                + "      ,[DoctorID]\n"
+                + "      ,[CertificateName]\n"
+                + "      ,[IssuingAuthority]\n"
+                + "      ,[IssueDate]\n"
+                + "      ,[ExpirationDate]\n"
+                + "      ,[DocumentPath]\n"
+                + "      ,[Status]\n"
+                + "      ,[CheckedByStaffID]\n"
+                + "      ,[CheckedDate]\n"
+                + "      ,[CheckNote]\n"
+                + "      ,[typeId]\n"
+                + "  FROM [Certificate] "
+                + " WHERE DoctorID = ? AND Status = 'Approved'";
 
-    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-        stmt.setInt(1, doctorId);
-        try (ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                Certificate cert = new Certificate();
-                cert.setCertificateId(rs.getInt("certificateId"));
-                cert.setDoctorId(rs.getInt("DoctorID"));
-                cert.setCertificateName(rs.getString("CertificateName"));
-                cert.setIssuingAuthority(rs.getString("IssuingAuthority"));
-                cert.setDocumentPath(rs.getString("DocumentPath"));
-                cert.setStatus(rs.getString("status"));
-                cert.setIssueDate(rs.getDate("issueDate"));
-                cert.setExpirationDate(rs.getDate("expirationDate"));
-                System.out.println(cert.getCertificateName());
-                certificates.add(cert);
-               
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, doctorId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Certificate cert = new Certificate();
+                    cert.setCertificateId(rs.getInt("certificateId"));
+                    cert.setDoctorId(rs.getInt("DoctorID"));
+                    cert.setCertificateName(rs.getString("CertificateName"));
+                    cert.setIssuingAuthority(rs.getString("IssuingAuthority"));
+                    cert.setDocumentPath(rs.getString("DocumentPath"));
+                    cert.setStatus(rs.getString("status"));
+                    cert.setIssueDate(rs.getDate("issueDate"));
+                    cert.setExpirationDate(rs.getDate("expirationDate"));
+                    System.out.println(cert.getCertificateName());
+                    certificates.add(cert);
+
+                }
             }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-    } catch (SQLException ex) {
-        ex.printStackTrace();
-    }
-    
-    return certificates;
-}
 
+        return certificates;
+    }
 
     @Override
     public Certificate get(String id) {

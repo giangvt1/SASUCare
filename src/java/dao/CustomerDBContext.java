@@ -197,7 +197,7 @@ public class CustomerDBContext extends DBContext<Customer> {
         }
         return false;
     }
-    
+
     public boolean hasPassword(Customer customer) {
         String sql = "SELECT [password] FROM [Customer] WHERE gmail = ?";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
@@ -277,117 +277,6 @@ public class CustomerDBContext extends DBContext<Customer> {
             LOGGER.log(Level.SEVERE, "Error fetching customer data: {0}", ex.getMessage());
         }
         return customer;
-    }
-
-    // Phương thức lấy danh sách lịch sử khám bệnh theo CustomerID, có phân trang
-    public ArrayList<VisitHistory> getVisitHistoriesByCustomerIdPaginated(int customerId, int page, int size) {
-        ArrayList<VisitHistory> visitHistories = new ArrayList<>();
-        String sql = "SELECT * FROM VisitHistory WHERE CustomerID = ? ORDER BY VisitDate DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-
-        int offset = (page - 1) * size;
-
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, customerId);
-            ps.setInt(2, offset);
-            ps.setInt(3, size);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    VisitHistory vh = new VisitHistory(
-                            rs.getInt("id"),
-                            rs.getInt("DoctorID"),
-                            rs.getInt("CustomerID"),
-                            rs.getTimestamp("VisitDate"), // Chỉnh sửa ở đây
-                            rs.getString("ReasonForVisit"),
-                            rs.getString("Diagnoses"),
-                            rs.getString("TreatmentPlan"),
-                            rs.getTimestamp("NextAppointment") // Chỉnh sửa ở đây
-                    );
-                    visitHistories.add(vh);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return visitHistories;
-    }
-
-    public int getVisitHistoryCountByCustomerId(int customerId) {
-        String sql = "SELECT COUNT(*) FROM VisitHistory WHERE CustomerID = ?";
-        int count = 0;
-
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, customerId); // Gán CustomerID
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    count = rs.getInt(1); // Lấy số lượng bản ghi
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return count;
-    }
-
-    public boolean createVisitHistory(VisitHistory visitHistory) {
-        String sql = "INSERT INTO VisitHistory (DoctorID, CustomerID, VisitDate, ReasonForVisit, Diagnoses, TreatmentPlan, NextAppointment) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, visitHistory.getDoctorId());
-            ps.setInt(2, visitHistory.getCustomerId());
-
-            ps.setTimestamp(3, visitHistory.getVisitDate() != null ? visitHistory.getVisitDate() : null);
-            ps.setString(4, visitHistory.getReasonForVisit());
-            ps.setString(5, visitHistory.getDiagnoses());
-            ps.setString(6, visitHistory.getTreatmentPlan());
-            ps.setTimestamp(7, visitHistory.getNextAppointment() != null ? visitHistory.getNextAppointment() : null);
-
-            int rowsInserted = ps.executeUpdate();
-            return rowsInserted > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public boolean updateVisitHistory(VisitHistory visitHistory) {
-        String sql = "UPDATE VisitHistory "
-                + "SET DoctorID = ?, CustomerID = ?, VisitDate = ?, ReasonForVisit = ?, Diagnoses = ?, TreatmentPlan = ?, NextAppointment = ? "
-                + "WHERE id = ?";
-
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, visitHistory.getDoctorId());
-            ps.setInt(2, visitHistory.getCustomerId());
-            ps.setDate(3, new java.sql.Date(visitHistory.getVisitDate().getTime()));
-            ps.setString(4, visitHistory.getReasonForVisit());
-            ps.setString(5, visitHistory.getDiagnoses());
-            ps.setString(6, visitHistory.getTreatmentPlan());
-            ps.setDate(7, visitHistory.getNextAppointment() != null ? new java.sql.Date(visitHistory.getNextAppointment().getTime()) : null);
-            ps.setInt(8, visitHistory.getId()); // Điều kiện WHERE dựa trên ID
-
-            int rowsUpdated = ps.executeUpdate();
-            return rowsUpdated > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public boolean deleteVisitHistory(int visitHistoryId) {
-        String sql = "DELETE FROM VisitHistory WHERE id = ?";
-
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, visitHistoryId);
-
-            int rowsDeleted = ps.executeUpdate();
-            return rowsDeleted > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 
 //    public Role getRole(String username) {
@@ -606,7 +495,7 @@ public class CustomerDBContext extends DBContext<Customer> {
                 WHERE username = ? AND [password] = ?
                 """;
         }
-        
+
         PreparedStatement stm = null;
         Customer customer = null;
         try {
@@ -676,7 +565,7 @@ public class CustomerDBContext extends DBContext<Customer> {
         }
         return false;
     }
-    
+
     public boolean isCustomerExistedByGmail(String gmail) {
         String sql = "SELECT * FROM [Customer] WHERE gmail = ?";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
@@ -783,7 +672,7 @@ public class CustomerDBContext extends DBContext<Customer> {
             LOGGER.log(Level.SEVERE, "Error updating password: {0}", ex.getMessage());
         }
     }
-    
+
     public boolean findByUsername(String username) {
         // Kiểm tra mật khẩu mới không trùng với mật khẩu cũ
         String sql = "SELECT [username] FROM Customer WHERE username = ?";
@@ -797,10 +686,10 @@ public class CustomerDBContext extends DBContext<Customer> {
             LOGGER.log(Level.SEVERE, "Error fetching old password: {0}", ex.getMessage());
             return false; // Trong trường hợp lỗi, trả về false để không làm ảnh hưởng tới logic.
         }
-        
+
         return false;
     }
-    
+
     public Customer getByGmail(String gmail) {
         // Kiểm tra mật khẩu mới không trùng với mật khẩu cũ
         Customer customer = new Customer();
@@ -825,13 +714,13 @@ public class CustomerDBContext extends DBContext<Customer> {
                     googleAccount.setId(rs.getString("google_id"));
                     customer.setGoogle_id(googleAccount);
                 }
-                
+
                 return customer;
             }
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Error fetching old password: {0}", ex.getMessage());
         }
-        
+
         return null;
     }
 }

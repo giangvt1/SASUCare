@@ -12,6 +12,7 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import dao.VisitHistoryDBContext;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,8 +36,8 @@ public class VisitHistoryExportPDFServlet extends HttpServlet {
         int sizeOfEachTable = (sizeOfEachTableStr != null && !sizeOfEachTableStr.isEmpty()) ? Integer.parseInt(sizeOfEachTableStr) : 10;
 
         // Lấy dữ liệu từ cơ sở dữ liệu
-        CustomerDBContext customerDB = new CustomerDBContext();
-        ArrayList<VisitHistory> visitHistory = customerDB.getVisitHistoriesByCustomerIdPaginated(cId, currentPage, sizeOfEachTable);
+        VisitHistoryDBContext visitHistoryDB = new VisitHistoryDBContext();
+        ArrayList<VisitHistory> visitHistory = visitHistoryDB.getVisitHistoriesByCustomerIdPaginated(cId, currentPage, sizeOfEachTable);
 
         // Thiết lập response để tải file PDF
         response.setContentType("application/pdf");
@@ -79,7 +80,7 @@ public class VisitHistoryExportPDFServlet extends HttpServlet {
                 table.addCell(new PdfPCell(new Phrase(history.getReasonForVisit() != null ? history.getReasonForVisit() : "", contentFont)));
                 table.addCell(new PdfPCell(new Phrase(history.getDiagnoses() != null ? history.getDiagnoses() : "", contentFont)));
                 table.addCell(new PdfPCell(new Phrase(history.getTreatmentPlan() != null ? history.getTreatmentPlan() : "", contentFont)));
-                table.addCell(new PdfPCell(new Phrase(history.getNextAppointment() != null ? dateFormat.format(history.getNextAppointment()) : "No Appointment", contentFont)));
+                table.addCell(new PdfPCell(new Phrase(history.getNote() != null ? history.getNote() : "", contentFont)));
 
             }
 

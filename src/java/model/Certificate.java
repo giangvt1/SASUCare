@@ -5,7 +5,7 @@ import java.sql.Date;
 public class Certificate {
 
     private int certificateId, doctorId, checkedByStaffId, typeId;
-    private String certificateName, issuingAuthority, documentPath, status, checkNote, doctorName, typeName;
+    private String certificateName, issuingAuthority, documentPath, status, checkNote, doctorName, typeName, file;
     private Date issueDate, expirationDate, checkedDate;
 
     public Certificate() {
@@ -121,6 +121,14 @@ public class Certificate {
 
     public void setCheckedDate(Date checkedDate) {
         this.checkedDate = checkedDate;
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
     }
 
 }

@@ -59,23 +59,6 @@
             <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/HRController/CalendarDoctorManageController.java</file>
         </group>
         <group/>
-        <group>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/admin/AdminProfile.jsp</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/appointment/appointment-calendar.jsp</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/guest/doctorDetails.jsp</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/Home.jsp</file>
-        </group>
-        <group>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/admin/AdminProfile.jsp</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/systemaccesscontrol/BaseRequiredAuthentication.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/appointment/appointment-calendar.jsp</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/guest/doctorDetails.jsp</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/systemaccesscontrol/BaseRBACController.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/HRController/CreatePostController.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/Home.jsp</file>
-        </group>
-        <group/>
-        <group/>
         <group/>
         <group>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dal/DBContext.java</file>
@@ -101,6 +84,33 @@
         </group>
         <group>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/WEB-INF/web.xml</file>
+        </group>
+        <group>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/web/doctor/EditCertificate.jsp</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/controller/doctor/EditCertificate.java</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/dao/DoctorDBContext.java</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/dao/CertificateDBContext.java</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/web/js/doctor/doctor.js</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/web/admin/AdminProfile.jsp</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/controller/HRController/ProfileUpdateController.java</file>
+        </group>
+        <group>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/controller/doctor/EditCertificate.java</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/controller/doctor/VisitHistoryExportPDFServlet.java</file>
+        </group>
+        <group>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/controller/doctor/EditCertificate.java</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/controller/doctor/VisitHistoryExportPDFServlet.java</file>
+        </group>
+        <group>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/web/doctor/ManageCertificates.jsp</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/dao/ApplicationDBContext.java</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/web/doctor/EditCertificate.jsp</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/controller/doctor/EditCertificate.java</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/dao/CertificateDBContext.java</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/web/doctor/ViewApplication.jsp</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/controller/doctor/ManageCertificates.java</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/controller/doctor/ViewApplication.java</file>
         </group>
     </open-files>
 </project-private>
