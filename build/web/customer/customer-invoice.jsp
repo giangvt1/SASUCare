@@ -160,7 +160,7 @@
                             </c:when>
                             <c:otherwise>
                                 <li class="page-item">
-                                    <a class="page-link" href="${pageContext.request.contextPath}/customer/invoices?customerId=${param.customerId}&page=${pageNumber}&status=${param.status}&startDate=${param.startDate}&endDate=${param.endDate}&sortBy=${param.sortBy}&sortDirection=${param.sortDirection}">${pageNumber}</a>
+                                    <a class="page-link" href="${pageContext.request.contextPath}/customer/invoices?customerId=page=${pageNumber}&status=${param.status}&startDate=${param.startDate}&endDate=${param.endDate}&sortBy=${param.sortBy}&sortDirection=${param.sortDirection}">${pageNumber}</a>
                                 </li>
                             </c:otherwise>
                         </c:choose>
@@ -211,22 +211,24 @@
                                                                     const transaction = data.transaction;
                                                                     const appointment = data.appointment;
 
+                                                                    const formattedAmount = new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(invoice.amount);
+
                                                                     const content = `
-                            <h6>Invoice Information:</h6>
-        <p><strong>Order Info:</strong> ` + invoice.orderInfo + `</p>
-        <p><strong>Status:</strong> ` + invoice.status + `</p>
-        <p><strong>Amount:</strong> ` + invoice.amount + ` VND</p>
-        <p><strong>Created Date:</strong> ` + invoice.createdDate + `</p>
-        <p><strong>Expire Date:</strong> ` + invoice.expireDate + `</p>
+                <h6>Invoice Information:</h6>
+                <p><strong>Order Info:</strong> ` + invoice.orderInfo + `</p>
+                <p><strong>Status:</strong> ` + invoice.status + `</p>
+                <p><strong>Amount:</strong> ` + formattedAmount + `</p>
+         
+                <p><strong>Expire Date:</strong> ` + invoice.expireDate + `</p>
 
-        <h6>Transaction Information:</h6>
-        <p><strong>Transaction Date:</strong> ` + transaction.transactionDate + `</p>
-     <p><strong>Transaction Status</strong> ` + transaction.status + `</p>
-        <h6>Appointment Information:</h6>
-        <p><strong>Appointment with doctor:</strong> ` + appointment.doctor + `</p>
-        <p><strong>Appointment Date:</strong> ` + appointment.date + `</p>
-                        `;
+                <h6>Transaction Information:</h6>
+                <p><strong>Transaction Date:</strong> ` + transaction.transactionDate + `</p>
+                <p><strong>Transaction Status:</strong> ` + transaction.status + `</p>
 
+                <h6>Appointment Information:</h6>
+                <p><strong>Appointment with doctor:</strong> ` + appointment.doctor.name + `</p>
+                <p><strong>Appointment Date:</strong> ` + appointment.doctorSchedule.scheduleDate + ` | ` + appointment.doctorSchedule.shift.timeStart +" - "+ appointment.doctorSchedule.shift.timeEnd +  `</p>
+            `;
                                                                     // Set the modal content
                                                                     document.getElementById('invoiceDetailsContent').innerHTML = content;
 
@@ -239,6 +241,38 @@
                                                                     alert('Failed to load invoice details.');
                                                                 });
                                                     }
+
+                                                    function payInvoice(invoiceId, amount, txnRef) {
+                                                        if (!txnRef) {
+                                                            alert("Transaction reference is missing!");
+                                                            return;
+                                                        }
+
+                                                        let data = new URLSearchParams();
+                                                        data.append('amount', amount);
+                                                        data.append('vnp_TxnRef', txnRef);
+                                                        data.append('bankCode', 'VNBANK');
+                                                        data.append('language', 'vn');
+
+                                                        fetch('/SWP391_GR6/vnpayajax', {
+                                                            method: 'POST',
+                                                            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                                                            body: data
+                                                        })
+                                                                .then(response => response.json())
+                                                                .then(x => {
+                                                                    if (x.code === '00') {
+                                                                        window.location.href = x.data;
+                                                                    } else {
+                                                                        alert(x.message);
+                                                                    }
+                                                                })
+                                                                .catch(error => {
+                                                                    console.error("Error processing payment:", error);
+                                                                    alert("An error occurred while processing the payment.");
+                                                                });
+                                                    }
+
         </script>
     </body>
 </html>

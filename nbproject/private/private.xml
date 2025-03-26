@@ -106,6 +106,15 @@
         </group>
         <group/>
         <group/>
-        <group name="ThisForTest"/>
+        <group name="ThisForTest">
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/AppointmentDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/model/Customer.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/DoctorDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/appointment/AppointmentCancelController.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/DoctorScheduleDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/InvoiceDBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dal/DBContext.java</file>
+            <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/CustomerDBContext.java</file>
+        </group>
     </open-files>
 </project-private>
