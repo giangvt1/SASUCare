@@ -263,8 +263,8 @@
 
                                                                 function cancelOrAcceptAppointment(appointmentId, action) {
                                                                     let confirmationMessage = action === "cancel" ?
-                                                                            "Are you sure that you want to confirm this appointment?" :
-                                                                            "Are you sure that you want to cancel this appointment?";
+                                                                            "Are you sure that you want to cancel this appointment?" :
+                                                                            "Are you sure that you want to confirm this appointment?";
 
                                                                     if (confirm(confirmationMessage)) {
                                                                         // Redirect to appropriate servlet with query parameters

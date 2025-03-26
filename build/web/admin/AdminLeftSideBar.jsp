@@ -53,6 +53,8 @@
 
 
             <c:if test="${sessionScope.allowedUrls != null && sessionScope.allowedUrls.contains('/hr/create')}">
+
+
                 <li>
                     <a href="${pageContext.request.contextPath}/hr/create">
                         <i class="fa fa-user-plus"></i> <span>Create Account</span>
@@ -154,7 +156,7 @@
                     </a>
                 </li>
             </c:if>
-            
+
             <c:if test="${allowedUrls != null and (allowedUrls.contains('/hr/posts'))}">
                 <li>
                     <a href="${pageContext.request.contextPath}/hr/posts">
@@ -165,4 +167,6 @@
             <%-- Add other menu items as needed --%>
         </ul>
     </section>
+
 </aside>
+<jsp:include page="/notification.jsp" />    

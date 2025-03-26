@@ -57,7 +57,7 @@
 
                                 <div class="invoice-details">
                                     <c:if test="${appointment.invoice != null}">
-                                        --------------------------
+                                   --------------- Has invoice--------------
                                     </c:if>
                                 </div>
 

@@ -18,6 +18,31 @@ public class AppointmentDBContext extends DBContext<Appointment> {
 
     private static final Logger LOGGER = Logger.getLogger(AppointmentDBContext.class.getName());
 
+    public int getNewAppointmentsCount(String condition) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("SELECT COUNT(*)\n")
+                .append("FROM appointment\n")
+                .append("WHERE CAST(createAt AS DATE) = CAST(GETDATE() AS DATE)\n");
+
+// Check if condition is not null and not empty, then append it
+        if (condition != null && !condition.trim().isEmpty()) {
+            builder.append(condition);
+        }
+
+        String sql = builder.toString();
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+//            
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1); // Return the count of new appointments
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0; // Return 0 if there's an error or no new appointments
+    }
+
     public void cancelExpiredAppointments() {
         String sql = "UPDATE Appointment SET status = 'Canceled', updateAt = GETDATE() WHERE status = 'Pending' AND DocSchedule_id IN \n"
                 + "                (SELECT id FROM Doctor_Schedule WHERE schedule_date < CONVERT(DATE, GETDATE()))";

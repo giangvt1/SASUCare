@@ -299,12 +299,12 @@ Date date = Date.from(currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant
                                     <p id="modalDateTime"></p>
                                 </div>
                                 <div class="info-group">
-                                    <label>Reason for Visit</label>
+
                                     <p id="modalReason"></p>
                                     <button class="btn-secondary" id="viewHistoryBtn">View all Patient's history</button>
                                 </div>
                                 <div class="info-group">
-                                    <label>Medical History</label>
+
                                     <p id="modalHistory"></p>
 
                                 </div>
@@ -320,7 +320,7 @@ Date date = Date.from(currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant
                             <div class="modal-actions">
                                 <button class="btn-secondary" onclick="closeModal()">Close</button>
                                 <button class="btn-primary" onclick="saveNotes()">Save Notes</button>
-                           
+
                             </div>
                         </div>
                     </div>
@@ -430,11 +430,11 @@ Date date = Date.from(currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant
                     </div>
                     <div class="complete-modal-actions">
                         <button class="btn-secondary" onclick="closeComModal()">Cancel</button>
-                        <button class="btn-success" onclick="ConfirmAppointment( 'Done', 'completeAppointmentSummary', 'completeAppointmentNotes')">
+                        <button class="btn-success" onclick="ConfirmAppointment('Done', 'completeAppointmentSummary', 'completeAppointmentNotes')">
                             <i class="fas fa-check-circle"></i> Complete Appointment
                         </button>
 
-                        <button class="btn-fail" onclick="ConfirmAppointment( 'Not Complete', 'completeAppointmentSummary', 'completeAppointmentNotes')">
+                        <button class="btn-fail" onclick="ConfirmAppointment('Not Complete', 'completeAppointmentSummary', 'completeAppointmentNotes')">
                             <i class="fas fa-times-circle"></i> Not Complete
                         </button>
 
@@ -442,10 +442,13 @@ Date date = Date.from(currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant
                 </div>
             </div>
 
-        </div>
-
+          
 
         <script>
+            function updateDateDisplay() {
+                document.getElementById('currentDate').textContent = formatDate(currentDate);
+            }
+
 
             // Function to confirm the appointment
             function ConfirmAppointment(action, summaryFieldId, notesFieldId) {
@@ -475,7 +478,7 @@ Date date = Date.from(currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant
                 fetch('/SWP391_GR6/doctor/confirmApp', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(requestData)  // Send data as JSON
                 })
@@ -590,7 +593,7 @@ Date date = Date.from(currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant
                         </div>
                         <div class="appointment-card">
                             <div class="patient-info">
-                                <img src="` + appointment.customer.google_id.picture +`" alt="Patient" class="patient-avatar">
+                                <img src="` + appointment.customer.google_id.picture + `" alt="Patient" class="patient-avatar">
                                 <div class="patient-details">
                                     <h3>` + appointment.customer.fullname + `</h3>
                                     <span class="patient-id">ID: ` + appointment.customer.id + `</span>
@@ -704,7 +707,10 @@ Date date = Date.from(currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant
                             // Ensure modal elements exist
                             const patientNameElem = document.getElementById('modalPatientName');
                             const patientIdElem = document.getElementById('modalPatientId');
-                            const patientImageUrl = customer.google_id.picture || '/path/to/default/image.jpg';  // Default image if picture is missing
+                            const patientImageUrl = customer.google_id && customer.google_id.picture
+                                    ? customer.google_id.picture
+                                    : '/path/to/default/image.jpg';  // Fallback image if google_id or picture is not available
+                            // Default image if picture is missing
                             const dateTimeElem = document.getElementById('modalDateTime');
                             const reasonElem = document.getElementById('modalReason');
                             const historyElem = document.getElementById('modalHistory');
@@ -719,18 +725,17 @@ Date date = Date.from(currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant
                             }
 
                             // Update modal content with appointment and customer details
-                            patientNameElem.textContent = customer.fullname || "N/A";
+                            patientNameElem.textContent = customer.fullname || "/default";
 //                            patientIdElem.textContent = "ID: " + customer.id;
                             img.src = patientImageUrl;
                             dateTimeElem.textContent = appointment.doctorSchedule.scheduleDate || "N/A";
-                            reasonElem.textContent = "Reason: " + (appointment.reason || "No reason provided");
-                            historyElem.textContent = "Medical History: " + (appointment.history || "No medical history available");
+
                             patientPhoneElem.textContent = customer.phone_number || "No phone number available";
                             notesElem.value = appointment.notes || "";  // Placeholder for notes
 
                             // Set up the "View History" button to redirect to the patient's medical details page
                             viewHistoryBtnElem.onclick = function () {
-                                window.location.href = contextPath + `/doctor/ShowCustomerMedicalDetail?cId=` + customer.id;
+                                window.location.href = contextPath + `/doctor/ShowCustomerMedicalDetail?customerId=` + customer.id + `&appointmentId=` + appointment.id;
                             };
 
                             // Open the modal

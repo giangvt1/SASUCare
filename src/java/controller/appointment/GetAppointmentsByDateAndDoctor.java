@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.sql.Date;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import model.Appointment;
 import model.Customer;
@@ -26,8 +27,9 @@ import model.Doctor;
  * @author Golden Lightning
  */
 @WebServlet("/doctor/api/appointments")
-public class GetAppointmentsByDateAndDoctor extends HttpServlet{
-     private final AppointmentDBContext appointmentDB = new AppointmentDBContext();
+public class GetAppointmentsByDateAndDoctor extends HttpServlet {
+
+    private final AppointmentDBContext appointmentDB = new AppointmentDBContext();
     private final DoctorDBContext doctordb = new DoctorDBContext();
     private final CustomerDBContext cusDB = new CustomerDBContext();
 
@@ -36,16 +38,18 @@ public class GetAppointmentsByDateAndDoctor extends HttpServlet{
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String date = request.getParameter("date");
         int doctorId = Integer.parseInt(request.getParameter("doctorId"));
-        
+
         if (date != null) {
-            LocalDate selectedDate = LocalDate.parse(date); // Convert the date string to LocalDate
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate selectedDate = LocalDate.parse(date, formatter);
+            // Convert the date string to LocalDate
             Doctor loggedDoctor = doctordb.getDoctorById(doctorId); // Fetch doctor info by ID
             if (loggedDoctor == null) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User does not have an associated doctor.");
                 return;
             }
 
-            List<Appointment> appointments = appointmentDB.getAppointmentsByDateAndDoctor(Date.valueOf(selectedDate), loggedDoctor.getId(),"");
+            List<Appointment> appointments = appointmentDB.getAppointmentsByDateAndDoctor(Date.valueOf(selectedDate), loggedDoctor.getId(), "");
             for (Appointment appointment : appointments) {
                 Customer customer = cusDB.getCustomerWithGoogleAuthById(appointment.getCustomer().getId());
                 appointment.setCustomer(customer);
@@ -58,5 +62,4 @@ public class GetAppointmentsByDateAndDoctor extends HttpServlet{
         }
     }
 
-    
 }
