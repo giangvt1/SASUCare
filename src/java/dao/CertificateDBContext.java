@@ -21,21 +21,21 @@ import model.TypeCertificate;
  * @author TRUNG
  */
 public class CertificateDBContext extends DBContext<Certificate> {
-
+    
     private static final Logger LOGGER = Logger.getLogger(CertificateDBContext.class.getName());
-
+    
     public static void main(String[] args) {
         CertificateDBContext c = new CertificateDBContext();
         System.out.println(c.getCertificatesByDoctorID(null, null, null, 16, 1, "default", 10).size());
     }
-
+    
     public boolean createTypeCertificate(TypeCertificate typeCer) {
         String sql = "INSERT INTO Type_Certificate (name, staff_manage_id) VALUES (?, ?)";
-
+        
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setString(1, typeCer.getName());
             stm.setInt(2, typeCer.getStaffManageId());
-
+            
             int rowsAffected = stm.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
@@ -43,15 +43,15 @@ public class CertificateDBContext extends DBContext<Certificate> {
             return false;
         }
     }
-
+    
     public boolean updateTypeCertificate(TypeCertificate typeCer) {
         String sql = "UPDATE Type_Certificate SET name = ?, staff_manage_id = ? WHERE id = ?";
-
+        
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setString(1, typeCer.getName());
             stm.setInt(2, typeCer.getStaffManageId());
             stm.setInt(3, typeCer.getId());
-
+            
             int rowsAffected = stm.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
@@ -59,7 +59,7 @@ public class CertificateDBContext extends DBContext<Certificate> {
             return false;
         }
     }
-
+    
     public boolean updateCertificateForDoctor(Certificate certificate) {
         String sql = "UPDATE Certificate SET checkNote = ?, checkedByStaffId = ?, checkedDate = ?, status = ? WHERE certificateId = ?";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
@@ -75,7 +75,7 @@ public class CertificateDBContext extends DBContext<Certificate> {
             return false;
         }
     }
-
+    
     public Certificate getCertificateById(int id) {
         Certificate cert = null;
         String sql = "SELECT c.certificateId, c.doctorId, c.certificateName, c.issuingAuthority, "
@@ -87,7 +87,7 @@ public class CertificateDBContext extends DBContext<Certificate> {
                 + "JOIN Doctor d ON c.doctorId = d.id "
                 + "JOIN Staff s ON d.staff_id = s.id "
                 + "WHERE c.certificateId = ?";
-
+        
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setInt(1, id);
             try (ResultSet rs = stm.executeQuery()) {
@@ -113,12 +113,12 @@ public class CertificateDBContext extends DBContext<Certificate> {
         }
         return cert;
     }
-
+    
     public List<Certificate> getCertificatesByStaffManageID(String certificateName, String doctorName, String typeName, String status, int staffManagerId, int page, String sort, int size) {
         List<Certificate> certificates = new ArrayList<>();
         StringBuilder sqlBuilder = new StringBuilder(
                 "SELECT c.certificateId, c.doctorId, c.certificateName, c.issuingAuthority, "
-                + "c.issueDate, c.expirationDate,c.checkNote, c.documentPath, c.status, "
+                + "c.issueDate, c.expirationDate,c.checkNote, c.documentPath, c.status, c.[File], "
                 + "t.name AS typeName, s.fullname AS doctorName "
                 + "FROM Certificate c "
                 + "JOIN Type_Certificate t ON c.typeId = t.id "
@@ -126,7 +126,7 @@ public class CertificateDBContext extends DBContext<Certificate> {
                 + "JOIN Staff s ON d.staff_id = s.id "
                 + "WHERE t.staff_manage_id = ?"
         );
-
+        
         if (certificateName != null && !certificateName.isEmpty()) {
             sqlBuilder.append(" AND c.certificateName COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?");
         }
@@ -139,10 +139,10 @@ public class CertificateDBContext extends DBContext<Certificate> {
         if (status != null) {
             sqlBuilder.append(" AND c.status LIKE ?");
         }
-
+        
         switch (sort) {
             case "default" ->
-                sqlBuilder.append(" ORDER BY c.certificateId");
+                sqlBuilder.append(" ORDER BY c.certificateId DESC");
             case "certificateNameAZ" ->
                 sqlBuilder.append(" ORDER BY c.certificateName ASC");
             case "certificateNameZA" ->
@@ -158,13 +158,13 @@ public class CertificateDBContext extends DBContext<Certificate> {
             default ->
                 throw new AssertionError("Invalid sort type: " + sort);
         }
-
+        
         sqlBuilder.append(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
-
+        
         try (PreparedStatement stm = connection.prepareStatement(sqlBuilder.toString())) {
             int paramIndex = 1;
             stm.setInt(paramIndex++, staffManagerId);
-
+            
             if (certificateName != null && !certificateName.isEmpty()) {
                 stm.setString(paramIndex++, "%" + certificateName + "%");
             }
@@ -177,11 +177,11 @@ public class CertificateDBContext extends DBContext<Certificate> {
             if (status != null) {
                 stm.setString(paramIndex++, "%" + status + "%");
             }
-
+            
             int offset = (page - 1) * size;
             stm.setInt(paramIndex++, offset);
             stm.setInt(paramIndex++, size);
-
+            
             try (ResultSet rs = stm.executeQuery()) {
                 while (rs.next()) {
                     Certificate cert = new Certificate();
@@ -196,6 +196,7 @@ public class CertificateDBContext extends DBContext<Certificate> {
                     cert.setCheckNote(rs.getString("checkNote"));
                     cert.setDocumentPath(rs.getString("documentPath"));
                     cert.setDoctorName(rs.getString("doctorName"));
+                    cert.setFile(rs.getString("File"));
                     certificates.add(cert);
                 }
             }
@@ -204,7 +205,7 @@ public class CertificateDBContext extends DBContext<Certificate> {
         }
         return certificates;
     }
-
+    
     public int getCertificateCountByStaffManageID(String certificateName, String doctorName, String typeName, String status, int staffManagerId) {
         int total = 0;
         StringBuilder sqlBuilder = new StringBuilder(
@@ -214,7 +215,7 @@ public class CertificateDBContext extends DBContext<Certificate> {
                 + "JOIN Staff s ON d.staff_id = s.id "
                 + "WHERE t.staff_manage_id = ?"
         );
-
+        
         if (certificateName != null && !certificateName.isEmpty()) {
             sqlBuilder.append(" AND c.certificateName COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?");
         }
@@ -227,11 +228,11 @@ public class CertificateDBContext extends DBContext<Certificate> {
         if (status != null && !status.isEmpty()) {
             sqlBuilder.append(" AND c.status LIKE ?");
         }
-
+        
         try (PreparedStatement stm = connection.prepareStatement(sqlBuilder.toString())) {
             int paramIndex = 1;
             stm.setInt(paramIndex++, staffManagerId);
-
+            
             if (certificateName != null && !certificateName.isEmpty()) {
                 stm.setString(paramIndex++, "%" + certificateName + "%");
             }
@@ -244,7 +245,7 @@ public class CertificateDBContext extends DBContext<Certificate> {
             if (status != null && !status.isEmpty()) {
                 stm.setString(paramIndex++, "%" + status + "%");
             }
-
+            
             try (ResultSet rs = stm.executeQuery()) {
                 if (rs.next()) {
                     total = rs.getInt("total");
@@ -255,7 +256,7 @@ public class CertificateDBContext extends DBContext<Certificate> {
         }
         return total;
     }
-
+    
     public boolean createCertificate(Certificate c) {
         String sql = "INSERT INTO Certificate(certificateName, issueDate, documentPath, status, typeId, doctorId, [file]) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
@@ -274,11 +275,11 @@ public class CertificateDBContext extends DBContext<Certificate> {
         }
         return false;
     }
-
+    
     public List<Certificate> getCertificatesByDoctorID(String certificateName, String typeName, String status, int doctorId, int page, String sort, int size) {
         List<Certificate> certificates = new ArrayList<>();
         StringBuilder sqlBuilder = new StringBuilder(
-                "SELECT c.certificateId, c.doctorId, c.certificateName, c.issuingAuthority, "
+                "SELECT c.certificateId, c.doctorId, c.certificateName, c.issuingAuthority, c.[File], "
                 + "c.issueDate, c.documentPath, c.status, "
                 + "t.name AS typeName "
                 + "FROM Certificate c "
@@ -303,16 +304,16 @@ public class CertificateDBContext extends DBContext<Certificate> {
                 sqlBuilder.append(" ORDER BY IssueDate DESC");
             case "IDNTO" ->
                 sqlBuilder.append(" ORDER BY IssueDate ASC");
-            case "EDOTN" ->
-                sqlBuilder.append(" ORDER BY ExpirationDate DESC");
-            case "EDNTO" ->
-                sqlBuilder.append(" ORDER BY ExpirationDate ASC");
+//            case "EDOTN" ->
+//                sqlBuilder.append(" ORDER BY ExpirationDate DESC");
+//            case "EDNTO" ->
+//                sqlBuilder.append(" ORDER BY ExpirationDate ASC");
             default ->
-                sqlBuilder.append(" ORDER BY id");
+                sqlBuilder.append(" ORDER BY id DESC");
         }
-
+        
         sqlBuilder.append(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
-
+        
         try (PreparedStatement stm = connection.prepareStatement(sqlBuilder.toString())) {
             int paramIndex = 1;
             stm.setInt(paramIndex++, doctorId);
@@ -325,11 +326,11 @@ public class CertificateDBContext extends DBContext<Certificate> {
             if (status != null) {
                 stm.setString(paramIndex++, "%" + status + "%");
             }
-
+            
             int offset = (page - 1) * size;
             stm.setInt(paramIndex++, offset);
             stm.setInt(paramIndex++, size);
-
+            
             try (ResultSet rs = stm.executeQuery()) {
                 while (rs.next()) {
                     Certificate cert = new Certificate();
@@ -340,6 +341,7 @@ public class CertificateDBContext extends DBContext<Certificate> {
                     cert.setIssueDate(rs.getDate("issueDate"));
                     cert.setStatus(rs.getString("status"));
                     cert.setTypeName(rs.getString("typeName"));
+                    cert.setFile(rs.getString("File"));
                     cert.setDocumentPath(rs.getString("documentPath"));
                     certificates.add(cert);
                 }
@@ -349,7 +351,7 @@ public class CertificateDBContext extends DBContext<Certificate> {
         }
         return certificates;
     }
-
+    
     public int getCertificateCountByDoctorID(String certificateName, String typeName, String status, int doctorId) {
         int total = 0;
         StringBuilder sqlBuilder = new StringBuilder(
@@ -357,7 +359,7 @@ public class CertificateDBContext extends DBContext<Certificate> {
                 + "JOIN Type_Certificate t ON c.typeId = t.id "
                 + "WHERE c.DoctorID = ?"
         );
-
+        
         if (certificateName != null && !certificateName.isEmpty()) {
             sqlBuilder.append(" AND c.CertificateName COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?");
         }
@@ -367,11 +369,11 @@ public class CertificateDBContext extends DBContext<Certificate> {
         if (status != null && !status.isEmpty()) {
             sqlBuilder.append(" AND c.Status LIKE ?");
         }
-
+        
         try (PreparedStatement stm = connection.prepareStatement(sqlBuilder.toString())) {
             int paramIndex = 1;
             stm.setInt(paramIndex++, doctorId);
-
+            
             if (certificateName != null && !certificateName.isEmpty()) {
                 stm.setString(paramIndex++, "%" + certificateName + "%");
             }
@@ -381,7 +383,7 @@ public class CertificateDBContext extends DBContext<Certificate> {
             if (status != null && !status.isEmpty()) {
                 stm.setString(paramIndex++, "%" + status + "%");
             }
-
+            
             try (ResultSet rs = stm.executeQuery()) {
                 if (rs.next()) {
                     total = rs.getInt("total");
@@ -392,13 +394,13 @@ public class CertificateDBContext extends DBContext<Certificate> {
         }
         return total;
     }
-
+    
     public List<TypeCertificate> getAllTypes() {
         List<TypeCertificate> typeList = new ArrayList<>();
         String sql = "SELECT t.id, t.name, t.staff_manage_id, s.fullname AS staffManagerName "
                 + "FROM Type_Certificate t "
                 + "JOIN Staff s ON t.staff_manage_id = s.id";
-
+        
         try (PreparedStatement stm = connection.prepareStatement(sql); ResultSet rs = stm.executeQuery()) {
             while (rs.next()) {
                 TypeCertificate type = new TypeCertificate();
@@ -413,27 +415,27 @@ public class CertificateDBContext extends DBContext<Certificate> {
         }
         return typeList;
     }
-
+    
     @Override
     public void insert(Certificate model) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
+    
     @Override
     public void update(Certificate model) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
+    
     @Override
     public void delete(Certificate model) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
+    
     @Override
     public ArrayList<Certificate> list() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
+    
     public List<Certificate> getCertificatesBelongDoctorId(int doctorId) {
         List<Certificate> certificates = new ArrayList<>();
         String sql = "SELECT  [CertificateID]\n"
@@ -450,7 +452,7 @@ public class CertificateDBContext extends DBContext<Certificate> {
                 + "      ,[typeId]\n"
                 + "  FROM [Certificate] "
                 + " WHERE DoctorID = ? AND Status = 'Approved'";
-
+        
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, doctorId);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -466,19 +468,19 @@ public class CertificateDBContext extends DBContext<Certificate> {
                     cert.setExpirationDate(rs.getDate("expirationDate"));
                     System.out.println(cert.getCertificateName());
                     certificates.add(cert);
-
+                    
                 }
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-
+        
         return certificates;
     }
-
+    
     @Override
     public Certificate get(String id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
+    
 }

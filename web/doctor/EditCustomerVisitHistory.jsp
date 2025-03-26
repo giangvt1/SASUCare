@@ -20,15 +20,15 @@
             <jsp:include page="../admin/AdminHeader.jsp" />
             <jsp:include page="../admin/AdminLeftSideBar.jsp" />
         <div class="right-side">
-            <a class="back-btn" href="../doctor/ShowCustomerMedicalDetail?cId=${param.cId}">
+            <a class="back-btn" href="../doctor/ShowCustomerMedicalDetail?customerId=${param.customerId}&appointmentId=${param.appointmentId}">
                 Back
             </a>
             <h2 class="title">${empty param.id ? "Create new" : "Update"} customer's visit history</h2>
             <form action="EditCustomerVisitHistory" class="edit-form" method="post">
                 <input type="hidden" name="id" value="${param.id}">
                 <input type="hidden" name="staffId" value="${sessionScope.staff.id}">
-                <input type="hidden" name="customerId" value="${param.cId}">
-                <input type="hidden" name="appointmentId" value="${param.aId}">
+                <input type="hidden" name="customerId" value="${param.customerId}">
+                <input type="hidden" name="appointmentId" value="${param.appointmentId}">
 
                 <label for="reasonForVisit">Reason For Visit:</label>
                 <input type="text" id="reasonForVisit" name="reasonForVisit" value="${param.reasonForVisit}" required>

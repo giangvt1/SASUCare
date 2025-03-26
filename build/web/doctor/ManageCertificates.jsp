@@ -49,8 +49,6 @@
                             <option value="certificateNameZA" ${param.sort == 'certificateNameZA' ? 'selected' : ''}>	Certificate name Z-A</option>
                             <option value="IDOTN" ${param.sort == 'IDOTN' ? 'selected' : ''}>Issue date oldest to newest</option>
                             <option value="IDNTO" ${param.sort == 'IDNTO' ? 'selected' : ''}>Issue date newest to oldest</option>
-                            <option value="EDOTN" ${param.sort == 'EDOTN' ? 'selected' : ''}>Expiration date oldest to newest</option>
-                            <option value="EDNTO" ${param.sort == 'EDNTO' ? 'selected' : ''}>Expiration date newest to oldest</option>
                         </select>
                     </div>
 
@@ -75,12 +73,13 @@
                     <h3 class="title">Certificates list</h3>
                     <thead>
                         <tr><th>#</th>
-                            <th>Certificate name</th>
-                            <th>Type name</th>
-                            <th>Issue date</th>
-                            <th>Status</th>
-                            <th>Check note</th>
-                            <th>Document path</th>
+                            <th>Tên chứng chỉ</th>
+                            <th>Loại chứng chỉ</th>
+                            <th>Ngày cấp</th>
+                            <th>Trạng thái</th>
+                            <th>Phản hồi</th>
+                            <th>File</th>
+                            <th>Đường dẫn</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -91,6 +90,11 @@
                                 <td><fmt:formatDate value="${c.issueDate}" pattern="dd/MM/yyyy" /></td>
                                 <td>${c.status}</td>
                                 <td>${c.checkNote}</td>
+                                <td>
+                                    <c:if test="${not empty c.file}">
+                                        <a href="${pageContext.request.contextPath}/${c.file}" target="_blank">Xem</a>
+                                    </c:if>
+                                </td>
                                 <td><a href="${c.documentPath}" target="_blank">View</td>
                             </tr>
                         </c:forEach>

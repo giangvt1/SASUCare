@@ -18,25 +18,25 @@
                     width: 46%;
                 }
             </style>
-            <h2 class="mb-3 text-center title">List doctor certificates</h2>
+            <h2 class="mb-3 text-center title">Danh sách chứng chỉ của bác sĩ</h2>
             <form action="ManageDoctorCertificates" method="get" class="searchForm">
                 <input type="hidden" name="staffId" value="${sessionScope.staff.id}" />
                 <div  class="row d-flex justify-content-center">
                     <div class="filter-container">
                         <div class="filter-item" style="width: 94%">
-                            <span>Certificate name</span>
+                            <span>Tên chứng chỉ</span>
                             <div class="search-input">
                                 <input type="text" name="certificateName" placeholder="Search certificate name..." value="${param.certificateName}" onchange="this.form.submit()"/>
                             </div>
                         </div>
                         <div class="filter-item" style="width: 94%">
-                            <span>Doctor name</span>
+                            <span>Tên bác sĩ</span>
                             <div class="search-input">
                                 <input type="text" name="doctorName" placeholder="Search doctor name..." value="${param.doctorName}" onchange="this.form.submit()"/>
                             </div>
                         </div>
                         <div class="filter-item">
-                            <span for="typeName">Type name</span>
+                            <span for="typeName">Loại chứng chỉ</span>
                             <select name="typeName" id="typeName" onchange="this.form.submit()">
                                 <option value="" ${empty param.typeName ? 'selected' : ''}>All</option>
                                 <c:forEach var="type" items="${typeList}">
@@ -46,7 +46,7 @@
                         </div>
                         <!-- Status -->
                         <div class="filter-item">
-                            <span for="status">Status</span>
+                            <span for="status">Trạng thái</span>
                             <select name="status" id="status" onchange="this.form.submit()">
                                 <option value="" ${empty param.status ? 'selected' : ''}>All</option>
                                 <option value="Pending" ${param.status == 'Pending' ? 'selected' : ''}>Pending</option>
@@ -57,7 +57,7 @@
 
                         <!-- Sort -->
                         <div class="filter-item">
-                            <span for="status">Sort</span>
+                            <span for="status">Sắp xếp</span>
                             <select name="sort" id="sort" onchange="this.form.submit()">
                                 <option value="default" ${empty param.sort == 'default' ? 'selected' : ''}>Default</option>
                                 <option value="certificateNameAZ" ${param.sort == 'certificateNameAZ' ? 'selected' : ''}>Certificate name A-Z</option>
@@ -70,7 +70,7 @@
                         </div>
                         <!-- Size -->
                         <div class="filter-item">
-                            <span for="size">Sise each table</span>
+                            <span for="size">Số bản ghi mỗi bảng</span>
                             <select name="size" id="size" onchange="this.form.submit()">
                                 <option value="10" ${param.size == '10' ? 'selected' : ''}>10</option>
                                 <option value="5" ${param.size == '5' ? 'selected' : ''}>5</option>
@@ -81,7 +81,7 @@
                     </div>
                 </div>
                 <div class="submit-container">
-                    <button type="submit" class="back-btn">Search</button>
+                    <button type="submit" class="back-btn">Tìm kiếm</button>
                 </div>
             </form>
             <div class="table-data mt-4">
@@ -90,14 +90,15 @@
                     <thead>
                         <tr style="background-color: #007bff">
                             <th>#</th>
-                            <th>Doctor ID</th>
-                            <th>Doctor name</th>
-                            <th>Certificate name</th>
-                            <th>Type name</th>
-                            <th>Issue date</th>
-                            <th>Status</th>
-                            <th>Check note</th>
-                            <th>Document path</th>
+                            <th>Id bác sĩ</th>
+                            <th>Tên bác sĩ</th>
+                            <th>Tên chứng chỉ</th>
+                            <th>Loại chứng chỉ</th>
+                            <th>Ngày cấp</th>
+                            <th>Trạng thái</th>
+                            <th>Phản hồi</th>
+                            <th>File</th>
+                            <th>Đường dẫn</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -111,6 +112,11 @@
                                 <td><fmt:formatDate value="${c.issueDate}" pattern="dd/MM/yyyy" /></td>
                                 <td>${c.status}</td>
                                 <td>${c.checkNote}</td>
+                                <td>
+                                    <c:if test="${not empty c.file}">
+                                        <a href="${pageContext.request.contextPath}/${c.file}" target="_blank">Xem</a>
+                                    </c:if>
+                                </td>
                                 <td><a href="${c.documentPath}" target="_blank">View</td>
                                 <td> <c:if test="${fn:toLowerCase(c.status) == 'pending'}">
                                         <a style="display: block;width: 110px;margin: 0" class="add-btn" href="EditDoctorCertificate?certificateId=${c.certificateId}&status=Approved">Approved</a>

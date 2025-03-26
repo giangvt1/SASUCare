@@ -1,6 +1,7 @@
 package controller.doctor;
 
 import controller.systemaccesscontrol.BaseRBACController;
+import dao.AppointmentDBContext;
 import dao.CustomerDBContext;
 import dao.VisitHistoryDBContext;
 import java.io.IOException;
@@ -8,10 +9,15 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import model.Appointment;
 import model.Customer;
 import model.MedicalHistory;
 import model.VisitHistory;
 import model.system.User;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.sql.Date;
+import java.sql.Time;
 
 /**
  *
@@ -21,10 +27,10 @@ public class ShowCustomerMedicalDetail extends BaseRBACController {
 
     @Override
     protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
-        String cId = request.getParameter("cId");
+        String customerId = request.getParameter("customerId");
         String pageVisitStr = request.getParameter("pageVisit");
         String pageMedicalStr = request.getParameter("pageMedical");
-
+        String appointmentId = request.getParameter("appointmentId");
         int sizeOfMedicalEachTable = 10;
         int sizeOfVisitEachTable = 10;
 
@@ -58,21 +64,21 @@ public class ShowCustomerMedicalDetail extends BaseRBACController {
 
         CustomerDBContext customerDB = new CustomerDBContext();
         VisitHistoryDBContext visitHistoryDB = new VisitHistoryDBContext();
-        if (cId != null) {
+        if (customerId != null) {
             try {
                 // Lấy thông tin khách hàng theo ID
-                Customer customer = customerDB.getCustomerById(Integer.parseInt(cId));
+                Customer customer = customerDB.getCustomerById(Integer.parseInt(customerId));
 
                 // Lấy lịch sử bệnh án của khách hàng
                 int currentMedicalPage = (pageMedicalStr != null) ? Integer.parseInt(pageMedicalStr) : 1;
-                ArrayList<MedicalHistory> medicalHistory = customerDB.getMedicalHistoryByCustomerIdPaginated(Integer.parseInt(cId), currentMedicalPage, sizeOfMedicalEachTable);
-                int totalMedicals = customerDB.getTotalMedicalHistoryCountByCustomerId(Integer.parseInt(cId));
+                ArrayList<MedicalHistory> medicalHistory = customerDB.getMedicalHistoryByCustomerIdPaginated(Integer.parseInt(customerId), currentMedicalPage, sizeOfMedicalEachTable);
+                int totalMedicals = customerDB.getTotalMedicalHistoryCountByCustomerId(Integer.parseInt(customerId));
                 int totalMedicalPages = (int) Math.ceil((double) totalMedicals / sizeOfMedicalEachTable);
 
                 // Lấy danh sách Visit History có phân trang
                 int currentVisitPage = (pageVisitStr != null) ? Integer.parseInt(pageVisitStr) : 1;
-                ArrayList<VisitHistory> visitHistoryList = visitHistoryDB.getVisitHistoriesByCustomerIdPaginated(Integer.parseInt(cId), currentVisitPage, sizeOfVisitEachTable);
-                int totalVisits = visitHistoryDB.getVisitHistoryCountByCustomerId(Integer.parseInt(cId));
+                ArrayList<VisitHistory> visitHistoryList = visitHistoryDB.getVisitHistoriesByCustomerIdPaginated(Integer.parseInt(customerId), currentVisitPage, sizeOfVisitEachTable);
+                int totalVisits = visitHistoryDB.getVisitHistoryCountByCustomerId(Integer.parseInt(customerId));
                 int totalVisitPages = (int) Math.ceil((double) totalVisits / sizeOfVisitEachTable);
 
                 // Truyền dữ liệu sang JSP
@@ -83,6 +89,21 @@ public class ShowCustomerMedicalDetail extends BaseRBACController {
                 request.setAttribute("visitHistoryList", visitHistoryList);
                 request.setAttribute("currentMedicalPage", currentMedicalPage);
                 request.setAttribute("currentVisitPage", currentVisitPage);
+
+                AppointmentDBContext apmDB = new AppointmentDBContext();
+                Appointment a = new Appointment();
+                a = apmDB.get(appointmentId);
+                LocalDate today = LocalDate.now();
+                LocalTime now = LocalTime.now();
+
+                if (a.getCustomer().getId() == Integer.parseInt(customerId)
+                        && a.getDoctorSchedule().getScheduleDate().equals(Date.valueOf(today))
+                        && // So sánh ngày
+                        now.isAfter(a.getDoctorSchedule().getShift().getTimeStart().toLocalTime())
+                        && // Giờ hiện tại > timeStart
+                        now.isBefore(a.getDoctorSchedule().getShift().getTimeEnd().toLocalTime())) {
+                    request.setAttribute("appointmentId", appointmentId);
+                }
 
                 // Điều hướng tới JSP
                 request.getRequestDispatcher("CustomerMedicalDetail.jsp").forward(request, response);
