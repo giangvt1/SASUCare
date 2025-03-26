@@ -90,21 +90,21 @@ public class ShowCustomerMedicalDetail extends BaseRBACController {
                 request.setAttribute("currentMedicalPage", currentMedicalPage);
                 request.setAttribute("currentVisitPage", currentVisitPage);
 
-                AppointmentDBContext apmDB = new AppointmentDBContext();
-                Appointment a = new Appointment();
-                a = apmDB.get(appointmentId);
-                LocalDate today = LocalDate.now();
-                LocalTime now = LocalTime.now();
+                if (appointmentId != null && !appointmentId.isEmpty()) {
+                    AppointmentDBContext apmDB = new AppointmentDBContext();
+                    Appointment a = apmDB.get(appointmentId);
+                    LocalDate today = LocalDate.now();
+                    LocalTime now = LocalTime.now();
 
-                if (a.getCustomer().getId() == Integer.parseInt(customerId)
-                        && a.getDoctorSchedule().getScheduleDate().equals(Date.valueOf(today))
-                        && // So sánh ngày
-                        now.isAfter(a.getDoctorSchedule().getShift().getTimeStart().toLocalTime())
-                        && // Giờ hiện tại > timeStart
-                        now.isBefore(a.getDoctorSchedule().getShift().getTimeEnd().toLocalTime())) {
-                    request.setAttribute("appointmentId", appointmentId);
+                    if (a.getCustomer().getId() == Integer.parseInt(customerId)
+                            && a.getDoctorSchedule().getScheduleDate().equals(Date.valueOf(today))
+                            && // So sánh ngày
+                            now.isAfter(a.getDoctorSchedule().getShift().getTimeStart().toLocalTime())
+                            && // Giờ hiện tại > timeStart
+                            now.isBefore(a.getDoctorSchedule().getShift().getTimeEnd().toLocalTime())) {
+                        request.setAttribute("appointmentId", appointmentId);
+                    }
                 }
-
                 // Điều hướng tới JSP
                 request.getRequestDispatcher("CustomerMedicalDetail.jsp").forward(request, response);
             } catch (Exception e) {
