@@ -21,11 +21,11 @@
                 <table class="table" style="width:95%">
                     <thead>
                         <tr>
-                            <th>Full Name</th>
-                            <th>Gender</th>
-                            <th>Date of Birth</th>
-                            <th>Phone Number</th>   
-                            <th>Address</th>
+                            <th>Tên khách hàng</th>
+                            <th>Giới tính</th>
+                            <th>Ngày sinh</th>
+                            <th>SĐT</th>   
+                            <th>Địa chỉ</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -41,15 +41,17 @@
             </div>
             <!-- Hiển thị lịch sử bệnh án -->
             <div class="table-data mt-4">
-                <h3 class="title">Medical History</h3>
-                <a class="add-btn" href="EditCustomerMedicalHistory.jsp?cId=${customer.id}">Add record</a>
-                <a class="export-btn" href="MedicalHistoryExportServlet?cId=${customer.id}&pageMedical=${currentMedicalPage}&sizeMedical=${param.sizeMedical}">Export to excel</a>
-                <a style="background-color: yellow" class="export-btn" href="MedicalHistoryExportPDFServlet?cId=${customer.id}&pageMedical=${currentMedicalPage}&sizeMedical=${param.sizeMedical}">Export to pdf</a>
+                <h3 class="title">Tiền sử bệnh án</h3>
+                <c:if test="${not empty appointmentId}">
+                    <a class="add-btn" href="EditCustomerMedicalHistory.jsp?customerId=${customer.id}&appointmentId=${appointmentId}">Thêm bản ghi</a>
+                </c:if>
+                <a class="export-btn" href="MedicalHistoryExportServlet?customerId=${customer.id}&pageMedical=${currentMedicalPage}&sizeMedical=${param.sizeMedical}">Xuất file excel</a>
+                <a style="background-color: yellow" class="export-btn" href="MedicalHistoryExportPDFServlet?customerId=${customer.id}&pageMedical=${currentMedicalPage}&sizeMedical=${param.sizeMedical}">Xuất file pdf</a>
                 <form style="margin: 0" action="ShowCustomerMedicalDetail" method="get" class="sidebar-form" id="searchCustomerForm">
-                    <input type="hidden" name="cId" value="${customer.id}" />
+                    <input type="hidden" name="customerId" value="${customer.id}" />
                     <div style="display: flex; justify-content: start; margin-left: 2.5%; margin-top: 20px; gap: 0;" class="filter-container">
                         <div class="filter-item">
-                            <span>Size each table</span>
+                            <span>Số bản ghi mỗi bảng</span>
                             <select name="sizeMedical" id="sizeMedical" onchange="this.form.submit()">
                                 <option value="10" ${param.sizeMedical == '10' ? 'selected' : ''}>10</option>
                                 <option value="5" ${param.sizeMedical == '5' ? 'selected' : ''}>5</option>
@@ -64,8 +66,8 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Name</th>
-                            <th>Detail</th>
+                            <th>Tên</th>
+                            <th>Mô tả</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -83,7 +85,7 @@
                 <div class="pre-next-Btn">
                     <!-- Nút Previous -->
                     <c:if test="${currentMedicalPage > 1}">
-                        <a class="page-link" href="ShowCustomerMedicalDetail?pageMedical=${currentMedicalPage - 1}&cId=${customer.id}&sizeMedical=${param.sizeMedical}">Previous</a>
+                        <a class="page-link" href="ShowCustomerMedicalDetail?pageMedical=${currentMedicalPage - 1}&customerId=${customer.id}&sizeMedical=${param.sizeMedical}">Trước</a>
                     </c:if>
 
                     <!-- Số trang -->
@@ -91,45 +93,47 @@
                         <c:choose>
                             <c:when test="${totalMedicalPages <= 5}">
                                 <c:forEach begin="1" end="${totalMedicalPages}" var="i">
-                                    <a class="page-link ${i == currentMedicalPage ? 'active' : ''}" href="ShowCustomerMedicalDetail?pageMedical=${i}&cId=${customer.id}&sizeMedical=${param.sizeMedical}">${i}</a>
+                                    <a class="page-link ${i == currentMedicalPage ? 'active' : ''}" href="ShowCustomerMedicalDetail?pageMedical=${i}&customerId=${customer.id}&sizeMedical=${param.sizeMedical}">${i}</a>
                                 </c:forEach>
                             </c:when>
                             <c:otherwise>
-                                <a class="page-link ${currentMedicalPage == 1 ? 'active' : ''}" href="ShowCustomerMedicalDetail?pageMedical=1&cId=${customer.id}&sizeMedical=${param.sizeMedical}">1</a>
+                                <a class="page-link ${currentMedicalPage == 1 ? 'active' : ''}" href="ShowCustomerMedicalDetail?pageMedical=1&customerId=${customer.id}&sizeMedical=${param.sizeMedical}">1</a>
                                 <c:if test="${currentMedicalPage > 2}">
                                     <span>...</span>
                                 </c:if>
                                 <c:forEach begin="${currentMedicalPage - 1}" end="${currentMedicalPage + 1}" var="i">
                                     <c:if test="${i > 1 && i < totalMedicalPages}">
-                                        <a class="page-link ${i == currentMedicalPage ? 'active' : ''}" href="ShowCustomerMedicalDetail?pageMedical=${i}&cId=${customer.id}&sizeMedical=${param.sizeMedical}">${i}</a>
+                                        <a class="page-link ${i == currentMedicalPage ? 'active' : ''}" href="ShowCustomerMedicalDetail?pageMedical=${i}&customerId=${customer.id}&sizeMedical=${param.sizeMedical}">${i}</a>
                                     </c:if>
                                 </c:forEach>
                                 <c:if test="${currentMedicalPage < totalMedicalPages - 2}">
                                     <span>...</span>
                                 </c:if>
-                                <a class="page-link ${currentMedicalPage == totalMedicalPages ? 'active' : ''}" href="ShowCustomerMedicalDetail?pageMedical=${totalMedicalPages}&cId=${customer.id}&sizeMedical=${param.sizeMedical}">${totalMedicalPages}</a>
+                                <a class="page-link ${currentMedicalPage == totalMedicalPages ? 'active' : ''}" href="ShowCustomerMedicalDetail?pageMedical=${totalMedicalPages}&customerId=${customer.id}&sizeMedical=${param.sizeMedical}">${totalMedicalPages}</a>
                             </c:otherwise>
                         </c:choose>
                     </div>
 
                     <!-- Nút Next -->
                     <c:if test="${currentMedicalPage < totalMedicalPages}">
-                        <a class="page-link" href="ShowCustomerMedicalDetail?pageMedical=${currentMedicalPage + 1}&cId=${customer.id}&sizeMedical=${param.sizeMedical}">Next</a>
+                        <a class="page-link" href="ShowCustomerMedicalDetail?pageMedical=${currentMedicalPage + 1}&customerId=${customer.id}&sizeMedical=${param.sizeMedical}">Sau</a>
                     </c:if>
                 </div>
             </div>
 
             <!--hien visitHistory-->
             <div class="table-data mt-4">
-                <h3 class="title">Visit History</h3>
-                <a class="add-btn" href="EditCustomerVisitHistory.jsp?cId=${customer.id}">Add record</a>
-                <a class="export-btn" href="VisitHistoryExportServlet?cId=${customer.id}&pageVisit=${currentVisitPage}&sizeVisit=${param.sizeVisit}">Export to excel</a>
-                <a style="background-color: yellow" class="export-btn" href="VisitHistoryExportPDFServlet?cId=${customer.id}&pageVisit=${currentVisitPage}&sizeVisit=${param.sizeVisit}">Export to pdf</a>
+                <h3 class="title">Lịch sử thăm khám</h3>
+                <c:if test="${not empty appointmentId}">
+                    <a class="add-btn" href="EditCustomerVisitHistory.jsp?customerId=${customer.id}&appointmentId=${appointmentId}">Thêm bản ghi</a>
+                </c:if>
+                <a class="export-btn" href="VisitHistoryExportServlet?customerId=${customer.id}&pageVisit=${currentVisitPage}&sizeVisit=${param.sizeVisit}">Xuất file excel</a>
+                <a style="background-color: yellow" class="export-btn" href="VisitHistoryExportPDFServlet?customerId=${customer.id}&pageVisit=${currentVisitPage}&sizeVisit=${param.sizeVisit}">Xuất file pdf</a>
                 <form style="margin: 0" action="ShowCustomerMedicalDetail" method="get" class="sidebar-form" id="searchCustomerForm">
-                    <input type="hidden" name="cId" value="${customer.id}" />
+                    <input type="hidden" name="customerId" value="${customer.id}" />
                     <div style="display: flex; justify-content: start; margin-left: 2.5%; margin-top: 20px; gap: 0;" class="filter-container">
                         <div class="filter-item">
-                            <span>Size each table</span>
+                            <span>Số bản ghi mỗi bảng</span>
                             <select name="sizeVisit" id="sizeVisit" onchange="this.form.submit()">
                                 <option value="10" ${param.sizeVisit == '10' ? 'selected' : ''}>10</option>
                                 <option value="5" ${param.sizeVisit == '5' ? 'selected' : ''}>5</option>
@@ -144,11 +148,11 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Visit Date</th>
-                            <th>Reason For Visit</th>
-                            <th>Diagnoses</th>
-                            <th>Treatment Plan</th>
-                            <th>Note</th>
+                            <th>Ngày thăm khám</th>
+                            <th>Lý do</th>
+                            <th>Chẩn đoán</th>
+                            <th>Phác đồ điều chị</th>
+                            <th>Ghi chú</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -169,7 +173,7 @@
                 <div class="pre-next-Btn">
                     <!-- Nút Previous -->
                     <c:if test="${currentVisitPage > 1}">
-                        <a class="page-link" href="ShowCustomerMedicalDetail?pageVisit=${currentVisitPage - 1}&cId=${customer.id}&sizeVisit=${param.sizeVisit}">Previous</a>
+                        <a class="page-link" href="ShowCustomerMedicalDetail?pageVisit=${currentVisitPage - 1}&customerId=${customer.id}&sizeVisit=${param.sizeVisit}">Trước</a>
                     </c:if>
 
                     <!-- Số trang -->
@@ -177,30 +181,30 @@
                         <c:choose>
                             <c:when test="${totalVisitPages <= 5}">
                                 <c:forEach begin="1" end="${totalVisitPages}" var="i">
-                                    <a class="page-link ${i == currentVisitPage ? 'active' : ''}" href="ShowCustomerMedicalDetail?pageVisit=${i}&cId=${customer.id}&sizeVisit=${param.sizeVisit}">${i}</a>
+                                    <a class="page-link ${i == currentVisitPage ? 'active' : ''}" href="ShowCustomerMedicalDetail?pageVisit=${i}&customerId=${customer.id}&sizeVisit=${param.sizeVisit}">${i}</a>
                                 </c:forEach>
                             </c:when>
                             <c:otherwise>
-                                <a class="page-link ${currentVisitPage == 1 ? 'active' : ''}" href="ShowCustomerMedicalDetail?pageVisit=1&cId=${customer.id}&sizeVisit=${param.sizeVisit}">1</a>
+                                <a class="page-link ${currentVisitPage == 1 ? 'active' : ''}" href="ShowCustomerMedicalDetail?pageVisit=1&customerId=${customer.id}&sizeVisit=${param.sizeVisit}">1</a>
                                 <c:if test="${currentVisitPage > 2}">
                                     <span>...</span>
                                 </c:if>
                                 <c:forEach begin="${currentVisitPage - 1}" end="${currentVisitPage + 1}" var="i">
                                     <c:if test="${i > 1 && i < totalVisitPages}">
-                                        <a class="page-link ${i == currentVisitPage ? 'active' : ''}" href="ShowCustomerMedicalDetail?pageVisit=${i}&cId=${customer.id}&sizeVisit=${param.sizeVisit}">${i}</a>
+                                        <a class="page-link ${i == currentVisitPage ? 'active' : ''}" href="ShowCustomerMedicalDetail?pageVisit=${i}&customerId=${customer.id}&sizeVisit=${param.sizeVisit}">${i}</a>
                                     </c:if>
                                 </c:forEach>
                                 <c:if test="${currentVisitPage < totalVisitPages - 2}">
                                     <span>...</span>
                                 </c:if>
-                                <a class="page-link ${currentVisitPage == totalVisitPages ? 'active' : ''}" href="ShowCustomerMedicalDetail?pageVisit=${totalVisitPages}&cId=${customer.id}&sizeVisit=${param.sizeVisit}">${totalVisitPages}</a>
+                                <a class="page-link ${currentVisitPage == totalVisitPages ? 'active' : ''}" href="ShowCustomerMedicalDetail?pageVisit=${totalVisitPages}&customerId=${customer.id}&sizeVisit=${param.sizeVisit}">${totalVisitPages}</a>
                             </c:otherwise>
                         </c:choose>
                     </div>
 
                     <!-- Nút Next -->
                     <c:if test="${currentVisitPage < totalVisitPages}">
-                        <a class="page-link" href="ShowCustomerMedicalDetail?pageVisit=${currentVisitPage + 1}&cId=${customer.id}&sizeVisit=${param.sizeVisit}">Next</a>
+                        <a class="page-link" href="ShowCustomerMedicalDetail?pageVisit=${currentVisitPage + 1}&customerId=${customer.id}&sizeVisit=${param.sizeVisit}">Sau</a>
                     </c:if>
                 </div>
 
@@ -210,10 +214,10 @@
         document.querySelectorAll(".sidebar-menu > li").forEach((li) => {
             li.classList.remove("active");
         });
-        function doDelete(index, url, cId, id) {
+        function doDelete(index, url, customerId, id) {
             if (confirm("Are you sure delete index: " + index + " ?"))
             {
-                window.location = url + "?cId=" + cId + "&id=" + id;
+                window.location = url + "?customerId=" + customerId + "&id=" + id;
             }
         }
     </script>

@@ -24,7 +24,7 @@ public class EditCustomerVisitHistory extends BaseRBACController {
 
     @Override
     protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8"); // Đảm bảo encoding đúng
+        request.setCharacterEncoding("UTF-8");
 
         String id = request.getParameter("id");
         int staffId = Integer.parseInt(request.getParameter("staffId"));
@@ -46,7 +46,7 @@ public class EditCustomerVisitHistory extends BaseRBACController {
         visitHistory.setTreatmentPlan(treatmentPlan);
         visitHistory.setNote(note);
         visitHistory.setAppointmentId(Integer.parseInt(appointmentId));
-        
+
         VisitHistoryDBContext visitHistoryDB = new VisitHistoryDBContext();
         boolean isCreated;
         if (id == null || id.isEmpty()) {
@@ -62,7 +62,7 @@ public class EditCustomerVisitHistory extends BaseRBACController {
         PrintWriter out = response.getWriter();
         out.println("<script type='text/javascript'>");
         out.println("alert('" + message + error + "');");
-        out.println("window.location.href='ShowCustomerMedicalDetail?cId=" + customerId + "';");
+        out.println("window.location.href='ShowCustomerMedicalDetail?customerId=" + customerId + "&appointmentId=" + appointmentId + "';");
         out.println("</script>");
     }
 }

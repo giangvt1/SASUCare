@@ -18,7 +18,7 @@ import java.util.List;
 import model.Certificate;
 import model.TypeCertificate;
 
-@MultipartConfig // Cho phép xử lý multipart/form-data
+@MultipartConfig
 public class EditCertificate extends HttpServlet {
 
     @Override
@@ -64,10 +64,10 @@ public class EditCertificate extends HttpServlet {
                 sendAlert(response, "File size too large. Maximum allowed size is 3 MB.", "EditCertificate");
                 return;
             }
-            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-            String fileNameLower = fileName.toLowerCase();
-            if (!(fileNameLower.endsWith(".pdf"))) {
-                sendAlert(response, "Invalid file type. Only JPG files are allowed.", "EditCertificate");
+
+            String fileNameLower = filePart.getSubmittedFileName().toLowerCase();
+            if (!fileNameLower.endsWith(".pdf")) {
+                sendAlert(response, "Invalid file type. Only PDF files are allowed.", "EditCertificate");
                 return;
             }
 
@@ -77,9 +77,12 @@ public class EditCertificate extends HttpServlet {
                 uploadDir.mkdirs();
             }
 
-            String newFileName = fileName;
+            // Tạo tên file mới: doctorId + timestamp + .pdf
+            String newFileName = doctorId + "_" + System.currentTimeMillis() + ".pdf";
             String filePath = uploadPath + File.separator + newFileName;
+
             filePart.write(filePath);
+
             c.setFile("pdfFile/" + newFileName);
         }
 

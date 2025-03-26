@@ -76,7 +76,7 @@
                     <tbody>
                         <c:forEach var="c" items="${customers}" varStatus="i">
                             <tr><td class="index">${i.index + 1}</td>
-                                <td><a href="ShowCustomerMedicalDetail?cId=${c.id}">${c.fullname}</a></td>
+                                <td><a href="ShowCustomerMedicalDetail?customerId=${c.id}">${c.fullname}</a></td>
                                 <td>${c.gender?"Male":"Female"}</td>
                                 <td><fmt:formatDate value="${c.dob}" pattern="dd/MM/yyyy" /></td>
                                 <td>${c.phone_number}</td>

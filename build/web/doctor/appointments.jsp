@@ -494,7 +494,10 @@ Date date = Date.from(currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant
                                 document.getElementById('modalPatientPhone').textContent = appointment.customer.phone_number || "No phone number available";
                                 document.getElementById('modalNotes').value = "";
                                 document.getElementById('viewHistoryBtn').onclick = function () {
-                                    window.location.href = contextPath+`/doctor/ShowCustomerMedicalDetail?cId=` + appointment.customer.id;
+                                    document.getElementById('viewHistoryBtn').onclick = function () {
+                                        window.open(contextPath + `/doctor/ShowCustomerMedicalDetail?customerId=` + appointment.customer.id + `&appointmentId=` + appointment.id, '_blank');
+                                    };
+
                                 };
                                 openModal();
                             })

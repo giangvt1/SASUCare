@@ -23,13 +23,13 @@ public class EditCustomerMedicalHistory extends BaseRBACController {
 
     @Override
     protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
-        int cId = Integer.parseInt(request.getParameter("cId"));
+        int customerId = Integer.parseInt(request.getParameter("customerId"));
         String name = request.getParameter("name");
         String detail = request.getParameter("detail");
         String id = request.getParameter("id");
-
+        String appointmentId = request.getParameter("appointmentId");
         MedicalHistory medicalH = new MedicalHistory();
-        medicalH.setCustomerId(cId);
+        medicalH.setCustomerId(customerId);
         medicalH.setName(name);
         medicalH.setDetail(detail);
         CustomerDBContext customerDB = new CustomerDBContext();
@@ -48,7 +48,7 @@ public class EditCustomerMedicalHistory extends BaseRBACController {
         PrintWriter out = response.getWriter();
         out.println("<script type='text/javascript'>");
         out.println("alert('" + message + "');");
-        out.println("window.location.href='ShowCustomerMedicalDetail?cId=" + cId + "';");
+        out.println("window.location.href='ShowCustomerMedicalDetail?customerId=" + customerId + "&appointmentId=" + appointmentId + "';");
         out.println("</script>");
     }
 
