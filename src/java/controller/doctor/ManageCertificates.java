@@ -49,9 +49,14 @@ public class ManageCertificates extends HttpServlet {
         if (sortStr != null) {
             sort = sortStr;
         }
-        if (sizeStr != null) {
-            sizeOfEachTable = Integer.parseInt(sizeStr);
+        if (sizeStr != null && !sizeStr.isEmpty()) {
+            try {
+                sizeOfEachTable = Integer.parseInt(sizeStr);
+            } catch (NumberFormatException e) {
+                sizeOfEachTable = 10;
+            }
         }
+
         CertificateDBContext certificateDB = new CertificateDBContext();
         List<TypeCertificate> typeList = certificateDB.getAllTypes();
         List<Certificate> resultLists = certificateDB.getCertificatesByDoctorID(certificateName, typeName, status, doctorId, page, sort, sizeOfEachTable);

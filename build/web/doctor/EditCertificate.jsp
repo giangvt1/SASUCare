@@ -25,7 +25,7 @@
                 Back
             </a>
             <h2 class="title">${empty param.id ? "Create new" : "Update"} certificate</h2>
-            <form action="EditCertificate" class="edit-form" method="post">
+            <form action="EditCertificate" class="edit-form" enctype="multipart/form-data" method="post">
                 <input type="hidden" name="id" value="${param.id}">
                 <input type="hidden" name="staffId" value="${sessionScope.staff.id}">
 
@@ -46,7 +46,11 @@
                         <input type="text" id="issueDate" class="date" name="issueDate" value="${param.issueDate}">
                     </div>
                 </div>
-
+                <div class="form-group">
+                    <label for="file">File</label>
+                    <br/>
+                    <input type="file" class="form-control-file" id="file" name="file" accept=".pdf">
+                </div>
                 <label for="documentPath">Document path:</label>
                 <input type="text" id="documentPath" name="documentPath" value="${param.documentPath}" required>
 
@@ -57,23 +61,6 @@
         </div>
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
         <script src="https://npmcdn.com/flatpickr/dist/l10n/vn.js"></script>
-        <script>document.querySelector("form").addEventListener("submit", function (event) {
-                let certificateName = document.getElementById("certificateName").value.trim();
-                let issueDate = document.getElementById("issueDate").value.trim();
-                let documentPath = document.getElementById("documentPath").value.trim();
-                let mess = "";
-
-                if (!certificateName)
-                    mess += "Certificate name cannot be empty\n";
-                if (!issueDate)
-                    mess += "Issue date cannot be empty\n";
-                if (!documentPath)
-                    mess += "Document path cannot be empty\n";
-                if (mess) {
-                    alert(mess);
-                    event.preventDefault();
-                }
-            });</script>
         <script src="../js/doctor/doctor.js"></script>
     </body>
 </html>

@@ -1,6 +1,6 @@
 package controller.doctor;
 
-import dao.CustomerDBContext;
+import dao.VisitHistoryDBContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,8 +31,8 @@ public class VisitHistoryExportServlet extends HttpServlet {
         int currentPage = (currentPageStr != null && !currentPageStr.isEmpty()) ? Integer.parseInt(currentPageStr) : 1;
         int sizeOfEachTable = (sizeOfEachTableStr != null && !sizeOfEachTableStr.isEmpty()) ? Integer.parseInt(sizeOfEachTableStr) : 10;
 
-        CustomerDBContext customerDB = new CustomerDBContext();
-        ArrayList<VisitHistory> visitHistory = customerDB.getVisitHistoriesByCustomerIdPaginated(cId, currentPage, sizeOfEachTable);
+        VisitHistoryDBContext visitHistoryDB = new VisitHistoryDBContext();
+        ArrayList<VisitHistory> visitHistory = visitHistoryDB.getVisitHistoriesByCustomerIdPaginated(cId, currentPage, sizeOfEachTable);
 
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Visit Histories");
@@ -74,7 +74,7 @@ public class VisitHistoryExportServlet extends HttpServlet {
             for (VisitHistory history : visitHistory) {
                 Row row = sheet.createRow(rowIndex++);
                 Cell cellId = row.createCell(COLUMN_INDEX);
-                cellId.setCellValue(rowIndex - 1); 
+                cellId.setCellValue(rowIndex - 1);
                 cellId.setCellStyle(dataStyle);
 
                 Cell cellVisitDate = row.createCell(COLUMN_VISIT_DATE);
@@ -98,11 +98,7 @@ public class VisitHistoryExportServlet extends HttpServlet {
                 cellTreatmentPlan.setCellStyle(dataStyle);
 
                 Cell cellNextAppointment = row.createCell(NEXT_APPOINTMENT);
-                if (history.getNextAppointment() != null) {
-                    cellNextAppointment.setCellValue(dateFormat.format(history.getNextAppointment())); // Định dạng ngày tháng
-                } else {
-                    cellNextAppointment.setCellValue("No Appointment"); // Hoặc một thông báo hợp lý
-                }
+                cellNextAppointment.setCellValue(history.getNote());
                 cellNextAppointment.setCellStyle(dataStyle);
             }
 

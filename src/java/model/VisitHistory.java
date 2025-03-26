@@ -8,24 +8,12 @@ import java.sql.Timestamp;
  */
 public class VisitHistory {
 
-    private int id, doctorId, customerId;
+    private int id, doctorId, customerId, appointmentId;
     private Timestamp visitDate;
-    private String reasonForVisit, diagnoses, treatmentPlan;
-    private Timestamp nextAppointment;
+    private String reasonForVisit, diagnoses, treatmentPlan, note;
     private Appointment appointment;
 
     public VisitHistory() {
-    }
-
-    public VisitHistory(int id, int doctorId, int customerId, Timestamp visitDate, String reasonForVisit, String diagnoses, String treatmentPlan, Appointment appointment) {
-        this.id = id;
-        this.doctorId = doctorId;
-        this.customerId = customerId;
-        this.visitDate = visitDate;
-        this.reasonForVisit = reasonForVisit;
-        this.diagnoses = diagnoses;
-        this.treatmentPlan = treatmentPlan;
-        this.appointment = appointment;
     }
 
     public Appointment getAppointment() {
@@ -34,17 +22,6 @@ public class VisitHistory {
 
     public void setAppointment(Appointment appointment) {
         this.appointment = appointment;
-    }
-
-    public VisitHistory(int id, int doctorId, int customerId, Timestamp visitDate, String reasonForVisit, String diagnoses, String treatmentPlan, Timestamp nextAppointment) {
-        this.id = id;
-        this.doctorId = doctorId;
-        this.customerId = customerId;
-        this.visitDate = visitDate;
-        this.reasonForVisit = reasonForVisit;
-        this.diagnoses = diagnoses;
-        this.treatmentPlan = treatmentPlan;
-        this.nextAppointment = nextAppointment;
     }
 
     public int getId() {
@@ -103,12 +80,20 @@ public class VisitHistory {
         this.treatmentPlan = treatmentPlan;
     }
 
-    public Timestamp getNextAppointment() { // Thay đổi kiểu trả về
-        return nextAppointment;
+    public int getAppointmentId() {
+        return appointmentId;
     }
 
-    public void setNextAppointment(Timestamp nextAppointment) { // Thay đổi kiểu tham số
-        this.nextAppointment = nextAppointment;
+    public void setAppointmentId(int appointmentId) {
+        this.appointmentId = appointmentId;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
 }

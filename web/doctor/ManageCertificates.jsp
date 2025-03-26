@@ -99,38 +99,37 @@
                 <div class="pre-next-Btn">
                     <!-- Nút Previous -->
                     <c:if test="${currentPage > 1}">
-                        <a class="page-link" href="ManageCertificates?staffId=${sessionScope.staff.id}&page=${currentPage - 1}&certificateName=${param.certificateName}&typeName=${param.typeName}&Status=${param.Status}&sort=${param.sort}&size=${param.size}">Previous</a>
+                        <a class="page-link" href="ManageCertificates?staffId=${sessionScope.staff.id}&page=${currentPage - 1}&certificateName=${param.certificateName}&typeName=${param.typeName}&status=${param.status}&sort=${param.sort}&size=${param.size}">Previous</a>
                     </c:if>
-                    <!-- Phần phân trang -->
                     <div class="page-link-container">
                         <c:choose>
                             <c:when test="${totalPages <= 5}">
                                 <c:forEach begin="1" end="${totalPages}" var="i">
-                                    <a class="page-link ${i == currentPage ? 'active' : ''}" href="ManageCertificates?staffId=${sessionScope.staff.id}&page=${i}&certificateName=${param.certificateName}&typeName=${param.typeName}&Status=${param.Status}&sort=${param.sort}&size=${param.size}">${i}</a>
+                                    <a class="page-link ${i == currentPage ? 'active' : ''}" href="ManageCertificates?staffId=${sessionScope.staff.id}&page=${i}&certificateName=${param.certificateName}&typeName=${param.typeName}&status=${param.status}&sort=${param.sort}&size=${param.size}">${i}</a>
                                 </c:forEach>
                             </c:when>
                             <c:otherwise>
-                                <a class="page-link ${currentPage == 1 ? 'active' : ''}" href="ManageCertificates?staffId=${sessionScope.staff.id}&page=1&certificateName=${param.certificateName}&typeName=${param.typeName}&Status=${param.Status}&sort=${param.sort}&size=${param.size}">1</a>
+                                <a class="page-link ${currentPage == 1 ? 'active' : ''}" href="ManageCertificates?staffId=${sessionScope.staff.id}&page=1&certificateName=${param.certificateName}&typeName=${param.typeName}&status=${param.status}&sort=${param.sort}&size=${param.size}">1</a>
                                 <c:if test="${currentPage > 2}">
                                     <span class="page-link">...</span>
                                 </c:if>
 
                                 <c:forEach begin="${currentPage - 1}" end="${currentPage + 1}" var="i">
                                     <c:if test="${i > 1 && i < totalPages}">
-                                        <a class="page-link ${i == currentPage ? 'active' : ''}" href="ManageCertificates?staffId=${sessionScope.staff.id}&page=${i}&certificateName=${param.certificateName}&typeName=${param.typeName}&Status=${param.Status}&sort=${param.sort}&size=${param.size}">${i}</a>
+                                        <a class="page-link ${i == currentPage ? 'active' : ''}" href="ManageCertificates?staffId=${sessionScope.staff.id}&page=${i}&certificateName=${param.certificateName}&typeName=${param.typeName}&status=${param.status}&sort=${param.sort}&size=${param.size}">${i}</a>
                                     </c:if>
                                 </c:forEach>
 
                                 <c:if test="${currentPage < totalPages - 2}">
                                     <span class="page-link">...</span>
                                 </c:if>
-                                <a class="page-link ${currentPage == totalPages ? 'active' : ''}" href="ManageCertificates?staffId=${sessionScope.staff.id}&page=${totalPages}&certificateName=${param.certificateName}&typeName=${param.typeName}&Status=${param.Status}&sort=${param.sort}&size=${param.size}">${totalPages}</a>
+                                <a class="page-link ${currentPage == totalPages ? 'active' : ''}" href="ManageCertificates?staffId=${sessionScope.staff.id}&page=${totalPages}&certificateName=${param.certificateName}&typeName=${param.typeName}&status=${param.status}&sort=${param.sort}&size=${param.size}">${totalPages}</a>
                             </c:otherwise>
                         </c:choose>
                     </div>
                     <!-- Nút Next -->
                     <c:if test="${currentPage < totalPages}">
-                        <a class="page-link" href="ManageCertificates?staffId=${sessionScope.staff.id}&page=${currentPage + 1}&certificateName=${param.certificateName}&typeName=${param.typeName}&Status=${param.Status}&sort=${param.sort}&size=${param.size}">Next</a>
+                        <a class="page-link" href="ManageCertificates?staffId=${sessionScope.staff.id}&page=${currentPage + 1}&certificateName=${param.certificateName}&typeName=${param.typeName}&status=${param.status}&sort=${param.sort}&size=${param.size}">Next</a>
                     </c:if>
                 </div>
             </div>
