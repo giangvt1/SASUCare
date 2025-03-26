@@ -63,13 +63,19 @@ public class ConfirmAppServlet extends HttpServlet {
         String subject = "";
         String messageText = "";
         if ("Done".equalsIgnoreCase(confirmRequest.action)) {
-            subject = "Appointment Confirmation";
+            subject = "Appointment Done";
             messageText = "Dear " + customer.getFullname() + ",\n\nYour appointment on "
-                    + appointment.getDoctorSchedule().getScheduleDate() + " has been Done.\n\nThank you for using our service!";
+                    + appointment.getDoctorSchedule().getScheduleDate() + " has been marked as Done.\n\n"
+                    + "Appointment Summary: " + confirmRequest.summary + "\n"
+                    + "Notes: " + confirmRequest.notes + "\n\n"
+                    + "Thank you for using our service!";
         } else if ("Not Complete".equalsIgnoreCase(confirmRequest.action)) {
             subject = "Appointment Not Completed";
             messageText = "Dear " + customer.getFullname() + ",\n\nYour appointment on "
-                    + appointment.getDoctorSchedule().getScheduleDate() + " was marked as 'Not Complete'. Please contact us for assistance.";
+                    + appointment.getDoctorSchedule().getScheduleDate() + " was marked as 'Not Complete'.\n\n"
+                    + "Appointment Summary: " + confirmRequest.summary + "\n"
+                    + "Notes: " + confirmRequest.notes + "\n\n"
+                    + "Please contact us for further assistance.";
         }
 
         // Send the email

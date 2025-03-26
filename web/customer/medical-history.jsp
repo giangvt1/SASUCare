@@ -238,12 +238,10 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Treatment Plan
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Next Appointment
-                            </th>
+                           <!--
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Appointment Status
-                            </th>
+                            </th>-->
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
@@ -258,16 +256,11 @@
                                         </c:if>
                                     </c:forEach>
                                 </td>
+
                                 <td class="px-6 py-4">${visit.reasonForVisit}</td>
                                 <td class="px-6 py-4">${visit.diagnoses}</td>
                                 <td class="px-6 py-4">${visit.treatmentPlan}</td>
-                                <td class="px-6 py-4"><fmt:formatDate value="${visit.nextAppointment}"  pattern="dd-MM-yyyy" /></td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
-                                          ${visit.appointment.status == 'Confirmed' || visit.appointment.status == 'Done' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">
-                                        ${visit.appointment.status}
-                                    </span>
-                                </td>
+                                
 
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <button
@@ -297,7 +290,8 @@
                     <p><strong>Reason For Visit:</strong> <span id="modalReasonForVisit"></span></p>
                     <p><strong>Diagnoses:</strong> <span id="modalDiagnoses"></span></p>
                     <p><strong>Treatment Plan:</strong> <span id="modalTreatmentPlan"></span></p>
-                    <p><strong>Next Appointment:</strong> <span id="modalNextAppointment"></span></p>
+                    =====================================================
+                    <p><strong>Doctor note:</strong> <span id="modalNote"></span></p>
                 </div>
             </div>
 
@@ -373,7 +367,7 @@
                             document.getElementById('modalReasonForVisit').textContent = visit.reasonForVisit;
                             document.getElementById('modalDiagnoses').textContent = visit.diagnoses;
                             document.getElementById('modalTreatmentPlan').textContent = visit.treatmentPlan;
-                            document.getElementById('modalNextAppointment').textContent = visit.nextAppointment || "Nothing";
+                            document.getElementById('modalNote').textContent = visit.note || "No note available";
 
 
                             // Show the modal

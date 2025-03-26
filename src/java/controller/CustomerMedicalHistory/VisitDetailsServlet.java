@@ -43,14 +43,12 @@ public class VisitDetailsServlet extends HttpServlet {
                 return;
             }
             Doctor doctor = doctorDBContext.getDoctorById(visit.getDoctorId());
-            
-            Appointment appointment = appointdb.get(String.valueOf(visit.getAppointment().getId()));
 
             Gson gson = new Gson();
             Map<String, Object> data = new HashMap<>();
             data.put("visit", visit);
             data.put("doctor", doctor); // doctor bạn lấy từ DB theo visit.getDoctorId()
-            data.put("appointment", appointment);
+//            data.put("appointment", appointment);
 
             String json = gson.toJson(data);
             response.setContentType("application/json");

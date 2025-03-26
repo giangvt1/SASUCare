@@ -40,7 +40,7 @@ public class ExportMedicalVisitServlet extends HttpServlet {
 
         // Create DAO and get filtered medical visits
         VisitHistoryDBContext medicalVisitDAO = new VisitHistoryDBContext();
-        List<VisitHistory> visits = medicalVisitDAO.getVisitHistoriesByCustomerId(customer.getId(), null, null ,null, null);
+        List<VisitHistory> visits = medicalVisitDAO.getVisitHistoriesByCustomerId(customer.getId(), null, null, null, null);
 
         // Export based on format
         if ("csv".equalsIgnoreCase(format)) {
@@ -51,7 +51,7 @@ public class ExportMedicalVisitServlet extends HttpServlet {
     }
 
     private void exportToCSV(HttpServletResponse response, List<VisitHistory> visits)
-            throws IOException {    
+            throws IOException {
         // Set response headers for CSV
         response.setContentType("text/csv");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
@@ -62,7 +62,7 @@ public class ExportMedicalVisitServlet extends HttpServlet {
         StringBuilder csv = new StringBuilder();
 
         // Add header
-        csv.append("Visit ID,Doctor Name,Visit Date,Reason for Visit,Diagnoses,Treatment Plan,Next Appointment,Status\n");
+        csv.append("Visit ID,Doctor Name,Visit Date,Reason for Visit,Diagnoses,Treatment Plan,Note\n");
 
         // Add data rows
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -73,8 +73,10 @@ public class ExportMedicalVisitServlet extends HttpServlet {
             csv.append(visit.getReasonForVisit()).append(",");
             csv.append(visit.getDiagnoses()).append(",");
             csv.append(visit.getTreatmentPlan()).append(",");
-            csv.append(visit.getNextAppointment() != null ? sdf.format(visit.getNextAppointment()) : "N/A").append(",");
-            csv.append(visit.getAppointment().getStatus()).append("\n");
+//            csv.append(visit.get() != null ? sdf.format(visit.getNextAppointment()) : "N/A").append(",");
+            csv.append(visit.getNote() == null || visit.getNote().trim().isEmpty() ? "Na" : visit.getNote())
+                    .append("\n");
+
         }
 
         // Write to response output stream
