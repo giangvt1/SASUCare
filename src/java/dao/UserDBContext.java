@@ -419,12 +419,12 @@ public class UserDBContext extends DBContext<User> {
     public ArrayList<Role> getRoles(String username) {
         ArrayList<Role> roles = new ArrayList<>();
         String sql = """
-        SELECT r.id, r.name, f.id as feature_id, f.name as feature_name, f.url 
-        FROM UserRole ur 
-        JOIN Role r ON ur.role_id = r.id 
-        LEFT JOIN RoleFeature rf ON r.id = rf.role_id
-        LEFT JOIN Feature f ON rf.feature_id = f.id
-        WHERE ur.username = ?
+            SELECT r.id, r.name, f.id as feature_id, f.name as feature_name, f.url 
+            FROM UserRole ur 
+            JOIN Role r ON ur.role_id = r.id 
+            LEFT JOIN RoleFeature rf ON r.id = rf.role_id
+            LEFT JOIN Feature f ON rf.feature_id = f.id
+            WHERE ur.username = ?
     """;
 
         try (PreparedStatement stm = connection.prepareStatement(sql)) {

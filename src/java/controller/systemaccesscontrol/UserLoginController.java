@@ -32,18 +32,17 @@ public class UserLoginController extends HttpServlet {
         String password = request.getParameter("password");
         UserDBContext db = new UserDBContext();
         User account = db.login(username, password);
-        
+
         // Kiểm tra account trước khi gọi getGmail()
         if (account == null) {
             request.setAttribute("errorMessage", "Invalid username or password.");
             request.getRequestDispatcher("../admin/AdminLogin.jsp").forward(request, response);
             return;
         }
-        
+
         System.out.println("account email: " + account.getGmail());
         StaffDBContext staffDao = new StaffDBContext();
-        
-        // Nếu account tồn tại, thực hiện các bước đăng nhập
+
         HttpSession session = request.getSession();
         session.setAttribute("account", account);
         ArrayList<Role> roles = db.getRoles(username);
@@ -63,13 +62,24 @@ public class UserLoginController extends HttpServlet {
         }
         session.setAttribute("userRoles", roleNames.toString());
         System.out.println("userRoles: " + roleNames.toString());
-        
+
         ArrayList<Feature> features = new ArrayList<>();
         for (Role role : roles) {
             features.addAll(role.getFeatures());
         }
         session.setAttribute("allowedUrls", getAllowedUrls(features));
-        
+        if (roles.get(0).getName().equalsIgnoreCase("Doctor")) {
+            response.sendRedirect(request.getContextPath() + "/doctor/appointmentsmanagement");
+            return;
+        }
+        if (roles.get(0).getName().equalsIgnoreCase("HR")) {
+            response.sendRedirect(request.getContextPath() + "/hr/accountlist");
+            return;
+        }
+         if (roles.get(0).getName().equalsIgnoreCase("Finance")) {
+            response.sendRedirect(request.getContextPath() + "/finance/revenue");
+            return;
+        }
         request.getRequestDispatcher("../admin/Dashboard.jsp").forward(request, response);
     }
 
