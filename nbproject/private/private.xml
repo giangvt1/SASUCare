@@ -58,7 +58,6 @@
             <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/doctor/DoctorLeftSideBar.jsp</file>
             <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/HRController/CalendarDoctorManageController.java</file>
         </group>
-        <group/>
         <group>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dal/DBContext.java</file>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/hr/UserAccountList.jsp</file>
@@ -116,6 +115,16 @@
             <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/web/doctor/ManageCertificates.jsp</file>
             <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/web/hr/ManageDoctorCertificates.jsp</file>
             <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/dao/CertificateDBContext.java</file>
+        </group>
+        <group>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/controller/HRController/ManageDoctorCertificates.java</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/web/doctor/ManageCertificates.jsp</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/web/doctor/CustomerMedicalDetail.jsp</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/web/hr/ManageDoctorCertificates.jsp</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/web/WEB-INF/web.xml</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/dao/CertificateDBContext.java</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/controller/doctor/ShowCustomerMedicalDetail.java</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/web/doctor/SearchCustomer.jsp</file>
         </group>
     </open-files>
 </project-private>

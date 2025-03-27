@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import model.system.Staff;
 
@@ -8,7 +9,7 @@ public class Doctor {
 
     private int id;
     private String name;
-    private Staff staff;    
+    private Staff staff;
     private String email;
     private String phoneNumber;
     private boolean gender;
@@ -16,7 +17,8 @@ public class Doctor {
     private String img;
     private String price;
     private String info;
-        private double salaryCoefficient; // hệ số lương
+    private Date dob;
+    private double salaryCoefficient; // hệ số lương
     private double average_rating;
     private List<Rating> ratings;
     private List<String> specialties;
@@ -31,7 +33,6 @@ public class Doctor {
     public void setCertificates(List<Certificate> certificates) {
         this.certificates = certificates;
     }
-
 
     public double getSalaryCoefficient() {
         return salaryCoefficient;
@@ -56,6 +57,7 @@ public class Doctor {
 
     public Doctor() {
     }
+
     public Doctor(int id, String name, Staff staff, String email, String phoneNumber, boolean gender, String address, String img, List<Rating> ratings, List<String> specialties, ArrayList<DoctorSchedule> doctorSchedules) {
         this.id = id;
         this.name = name;
@@ -69,6 +71,7 @@ public class Doctor {
         this.specialties = specialties;
         this.doctorSchedules = doctorSchedules;
     }
+
     public Doctor(int id, String name, List<String> specialties, String price, String info) {
         this.id = id;
         this.name = name;
@@ -206,6 +209,13 @@ public class Doctor {
     public void setRatings(List<Rating> ratings) {
         this.ratings = ratings;
     }
-    
+
+    public Date getDob() {
+        return dob;
+    }
+
+    public void setDob(Date dob) {
+        this.dob = dob;
+    }
 
 }

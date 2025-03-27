@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
-<!--    <error-page>
+    <servlet-mapping>
+        <servlet-name>SearchDoctor</servlet-name>
+        <url-pattern>/admin/SearchDoctor</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DoctorMedicalConsultation</servlet-name>
+        <url-pattern>/admin/DoctorMedicalConsultation</url-pattern>
+    </servlet-mapping>
+    <error-page>
         <error-code>404</error-code>
         <location>/error404.jsp</location>
     </error-page>
@@ -11,7 +19,7 @@
     <error-page>
         <error-code>403</error-code>
         <location>/error403.jsp</location>
-    </error-page>-->
+    </error-page>
     <servlet>
         <servlet-name>ForgetPasswordController</servlet-name>
         <servlet-class>controller.accesscontrol.ForgetPasswordController</servlet-class>
@@ -253,16 +261,16 @@
         <servlet-class>controller.financial.DoctorSalaryChartController</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>DoctorMedicalConsultation</servlet-name>
-        <servlet-class>controller.AdminController.DoctorMedicalConsultation</servlet-class>
+        <servlet-name>InvoiceRevenueChartController</servlet-name>
+        <servlet-class>controller.financial.InvoiceRevenueChartController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>SearchDoctor</servlet-name>
         <servlet-class>controller.AdminController.SearchDoctor</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>InvoiceRevenueChartController</servlet-name>
-        <servlet-class>controller.financial.InvoiceRevenueChartController</servlet-class>
+        <servlet-name>DoctorMedicalConsultation</servlet-name>
+        <servlet-class>controller.AdminController.DoctorMedicalConsultation</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ForgetPasswordController</servlet-name>
@@ -580,14 +588,6 @@
     <servlet-mapping>
         <servlet-name>DoctorSalaryChartController</servlet-name>
         <url-pattern>/finance/DoctorSalaryChart</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>DoctorMedicalConsultation</servlet-name>
-        <url-pattern>/admin/DoctorMedicalConsultation</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>SearchDoctor</servlet-name>
-        <url-pattern>/admin/SearchDoctor</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>InvoiceRevenueChartController</servlet-name>

@@ -12,6 +12,7 @@ public class VisitHistory {
     private Timestamp visitDate;
     private String reasonForVisit, diagnoses, treatmentPlan, note;
     private Appointment appointment;
+    private String doctorName, customerName;
 
     public VisitHistory() {
     }
@@ -94,6 +95,22 @@ public class VisitHistory {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getDoctorName() {
+        return doctorName;
+    }
+
+    public void setDoctorName(String doctorName) {
+        this.doctorName = doctorName;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
 }
