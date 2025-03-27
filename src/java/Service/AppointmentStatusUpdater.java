@@ -23,7 +23,7 @@ public class AppointmentStatusUpdater implements ServletContextListener {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }, 0, 60, TimeUnit.MINUTES); // Runs every 5 minutes
+        }, 0, 5, TimeUnit.MINUTES); // Runs every 5 minutes
     }
 
     @Override

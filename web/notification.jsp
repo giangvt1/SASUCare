@@ -90,6 +90,7 @@
                         $('.notification-count').text(response.newCount).show();  // Show the badge with new appointments
 //                        $('#notificationMessage').slideDown();  // Show the notification message if new appointments exist
                     } else {
+                        console.log('Response:', response); 
                         $('.notification-count').hide();  // Hide the badge if no new appointments
                         $('#notificationMessage').hide();  // Hide the notification message if no new appointments
                     }

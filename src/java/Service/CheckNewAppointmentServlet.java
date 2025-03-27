@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @WebServlet("/CheckNewAppointmentServlet")
@@ -19,7 +21,16 @@ public class CheckNewAppointmentServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        List<String> userRoles = (List<String>) session.getAttribute("userRoles");
+
+        // Get the userRoles from the session as a String
+        String userRolesStr = (String) session.getAttribute("userRoles");
+
+        // Convert the String into a List of roles
+        List<String> userRoles = new ArrayList<>();
+        if (userRolesStr != null && !userRolesStr.isEmpty()) {
+            userRoles = Arrays.asList(userRolesStr.split(",\\s*")); // Split by comma and optional space
+        }
+
         String condition = "";
 
         boolean isDoctor = false;
@@ -60,5 +71,5 @@ public class CheckNewAppointmentServlet extends HttpServlet {
             response.getWriter().write("{\"error\":\"Failed to retrieve appointments\"}");
         }
     }
-}
 
+}
