@@ -239,6 +239,8 @@
                 </div>
             </div>
         </div>
+                        
+                        
 
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -261,8 +263,8 @@
 
                                                                 function cancelOrAcceptAppointment(appointmentId, action) {
                                                                     let confirmationMessage = action === "cancel" ?
-                                                                            "Are you sure that you want to confirm this appointment?" :
-                                                                            "Are you sure that you want to cancel this appointment?";
+                                                                            "Are you sure that you want to cancel this appointment?" :
+                                                                            "Are you sure that you want to confirm this appointment?";
 
                                                                     if (confirm(confirmationMessage)) {
                                                                         // Redirect to appropriate servlet with query parameters
@@ -295,12 +297,12 @@
                                                                                 }
 
                                                                                 //  Update modal content with appointment details
-                                                                                patientNameElem.innerText = appointment.customer.id || "N/A"; // Use customer ID instead of fullname since it's missing
+                                                                                patientNameElem.innerText = appointment.customer.fullname || "N/A"; // Use customer ID instead of fullname since it's missing
                                                                                 doctorNameElem.innerText = appointment.doctor.name || "N/A";
                                                                                 departmentElem.innerText = "Department Data Not Available"; // Fix: No department in response
                                                                                 appointmentDateElem.innerText = appointment.doctorSchedule.scheduleDate || "N/A";
                                                                                 appointmentTimeElem.innerText = appointment.doctorSchedule.shift.timeStart + " - " + appointment.doctorSchedule.shift.timeEnd;
-                                                                                appointmentStatusElem.innerText = "Unknown"; // Fix: Status missing in response
+                                                                                appointmentStatusElem.innerText = appointment.status;
                                                                                 appointmentNotesElem.innerText = "No notes available."; // Fix: Notes missing in response
 
                                                                                 // Show modal

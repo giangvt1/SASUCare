@@ -439,7 +439,7 @@ body {
         <h3>Related Visit</h3>
         <c:choose>
           <c:when test="${not empty invoice.appointmentId}">
-            <p><strong>Appointment ID:</strong> ${invoice.appointmentId}</p>
+            <p><strong>Appointment:</strong> ${appointment.doctorSchedule.scheduleDate} - Appointment with doctor: ${appointment.doctor.name}</p>
           </c:when>
           <c:otherwise>
             <p>No related visit information</p>
@@ -497,12 +497,12 @@ body {
         </a>
       </div>
       <div>
-        <a href="${pageContext.request.contextPath}/invoices/${invoice.id}/export" class="btn btn-primary me-2">
+<!--        <a href="${pageContext.request.contextPath}/invoices/${invoice.id}/export" class="btn btn-primary me-2">
           <i class="fas fa-print me-2"></i> Print Invoice
         </a>
         <a href="${pageContext.request.contextPath}/invoices/${invoice.id}/export" class="btn btn-primary">
           <i class="fas fa-file-pdf me-2"></i> Download PDF
-        </a>
+        </a>-->
       </div>
     </div>
 

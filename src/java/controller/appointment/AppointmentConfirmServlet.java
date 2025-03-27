@@ -89,9 +89,7 @@ public class AppointmentConfirmServlet extends HttpServlet {
                 Invoice invoice = createInvoice(appointment); // Reuse the invoice creation logic
 
                 // Redirect to the invoice list or payment page
-                response.sendRedirect(request.getContextPath() + "/appointment/list");  // Redirect to invoice list page
-//out.write("{\"status\":\"error\", \"message\":\"Invalid input format.\"}" + invoice);
-
+                response.sendRedirect(request.getContextPath() + "/appointment/list"); 
             } else {
                 // If no invoice, just confirm the appointment (pay at hospital)
                 response.sendRedirect(request.getContextPath() + "/appointment/list");  // Redirect to appointment list

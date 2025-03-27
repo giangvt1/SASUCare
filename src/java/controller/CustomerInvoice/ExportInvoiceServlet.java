@@ -51,7 +51,7 @@ public class ExportInvoiceServlet extends HttpServlet {
     }
 
     private void exportToCSV(HttpServletResponse response, List<Invoice> invoices)
-            throws IOException {
+            throws IOException {    
         // Set response headers
         response.setContentType("text/csv");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");

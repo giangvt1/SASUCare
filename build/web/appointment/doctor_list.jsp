@@ -12,6 +12,28 @@
         <link rel="stylesheet" href="../static/css/appointment/appointments.css">
         <link rel="stylesheet" href="../static/css/appointment/doctor-choose-style.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <style>
+            .the-container {
+                display: flex;
+                flex-direction: row; /* Align elements in a row */
+            }
+
+            .doctor-sidebar {
+                max-width: 400px; /* Set the width of the sidebar */
+                /*margin-right: 20px;  Add space between sidebar and main content */
+                flex-shrink: 0;
+            }
+
+            .main-content {
+                flex: 1; /* Take up remaining space */
+                /*padding: 20px;  Optional: add padding */
+            }
+
+            .modal-content {
+                max-height: 80vh; /* Adjust the height as needed */
+                overflow-y: auto;
+            }
+        </style>
     </head>
 
     <body>
@@ -61,7 +83,7 @@
 
         <!-- Doctor List Table -->
         <!-- Main container with sidebar and content -->
-        <div class="container">
+        <div class="the-container">
             <!-- Sidebar for Doctor Details -->
             <div class="sidebar doctor-sidebar" id="doctor-sidebar">
                 <div id="doctor-sidebar-content">

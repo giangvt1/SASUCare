@@ -723,4 +723,59 @@ public class CustomerDBContext extends DBContext<Customer> {
 
         return null;
     }
+
+    public Customer getCustomerWithGoogleAuthById(int customerId) {
+        Customer customer = null;
+        String sql = """
+        SELECT [id]
+              ,[username]
+              ,[password]
+              ,[gmail]
+              ,[gender]
+              ,[dob]
+              ,[address]
+              ,[phone_number]
+              ,[google_id]
+              ,[fullname]
+              ,[account_id]
+              ,[picture]
+          FROM [Customer] 
+          LEFT JOIN Google_Authen ON Google_Authen.email = [Customer].gmail
+          WHERE [Customer].id = ?
+        """;
+
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setInt(1, customerId);
+
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    customer = new Customer();
+                    customer.setId(rs.getInt("id"));
+                    customer.setUsername(rs.getString("username"));
+                    customer.setPassword(rs.getString("password"));
+                    customer.setGmail(rs.getString("gmail"));
+                    customer.setGender(rs.getBoolean("gender"));
+                    customer.setDob(rs.getDate("dob"));
+                    customer.setAddress(rs.getString("address"));
+                    customer.setPhone_number(rs.getString("phone_number"));
+                    customer.setFullname(rs.getString("fullname"));
+
+                    // Handle Google Account information
+                    String googleId = rs.getString("google_id");
+                    if (googleId != null) {
+                        GoogleAccount googleAccount = new GoogleAccount();
+                        googleAccount.setId(googleId);
+                        googleAccount.setId(rs.getString("account_id"));
+                        googleAccount.setPicture(rs.getString("picture"));
+                        googleAccount.setEmail(rs.getString("gmail"));
+                        customer.setGoogle_id(googleAccount);
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error fetching customer with Google auth by ID: {0}", ex.getMessage());
+        }
+
+        return customer;
+    }
 }

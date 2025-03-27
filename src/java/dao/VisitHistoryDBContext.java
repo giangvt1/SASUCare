@@ -105,7 +105,7 @@ public class VisitHistoryDBContext extends DBContext<VisitHistory> {
         return false;
     }
 
-        public boolean updateVisitHistory(VisitHistory visitHistory) {
+    public boolean updateVisitHistory(VisitHistory visitHistory) {
         String sql = "UPDATE VisitHistory "
                 + "SET DoctorID = ?, CustomerID = ?, VisitDate = ?, ReasonForVisit = ?, Diagnoses = ?, TreatmentPlan = ?, Note = ?, AppointmentID "
                 + "WHERE id = ?";
@@ -128,8 +128,8 @@ public class VisitHistoryDBContext extends DBContext<VisitHistory> {
         }
         return false;
     }
-    
-        public boolean deleteVisitHistory(int visitHistoryId) {
+
+    public boolean deleteVisitHistory(int visitHistoryId) {
         String sql = "DELETE FROM VisitHistory WHERE id = ?";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -142,12 +142,21 @@ public class VisitHistoryDBContext extends DBContext<VisitHistory> {
         }
         return false;
     }
-    
+
     // Get visit histories by customer ID, doctor ID, date range, and sort direction
     public List<VisitHistory> getVisitHistoriesByCustomerId(int customerId, String doctorId, String startDate, String endDate, String sortDirection) {
         List<VisitHistory> visitHistories = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT * FROM VisitHistory vh");
-        sql.append(" JOIN Doctor d ON vh.doctorId = d.id");
+        StringBuilder sql = new StringBuilder("SELECT \n"
+                + "    vh.id,\n"
+                + "    vh.DoctorID,\n"
+                + "    vh.CustomerID,\n"
+                + "    vh.VisitDate,\n"
+                + "    vh.ReasonForVisit,\n"
+                + "    vh.Diagnoses,\n"
+                + "    vh.TreatmentPlan,\n"
+                +"[Note]"
+                + "FROM VisitHistory vh");
+
         sql.append(" WHERE vh.customerId = ?");
 
         // Apply filtering based on doctor and date range
@@ -198,11 +207,13 @@ public class VisitHistoryDBContext extends DBContext<VisitHistory> {
                 visitHistory.setReasonForVisit(rs.getString("reasonForVisit"));
                 visitHistory.setDiagnoses(rs.getString("diagnoses"));
                 visitHistory.setTreatmentPlan(rs.getString("treatmentPlan"));
-                visitHistory.setNote(rs.getString("note"));
+                visitHistory.setNote(rs.getString("Note"));
 
                 // Assuming Appointment details are included or need to be fetched separately
-                Appointment appointment = new Appointment(); // You may need to fetch appointment details
-                visitHistory.setAppointment(appointment);
+//                Appointment appointment = new Appointment(); // You may need to fetch appointment details
+//                appointment.setId(rs.getInt("appointment_id"));
+//                appointment.setStatus(rs.getString("status"));
+//                visitHistory.setAppointment(appointment);
 
                 visitHistories.add(visitHistory);
             }
@@ -268,11 +279,7 @@ public class VisitHistoryDBContext extends DBContext<VisitHistory> {
                 + //
                 "      ,[TreatmentPlan]\r\n"
                 + //
-                "      ,ds.schedule_date as NextAppointment\r\n"
-                + //
-                "  FROM [VisitHistory] vh left join Appointment a on a.id = vh.NextAppointmentID\r\n"
-                + //
-                "   join Doctor_Schedule ds on a.DocSchedule_id = ds.id\r\n"
+                "  FROM [VisitHistory] vh \n"
                 + //
                 " WHERE vh.id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
