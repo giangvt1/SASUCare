@@ -6,25 +6,30 @@
     <meta charset="UTF-8">
     <title>Biểu đồ doanh thu hóa đơn</title>
     <style>
-        /* Reset và nền trang với gradient nhẹ */
-        body {
+        /* Reset & basic body styling */
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
+        }
+        body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(to right, #ece9e6, #ffffff);
         }
-        /* Container chính bên phải, có khoảng cách từ sidebar */
+
+        /* Container for the right side (if you have a sidebar on the left) */
         .right-side {
-            margin-left: 220px;
+            margin-left: 220px; /* Adjust if your sidebar width is different */
             padding: 40px 30px;
             min-height: 100vh;
             background-color: #f9f9f9;
         }
-        /* Card chứa biểu đồ với bo tròn, bóng đổ và hiệu ứng hover */
+
+        /* Main chart card container */
         .chart-container {
             width: 90%;
             max-width: 1000px;
-            margin: 20px auto;
+            margin: 20px auto;  /* centers horizontally */
             background: #fff;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -32,23 +37,23 @@
             transition: transform 0.3s, box-shadow 0.3s;
         }
         .chart-container:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
         }
         .chart-container h1 {
-            margin-top: 0;
+            margin-bottom: 30px;
             text-align: center;
             color: #333;
             font-size: 28px;
-            margin-bottom: 30px;
         }
-        /* Form lọc doanh thu: căn giữa và khoảng cách hợp lý */
+
+        /* Form for filtering revenue */
         .filter-form {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
             align-items: center;
-            gap: 20px;
+            justify-content: center;
+            gap: 20px; /* space between items */
             margin-bottom: 30px;
         }
         .filter-form label {
@@ -79,12 +84,14 @@
         .filter-form button:hover {
             background-color: #0056b3;
         }
-        /* Khu vực hiển thị biểu đồ */
+
+        /* Chart box to keep the canvas responsive */
         .chart-box {
             position: relative;
-            height: 500px;
+            height: 500px; /* Adjust as needed */
         }
-        /* Responsive cho thiết bị nhỏ */
+
+        /* Responsive for smaller screens */
         @media (max-width: 768px) {
             .right-side {
                 margin-left: 0;
@@ -94,54 +101,57 @@
                 width: 100%;
                 padding: 20px;
             }
+            .chart-box {
+                height: 400px; /* reduce height on mobile if needed */
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Include Header & Sidebar (AdminHeader.jsp và AdminLeftSideBar.jsp) -->
+    <!-- Include Header & Sidebar (AdminHeader.jsp & AdminLeftSideBar.jsp) -->
     <jsp:include page="../admin/AdminHeader.jsp" />
     <jsp:include page="../admin/AdminLeftSideBar.jsp" />
-    
+
     <div class="right-side">
         <div class="chart-container">
             <h1>Biểu đồ doanh thu hóa đơn</h1>
-            
-            <!-- Form lọc doanh thu theo khoảng thời gian -->
+
+            <!-- Filter form -->
             <form class="filter-form" action="../finance/revenue" method="get">
                 <label for="startDate">Từ ngày:</label>
                 <input type="date" id="startDate" name="startDate" value="${startDate}" />
+                
                 <label for="endDate">Đến ngày:</label>
                 <input type="date" id="endDate" name="endDate" value="${endDate}" />
+                
                 <button type="submit">Lọc</button>
-            </form>.
-            
-            <!-- Khu vực hiển thị biểu đồ doanh thu -->
+            </form>
+
+            <!-- Chart display -->
             <div class="chart-box">
                 <canvas id="revenueChart"></canvas>
             </div>
         </div>
     </div>
-    
-    <!-- Nhúng Chart.js từ CDN -->
+
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Lấy dữ liệu doanh thu từ attribute revenueList (mỗi đối tượng có thuộc tính month và totalRevenue)
+        // Get revenue data
         const revenueData = [
             <c:forEach var="rev" items="${revenueList}" varStatus="loop">
                 { month: "<c:out value='${rev.month}'/>", totalRevenue: ${rev.totalRevenue} }<c:if test="${!loop.last}">,</c:if>
             </c:forEach>
         ];
-        
-        // Tạo mảng nhãn (tháng) và dữ liệu (doanh thu) cho biểu đồ
+
+        // Prepare labels and values
         const labels = revenueData.map(item => item.month);
         const dataValues = revenueData.map(item => item.totalRevenue);
-        
-        // Lấy context của canvas
+
+        // Init chart
         const ctx = document.getElementById('revenueChart').getContext('2d');
-        
-        // Khởi tạo biểu đồ với Chart.js
         const revenueChart = new Chart(ctx, {
-            type: 'line', // Bạn có thể thay đổi thành 'bar' nếu thích biểu đồ cột
+            type: 'line',
             data: {
                 labels: labels,
                 datasets: [{
@@ -166,7 +176,10 @@
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(context.parsed.y);
+                                return new Intl.NumberFormat('vi-VN', {
+                                    style: 'currency',
+                                    currency: 'VND'
+                                }).format(context.parsed.y);
                             }
                         }
                     }
@@ -177,7 +190,10 @@
                         ticks: {
                             font: { size: 14 },
                             callback: function(value) {
-                                return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+                                return new Intl.NumberFormat('vi-VN', {
+                                    style: 'currency',
+                                    currency: 'VND'
+                                }).format(value);
                             }
                         }
                     },
