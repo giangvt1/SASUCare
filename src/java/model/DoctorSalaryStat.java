@@ -6,6 +6,16 @@ public class DoctorSalaryStat {
     private int shiftCount;
     private double salaryRate;
     private double totalSalary;
+    private double SalaryCoefficient;
+
+    public double getSalaryCoefficient() {
+        return SalaryCoefficient;
+    }
+
+    public void setSalaryCoefficient(double SalaryCoefficient) {
+        this.SalaryCoefficient = SalaryCoefficient;
+    }
+    
 
     public DoctorSalaryStat() {}
 
