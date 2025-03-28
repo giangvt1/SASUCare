@@ -16,7 +16,7 @@
         <div class="right-side">
             <div class="main-content">
                 <h2>User Account List</h2>
-                <form method="get" action="${pageContext.request.contextPath}/hr/accountlist" class="mb-3">
+                <form method="get" action="${pageContext.request.contextPath}/admin/accountlist" class="mb-3">
                     <div class="input-group">
                         <input type="text" name="search" class="form-control" placeholder="Search..." value="${search}">
                         <button type="submit" class="btn btn-primary">Search</button>
@@ -82,7 +82,7 @@
                                         <td>${user.roleName}</td>
                                     </c:if>
                                     <td>
-                                        <a href="${pageContext.request.contextPath}/hr/edit?username=${user.staffUsername}&page=${requestScope.currentPage}&view=${param.view}&search=${searchValue}" class="btn btn-warning btn-sm">Edit</a>
+                                        <a href="${pageContext.request.contextPath}/admin/edit?username=${user.staffUsername}&page=${requestScope.currentPage}&view=${param.view}&search=${searchValue}" class="btn btn-warning btn-sm">Edit</a>
                                         <a href="?action=delete&page=${currentPage}&pageSize=${pageSize}&view=${view}&search=${search}&username=${user.staffUsername}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
                                     </td>
                                 </tr>

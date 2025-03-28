@@ -135,7 +135,7 @@
                 </c:if>
 
                 <div class="form-container">
-                    <form action="${pageContext.request.contextPath}/hr/create" 
+                    <form action="${pageContext.request.contextPath}/admin/create" 
                           method="POST" 
                           onsubmit="return validateForm()">
                         <table>

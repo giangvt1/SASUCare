@@ -35,7 +35,7 @@
                     <div class="alert alert-danger">${error}</div> <%-- Error alert --%>
                 </c:if>
 
-                <form method="post" action="${pageContext.request.contextPath}/hr/edit">
+                <form method="post" action="${pageContext.request.contextPath}/admin/edit">
                     <input type="hidden" name="username" value="${user.username}" />
 
                     <div class="mb-3"> <%-- Use Bootstrap spacing utility --%>

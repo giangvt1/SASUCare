@@ -43,6 +43,13 @@
                     <a class="active" href="${pageContext.request.contextPath}/admin/Dashboard.jsp">
                         <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                     </a>
+                        <a href="${pageContext.request.contextPath}/admin/accountlist">
+                        <i class="fa fa-globe"></i> <span>Account List</span>
+                    </a>
+                        
+                    <a href="${pageContext.request.contextPath}/admin/create">
+                        <i class="fa fa-user-plus"></i> <span>Create Account</span>
+                    </a>
                     <a href="${pageContext.request.contextPath}/admin/ManageTypeApplication">
                         <i class="fa fa-globe"></i> <span>Manage Type Application</span>
                     </a>
@@ -58,16 +65,6 @@
 
             <c:if test="${sessionScope.allowedUrls != null && sessionScope.allowedUrls.contains('/hr/create')}">
 
-                <li>
-                    <a href="${pageContext.request.contextPath}/hr/accountlist">
-                        <i class="fa fa-globe"></i> <span>Account List</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="${pageContext.request.contextPath}/hr/create">
-                        <i class="fa fa-user-plus"></i> <span>Create Account</span>
-                    </a>
-                </li>
                 <li> 
                     <a href="${pageContext.request.contextPath}/hr/ViewStaffApplication?staffId=${sessionScope.staff.id}">
                         <i class="fa fa-globe"></i> <span>Staff Applications</span>
@@ -85,12 +82,7 @@
                 </li>
                 <li>
                     <a href="${pageContext.request.contextPath}/ManageService">
-                        <i class="fa fa-table"></i> <span>Add ServicePackage</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="${pageContext.request.contextPath}/hr/posts">
-                        <i class="fa fa-globe"></i> <span>Post List</span>
+                        <i class="fa fa-table"></i> <span>Services</span>
                     </a>
                 </li>
                 <li>

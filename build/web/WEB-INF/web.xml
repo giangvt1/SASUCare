@@ -395,15 +395,15 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>EditUserController</servlet-name>
-        <url-pattern>/hr/edit</url-pattern>
+        <url-pattern>/admin/edit</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>UserAccountCreateController</servlet-name>
-        <url-pattern>/hr/create</url-pattern>
+        <url-pattern>/admin/create</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>StaffAccountListController</servlet-name>
-        <url-pattern>/hr/accountlist</url-pattern>
+        <url-pattern>/admin/accountlist</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>AppointmentDoctorListController</servlet-name>

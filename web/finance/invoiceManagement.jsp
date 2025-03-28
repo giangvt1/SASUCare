@@ -16,7 +16,7 @@
         }
         /* Container chính bên phải sau sidebar */
         .right-side {
-            margin-left: 220px; /* giả sử sidebar rộng 200px */
+            margin-left: 220px;
             padding: 30px;
             background-color: #f9f9f9;
             min-height: 100vh;
@@ -27,7 +27,7 @@
             font-size: 26px;
             margin-bottom: 25px;
         }
-        /* Form lọc, tìm kiếm */
+        /* Form lọc, tìm kiếm và chọn số dòng hiển thị */
         .filter-form {
             display: flex;
             flex-wrap: wrap;
@@ -66,6 +66,20 @@
         }
         .filter-form button:hover {
             background-color: #0056b3;
+        }
+        /* Nút Export CSV */
+        .export-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #28a745;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 15px;
+            margin-bottom: 15px;
+        }
+        .export-btn:hover {
+            background-color: #218838;
         }
         /* Bảng hóa đơn */
         table {
@@ -162,6 +176,13 @@
             </select>
             <button type="submit">Lọc</button>
         </form>
+        
+        <!-- Nút Export CSV: chuyển sang chế độ xuất file CSV -->
+        <div style="text-align: center; margin-bottom: 15px;">
+            <a href="InvoiceManagement?export=csv&search=${param.search}&startDate=${startDate}&endDate=${endDate}&sortField=${sortField}&sortDir=${sortDir}&pageSize=${pageSize}" class="export-btn">
+                Export CSV
+            </a>
+        </div>
         
         <!-- Bảng hiển thị hóa đơn -->
         <table>
