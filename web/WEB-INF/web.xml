@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
+    <servlet>
+        <servlet-name>ConfirmSchedule</servlet-name>
+        <servlet-class>Service.ConfirmSchedule</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>SearchDoctor</servlet-name>
         <url-pattern>/admin/SearchDoctor</url-pattern>
@@ -8,11 +12,15 @@
         <servlet-name>DoctorMedicalConsultation</servlet-name>
         <url-pattern>/admin/DoctorMedicalConsultation</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ConfirmSchedule</servlet-name>
+        <url-pattern>/confirmschedule</url-pattern>
+    </servlet-mapping>
     <error-page>
         <error-code>404</error-code>
         <location>/error404.jsp</location>
     </error-page>
-   <error-page>
+    <error-page>
         <error-code>500</error-code>
         <location>/error500.jsp</location>
     </error-page>

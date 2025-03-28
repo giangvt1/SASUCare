@@ -15,12 +15,6 @@
         </group>
         <group name="PRJ301"/>
         <group>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/finance/invoiceManagement.jsp</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/financial/DoctorSalaryStatController.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/DoctorScheduleDBContext.java</file>
-            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/finance/doctorSalaryStat.jsp</file>
-        </group>
-        <group>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/admin/AdminLeftSideBar.jsp</file>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/controller/financial/DoctorSalaryChartController.java</file>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/DoctorScheduleDBContext.java</file>
@@ -122,6 +116,16 @@
             <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/web/WEB-INF/web.xml</file>
             <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/controller/AdminController/DoctorMedicalConsultation.java</file>
             <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/web/admin/SearchDoctor.jsp</file>
+        </group>
+        <group>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/Service/AppointmentStatusUpdater.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/InvoiceDBContext.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/finance/invoiceRevenueChart.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dal/DBContext.java</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/WEB-INF/web.xml</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/error500.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/error403.jsp</file>
+            <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/error404.jsp</file>
         </group>
     </open-files>
 </project-private>
