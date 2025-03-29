@@ -385,12 +385,16 @@ public class AppointmentDBContext extends DBContext<Appointment> {
         JOIN Doctor_Schedule ds ON a.DocSchedule_id = ds.id
         JOIN Shift s ON ds.shift_id = s.id
         JOIN Customer c ON a.customer_id = c.id
-        WHERE a.doctor_id = ? AND a.status = ?
+        WHERE a.doctor_id = ? 
     """;
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, doctorId); // Bác sĩ ID
-            stmt.setString(2, status); // Trạng thái cuộc hẹn
+            if (status != null || status.trim().isEmpty()) {
+                sql += "AND a.status = ?";
+                stmt.setString(2, status); // Trạng thái cuộc hẹn
+            }
+
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 Appointment appointment = new Appointment();

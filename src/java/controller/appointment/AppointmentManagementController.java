@@ -41,12 +41,13 @@ public class AppointmentManagementController extends BaseRBACController {
         Date today = Date.valueOf(currentDate);
 
 //     ?  Date today = Date.valueOf(LocalDate.of(2025, 3, 4)); // Correct format
-
+        List<Appointment> totalAppointments = appointmentDB.getAppointmentsByStatusAndDoctor( "", loggedDoctor.getId());
         List<Appointment> todayAppointments = appointmentDB.getAppointmentsByDateAndDoctor(today, loggedDoctor.getId(), "and a.status Not in ('pending', 'canceled')");
         List<Appointment> wattingAppointment = appointmentDB.getAppointmentsByDateRangeAndDoctor(loggedDoctor.getId(), 3, "and status = 'Confirmed'");
         
         // Đặt các đối tượng vào request để sử dụng trong JSP
-        request.setAttribute("todayAppointments", todayAppointments);
+        request.setAttribute("todayAppointments", totalAppointments);
+        request.setAttribute("total", todayAppointments);
         request.setAttribute("waittingAppointment", wattingAppointment);
         request.setAttribute("docID", loggedDoctor.getId());
         request.setAttribute("currentDate", currentDate);

@@ -99,9 +99,11 @@ public class AppointmentConfirmServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             out.write("{\"status\":\"error\", \"message\":\"Invalid input format.\"}");
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            out.write("{\"status\":\"error\", \"message\":\"An error occurred while booking.\"}");
-        }
+    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+    out.write("{\"status\":\"error\", \"message\":\"An error occurred while booking.\"}");
+    e.printStackTrace();  // This will print the full stack trace to the server logs
+}
+
     }
 
     private Invoice createInvoice(Appointment appointment) {
