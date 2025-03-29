@@ -118,6 +118,7 @@
             <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/web/admin/SearchDoctor.jsp</file>
         </group>
         <group>
+<<<<<<< Updated upstream
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/Service/AppointmentStatusUpdater.java</file>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/src/java/dao/InvoiceDBContext.java</file>
             <file>file:/C:/Users/acer/Desktop/CNki5/SWP/code/SWP391_GROUP6/web/finance/invoiceRevenueChart.jsp</file>
@@ -187,6 +188,20 @@
             <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/controller/CustomerMedicalHistory/MedicalHistoryController.java</file>
             <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/src/java/dao/CustomerDBContext.java</file>
             <file>file:/D:/GitHub/SWP391_clone/SWP391_GROUP6/web/doctor/appointments.jsp</file>
+=======
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/controller/appointment/AppointmentManagementController.java</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/web/admin/AdminLeftSideBar.jsp</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/web/css/doctor/doctor_style.css</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/web/css/admin/admin_styles.css</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/controller/doctor/SearchCustomer.java</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/controller/appointment/AppointmentRescheduleController.java</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/controller/systemaccesscontrol/BaseRequiredAuthentication.java</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/controller/systemaccesscontrol/BaseRBACController.java</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/controller/doctor/DoctorCalendarController.java</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/web/admin/Dashboard.jsp</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/src/java/controller/systemaccesscontrol/UserLoginController.java</file>
+            <file>file:/D:/Ky%205/SWP/PROJECT/SWP391_GROUP6/web/css/admin/loginAdminStyle.css</file>
+>>>>>>> Stashed changes
         </group>
     </open-files>
 </project-private>

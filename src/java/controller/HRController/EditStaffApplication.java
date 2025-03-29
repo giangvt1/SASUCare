@@ -43,7 +43,7 @@ public class EditStaffApplication extends HttpServlet {
         String message = "";
         Application a = new Application();
         a.setId(id);
-        a.setStaffProgressId(staffHandleId);
+        a.setStaffHandleId(staffHandleId);
         a.setStatus(status);
         a.setReply(reply);
         ApplicationDBContext appDAO = new ApplicationDBContext();

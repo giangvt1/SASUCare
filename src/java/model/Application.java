@@ -8,7 +8,7 @@ public class Application {
     private int typeId;
     private String typeName;
     private int staffSendId;
-    private int staffProgressId;
+    private int staffHandleId;
     private String reason;
     private String status;
     private String reply;
@@ -17,20 +17,6 @@ public class Application {
     private String staffName;
 
     public Application() {
-    }
-
-    public Application(int id, int typeId, String typeName, int staffSendId, int staffProgressId, String reason, String status, String reply, Timestamp dateSend, Timestamp dateReply, String staffName) {
-        this.id = id;
-        this.typeId = typeId;
-        this.typeName = typeName;
-        this.staffSendId = staffSendId;
-        this.staffProgressId = staffProgressId;
-        this.reason = reason;
-        this.status = status;
-        this.reply = reply;
-        this.dateSend = dateSend;
-        this.dateReply = dateReply;
-        this.staffName = staffName;
     }
 
     public int getId() {
@@ -65,12 +51,12 @@ public class Application {
         this.staffSendId = staffSendId;
     }
 
-    public int getStaffProgressId() {
-        return staffProgressId;
+    public int getStaffHandleId() {
+        return staffHandleId;
     }
 
-    public void setStaffProgressId(int staffProgressId) {
-        this.staffProgressId = staffProgressId;
+    public void setStaffHandleId(int staffProgressId) {
+        this.staffHandleId = staffProgressId;
     }
 
     public String getReason() {

@@ -87,7 +87,7 @@ public class ApplicationDBContext extends DBContext<Application> {
             int page, String sort, int size) {
         List<Application> applications = new ArrayList<>();
         StringBuilder sqlBuilder = new StringBuilder(
-                "SELECT a.id, type_id, a.date_send, a.date_reply, a.staff_send_id,a.staff_progress_id, a.reason, a.status, a.reply, "
+                "SELECT a.id, type_id, a.date_send, a.date_reply, a.staff_send_id,a.staff_handle_id, a.reason, a.status, a.reply, "
                 + "t.staff_manage_id AS staffManage, t.name AS typeName, s.fullname AS staffName "
                 + "FROM Application a "
                 + "JOIN Type_Application t ON a.type_id = t.id "
@@ -162,7 +162,7 @@ public class ApplicationDBContext extends DBContext<Application> {
                     app.setReason(rs.getString("reason"));
                     app.setStatus(rs.getString("status"));
                     app.setReply(rs.getString("reply"));
-                    app.setStaffProgressId(rs.getInt("staff_progress_id"));
+                    app.setStaffHandleId(rs.getInt("staff_handle_id"));
                     app.setStaffName(rs.getString("staffName"));
                     applications.add(app);
                 }
@@ -234,7 +234,7 @@ public class ApplicationDBContext extends DBContext<Application> {
 
     public Application getApplicationById(int id) {
         Application application = null;
-        String sql = "SELECT a.id, type_id, a.date_send, a.date_reply, a.staff_send_id,a.staff_progress_id, a.reason, a.status, a.reply, "
+        String sql = "SELECT a.id, type_id, a.date_send, a.date_reply, a.staff_send_id,a.staff_handle_id, a.reason, a.status, a.reply, "
                 + "t.staff_manage_id AS staffManage, t.name AS typeName, s.fullname AS staffName "
                 + "FROM Application a "
                 + "JOIN Type_Application t ON a.type_id = t.id "
@@ -253,7 +253,7 @@ public class ApplicationDBContext extends DBContext<Application> {
                 application.setReason(rs.getString("reason"));
                 application.setStatus(rs.getString("status"));
                 application.setReply(rs.getString("reply"));
-                application.setStaffProgressId(rs.getInt("staff_progress_id"));
+                application.setStaffHandleId(rs.getInt("staff_handle_id"));
                 application.setStaffName(rs.getString("staffName"));
             }
         } catch (SQLException ex) {
@@ -265,7 +265,7 @@ public class ApplicationDBContext extends DBContext<Application> {
     public List<Application> getApplicationsByStaffID(String name, java.sql.Date date, String status, int staffSendId, int page, String sort, int size) {
         List<Application> applications = new ArrayList<>();
         StringBuilder sqlBuilder = new StringBuilder(
-                "SELECT a.id, type_id, a.date_send, a.date_reply, a.staff_send_id, a.reason, a.status, a.reply,a.staff_progress_id, t.name AS typeName "
+                "SELECT a.id, type_id, a.date_send, a.date_reply, a.staff_send_id, a.reason, a.status, a.reply,a.staff_handle_id, t.name AS typeName "
                 + "FROM Application a "
                 + "JOIN Type_Application t ON a.type_id = t.id "
                 + "WHERE a.staff_send_id = ?"
@@ -321,7 +321,7 @@ public class ApplicationDBContext extends DBContext<Application> {
                     app.setReason(rs.getString("reason"));
                     app.setStatus(rs.getString("status"));
                     app.setReply(rs.getString("reply"));
-                    app.setStaffProgressId(rs.getInt("staff_progress_id"));
+                    app.setStaffHandleId(rs.getInt("staff_handle_id"));
                     applications.add(app);
                 }
             }
@@ -392,12 +392,12 @@ public class ApplicationDBContext extends DBContext<Application> {
     }
 
     public boolean updateApplicationForStaff(Application application) {
-        String sql = "UPDATE Application SET date_reply = ?, status = ?, reply = ?, staff_progress_id = ? WHERE id = ?";
+        String sql = "UPDATE Application SET date_reply = ?, status = ?, reply = ?, staff_handle_id = ? WHERE id = ?";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
             stm.setString(2, application.getStatus());
             stm.setString(3, application.getReply());
-            stm.setInt(4, application.getStaffProgressId());
+            stm.setInt(4, application.getStaffHandleId());
             stm.setInt(5, application.getId());
 
             int rowsUpdated = stm.executeUpdate();

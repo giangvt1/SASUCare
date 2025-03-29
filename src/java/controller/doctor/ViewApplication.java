@@ -10,11 +10,13 @@ import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import model.Application;
 import model.TypeApplication;
+import model.system.Staff;
 import model.system.User;
 
 /**
@@ -23,51 +25,51 @@ import model.system.User;
  */
 public class ViewApplication extends BaseRBACController {
 
+    private int getStaffIdFromSession(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+        Staff staff = (Staff) session.getAttribute("staff");
+
+        if (staff == null) {
+            response.sendRedirect("/error404.jsp");
+            return -1;
+        }
+
+        return staff.getId();
+    }
+
     @Override
     protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    @Override
+    protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int staffId = getStaffIdFromSession(request, response);
         String typeName = request.getParameter("name");
         String dateSendStr = request.getParameter("dateSend");
         String status = request.getParameter("status");
         String pageStr = request.getParameter("page");
         String sortStr = request.getParameter("sort");
         String sizeStr = request.getParameter("size");
-        String sort = "default";
-        int sizeOfEachTable = 10;
-        java.sql.Date dateSend = null;
 
-        try {
-            if (dateSendStr != null && !dateSendStr.isEmpty()) {
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                java.util.Date parsedDate = format.parse(dateSendStr);
-                dateSend = new java.sql.Date(parsedDate.getTime());
-            }
-        } catch (ParseException ex) {
-            System.out.println(ex);
-        }
+        int page = parseInteger(pageStr, 1);
+        int sizeOfEachTable = parseInteger(sizeStr, 10);
+        String sort = (sortStr != null) ? sortStr : "default";
+        java.sql.Date dateSend = parseDate(dateSendStr);
 
-        int staffId = Integer.parseInt(request.getParameter("staffId"));
-        int page = 1;
-        if (pageStr != null && !pageStr.isEmpty()) {
-            try {
-                page = Integer.parseInt(pageStr);
-
-            } catch (NumberFormatException e) {
-                page = 1;
-            }
-        }
-        if (sortStr != null) {
-            sort = sortStr;
-        }
-        if (sizeStr != null && !sizeStr.isEmpty()) {
-            sizeOfEachTable = Integer.parseInt(sizeStr);
-        }
         ApplicationDBContext appDAO = new ApplicationDBContext();
         List<TypeApplication> typeList = appDAO.getAllTypes();
-
-        List<Application> applications = appDAO.getApplicationsByStaffID(typeName, dateSend, status, staffId, page, sort, sizeOfEachTable);
-
         int totalApplications = appDAO.getApplicationsCountByStaffID(typeName, dateSend, status, staffId);
         int totalPages = (int) Math.ceil((double) totalApplications / sizeOfEachTable);
+
+        if (page <= 0 || page > totalPages) {
+            page = 1;
+        }
+        List<Application> applications = appDAO.getApplicationsByStaffID(typeName, dateSend, status, staffId, page, sort, sizeOfEachTable);
         request.setAttribute("typeList", typeList);
         request.setAttribute("applications", applications);
         request.setAttribute("currentPage", page);
@@ -75,9 +77,25 @@ public class ViewApplication extends BaseRBACController {
         request.getRequestDispatcher("ViewApplication.jsp").forward(request, response);
     }
 
-    @Override
-    protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    private int parseInteger(String value, int defaultValue) {
+        if (value != null && !value.isEmpty()) {
+            try {
+                return Integer.parseInt(value);
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        return defaultValue;
     }
 
+    private java.sql.Date parseDate(String dateStr) {
+        if (dateStr == null || dateStr.isEmpty()) {
+            return null;
+        }
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            return new java.sql.Date(format.parse(dateStr).getTime());
+        } catch (ParseException ignored) {
+        }
+        return null;
+    }
 }

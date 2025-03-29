@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>   
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -18,16 +19,14 @@
                     width: 30%;
                 }
             </style>
-            <h2 class="mb-3 text-center title">List Applications</h2>
-            <form action="ViewApplication" method="get" class="searchForm">
-                <input type="hidden" name="staffId" value="${sessionScope.staff.id}" />
-
-                <div  class="row d-flex justify-content-center">
+            <h2 class="mb-3 text-center title">Danh sách đơn</h2>
+            <form action="ViewApplication" method="post" class="searchForm" id="searchForm">
+                <div class="row d-flex justify-content-center">
                     <div class="filter-container">
                         <div class="filter-item">
-                            <span for="typeName">Name application</span>
+                            <span for="typeName">Tên đơn</span>
                             <select name="name" id="name" onchange="this.form.submit()">
-                                <option value="" ${empty param.name ? 'selected' : ''}>All</option>
+                                <option value="" ${empty param.name ? 'selected' : ''}>Tất cả</option>
                                 <c:forEach var="type" items="${typeList}">
                                     <option value="${type.name}" ${param.name == type.name ? 'selected' : ''}>${type.name}</option>
                                 </c:forEach>
@@ -35,33 +34,31 @@
                         </div>
 
                         <div class="filter-item">
-                            <span for="dateSend">Date Send</span>
-                            <input type="date" class="form-control date" name="dateSend"  value="${param.dateSend}" onchange="this.form.submit()"/>
+                            <span for="dateSend">Ngày gửi</span>
+                            <input type="date" class="form-control date" name="dateSend" value="${param.dateSend}" onchange="this.form.submit()" />
                         </div>
 
-                        <!-- Status -->
                         <div class="filter-item">
-                            <span for="status">Status</span>
+                            <span for="status">Trạng thái</span>
                             <select name="status" id="status" onchange="this.form.submit()">
-                                <option value="" ${empty param.status ? 'selected' : ''}>All</option>
-                                <option value="pending" ${param.status == 'pending' ? 'selected' : ''}>Pending</option>
-                                <option value="approved" ${param.status == 'approved' ? 'selected' : ''}>Approved</option>
-                                <option value="rejected" ${param.status == 'rejected' ? 'selected' : ''}>Rejected</option>
+                                <option value="" ${empty param.status ? 'selected' : ''}>Tất cả</option>
+                                <option value="pending" ${param.status == 'pending' ? 'selected' : ''}>Chờ duyệt</option>
+                                <option value="approved" ${param.status == 'approved' ? 'selected' : ''}>Đã duyệt</option>
+                                <option value="rejected" ${param.status == 'rejected' ? 'selected' : ''}>Từ chối</option>
                             </select>
                         </div>
 
-                        <!-- Sort -->
                         <div class="filter-item">
-                            <span for="sort">Sort</span>
+                            <span for="sort">Sắp xếp</span>
                             <select name="sort" id="sort" onchange="this.form.submit()">
-                                <option value="default" ${param.sort == 'default' ? 'selected' : ''}>Default</option>
-                                <option value="dateLTH" ${param.sort == 'dateLTH' ? 'selected' : ''}>Date Increment</option>
-                                <option value="dateHTL" ${param.sort == 'dateHTL' ? 'selected' : ''}>Date Decrement</option>
+                                <option value="default" ${param.sort == 'default' ? 'selected' : ''}>Mặc định</option>
+                                <option value="dateLTH" ${param.sort == 'dateLTH' ? 'selected' : ''}>Ngày tăng dần</option>
+                                <option value="dateHTL" ${param.sort == 'dateHTL' ? 'selected' : ''}>Ngày giảm dần</option>
                             </select>
                         </div>
-                        <!-- Size -->
+
                         <div class="filter-item">
-                            <span for="size">Sise each table</span>
+                            <span for="size">Số lượng mỗi trang</span>
                             <select name="size" id="size" onchange="this.form.submit()">
                                 <option value="10" ${param.size == '10' ? 'selected' : ''}>10</option>
                                 <option value="5" ${param.size == '5' ? 'selected' : ''}>5</option>
@@ -71,22 +68,26 @@
                         </div>
                     </div>
                 </div>
+
+                <input type="hidden" name="page" id="pageInput">
+
                 <div class="submit-container">
-                    <button type="submit" class="back-btn">Search</button>
+                    <button type="submit" class="back-btn">Tìm kiếm</button>
                 </div>
             </form>
+
             <div class="table-data mt-4">
                 <div style="margin-bottom: 30px"></div>
-                <a class="add-btn" href="../doctor/SendApplication">Send Application</a>
+                <a class="add-btn" href="../doctor/SendApplication">Gửi đơn</a>
                 <table class="table" style="width:95%">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Name</th>
-                            <th>Date</th>
-                            <th>Reason</th>
-                            <th>Status</th>
-                            <th>Reply</th>
+                            <th>Tên đơn</th>
+                            <th>Ngày gửi</th>
+                            <th>Lý do</th>
+                            <th>Trạng thái</th>
+                            <th>Phản hồi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -96,51 +97,68 @@
                                 <td>${app.typeName}</td>
                                 <td><fmt:formatDate value="${app.dateSend}" pattern="dd/MM/yyyy HH:mm:ss" /></td>
                                 <td>${app.reason}</td>
-                                <td>${app.status}</td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${fn:toLowerCase(app.status) == 'pending'}">Chờ duyệt</c:when>
+                                        <c:when test="${fn:toLowerCase(app.status) == 'approved'}">Đã duyệt</c:when>
+                                        <c:when test="${fn:toLowerCase(app.status) == 'rejected'}">Bị từ chối</c:when>
+                                        <c:otherwise>Không xác định</c:otherwise>
+                                    </c:choose>
+                                </td>
+
                                 <td>${app.reply}</td>
                             </tr>
                         </c:forEach>
                     </tbody>
                 </table>
                 <div class="pre-next-Btn">
-                    <!-- Nút Previous -->
                     <c:if test="${currentPage > 1}">
-                        <a class="page-link" href="ViewApplication?staffId=${sessionScope.staff.id}&page=${currentPage - 1}&name=${param.name}&date=${param.date}&status=${param.status}&sort=${param.sort}&size=${param.size}">Previous</a>
+                        <button class="page-link" type="button" onclick="submitPage(${currentPage - 1})">Trước</button>
                     </c:if>
-                    <!-- Phần phân trang -->
+
                     <div class="page-link-container">
                         <c:choose>
                             <c:when test="${totalPages <= 5}">
                                 <c:forEach begin="1" end="${totalPages}" var="i">
-                                    <a class="page-link ${i == currentPage ? 'active' : ''}" href="ViewApplication?staffId=${sessionScope.staff.id}&page=${i}&name=${param.name}&date=${param.date}&status=${param.status}&sort=${param.sort}&size=${param.size}">${i}</a>
+                                    <button class="page-link ${i == currentPage ? 'active' : ''}" type="button" onclick="submitPage(${i})">${i}</button>
                                 </c:forEach>
                             </c:when>
                             <c:otherwise>
-                                <a class="page-link ${currentPage == 1 ? 'active' : ''}" href="ViewApplication?staffId=${sessionScope.staff.id}&page=1&name=${param.name}&date=${param.date}&status=${param.status}&sort=${param.sort}&size=${param.size}">1</a>
+                                <button class="page-link ${currentPage == 1 ? 'active' : ''}" type="button" onclick="submitPage(1)">1</button>
+
                                 <c:if test="${currentPage > 2}">
                                     <span class="page-link">...</span>
                                 </c:if>
 
                                 <c:forEach begin="${currentPage - 1}" end="${currentPage + 1}" var="i">
                                     <c:if test="${i > 1 && i < totalPages}">
-                                        <a class="page-link ${i == currentPage ? 'active' : ''}" href="ViewApplication?staffId=${sessionScope.staff.id}&page=${i}&name=${param.name}&date=${param.date}&status=${param.status}&sort=${param.sort}&size=${param.size}">${i}</a>
+                                        <button class="page-link ${i == currentPage ? 'active' : ''}" type="button" onclick="submitPage(${i})">${i}</button>
                                     </c:if>
                                 </c:forEach>
 
                                 <c:if test="${currentPage < totalPages - 2}">
                                     <span class="page-link">...</span>
                                 </c:if>
-                                <a class="page-link ${currentPage == totalPages ? 'active' : ''}" href="ViewApplication?staffId=${sessionScope.staff.id}&page=${totalPages}&name=${param.name}&date=${param.date}&status=${param.status}&sort=${param.sort}&size=${param.size}">${totalPages}</a>
+
+                                <button class="page-link ${currentPage == totalPages ? 'active' : ''}" type="button" onclick="submitPage(${totalPages})">${totalPages}</button>
                             </c:otherwise>
                         </c:choose>
                     </div>
-                    <!-- Nút Next -->
+
                     <c:if test="${currentPage < totalPages}">
-                        <a class="page-link" href="ViewApplication?staffId=${sessionScope.staff.id}&page=${currentPage + 1}&name=${param.name}&date=${param.date}&status=${param.status}&sort=${param.sort}&size=${param.size}">Next</a>
+                        <button class="page-link" type="button" onclick="submitPage(${currentPage + 1})">Tiếp</button>
                     </c:if>
                 </div>
+
             </div>
-        </div>  
+        </div>
+        <script>
+            function submitPage(page) {
+                event.preventDefault();
+                document.getElementById("pageInput").value = page;
+                document.getElementById("searchForm").submit();
+            }
+        </script>
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
         <script src="https://npmcdn.com/flatpickr/dist/l10n/vn.js"></script>
         <script src="../js/doctor/doctor.js"></script>
