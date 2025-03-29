@@ -108,7 +108,7 @@
                                         <h5>
                                             Don't have an Account?<span
                                                 ><a
-                                                    href="#"
+                                                    href="${pageContext.request.contextPath}/home"
                                                     class="text-danger"
                                                 >
                                                     Register Now!</a

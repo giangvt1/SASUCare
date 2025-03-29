@@ -107,9 +107,10 @@
                             <button class="btn btn-success" type="submit">
                                 Get New Password
                             </button>
-                            <button class="btn btn-danger" type="submit">
-                                Back to Login
-                            </button>
+                            <a href="${pageContext.request.contextPath}/home"
+                               class="text-danger">
+                                Back To Login
+                            </a>
                         </div>
                     </form>
                 </div>

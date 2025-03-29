@@ -114,9 +114,8 @@
             <img src="${doctor.img}" alt="Bác sĩ ${doctor.name}" class="doctor-img">
             <h2>${doctor.name}</h2>
             <p><strong>Chuyên khoa:</strong> ${doctor.specialties}</p>
-            <p><strong>Giá khám:</strong> ${doctor.price}</p>
-            <p><strong>Lịch khám:</strong> Hẹn khám</p>
-            <a href="appointment" class="action-btn">Đặt lịch hẹn</a>
+            <p><strong>Giá khám:</strong> ${doctor.price}VND</p>
+            <a href="listrecord" class="action-btn">Đặt lịch hẹn</a>
             <c:if test="${not empty sessionScope.currentCustomer}">
                 <c:choose>
                     <c:when test="${not empty userRating}">
