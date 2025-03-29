@@ -112,7 +112,7 @@
     <body>
         <jsp:include page="../Header.jsp"/>
         <div class="container">
-            <img src="img/doctors/${doctor.img}" alt="Bác sĩ ${doctor.name}" class="doctor-img">
+            <img src="${doctor.img}" alt="Bác sĩ ${doctor.name}" class="doctor-img">
             <h2>${doctor.name}</h2>
             <p><strong>Chuyên khoa:</strong> ${doctor.specialties}</p>
             <p><strong>Giá khám:</strong> ${doctor.price}</p>

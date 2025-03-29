@@ -73,7 +73,7 @@ public class UserLoginController extends HttpServlet {
             return;
         }
         if (roles.get(0).getName().equalsIgnoreCase("HR")) {
-            response.sendRedirect(request.getContextPath() + "/hr/accountlist");
+            response.sendRedirect(request.getContextPath() + "/hr/calendarmanage");
             return;
         }
          if (roles.get(0).getName().equalsIgnoreCase("Finance")) {

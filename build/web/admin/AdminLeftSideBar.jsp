@@ -63,7 +63,7 @@
             </li>
 
 
-            <c:if test="${sessionScope.allowedUrls != null && sessionScope.allowedUrls.contains('/hr/create')}">
+            <c:if test="${sessionScope.allowedUrls != null && sessionScope.allowedUrls.contains('/hr/calendarmanage')}">
 
                 <li> 
                     <a href="${pageContext.request.contextPath}/hr/ViewStaffApplication?staffId=${sessionScope.staff.id}">

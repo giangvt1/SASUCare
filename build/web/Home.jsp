@@ -121,8 +121,8 @@
                             </h1>
                             <div class="pt-2">
                                 <a href="${pageContext.request.contextPath}/DoctorList" class="btn btn-light rounded-pill py-md-3 px-md-5 mx-2"
-                                   >Find Doctor</a
-                                >
+                               >Find Doctor</a
+                            >
                             <c:choose>
                                 <c:when test="${not empty sessionScope.currentCustomer}">
                                     <!-- Content when currentCustomer is not empty -->
@@ -844,8 +844,7 @@
                                        >Dolor clita vero elitr sea stet dolor justo diam</a
                                     >
                                     <p class="m-0">
-                                        Dolor lorem eos dolor duo et eirmod sea. Dolor sit magna rebum
-                                        clita rebum dolor stet amet justo
+                                        Doctor with their 
                                     </p>
                                 </div>
                                 <div class="d-flex justify-content-between border-top p-4">
@@ -889,84 +888,83 @@
                     </div>
                     <button id="submit-info" class="btn btn-primary">Xác nhận</button>
                 </div>
-
-                <!-- HTML của bạn (giữ nguyên) -->
-                <div id="chat-box" class="chat-container" style="display: none;">
-                    <div class="chat-header" id="chat-toggle">
-                        <h5 class="mb-0">Chat</h5>
-                        <button id="toggle-chat" class="btn btn-primary btn-sm">▲</button>
-                    </div>
-                    <div class="chat-body">
-                        <div class="chat-messages">
-                            <div class="message received">
-                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp" alt="avatar">
-                                <p>Hi, What can we help you?</p>
-                            </div>
+            <!-- HTML của bạn (giữ nguyên) -->
+            <div id="chat-box" class="chat-container" style="display: none;">
+                <div class="chat-header" id="chat-toggle">
+                    <h5 class="mb-0">Chat</h5>
+                    <button id="toggle-chat" class="btn btn-primary btn-sm">▲</button>
+                </div>
+                <div class="chat-body">
+                    <div class="chat-messages">
+                        <div class="message received">
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp" alt="avatar">
+                            <p>Hi, What can we help you?</p>
                         </div>
                     </div>
-                    <div class="chat-footer">
-                        <input type="text" class="form-control" placeholder="Type a message">
-                        <button class="btn btn-primary">Send</button>
-                    </div>
                 </div>
-                <button id="chat-icon" class="chat-icon">
-                    <i class="fas fa-comment"></i>
-                </button>
-                <jsp:include page="Footer.jsp"></jsp:include>
-                <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-                <<script src="./js/chat/customer_chat.js"></script>
-                <style>
-                    .info-form {
-                        position: fixed;
-                        bottom: 20px;
-                        right: 20px;
-                        width: 300px;
-                        padding: 20px;
-                        background: #fff;
-                        border: 1px solid #ddd;
-                        border-radius: 5px;
-                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                        z-index: 1000;
-                    }
-                    .form-group {
-                        margin-bottom: 15px;
-                    }
-                    .chat-icon {
-                        position: fixed;
-                        bottom: 20px;
-                        right: 20px;
-                        width: 50px;
-                        height: 50px;
-                        background-color: #007bff;
-                        border: none;
-                        border-radius: 50%;
-                        color: white;
-                        font-size: 20px;
-                        cursor: pointer;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        z-index: 1000;
-                    }
-                    .form-header {
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                        margin-bottom: 15px;
-                    }
-                    .close-btn {
-                        background: none;
-                        border: none;
-                        font-size: 20px;
-                        cursor: pointer;
-                        color: #000;
-                        padding: 0;
-                        line-height: 1;
-                    }
-                    .close-btn:hover {
-                        color: #ff0000;
-                    }
-                </style>
-                </body>
-                </html>
+                <div class="chat-footer">
+                    <input type="text" class="form-control" placeholder="Type a message">
+                    <button class="btn btn-primary">Send</button>
+                </div>
+            </div>
+            <button id="chat-icon" class="chat-icon">
+                <i class="fas fa-comment"></i>
+            </button>
+            <jsp:include page="Footer.jsp"></jsp:include>
+            <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="./js/chat/customer_chat.js"></script>
+            <style>
+                .info-form {
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    width: 300px;
+                    padding: 20px;
+                    background: #fff;
+                    border: 1px solid #ddd;
+                    border-radius: 5px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                    z-index: 1000;
+                }
+                .form-group {
+                    margin-bottom: 15px;
+                }
+                .chat-icon {
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    width: 50px;
+                    height: 50px;
+                    background-color: #007bff;
+                    border: none;
+                    border-radius: 50%;
+                    color: white;
+                    font-size: 20px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 1000;
+                }
+                .form-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 15px;
+                }
+                .close-btn {
+                    background: none;
+                    border: none;
+                    font-size: 20px;
+                    cursor: pointer;
+                    color: #000;
+                    padding: 0;
+                    line-height: 1;
+                }
+                .close-btn:hover {
+                    color: #ff0000;
+                }
+            </style>
+    </body>
+</html>

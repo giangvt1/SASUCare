@@ -97,7 +97,7 @@
                 <div class="doctor-container">
                 <c:forEach var="doctor" items="${doctors}">
                     <div class="doctor-card">
-                        <img src='img/doctors/${doctor.img}' alt="Bác sĩ ${doctor.name}">
+                        <img src='${doctor.img}' alt="Bác sĩ ${doctor.name}">
                         <h3>${doctor.name}</h3>
                         <p>Chuyên khoa: ${doctor.specialties}</p>
                         <a href="DoctorDetailsServlet?id=${doctor.id}" class="action-btn">Xem chi tiết</a>
