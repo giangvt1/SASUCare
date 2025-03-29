@@ -19,10 +19,7 @@ public class ChatBoxController extends BaseRBACController {
 
     @Override
     protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        Map<Session, UserInfo> onlineDoctors = ChatEndpoint.getOnlineDoctors();
-        session.setAttribute("onlineDoctors", onlineDoctors.values());
-        System.out.println("onlineDoctors: " + onlineDoctors);
+
         request.getRequestDispatcher("./hr/chatbox.jsp").forward(request, response);
     }
 

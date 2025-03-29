@@ -106,370 +106,667 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        var socket = new WebSocket("ws://localhost:9999/SWP391_GR6/chat");
+        var socket = null; // Initialize later
         var chatBody = document.getElementById("chatBody");
-        var selectedUserEmail = localStorage.getItem("selectedUserEmail") || null;
-        var adminEmail = "${sessionScope.account.gmail}" || "admin";
-        var role = "${sessionScope.userRoles}";
-        var fullName = "${sessionScope.account.displayname}";
-        var chatHistory = {};
+        var memberList = document.getElementById("memberList"); // Get member list element
         var memberTitle = document.getElementById("memberTitle");
+        var sendButton = document.getElementById("sendButton");
+        var messageInput = document.getElementById("textAreaExample2");
 
-        // Đặt tiêu đề danh sách dựa trên vai trò
-        if (role === "HR") {
-            memberTitle.textContent = "Online Users";
-        } else if (role === "Doctor") {
-            memberTitle.textContent = "Assigned Users";
+        // --- Admin/Session Info ---
+        // Use || operators carefully, ensure values are actually present or provide valid defaults
+        var adminEmail = "${sessionScope.account.gmail}";
+        var role = "${sessionScope.userRoles}";
+        var adminFullName = "${sessionScope.account.displayname}"; // Changed variable name for clarity
+        var selectedUserEmail = null; // No initial selection, fetch history on click
+
+        // --- State ---
+        // Removed chatHistory localStorage logic. Server is the source of truth.
+
+        // --- WebSocket Connection ---
+        function connectWebSocket() {
+            // Ensure adminEmail is available before connecting
+             if (!adminEmail) {
+                 console.error("Admin email not found in session. Cannot connect WebSocket.");
+                  // Display an error message to the user on the page
+                  chatBody.innerHTML = '<div class="alert alert-danger">Could not establish connection. User information missing. Please log in again.</div>';
+                 return;
+             }
+
+            // Construct WebSocket URL dynamically (adjust if needed)
+            const wsUrl = `ws://localhost:9999/SWP391_GR6/chat`;
+             console.log("Connecting WebSocket to:", wsUrl);
+
+
+            socket = new WebSocket(wsUrl);
+
+            socket.onopen = function() {
+                console.log("✅ WebSocket Connected");
+                // Send admin info to server
+                socket.send(JSON.stringify({
+                    action: "userInfo",
+                    email: adminEmail,
+                    fullName: adminFullName,
+                    role: role
+                }));
+                console.log("Sent userInfo:", { email: adminEmail, fullName: adminFullName, role: role });
+                 // Optional: Clear chat body on reconnect
+                 // chatBody.innerHTML = "Select a user to start chatting.";
+            };
+
+            socket.onmessage = function(event) {
+                try {
+                    let data = JSON.parse(event.data);
+                    console.log("Message received:", event);
+
+                    switch (data.action) {
+                        case "updateOnlineUsers": // For HR
+                            if (role === "HR") {
+                                // Don't clear chat body here, only update list
+                                updateUsersList(data.onlineUsers || [], "Online");
+                            }
+                            break;
+                         case "clearChat": // Received when a user disconnects (after delay) or force deleted by HR
+                              handleClearChat(data.userEmail, data.fullName);
+                              break;
+                        case "updateAssignedUsers": // For Doctor
+                            if (role === "Doctor") {
+                                updateUsersList(data.assignedUsers || [], "Assigned");
+                            }
+                            break;
+                         case "newAssignment": // Notification for Doctor (Toast)
+                              if (role === "Doctor" && data.userFullName) {
+                                   showAssignToast(data); // Show toast for the newly assigned user
+                                   // Note: updateAssignedUsers will follow to update the list
+                              }
+                              break;
+                        case "updateOnlineDoctors": // For HR
+                            if (role === "HR") {
+                                updateOnlineDoctors(data.onlineDoctors || []);
+                            }
+                            break;
+                        // --- NEW: Handle fetched chat history ---
+                        case "chatHistoryResponse":
+                             if (data.userEmail === selectedUserEmail) {
+                                displayChatHistoryFromServer(data.history || []);
+                             } else {
+                                console.log("Received history for non-selected user:", data.userEmail);
+                             }
+                             break;
+                         // --- Handle incoming messages ---
+                        case "sendMessage":
+                            console.log("adu");
+                             handleIncomingMessage(data);
+                             break;
+                        case "assignSuccess": // Confirmation for HR after assigning
+                            if (role === "HR") {
+                                handleAssignSuccess(data);
+                            }
+                            break;
+                         case "removeAssignedUser": // Notification for Doctor when user disconnects/is removed
+                              if(role === "Doctor"){
+                                   console.log(`User `+ data.userFullName +` (`+ data.userEmail +`) was removed or disconnected.`);
+                                   // The list will be updated by updateAssignedUsers sent subsequently by server
+                                   // Optionally show a less prominent notification/log
+                                   // Remove selection if the removed user was selected
+                                   if (selectedUserEmail === data.userEmail) {
+                                        selectedUserEmail = null;
+                                        chatBody.innerHTML = '<div class="p-3">User session ended. Select another user.</div>';
+                                         // Deselect in the list
+                                         deselectUserItem();
+                                   }
+                              }
+                              break;
+                         // --- Handle Errors from Server ---
+                         case "assignError":
+                         case "exportError":
+                         case "sendError":
+                         case "authError":
+                         case "processingError":
+                         case "sessionCloseError":
+                         case "noHR": // Error for client when admin not available
+                         case "deliveryError": // Error for client when doctor offline
+                              console.error("Server Error (" + data.action + "):", data.message);
+                              // Display a more user-friendly error if needed, e.g., using alerts or a dedicated error area
+                              alert("Server Error: " + data.message);
+                              break;
+                         // --- Handle Success Confirmations (Optional UI feedback) ---
+                         case "exportSuccess":
+                              alert("Success: " + data.message); // Simple alert confirmation
+                              break;
+                         case "sessionCloseSuccess":
+                              alert("Success: " + data.message);
+                              break;
+                         // --- Handle Notifications from Server (e.g., forced closure) ---
+                         case "forceClose": // Notification to user client when kicked by admin
+                              console.warn("Server initiated disconnect: " + data.reason);
+                              alert("Your session was closed by an administrator.");
+                              // Optionally disable input, close socket gracefully from client side?
+                              socket.close();
+                              break;
+                         case "userReconnected":
+                              console.log(`User `+ data.userEmail +` reconnected.`);
+                              // Update the user's status indicator in the list if needed
+                               const userItem = memberList.querySelector(`.user-item[data-email="`+ data.userEmail +`"]`);
+                               if (userItem) {
+                                   const statusElement = userItem.querySelector('.user-status'); // Add a class for status
+                                   if (statusElement) {
+                                       statusElement.textContent = (role === 'HR' ? 'Online' : 'Assigned');
+                                       statusElement.classList.remove('text-muted'); // Make it look active
+                                       statusElement.classList.add('text-success');
+                                   }
+                               }
+                              break;
+                         default:
+                             console.log("Unhandled action: ", data.action);
+                    }
+                } catch (error) {
+                    console.error("Error processing WebSocket message:", error);
+                     console.error("Original message data:", event.data);
+                }
+            };
+
+            socket.onclose = function(event) {
+                console.log("WebSocket Disconnected.", event.reason, event.code);
+                // Optionally try to reconnect after a delay, or notify user
+                 chatBody.innerHTML = '<div class="alert alert-warning">Connection lost. Attempting to reconnect...</div>';
+                 // Simple immediate reconnect attempt (consider backoff strategy)
+                 setTimeout(connectWebSocket, 5000); // Reconnect after 5 seconds
+            };
+
+            socket.onerror = function(error) {
+                console.error("WebSocket Error:", error);
+                // Display error to user
+                 chatBody.innerHTML = '<div class="alert alert-danger">WebSocket connection error. Please check the console and refresh the page.</div>';
+            };
         }
 
-        // Kiểm tra xem đây có phải là phiên mới (trình duyệt vừa mở lại) hay không
-        if (!sessionStorage.getItem('sessionActive')) {
-            // Nếu không có flag, tức là trình duyệt vừa được mở lại, xóa tin nhắn trong localStorage
-            localStorage.removeItem('chatHistory');
-            chatHistory = {};
-        }
+        // --- User List Update Functions ---
 
-        // Đặt flag trong sessionStorage để đánh dấu phiên làm việc hiện tại
-        sessionStorage.setItem('sessionActive', 'true');
+        function updateUsersList(users, statusText) {
+            memberList.innerHTML = ""; // Clear current list
+            memberTitle.textContent = (role === "HR" ? "Online Users" : "Assigned Users") + ` (`+ users.length +`)`; // Update title with count
 
-        // Khôi phục lịch sử chat từ localStorage (nếu có)
-        restoreChatHistory();
-
-        // Hiển thị lịch sử chat nếu có người dùng được chọn
-        if (selectedUserEmail && chatHistory[selectedUserEmail]) {
-            displayChatHistory(selectedUserEmail);
-        }
-
-        socket.onopen = function() {
-            console.log("✅ WebSocket Connected");
-            socket.send(JSON.stringify({
-                action: "userInfo",
-                email: adminEmail,
-                fullName: fullName,
-                role: role
-            }));
-        };
-
-        socket.onmessage = function(event) {
-            let data = JSON.parse(event.data);
-            if (data.action === "updateOnlineUsers" && role === "HR") {
-                chatBody.innerHTML = "";
-                updateOnlineUsers(data.onlineUsers);
-            } else if (data.action === "clearChat" && role === "HR") {
-                let userEmail = data.userEmail;
-                console.log("useremailssssss: " + userEmail);
-                if (chatHistory[userEmail]) {
-                    delete chatHistory[userEmail];
-                    saveChatHistory();
-                    if (selectedUserEmail === userEmail) {
-                        chatBody.innerHTML = "";
-                    }
-                }
-                // Xóa người dùng khỏi danh sách giao diện
-                const userElement = document.querySelector(`.user-item[data-email="`+ userEmail +`"]`);
-                if (userElement) {
-                    userElement.remove();
-                }
-            } else if (data.action === "updateAssignedUsers" && role === "Doctor") {
-                chatBody.innerHTML = "";
-                updateAssignedUsers(data.assignedUsers);
-                // Nếu muốn hiện toast cho từng user mới được assign, bạn có thể gọi hàm showAssignToast
-                // Ví dụ: nếu data.assignedUsers là mảng các user, hiện toast cho user cuối cùng:
-                if(data.assignedUsers && data.assignedUsers.length > 0) {
-                    let newUser = data.assignedUsers[data.assignedUsers.length - 1];
-                    showAssignToast(newUser);
-                }
-            } else if (data.action === "updateOnlineDoctors" && role === "HR") {
-                updateOnlineDoctors(data.onlineDoctors);
-            } else if (data.action === "sendMessage") {
-                let senderEmail = data.senderEmail || data.email;
-                let message = data.message;
-
-                if (!chatHistory[senderEmail]) {
-                    chatHistory[senderEmail] = [];
-                }
-                chatHistory[senderEmail].push({ message: message, type: "received" });
-
-                if (selectedUserEmail === senderEmail) {
-                    displayMessage(message, 'received');
-                }
-
-                saveChatHistory();
-            } else if (data.action === "assignSuccess") {
-                // Với HR: xóa user khỏi danh sách, còn với Doctor: hiển thị toast thông báo
-                if (role === "HR") {
-                    console.log(`User `+ data.userEmail +` assigned to doctor `+ data.doctorEmail);
-                    const userElement = document.querySelector(`.user-item[data-email="`+ data.userEmail +`"]`);
-                    if (userElement) {
-                        userElement.remove();
-                    }
-                    if (selectedUserEmail === data.userEmail) {
-                        chatBody.innerHTML = "";
-                        selectedUserEmail = null;
-                        localStorage.removeItem("selectedUserEmail");
-                    }
-                } else if (role === "Doctor") {
-                    // Giả sử data chứa thông tin của user được assign, ví dụ data.fullName và data.email
-                    showAssignToast(data);
-                }
-            } else if (data.action === "assignError" && role === "HR") {
-                console.log("Assign failed: " + data.message);
-                alert("Lỗi: " + data.message);
+            if (users.length === 0) {
+                 memberList.innerHTML = '<li class="p-2 text-muted">No users found.</li>';
+                 // If the previously selected user is no longer in the list, clear the chat
+                 if(selectedUserEmail && !users.some(u => u.email === selectedUserEmail)){
+                     selectedUserEmail = null;
+                     chatBody.innerHTML = '<div class="p-3">Select a user to chat.</div>';
+                 }
+                 return;
             }
-        };
 
-        socket.onclose = function() {
-            console.log("WebSocket Disconnected.");
-        };
-
-        socket.onerror = function(error) {
-            console.log("WebSocket Error: " + error);
-        };
-
-        function updateOnlineUsers(users) {
-            const memberList = document.getElementById("memberList");
-            memberList.innerHTML = "";
             users.forEach(user => {
+                 // Determine if the user is marked as online (relevant for doctors mostly)
+                 const isOnline = user.isOnline !== undefined ? user.isOnline : true; // Default to true if not specified
+                 const statusClass = isOnline ? 'text-success' : 'text-muted';
+                 const currentStatusText = isOnline ? statusText : 'Offline';
+
                 const li = document.createElement("li");
-                li.classList.add("p-2", "border-bottom", "bg-body-tertiary", "user-item");
+                li.classList.add("p-2", "border-bottom", "user-item"); // Removed bg-body-tertiary for better selection visibility
                 li.setAttribute("data-email", user.email);
+                li.setAttribute("data-fullname", user.fullName); // Store full name
+
+                // Add selected class if this user was previously selected
+                 if (user.email === selectedUserEmail) {
+                     li.classList.add("selected");
+                 }
+                 const role1 = role == 'HR' ? '<button type="button" class="btn btn-primary action-assign-doctor" title="Assign to Doctor">Assign</button>' : '';
+
+                // Basic structure (customize as needed)
                 li.innerHTML = `
-                    <div class="d-flex justify-content-between">
-                        <div class="d-flex flex-row">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex flex-row align-items-center">
                             <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp" alt="avatar"
-                                 class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
+                                 class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="50">
                             <div class="pt-1">
                                 <p class="fw-bold mb-0">`+ user.fullName +`</p>
-                                <p class="small text-muted">`+ user.email +`</p>
+                                <p class="small text-muted mb-0">`+ user.email +`</p>
                             </div>
                         </div>
-                        <div class="pt-1">
-                            <p class="small text-muted mb-1">Online</p>
-                            <div class="btn-group" role="group" aria-label="User actions">
-                                <button type="button" class="btn btn-sm btn-danger">Delete</button>
-                                <button type="button" class="btn btn-sm btn-success">Export</button>
-                                <button type="button" class="btn btn-sm btn-primary assign-to-doctor">Assign</button>
+                        <div class="text-end">
+                             <p class="small mb-1 user-status `+ statusClass +`">`+ currentStatusText +`</p>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="User actions">
+                                <button type="button" class="btn btn-danger action-delete-user" title="End Chat & Remove User">End Chat</button>
+                                <button type="button" class="btn btn-success action-export-chat" title="Export Chat History">Export</button>
+                                `+ role1 +`
                             </div>
                         </div>
                     </div>
                 `;
                 memberList.appendChild(li);
             });
-            attachUserItemEvents();
+
+            attachUserItemEvents(); // Re-attach events to new list items
         }
 
-        function updateAssignedUsers(users) {
-            const memberList = document.getElementById("memberList");
-            memberList.innerHTML = "";
-            users.forEach(user => {
-                const li = document.createElement("li");
-                li.classList.add("p-2", "border-bottom", "bg-body-tertiary", "user-item");
-                li.setAttribute("data-email", user.email);
-                li.innerHTML = `
-                    <div class="d-flex justify-content-between">
-                        <div class="d-flex flex-row">
-                            <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp" alt="avatar"
-                                 class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
-                            <div class="pt-1">
-                                <p class="fw-bold mb-0">` + user.fullName +  `</p>
-                                <p class="small text-muted">` + user.email + `</p>
-                            </div>
-                        </div>
-                        <div class="pt-1">
-                            <p class="small text-muted mb-1">Assigned</p>
-                            <div class="btn-group" role="group" aria-label="User actions">
-                                <button type="button" class="btn btn-sm btn-danger">Delete</button>
-                                <button type="button" class="btn btn-sm btn-success">Export</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                memberList.appendChild(li);
-            });
-            attachUserItemEvents();
-        }
+
+        // --- Event Handlers ---
 
         function attachUserItemEvents() {
-            document.querySelectorAll(".user-item").forEach(item => {
-                item.addEventListener("click", function() {
-                    document.querySelectorAll(".user-item").forEach(el => el.classList.remove("selected"));
+            memberList.querySelectorAll(".user-item").forEach(item => {
+                // Click on the main item to select chat
+                item.addEventListener("click", function(event) {
+                    // Prevent selection if a button inside the item was clicked
+                     if (event.target.closest('button')) {
+                         return;
+                     }
+
+                    // Remove selection from others
+                    deselectUserItem();
+
+                    // Select this item
                     this.classList.add("selected");
                     selectedUserEmail = this.getAttribute("data-email");
-                    localStorage.setItem("selectedUserEmail", selectedUserEmail);
-                    displayChatHistory(selectedUserEmail);
+                    console.log("Selected user:", selectedUserEmail);
+
+                    // Clear chat display and request history from server
+                    chatBody.innerHTML = '<div class="p-3 text-center">Loading chat history...</div>'; // Loading indicator
+                    if (socket && socket.readyState === WebSocket.OPEN) {
+                        socket.send(JSON.stringify({
+                            action: "getChatHistory",
+                            userEmail: selectedUserEmail
+                        }));
+                    } else {
+                         chatBody.innerHTML = '<div class="alert alert-warning">Cannot load history: WebSocket not connected.</div>';
+                    }
                 });
+
+                // Add event listeners for action buttons within the user item
+                 const deleteBtn = item.querySelector('.action-delete-user');
+                 const exportBtn = item.querySelector('.action-export-chat');
+                 const assignBtn = item.querySelector('.action-assign-doctor'); // Only exists for HR
+
+                 if (deleteBtn) {
+                      deleteBtn.addEventListener('click', function(e) {
+                           e.stopPropagation(); // Prevent item click event
+                           const userEmail = item.getAttribute('data-email');
+                           const userName = item.getAttribute('data-fullname');
+                            if (confirm(`Are you sure you want to end the chat session with `+ userName +` (`+ userEmail +`) and remove them from the list?`)) {
+                                deleteChatSession(userEmail);
+                            }
+                      });
+                 }
+
+                 if (exportBtn) {
+                     exportBtn.addEventListener('click', function(e) {
+                         e.stopPropagation(); // Prevent item click event
+                         const userEmail = item.getAttribute('data-email');
+                         const userName = item.getAttribute('data-fullname');
+                         exportChatHistory(userEmail, userName);
+                     });
+                 }
+
+                 if (assignBtn) {
+                     assignBtn.addEventListener('click', function(e) {
+                         e.stopPropagation(); // Prevent item click event
+                          // Ensure this user is selected visually before showing modal
+                           if (!item.classList.contains('selected')) {
+                               deselectUserItem();
+                               item.classList.add('selected');
+                               selectedUserEmail = item.getAttribute('data-email');
+                                // No need to fetch history here, just select for assignment
+                                chatBody.innerHTML = `<div class="p-3">Assigning `+ item.getAttribute('data-fullname') +`...</div>`;
+                           }
+                         // Now show the modal
+                         var assignDoctorModal = new bootstrap.Modal(document.getElementById('assignDoctorModal'));
+                         assignDoctorModal.show();
+                     });
+                 }
             });
         }
 
-        function updateOnlineDoctors(onlineDoctors) {
-            const doctorSelect = document.getElementById("doctorSelect");
-            doctorSelect.innerHTML = `<option selected>Chọn bác sĩ...</option>`;
-            onlineDoctors.forEach(doctor => {
-                const option = document.createElement("option");
-                option.value = doctor.email;
-                option.textContent = doctor.fullName;
-                doctorSelect.appendChild(option);
-            });
-        }
+        sendButton.addEventListener("click", sendMessage);
+        messageInput.addEventListener("keypress", function(event) {
+             // Send message on Enter key press (optional: Shift+Enter for newline)
+             if (event.key === 'Enter' && !event.shiftKey) {
+                 event.preventDefault(); // Prevent default newline behavior
+                 sendMessage();
+             }
+         });
 
-        function displayChatHistory(email) {
-            chatBody.innerHTML = "";
-            if (chatHistory[email]) {
-                chatHistory[email].forEach(msgObj => {
-                    displayMessage(msgObj.message, msgObj.type);
-                });
+        // --- Chat Display Functions ---
+
+         function displayChatHistoryFromServer(history) {
+             chatBody.innerHTML = ""; // Clear loading message or previous chat
+             if (history.length === 0) {
+                 chatBody.innerHTML = '<div class="p-3 text-center text-muted">No messages in this conversation yet.</div>';
+                 return;
+             }
+             history.forEach(msgObj => {
+                 // Determine if message was sent by the current admin or received from the user
+                 const type = msgObj.senderEmail === adminEmail ? 'sent' : 'received';
+                 displayMessage(msgObj.message, type, msgObj.senderFullName || msgObj.senderEmail, msgObj.timestamp);
+             });
+             scrollToBottom();
+         }
+
+        function displayMessage(message, type, senderName, timestamp) {
+             const messageElement = document.createElement("div");
+             // messageElement.classList.add("message", type); // 'message' class might not be needed with new structure
+
+             const formattedTime = timestamp ? formatTimestamp(timestamp) : ''; // Format timestamp
+
+             if (type === 'sent') {
+                 messageElement.innerHTML = `
+                     <div class="d-flex justify-content-end mb-3">
+                          <div>
+                             <div class="bg-primary p-2 px-3 text-white mb-1" style="border-radius: 15px; max-width: 75%;">
+                                 <p class="small mb-0">`+ message +`</p>
+                             </div>
+                              <p class="small text-muted text-end">`+ formattedTime +`</p>
+                          </div>
+                     </div>
+                 `;
+             } else { // received
+                 messageElement.innerHTML = `
+                     <div class="d-flex justify-content-start mb-3">
+                          <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp" alt="`+ senderName +`" class="rounded-circle align-self-start me-2 shadow-1-strong" width="40">
+                          <div>
+                              <p class="small text-muted mb-1">`+ senderName +`</p>
+                              <div class="bg-light p-2 px-3 mb-1" style="border-radius: 15px; max-width: 75%;">
+                                  <p class="small mb-0">`+ message +`</p>
+                              </div>
+                              <p class="small text-muted">`+ formattedTime +`</p>
+                          </div>
+                     </div>
+                 `;
+             }
+             chatBody.appendChild(messageElement);
+             // Don't scroll here, scroll after processing a batch (history) or a single new message
+         }
+
+
+        // --- WebSocket Message Handlers ---
+         function handleIncomingMessage(data) {
+              // Check if the message belongs to the currently selected conversation
+              // Message is relevant if the admin is the receiver OR the sender is the selected user
+             const isRelevant = (data.receiverEmail === adminEmail && data.senderEmail === selectedUserEmail) ||
+                                (data.senderEmail === adminEmail && data.receiverEmail === selectedUserEmail); // Relevant if admin sent to selected user too (though already displayed locally)
+
+             if (selectedUserEmail && isRelevant) {
+                 // Display message only if it's from the user (admin's own messages are displayed on send)
+                  if (data.senderEmail !== adminEmail) {
+                      displayMessage(data.message, 'received', data.senderFullName || data.senderEmail, data.timestamp);
+                      scrollToBottom();
+                  }
+             } else if (data.senderEmail !== adminEmail) {
+                  // Optional: Indicate new message from a non-selected user
+                  console.log(`New message from `+ data.senderFullName || data.senderEmail +` (not currently selected).`);
+                  const userItem = memberList.querySelector(`.user-item[data-email="`+ data.senderEmail +`"]`);
+                  if (userItem && !userItem.classList.contains('selected')) {
+                      // Add a visual indicator (e.g., bold text, notification dot)
+                      userItem.classList.add('has-unread'); // Add a class for styling unread state
+                       const nameElement = userItem.querySelector('.fw-bold');
+                       if(nameElement) nameElement.style.fontWeight = 'bold'; // Make name bold
+                  }
+             }
+         }
+
+         function handleAssignSuccess(data) {
+            console.log(`User `+ data.userFullName +` (`+ data.userEmail +`) assigned to doctor `+ data.doctorFullName +` (`+ data.doctorEmail +`)`);
+
+            // Remove the user item from the HR's list
+            const userElement = memberList.querySelector(`.user-item[data-email="`+ data.userEmail +`"]`);
+            if (userElement) {
+                userElement.remove();
+                 updateListTitle(); // Update count in title
             }
-        }
 
-        function displayMessage(message, type) {
-            let messageElement = document.createElement("div");
-            messageElement.classList.add("message");
-            if (type === 'sent') {
-                messageElement.classList.add("sent");
-                messageElement.innerHTML = `
-                    <div class="d-flex justify-content-end mb-2">
-                        <div class="card-body p-2 px-3 bg-primary text-white" style="border-radius: 20px;">
-                            <p class="mb-0">`+ message +`</p>
-                        </div>
-                    </div>
-                `;
-            } else {
-                messageElement.classList.add("received");
-                messageElement.innerHTML = `
-                    <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp" alt="avatar" class="me-3 rounded-circle d-flex align-self-center shadow-1-strong" width="60">
-                    <div class="d-flex justify-content-start mb-2">
-                        <div class="card-body p-2 px-3 bg-light text-dark" style="border-radius: 20px;">
-                            <p class="mb-0">`+ message +`</p>
-                        </div>
-                    </div>
-                `;
+            // If the assigned user was selected, clear the chat area and selection
+            if (selectedUserEmail === data.userEmail) {
+                chatBody.innerHTML = `<div class="p-3">User `+ data.userFullName +` has been assigned to Dr. `+ data.doctorFullName +`.</div>`;
+                selectedUserEmail = null;
+                 // Optionally remove the selection highlight if it wasn't removed above
+                 deselectUserItem();
             }
-            chatBody.appendChild(messageElement);
-            chatBody.scrollTop = chatBody.scrollHeight;
-        }
+             // Optional: Show a success alert/toast
+             alert(data.message); // Simple confirmation
+         }
 
-        document.getElementById("sendButton").addEventListener("click", function() {
-            let messageInput = document.getElementById("textAreaExample2");
+         function handleClearChat(userEmail, userName) {
+             console.log(`Received clearChat for user: `+ userName +` (`+ userEmail +`)`);
+             // Remove user from the list
+             const userElement = memberList.querySelector(`.user-item[data-email="`+ userEmail +`"]`);
+             if (userElement) {
+                 userElement.remove();
+                 updateListTitle(); // Update count in title
+             }
+             // If the removed user was selected, clear the chat panel
+             if (selectedUserEmail === userEmail) {
+                 selectedUserEmail = null;
+                 chatBody.innerHTML = `<div class="p-3">User `+ userName +` has disconnected or the session ended.</div>`;
+                  deselectUserItem();
+             }
+             // Note: Server might handle actual message history deletion separately or not at all based on policy
+         }
+
+         // --- Actions ---
+
+        function sendMessage() {
             let message = messageInput.value.trim();
-            if (message && selectedUserEmail) {
-                displayMessage(message, 'sent');
-                if (!chatHistory[selectedUserEmail]) {
-                    chatHistory[selectedUserEmail] = [];
-                }
-                chatHistory[selectedUserEmail].push({ message: message, type: "sent" });
+            if (!selectedUserEmail) {
+                alert("Please select a user to send a message to.");
+                return;
+            }
+            if (message === "") {
+                alert("Please enter a message.");
+                return;
+            }
+
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                // Display the sent message immediately for better UX
+                const timestamp = formatTimestamp(new Date()); // Get current formatted time
+                displayMessage(message, 'sent', adminFullName, timestamp); // Display locally
+                scrollToBottom();
+
+                // Prepare data for the server
                 const messageData = {
                     action: "sendMessage",
                     message: message,
-                    email: adminEmail,
-                    fullName: fullName,
-                    receiverEmail: selectedUserEmail
+                    email: adminEmail, // Admin's email
+                    fullName: adminFullName, // Admin's name
+                    receiverEmail: selectedUserEmail // The user admin is sending to
                 };
+
+                // Send to server
                 socket.send(JSON.stringify(messageData));
+                console.log("Message sent: ", messageData);
+
+                // Clear input field
                 messageInput.value = "";
-                saveChatHistory();
             } else {
-                alert("Please select a user and enter a message.");
-            }
-        });
-
-        document.getElementById("memberList").addEventListener("click", function(event) {
-            if (event.target.classList.contains("btn-danger")) {
-                const userItem = event.target.closest(".user-item");
-                const email = userItem.getAttribute("data-email");
-                deleteChatHistory(email);
-            } else if (event.target.classList.contains("btn-success")) {
-                const userItem = event.target.closest(".user-item");
-                const email = userItem.getAttribute("data-email");
-                const fullNameElement = userItem.querySelector(".fw-bold");
-                const fullName = fullNameElement ? fullNameElement.textContent : "Unknown";
-                exportChatHistory(email, fullName);
-            } else if (event.target.classList.contains("assign-to-doctor")) {
-                var assignDoctorModal = new bootstrap.Modal(document.getElementById("assignDoctorModal"));
-                assignDoctorModal.show();
-            }
-        });
-
-        function deleteChatHistory(email) {
-            if (chatHistory[email]) {
-                delete chatHistory[email];
-                saveChatHistory();
-                if (selectedUserEmail === email) {
-                    chatBody.innerHTML = "";
-                    selectedUserEmail = null;
-                    localStorage.removeItem("selectedUserEmail");
-                }
-                const userItem = document.querySelector(`.user-item[data-email="`+ email +`"]`);
-                if (userItem) {
-                    userItem.remove();
-                }
-                socket.send(JSON.stringify({
-                    action: "deleteMessage",
-                    email: email
-                }));
+                alert("WebSocket is not connected. Cannot send message.");
+                 // Optionally try to reconnect or show a more persistent error
             }
         }
+
+
+        function deleteChatSession(email) {
+             console.log("Requesting delete/close session for user:", email);
+             if (socket && socket.readyState === WebSocket.OPEN) {
+                 socket.send(JSON.stringify({
+                     action: "deleteMessage", // Action name as defined on server for closing session
+                     email: email
+                 }));
+                  // UI update (removal from list, clearing chat) will be handled
+                  // by the server's response/broadcast (e.g., clearChat or updateOnlineUsers)
+             } else {
+                 alert("WebSocket is not connected. Cannot perform action.");
+             }
+         }
 
         function exportChatHistory(email, fullName) {
-            if (chatHistory[email]) {
-                const messages = chatHistory[email];
-                let textContent = `Chat history with `+ fullName +` (`+ email +`)\n\n`;
-                messages.forEach(msgObj => {
-                    const prefix = msgObj.type === "sent" ? "[Sent]" : "[Received]";
-                    textContent += prefix +` `+ msgObj.message +`\n`;
-                });
-                socket.send(JSON.stringify({
-                    action: "exportChat",
-                    email: email,
-                    fullName: fullName,
-                    chatContent: textContent
-                }));
-                alert("Export chat history successful!");
-            } else {
-                alert("Không tìm thấy lịch sử chat cho người dùng này.");
-            }
-        }
+             console.log("Requesting export chat history for:", fullName, email);
+             if (socket && socket.readyState === WebSocket.OPEN) {
+                 // Server now retrieves history, client just sends request
+                 socket.send(JSON.stringify({
+                     action: "exportChat",
+                     email: email,
+                     fullName: fullName
+                     // No need to send chatContent from client anymore
+                 }));
+                 // Server will respond with success or error message (handled in onmessage)
+             } else {
+                 alert("WebSocket is not connected. Cannot perform action.");
+             }
+         }
 
-        function saveChatHistory() {
-            localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
-        }
 
-        function restoreChatHistory() {
-            const storedHistory = localStorage.getItem("chatHistory");
-            if (storedHistory) {
-                chatHistory = JSON.parse(storedHistory);
-            }
-        }
-
-        // Hàm hiển thị Toast cho Doctor
-        function showAssignToast(user) {
-            // user: object chứa thông tin của user được assign, ví dụ user.fullName
-            const toastElement = document.getElementById('userToast');
-            const toastMessage = document.getElementById('toastMessage');
-            
-            toastMessage.textContent = `${user.fullName || user.userFullName} đã được giao cho bạn.`;
-            
-            // Khởi tạo Toast với delay 2000ms (2 giây)
-            const toast = new bootstrap.Toast(toastElement, { delay: 2000 });
-            toast.show();
-        }
-
+        // --- Doctor Assignment Modal (HR only) ---
         if (role === "HR") {
-            document.getElementById("assignDoctorBtn").addEventListener("click", function() {
-                const selectedDoctor = document.getElementById("doctorSelect").value;
-                if (selectedDoctor && selectedDoctor !== "Chọn bác sĩ...") {
-                    socket.send(JSON.stringify({
-                        action: "assignDoctor",
-                        doctor: selectedDoctor,
-                        userEmail: selectedUserEmail
-                    }));
-                    var assignDoctorModal = bootstrap.Modal.getInstance(document.getElementById("assignDoctorModal"));
-                    assignDoctorModal.hide();
-                    alert("Bác sĩ " + selectedDoctor + " đã được phân công.");
-                } else {
-                    alert("Vui lòng chọn bác sĩ.");
-                }
-            });
+             const assignDoctorBtn = document.getElementById("assignDoctorBtn");
+             const doctorSelect = document.getElementById("doctorSelect");
+
+             if (assignDoctorBtn && doctorSelect) {
+                 assignDoctorBtn.addEventListener("click", function() {
+                     const selectedDoctorEmail = doctorSelect.value;
+                     if (!selectedDoctorEmail || selectedDoctorEmail === "Chọn bác sĩ...") {
+                         alert("Please select a doctor from the list.");
+                         return;
+                     }
+                     if (!selectedUserEmail) {
+                          alert("No user selected for assignment. Click the user in the list first.");
+                          return;
+                     }
+
+                     console.log(`Assigning user `+ selectedUserEmail +` to doctor `+ selectedDoctorEmail +``);
+
+                     if (socket && socket.readyState === WebSocket.OPEN) {
+                         socket.send(JSON.stringify({
+                             action: "assignDoctor",
+                             doctor: selectedDoctorEmail, // Doctor's email
+                             userEmail: selectedUserEmail // User's email
+                         }));
+
+                         // Close the modal
+                         var assignDoctorModal = bootstrap.Modal.getInstance(document.getElementById("assignDoctorModal"));
+                         if (assignDoctorModal) {
+                              assignDoctorModal.hide();
+                         }
+                         // UI update (user removal from list, etc.) will be handled by assignSuccess message from server
+                     } else {
+                         alert("WebSocket is not connected. Cannot perform action.");
+                     }
+                 });
+             } else {
+                  console.error("Assign Doctor button or select element not found.");
+             }
         }
+
+
+        // --- Utility Functions ---
+
+         function updateOnlineDoctors(onlineDoctors) {
+             const doctorSelect = document.getElementById("doctorSelect");
+             if (!doctorSelect) return; // Only HR has this
+
+             const currentSelection = doctorSelect.value; // Preserve selection if possible
+             doctorSelect.innerHTML = `<option selected value="Chọn bác sĩ...">Choose a doctor...</option>`; // Default option
+
+             if (onlineDoctors.length === 0) {
+                  doctorSelect.innerHTML += `<option disabled>No doctors online</option>`;
+             } else {
+                  onlineDoctors.forEach(doctor => {
+                      const option = document.createElement("option");
+                      option.value = doctor.email;
+                      option.textContent = ``+ doctor.fullName +` (`+ doctor.email +`)`;
+                      // Reselect if it was selected before update
+                       if (doctor.email === currentSelection) {
+                           option.selected = true;
+                       }
+                      doctorSelect.appendChild(option);
+                  });
+             }
+         }
+
+
+        function scrollToBottom() {
+            // Use setTimeout to allow the DOM to update before scrolling
+             setTimeout(() => {
+                chatBody.scrollTop = chatBody.scrollHeight;
+             }, 0);
+        }
+
+        function formatTimestamp(timestamp) {
+             // Handles both ISO string format from server history and Date object for local messages
+             try {
+                  const date = new Date(timestamp);
+                  // Options for formatting: customize as needed
+                  const options = { hour: 'numeric', minute: 'numeric' }; // time only
+                  // const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' }; // full date time
+                  return date.toLocaleTimeString(undefined, options); // Use locale-specific time format
+             } catch (e) {
+                  console.error("Error formatting timestamp:", timestamp, e);
+                  return timestamp; // Return original if formatting fails
+             }
+         }
+
+         function deselectUserItem() {
+             memberList.querySelectorAll(".user-item.selected").forEach(el => {
+                  el.classList.remove("selected");
+                  // Optional: Reset unread indicator if needed when deselecting
+                  el.classList.remove('has-unread');
+                   const nameElement = el.querySelector('.fw-bold');
+                   if(nameElement) nameElement.style.fontWeight = 'normal'; // Reset bold
+             });
+         }
+
+         function updateListTitle() {
+              const count = memberList.querySelectorAll('.user-item').length;
+              memberTitle.textContent = (role === "HR" ? "Online Users" : "Assigned Users") + ` (`+ count +`)`;
+         }
+
+
+        // --- Toast Notification for Doctor ---
+        function showAssignToast(user) {
+            // user: object containing userFullName and userEmail
+             const toastElement = document.getElementById('userToast');
+             const toastMessage = document.getElementById('toastMessage');
+
+             if (!toastElement || !toastMessage) {
+                  console.error("Toast elements not found.");
+                  return;
+             }
+
+             toastMessage.textContent = `User `+ user.userFullName +` (`+ user.userEmail +`) has been assigned to you.`;
+
+             // Ensure toast is properly initialized (might need to recreate instance if reused)
+             // Use 'getOrCreateInstance' for safety
+             const toast = bootstrap.Toast.getOrCreateInstance(toastElement, { delay: 5000 }); // 5 second delay
+             toast.show();
+             console.log("Showing assignment toast for:", user.userFullName);
+        }
+
+        // --- Initialization ---
+        document.addEventListener("DOMContentLoaded", function() {
+             // Set initial title based on role
+             if (role === "HR") {
+                 memberTitle.textContent = "Online Users";
+             } else if (role === "Doctor") {
+                 memberTitle.textContent = "Assigned Users";
+             } else {
+                  memberTitle.textContent = "Chat"; // Fallback
+             }
+
+             // Connect WebSocket
+             connectWebSocket();
+
+             // Initial setup for chat body
+             chatBody.innerHTML = '<div class="p-3 text-center">Please select a user from the list to start chatting.</div>';
+
+             // Add listener to clear unread status when an item is clicked
+             memberList.addEventListener('click', (event) => {
+                  const item = event.target.closest('.user-item');
+                  if (item && item.classList.contains('has-unread')) {
+                       item.classList.remove('has-unread');
+                        const nameElement = item.querySelector('.fw-bold');
+                        if(nameElement) nameElement.style.fontWeight = 'normal'; // Reset bold
+                  }
+             });
+        });
+
     </script>
 </body>
 </html>
