@@ -5,6 +5,8 @@
 package model;
 
 import jakarta.websocket.Session;
+import java.util.Objects;
+import org.json.JSONObject;
 
 /**
  *
@@ -67,6 +69,36 @@ public class UserInfo {
     public void setCurrentChatPartner(String currentChatPartner) {
         this.currentChatPartner = currentChatPartner;
     }
+    
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("email", this.email);
+        json.put("fullName", this.fullName);
+        json.put("role", this.role);
+        return json;
+    }
+
+    @Override
+    public String toString() {
+        return "UserInfo{" +
+               "email='" + email + '\'' +
+               ", fullName='" + fullName + '\'' +
+               ", role='" + role + '\'' +
+               '}';
+    }
+
+     @Override
+     public boolean equals(Object o) {
+          if (this == o) return true;
+          if (o == null || getClass() != o.getClass()) return false;
+          UserInfo userInfo = (UserInfo) o;
+          return Objects.equals(email, userInfo.getEmail());
+     }
+
+     @Override
+     public int hashCode() {
+          return Objects.hash(email);
+     }
 
     
 }
