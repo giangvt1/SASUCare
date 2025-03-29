@@ -123,7 +123,7 @@
 
         <!-- Nút Quay lại và Thêm hồ sơ -->
         <div class="d-flex justify-content-between action-buttons">
-            <a href="previousPage.jsp" class="btn btn-outline-primary">
+            <a href="${pageContext.request.contextPath}/Home.jsp" class="btn btn-outline-primary">
                 <i class="bi bi-arrow-left"></i> Quay lại
             </a>
             <a href="${pageContext.request.contextPath}/customer/createrecord.jsp" class="btn btn-primary">

@@ -11,7 +11,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
+import model.Customer;
 
 @WebServlet(name = "DoctorDetailsServlet", urlPatterns = {"/DoctorDetailsServlet"})
 public class DoctorDetailsServlet extends HttpServlet {
@@ -67,6 +69,28 @@ public class DoctorDetailsServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        Customer customer = (Customer) session.getAttribute("currentCustomer");
+        if (customer == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+
+        int doctorId = Integer.parseInt(request.getParameter("doctorId"));
+        DoctorRatingDBContext doctorDAO = new DoctorRatingDBContext();
+        Doctor doctor = doctorDAO.getDoctorById(doctorId);
+        String action = request.getParameter("action");
+        String customerUsername = customer.getUsername();
+        RatingDBContext ratingDB = new RatingDBContext();
+
+        int rate = Integer.parseInt(request.getParameter("rate"));
+        int reverseStar = 6 - rate;
+        String comment = request.getParameter("comment");
+        
+        Rating rating = new Rating(doctorId, customerUsername, reverseStar, comment);
+        ratingDB.saveOrUpdateRating(rating);
+
+        response.sendRedirect(request.getContextPath() + "/DoctorDetailsServlet?id="+doctorId);
     }
 
     @Override
