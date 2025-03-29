@@ -57,7 +57,7 @@ public class EditStaffApplication extends HttpServlet {
             message = "Application sent successfully!";
             String title = "Đơn " + typeName + " của đã " + status;
             String mess = "Lý do:" + reply;
-            g.send(gmail, title, mess);
+            g.sendMail(gmail, title, mess);
 
         } else {
             message = "Failed to send application.";

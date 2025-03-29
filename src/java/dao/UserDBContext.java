@@ -188,56 +188,73 @@ public class UserDBContext extends DBContext<User> {
     }
 
     public void deleteUser(String username) {
-        String sqlCheckDoctor = "SELECT isDoctor FROM Staff WHERE staff_username = ?";
-        String sqlDeleteDoctorDepartment = "DELETE FROM Doctor_Department WHERE doctor_id IN (SELECT id FROM Doctor WHERE staff_id = (SELECT id FROM Staff WHERE staff_username = ?))";
-        String sqlDeleteDoctorSchedule = "DELETE FROM Doctor_Schedule WHERE doctor_id IN (SELECT id FROM Doctor WHERE staff_id = (SELECT id FROM Staff WHERE staff_username = ?))";
-        String sqlDeleteDoctor = "DELETE FROM Doctor WHERE staff_id = (SELECT id FROM Staff WHERE staff_username = ?)";
-        String sqlDeleteStaff = "DELETE FROM Staff WHERE staff_username = ?";
+        String sqlSelectStaff = "SELECT id, isDoctor FROM Staff WHERE staff_username = ?";
+        String sqlDeleteDoctorDepartment = "DELETE FROM Doctor_Department WHERE doctor_id IN (SELECT id FROM Doctor WHERE staff_id = ?)";
+        String sqlDeleteDoctorSchedule = "DELETE FROM Doctor_Schedule WHERE doctor_id IN (SELECT id FROM Doctor WHERE staff_id = ?)";
+        String sqlDeleteDoctor = "DELETE FROM Doctor WHERE staff_id = ?";
+        String sqlDeleteStaff = "DELETE FROM Staff WHERE id = ?";
         String sqlDeleteUserRole = "DELETE FROM UserRole WHERE username = ?";
         String sqlDeleteUser = "DELETE FROM [User] WHERE username = ?";
 
         try {
             connection.setAutoCommit(false); // Start transaction
 
-            try (PreparedStatement psCheckDoctor = connection.prepareStatement(sqlCheckDoctor); PreparedStatement psDeleteDoctorDepartment = connection.prepareStatement(sqlDeleteDoctorDepartment); PreparedStatement psDeleteDoctorSchedule = connection.prepareStatement(sqlDeleteDoctorSchedule); PreparedStatement psDeleteDoctor = connection.prepareStatement(sqlDeleteDoctor); PreparedStatement psDeleteStaff = connection.prepareStatement(sqlDeleteStaff); PreparedStatement psDeleteUserRole = connection.prepareStatement(sqlDeleteUserRole); PreparedStatement psDeleteUser = connection.prepareStatement(sqlDeleteUser)) {
-
-                // Check if the user is a doctor
-                psCheckDoctor.setString(1, username);
-                try (ResultSet rs = psCheckDoctor.executeQuery()) {
-                    if (rs.next() && rs.getBoolean("isDoctor")) {
-                        // Delete related doctor records first due to foreign key constraints
-                        psDeleteDoctorDepartment.setString(1, username);
-                        psDeleteDoctorDepartment.executeUpdate();
-
-                        psDeleteDoctorSchedule.setString(1, username);
-                        psDeleteDoctorSchedule.executeUpdate();
-
-                        psDeleteDoctor.setString(1, username);
-                        psDeleteDoctor.executeUpdate();
+            // First, fetch the staff id and isDoctor flag
+            int staffId = -1;
+            boolean isDoctor = false;
+            try (PreparedStatement psSelectStaff = connection.prepareStatement(sqlSelectStaff)) {
+                psSelectStaff.setString(1, username);
+                try (ResultSet rs = psSelectStaff.executeQuery()) {
+                    if (rs.next()) {
+                        staffId = rs.getInt("id");
+                        isDoctor = rs.getBoolean("isDoctor");
+                    } else {
+                        throw new SQLException("User with username '" + username + "' not found.");
                     }
                 }
-
-                // Delete the staff record
-                psDeleteStaff.setString(1, username);
-                psDeleteStaff.executeUpdate();
-
-                // Delete from UserRole and User tables
-                psDeleteUserRole.setString(1, username);
-                psDeleteUserRole.executeUpdate();
-
-                psDeleteUser.setString(1, username);
-                psDeleteUser.executeUpdate();
-
-                connection.commit(); // Commit if all deletes were successful
-                System.out.println("User '" + username + "' deleted successfully.");
             }
 
+            // If the user is a doctor, delete doctor-related records first
+            if (isDoctor) {
+                try (PreparedStatement psDeleteDoctorDepartment = connection.prepareStatement(sqlDeleteDoctorDepartment); PreparedStatement psDeleteDoctorSchedule = connection.prepareStatement(sqlDeleteDoctorSchedule); PreparedStatement psDeleteDoctor = connection.prepareStatement(sqlDeleteDoctor)) {
+
+                    psDeleteDoctorDepartment.setInt(1, staffId);
+                    psDeleteDoctorDepartment.executeUpdate();
+
+                    psDeleteDoctorSchedule.setInt(1, staffId);
+                    psDeleteDoctorSchedule.executeUpdate();
+
+                    psDeleteDoctor.setInt(1, staffId);
+                    psDeleteDoctor.executeUpdate();
+                }
+            }
+
+            // Delete the staff record
+            try (PreparedStatement psDeleteStaff = connection.prepareStatement(sqlDeleteStaff)) {
+                psDeleteStaff.setInt(1, staffId);
+                psDeleteStaff.executeUpdate();
+            }
+
+            // Delete from UserRole table
+            try (PreparedStatement psDeleteUserRole = connection.prepareStatement(sqlDeleteUserRole)) {
+                psDeleteUserRole.setString(1, username);
+                psDeleteUserRole.executeUpdate();
+            }
+
+            // Delete from User table
+            try (PreparedStatement psDeleteUser = connection.prepareStatement(sqlDeleteUser)) {
+                psDeleteUser.setString(1, username);
+                psDeleteUser.executeUpdate();
+            }
+
+            connection.commit(); // Commit if all deletes were successful
+            System.out.println("User '" + username + "' deleted successfully.");
         } catch (SQLException ex) {
             System.err.println("Error deleting user '" + username + "': " + ex.getMessage());
             Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
             if (connection != null) {
                 try {
-                    connection.rollback(); // Rollback nếu có lỗi
+                    connection.rollback(); // Rollback if an error occurred
                     System.err.println("Transaction rolled back.");
                 } catch (SQLException rollbackEx) {
                     System.err.println("Error rolling back transaction: " + rollbackEx.getMessage());
@@ -248,14 +265,15 @@ public class UserDBContext extends DBContext<User> {
         } finally {
             if (connection != null) {
                 try {
-                    connection.setAutoCommit(true); // Đặt lại autoCommit
-                    connection.close(); // Đóng kết nối (nếu bạn quản lý connection theo cách này)
+                    connection.setAutoCommit(true); // Reset auto-commit mode
+                    connection.close(); // Close the connection if you are managing it here
                 } catch (SQLException closeEx) {
                     System.err.println("Error closing connection: " + closeEx.getMessage());
                     Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, closeEx);
                 }
             }
         }
+
     }
 
     @Override
@@ -270,7 +288,7 @@ public class UserDBContext extends DBContext<User> {
         String sql_insert_staff = "INSERT INTO [Staff](staff_username, createby, createat) VALUES (?,?,?)";
         String sql_insert_doctor = "INSERT INTO [Doctor](staff_id) VALUES (?)";
         String sql_insert_doctor_department = "INSERT INTO [Doctor_Department](doctor_id, department_id) VALUES (?, ?)";
-        
+
         // Hash mật khẩu sử dụng BCrypt
         String hashedPassword = BCrypt.hashpw(model.getPassword(), BCrypt.gensalt(12));
 

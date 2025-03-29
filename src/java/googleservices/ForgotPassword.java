@@ -33,7 +33,7 @@ public class ForgotPassword extends HttpServlet {
         CustomerDBContext customerDAO = new CustomerDBContext();
         GoogleDBContext googleDAO = new GoogleDBContext();
 
-        if (customerDAO.isCustomerExisted(email)) {
+        if (customerDAO.isCustomerExistedByGmail(email)) {
             // sending otp
             int otpValue = googleDAO.sendOtp(email);
             request.setAttribute("message", "OTP is sent to your email id");
