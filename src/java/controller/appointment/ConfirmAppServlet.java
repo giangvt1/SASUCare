@@ -17,7 +17,9 @@ import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import model.Appointment;
 import model.Customer;
 
@@ -30,6 +32,7 @@ public class ConfirmAppServlet extends HttpServlet {
 
     private final AppointmentDBContext appointmentDB = new AppointmentDBContext();
     private final CustomerDBContext cusDB = new CustomerDBContext();
+    private static Map<String, Long> lastOTPSentTime = new ConcurrentHashMap<>();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -109,7 +112,12 @@ public class ConfirmAppServlet extends HttpServlet {
             System.err.println("Recipient email is null or empty.");
             return false;
         }
-
+        long currentTime = System.currentTimeMillis();
+        Long lastSentTime = lastOTPSentTime.get(recipientEmail);
+        if (lastSentTime != null && (currentTime - lastSentTime) < 300_000) {
+            System.err.println("Please wait at least 5 minutes before requesting another OTP.");
+            return false;
+        }
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.socketFactory.port", "465");

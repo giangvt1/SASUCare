@@ -49,7 +49,7 @@ public class SendApplication extends BaseRBACController {
             request.setAttribute("message", "Application sent successfully!");
             String title = "Bạn có đơn từ bác sỹ:" + staffName;
             String mess = "Lời nhắn: " + reason;
-            g.send(gmail, title, mess);
+            g.sendMail(gmail, title, mess);
 
         } else {
             request.setAttribute("message", "Failed to send application.");

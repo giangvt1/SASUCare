@@ -17,6 +17,19 @@ public class StaffAccountListController extends BaseRBACController {
     @Override
     protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User logged)
             throws ServletException, IOException {
+        String action = request.getParameter("action");
+        if ("delete".equalsIgnoreCase(action)) {
+            String username = request.getParameter("username");
+            if (username != null && !username.trim().isEmpty()) {
+                UserDBContext dao = new UserDBContext();
+                try {
+                    dao.deleteUser(username);
+                    request.setAttribute("message", "User '" + username + "' deleted successfully.");
+                } catch (Exception ex) {
+                    request.setAttribute("errorMessage", "Error deleting user '" + username + "': " + ex.getMessage());
+                }
+            }
+        }
 
         try {
             // Lấy thông tin tìm kiếm
@@ -41,7 +54,9 @@ public class StaffAccountListController extends BaseRBACController {
             } catch (NumberFormatException ex) {
                 pageIndex = 1;
             }
-            if (pageIndex < 1) pageIndex = 1;
+            if (pageIndex < 1) {
+                pageIndex = 1;
+            }
 
             // Xử lý pageSize
             int pageSize = DEFAULT_PAGE_SIZE;
@@ -53,16 +68,24 @@ public class StaffAccountListController extends BaseRBACController {
                     pageSize = DEFAULT_PAGE_SIZE;
                 }
             }
-            if (pageSize < 5) pageSize = 5;
-            if (pageSize > 50) pageSize = 50;
+            if (pageSize < 5) {
+                pageSize = 5;
+            }
+            if (pageSize > 50) {
+                pageSize = 50;
+            }
 
             // Gọi DAO
             UserDBContext dao = new UserDBContext();
             ArrayList<UserAccountDTO> listUser = dao.listAccounts(search, pageIndex, pageSize);
             int totalRecords = dao.getTotalUserCount(search);
             int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
-            if (totalPages == 0) totalPages = 1;
-            if (pageIndex > totalPages) pageIndex = totalPages;
+            if (totalPages == 0) {
+                totalPages = 1;
+            }
+            if (pageIndex > totalPages) {
+                pageIndex = totalPages;
+            }
 
             // Gửi dữ liệu sang JSP
             request.setAttribute("listUser", listUser);

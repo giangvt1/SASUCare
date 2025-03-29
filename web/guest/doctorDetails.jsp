@@ -12,9 +12,8 @@
             }
             .container {
                 max-width: 900px;
-                margin: 40px auto;
+                margin: 0px auto;
                 padding: 20px;
-                background: white;
                 border-radius: 10px;
                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
                 text-align: center;
@@ -158,15 +157,17 @@
         <div id="ratingPopup" class="popup">
 
             <h3>Đánh giá Bác sĩ</h3>
-            <form action="RatingServlet" method="post">
+            <form action="DoctorDetailsServlet" method="post">
                 <input type="hidden" name="doctorId" value="${doctor.id}">
 
                 <div class="stars">
                     <c:forEach var="i" begin="1" end="5">
-                        <input type="radio" id="star${i}" name="rate" value="${i}" ${userRating.rate == i ? 'checked' : ''}>
+                        <input type="radio" id="star${i}" name="rate" value="${i}"}>
                         <label for="star${i}">★</label>
                     </c:forEach>
                 </div>
+
+
                 <textarea name="comment" placeholder="Nhập nhận xét...">${userRating.comment}</textarea>
                 <button type="submit" class="action-btn">Lưu</button>
                 <c:if test="${not empty userRating}">

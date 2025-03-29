@@ -57,7 +57,7 @@ public class EditDoctorCertificate extends HttpServlet {
             message = "Certificate edit successfully!";
             String title = "Chứng chỉ " + certificateName + " của bạn đã " + status;
             String mess = "Lý do:" + checkNote;
-            g.send(gmail, title, mess);
+            g.sendMail(gmail, title, mess);
 
         } else {
             message = "Failed to edit certificate.";
